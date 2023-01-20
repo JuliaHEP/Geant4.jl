@@ -1,3 +1,4 @@
+#include "Geant4Wrap.h"
 #include "G4Box.hh"
 #include "G4UBox.hh"
 #include "G4Cons.hh"
