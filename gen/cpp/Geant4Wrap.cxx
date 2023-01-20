@@ -1,24 +1,15 @@
-#include "G4VExceptionHandler.hh"
+#include "Geant4Wrapper.h"
 #include "G4StateManager.hh"
 #include "G4ios.hh"
 
 #include <stdexcept>
 
 // --------------------------------------------------------------------------
-class JlG4ExceptionHandler : public G4VExceptionHandler {
-public:
-  JlG4ExceptionHandler(): G4VExceptionHandler() {
-    auto sm = G4StateManager::GetStateManager();
-    sm-> SetExceptionHandler(this);
-  }
-
-  ~JlG4ExceptionHandler() = default;
-
-  G4bool Notify(const char* originOfException,
-                const char* exceptionCode,
-                G4ExceptionSeverity severity,
-                const char* description) {
-                      std::ostringstream message;
+G4bool G4JLExceptionHandler::Notify(const char* originOfException,
+                                    const char* exceptionCode,
+                                    G4ExceptionSeverity severity,
+                                    const char* description) {
+    std::ostringstream message;
     message << "*** G4Exception : " << exceptionCode << G4endl
             << "      issued by : " << originOfException << G4endl
             << description << G4endl;
@@ -42,7 +33,14 @@ public:
     }
     return false;
   }
-};
+}
 
-static JlG4ExceptionHandler JlEH;
 
+void G4JLInit(void) {
+
+  auto sm = G4StateManager::GetStateManager();
+  sm-> SetExceptionHandler(new G4JLExceptionHandler());
+
+
+
+}

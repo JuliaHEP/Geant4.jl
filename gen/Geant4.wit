@@ -4,7 +4,8 @@ module_jl_fname     = "Geant4-generated.jl"
 
 include_dirs        = [ "/cvmfs/sft.cern.ch/lcg/releases/Geant4/11.0.3-e531e/x86_64-centos7-gcc11-opt/include/Geant4" ]
 
-input               = [ "G4Box.hh",
+input               = [ "Geant4Wrap.h",
+                        "G4Box.hh",
                         "G4UBox.hh",
                         "G4Cons.hh",
                         "G4UCons.hh",
