@@ -1,0 +1,5 @@
+.vscode/*
+.browse.VC.*
+.DS_Store
+gen/build/*
+

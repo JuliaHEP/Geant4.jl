@@ -1,0 +1,8 @@
+name = "Geant4"
+uuid = "559df036-b7a0-42fd-85df-7d5dd9d70f44"
+authors = ["Pere Mato <pere.mato@cern.ch>"]
+version = "0.1.0"
+
+[deps]
+CxxWrap = "1f15a43c-97ca-5a2a-ae31-89f07a497df4"
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"

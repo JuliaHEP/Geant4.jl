@@ -1,0 +1,16 @@
+module_name         = "Geant4"
+export_jl_fname     = "Geant4-export.jl"
+module_jl_fname     = "Geant4-generated.jl"
+
+include_dirs        = [ "${G4INSTALL}/include/Geant4", ${G4INSTALL}/include" ]
+
+input               = [ "Geant4-headers.h" ] 
+extra_headers       = [ ]
+
+veto_list           = "Geant4-veto.h"
+
+cxx-std             = "c++17"
+
+inheritances        = [ ]
+
+export_blacklist    = [ ]
