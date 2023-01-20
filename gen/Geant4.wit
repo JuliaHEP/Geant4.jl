@@ -2,9 +2,23 @@ module_name         = "Geant4"
 export_jl_fname     = "Geant4-export.jl"
 module_jl_fname     = "Geant4-generated.jl"
 
-include_dirs        = [ "${G4INSTALL}/include/Geant4", ${G4INSTALL}/include" ]
+include_dirs        = [ "%G4INSTALL%/include/Geant4" ]
 
-input               = [ "Geant4-headers.h" ] 
+input               = [ "G4Box.hh",
+                        "G4UBox.hh",
+                        "G4Cons.hh",
+                        "G4UCons.hh",
+                        "G4Orb.hh",
+                        "G4UOrb.hh",
+                        "G4Sphere.hh",
+                        "G4USphere.hh",
+                        "G4Trd.hh",
+                        "G4UTrd.hh",
+                        "G4RunManager.hh",
+                        "G4NistManager.hh",
+                        "G4LogicalVolume.hh",
+                        "G4PVPlacement.hh" 
+                      ] 
 extra_headers       = [ ]
 
 veto_list           = "Geant4-veto.h"
