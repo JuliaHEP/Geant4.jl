@@ -19,7 +19,8 @@ include(${Geant4_USE_FILE})
 
 add_library(Geant4Wrap SHARED cpp/Geant4Wrap.cxx cpp/jlGeant4.cxx)
 
-target_link_libraries(Geant4Wrap JlCxx::cxxwrap_julia Geant4::G4run)
+target_include_directories(Geant4Wrap PRIVATE ${CMAKE_SOURCE_DIR})
+target_link_libraries(Geant4Wrap JlCxx::cxxwrap_julia JlCxx::cxxwrap_julia_stl Geant4::G4run)
 
 install(TARGETS Geant4Wrap
         LIBRARY DESTINATION lib

@@ -1,4 +1,11 @@
 #---Generate the files here------------------------------------------------------------------------
+cd(@__DIR__)
+
+if Sys.isapple()
+    ENV["SDKROOT"]=readchomp(`xcrun --sdk macosx --show-sdk-path`)
+end
+
+run(`../../wrapit/build/wrapit --force -v 1 Geant4.wit`)
 
 #---Build the wrapper library----------------------------------------------------------------------
 using CxxWrap

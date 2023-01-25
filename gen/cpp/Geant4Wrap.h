@@ -2,6 +2,11 @@
 #define G4Wrap_H
 
 #include "G4VExceptionHandler.hh"
+#include <string>
+
+#ifndef VECCORE_ENABLE_VC
+  #define VECCORE_ENABLE_VC
+#endif
 
 class G4JLExceptionHandler : public G4VExceptionHandler {
 public:
@@ -13,9 +18,8 @@ public:
                 const char* description);
 };
 
-char* G4JL_getenv(const std::string& x) { return std::getenv(x.c_str()); };
-char* G4JL_setenv(const std::string& x, const std::string& v) { return setenv(x.c_str(), v.c_str(), 1); }
-
-void G4JL_init(void);
+char* G4JL_getenv(const std::string& x);
+int   G4JL_setenv(const std::string& x, const std::string& v);
+void  G4JL_init(void);
 
 #endif
