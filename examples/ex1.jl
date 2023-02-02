@@ -1,10 +1,9 @@
-using Revise
 using Geant4
-
+using HEPSystemOfUnits
 using Test
 
 runmgr = Geant4.G4RunManager()
-v = String(Geant4.GetVersionString(runmgr))
+v = String(GetVersionString(runmgr))
 
 const cm = 10.
 

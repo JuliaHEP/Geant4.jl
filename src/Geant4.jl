@@ -20,6 +20,17 @@ module Geant4
         G4JL_setenv("G4REALSURFACEDATA", joinpath(G4DATADIR, "RealSurface2.2"))
         G4JL_setenv("G4INCLDATA", joinpath(G4DATADIR, "G4INCL1.0"))
     end
+
+    # Typedef hack! 
+    const G4RotationMatrix = CLHEP!HepRotation
+    const G4ThreeVector = CLHEP!Hep3Vector
+    const G4Transform3D = CLHEP!Transform3D
+
+    export G4ThreeVector, G4RotationMatrix, G4Transform3D
+
+    include("HEPSystemOfUnits.jl")
 end # module Geant4
+
+
 
 
