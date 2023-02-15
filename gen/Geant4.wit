@@ -5,39 +5,48 @@ out_cpp_fname       = "cpp/jlGeant4.cxx"
 out_h_fname         = "cpp/jlGeant4.h"
 
 include_dirs        = [ "/usr/local/opt/llvm/include/c++/v1", "/usr/local/opt/llvm/lib/clang/15.0.7/include", "./cpp", 
-                        "/Users/Shared/cvmfs/sft.cern.ch/lcg/views/LCG_102/x86_64-centos7-gcc11-opt/include/Geant4",
-                        "/Users/Shared/cvmfs/sft.cern.ch/lcg/views/LCG_102/x86_64-centos7-gcc11-opt/include" ]
+                        "%LCG_prefix%/include/Geant4", "%LCG_prefix%/include/julia", "%LCG_prefix%/include", "%CxxWrap_prefix%/include"]
 
 input               = [ "Geant4Wrap.h",
-#                        "G4RunManager.hh",
-#                        "G4FastSimulationManager.hh",
-#                        "G4NistManager.hh",
-#                        "G4VSolid.hh",
-#                        "G4UserLimits.hh",
-#                        "G4LogicalVolume.hh",
-#                        "G4PVPlacement.hh",
-#                        "G4VisAttributes.hh",
-#                        "G4Box.hh",
-#                        "G4UBox.hh",
-#                        "G4Cons.hh",
-#                        "G4UCons.hh",
-#                        "G4Orb.hh",
-#                        "G4UOrb.hh",
-#                        "G4Sphere.hh",
-#                        "G4USphere.hh",
-#                        "G4Trd.hh",
-#                        "G4UTrd.hh",
+                        "G4RunManager.hh",
+                        "G4UImanager.hh",
+                        "G4VUserDetectorConstruction.hh",
+                        "G4VUserActionInitialization.hh",
+                        "G4VUserPrimaryGeneratorAction.hh",
+                        "G4VPrimaryGenerator.hh",
+                        "G4ParticleGun.hh",
+                        "G4FastSimulationManager.hh",
+                        "G4NistManager.hh",
+                        "G4VSolid.hh",
+                        "G4CSGSolid.hh",
+                        "G4UserLimits.hh",
+                        "G4LogicalVolume.hh",
+                        "G4VPhysicalVolume.hh",
+                        "G4PVPlacement.hh",
+                        #---Physics--------------
+                        "G4VUserPhysicsList.hh",
+                        "G4VModularPhysicsList.hh",
+                        "QGS_BIC.hh",
+                        "QBBC.hh",
+                        "G4UserPhysicsListMessenger.hh",
+                        #---Solids---------------
+                        "G4VisAttributes.hh",
+                        "G4Box.hh",
+                        "G4Cons.hh",
+                        "G4Orb.hh",
+                        "G4Sphere.hh",
+                        "G4Trd.hh",
                         "CLHEP/Vector/ThreeVector.h",
                         "CLHEP/Vector/Rotation.h",
                         "CLHEP/Vector/EulerAngles.h",
                         "CLHEP/Vector/Boost.h",
                         "CLHEP/Vector/LorentzRotation.h",
                         "CLHEP/Geometry/Transform3D.h",
-                        "CLHEP/Geometry/Point3D.h",
-                        "CLHEP/Geometry/BasicVector3D.h",
                       ]
 
 extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh" ]
+vetoed_finalizer_classes = ["G4JLDetectorConstruction", "G4JLActionInitialization", "QGS_BIC", "QBBC", "G4JLParticleGun", 
+                            "G4Box", "G4Cons", "G4Orb", "G4Sphere", "G4Trd", "G4LogicalVolume", "G4PVPlacement"]
 export              = "all"
 veto_list           = "Geant4-veto.h"
 cxx-std             = "c++17"

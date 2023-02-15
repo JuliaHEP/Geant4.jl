@@ -16,11 +16,13 @@ message("CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
 #---Find Geant4
 find_package(Geant4 REQUIRED)
 include(${Geant4_USE_FILE})
+#find_package(Vc)
 
 add_library(Geant4Wrap SHARED cpp/Geant4Wrap.cxx cpp/jlGeant4.cxx)
 
+#target_compile_definitions(Geant4Wrap PUBLIC VERBOSE_IMPORT)
 target_include_directories(Geant4Wrap PRIVATE ${CMAKE_SOURCE_DIR})
-target_link_libraries(Geant4Wrap JlCxx::cxxwrap_julia JlCxx::cxxwrap_julia_stl Geant4::G4run)
+target_link_libraries(Geant4Wrap JlCxx::cxxwrap_julia JlCxx::cxxwrap_julia_stl Geant4::G4run Geant4::G4physicslists)
 
 install(TARGETS Geant4Wrap
         LIBRARY DESTINATION lib

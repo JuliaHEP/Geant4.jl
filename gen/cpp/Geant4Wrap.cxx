@@ -1,6 +1,10 @@
+#include "jlcxx/functions.hpp"
+
 #include "Geant4Wrap.h"
 #include "G4StateManager.hh"
 #include "G4ios.hh"
+#include "G4PVPlacement.hh"
+#include "G4ParticleTable.hh"
 
 #include <stdexcept>
 
@@ -33,10 +37,21 @@ G4bool G4JLExceptionHandler::Notify(const char* originOfException,
   }
   return false;
 }
+void SetParticleByName(G4ParticleGun* gun, const char* pname)
+{
+  G4ParticleTable* particleTable= G4ParticleTable::GetParticleTable();
+  G4ParticleDefinition* pd= particleTable-> FindParticle(pname);
+  if (pd != 0) {
+    gun-> SetParticleDefinition(pd);
+  } else {
+    G4cout << "*** \"" << pname << "\" is not registered "
+	   << "in available particle list" << G4endl;
+  }
+}
 
-char* G4JL_getenv(const std::string& x) { return std::getenv(x.c_str()); };
+char* G4JL_getenv(const char* x) { return std::getenv(x); };
 
-int G4JL_setenv(const std::string& x, const std::string& v) { return setenv(x.c_str(), v.c_str(), 1); }
+int G4JL_setenv(const char* x, const char* v) { return setenv(x, v, 1); }
 
 void G4JL_init(void) {
   auto sm = G4StateManager::GetStateManager();
