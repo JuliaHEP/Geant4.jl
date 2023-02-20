@@ -9,9 +9,10 @@ include_dirs        = [ "/usr/local/opt/llvm/include/c++/v1",
                         "./cpp", 
                         "/Users/mato/.julia/artifacts/db3da3f31301d4e88f11774fa1b6063dc4dd0dff/include/Geant4", 
                         "/Applications/Julia-1.8.app/Contents/Resources/julia/include/julia",  
-                        "/Users/mato/.julia/artifacts/b280a0aa921f80d29071186c9d93766a8c683ca7/lib/cmake/JlCxx/../../../include"]
+                        "/Users/mato/.julia/artifacts/62eae10c647bb4ea186063b758bc3fc5881a34f1/lib/cmake/JlCxx/../../../include"]
 
 input               = [ "Geant4Wrap.h",
+                        "G4String.hh",
                         "G4RunManager.hh",
                         "G4UImanager.hh",
                         "G4VUserDetectorConstruction.hh",

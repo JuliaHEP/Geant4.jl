@@ -51,7 +51,3 @@ module Geant4
     include("SystemOfUnits.jl")
 
 end # module Geant4
-
-
-
-

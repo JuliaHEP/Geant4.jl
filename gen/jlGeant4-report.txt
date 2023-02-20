@@ -34,6 +34,7 @@ const HepGeom::Vector3D<double>
 std::istream
 std::map<G4String,G4AttDef,std::less<G4String>,std::allocator<std::pair<const G4String,G4AttDef>>>
 std::ostream
+std::string
 std::vector<G4AttValue,std::allocator<G4AttValue>>
 
 Class(es) from vetoed_finalizer_classes configuration parameter that were not found:

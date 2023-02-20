@@ -12,6 +12,7 @@ include_dirs        = [ "/usr/local/opt/llvm/include/c++/v1",
                         "@JlCxx_DIR@/../../../include"]
 
 input               = [ "Geant4Wrap.h",
+                        "G4String.hh",
                         "G4RunManager.hh",
                         "G4UImanager.hh",
                         "G4VUserDetectorConstruction.hh",

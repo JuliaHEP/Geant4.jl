@@ -26,7 +26,8 @@ export G4NistManager, G4NistManager!Instance, G4Orb, G4PVData, G4PVPlacement, G4
 export G4PhysicsListHelper, G4Polyhedron, G4PrimaryTransformer, G4ProcessManager, G4Region, G4RunManager, G4RunManager!GetRunManager
 export G4RunManager!IfGeometryHasBeenDestroyed, G4RunManager!RMType, G4RunManager!masterRM, G4RunManager!sequentialRM, G4RunManager!workerRM
 export G4SmartVoxelHeader, G4Sphere, G4State, G4State_Abort, G4State_EventProc, G4State_GeomClosed, G4State_Idle, G4State_Init
-export G4State_PreInit, G4State_Quit, G4String, G4Track, G4Trd, G4UIcommand, G4UImanager, G4UImanager!DoublePrecisionStr
+export G4State_PreInit, G4State_Quit, G4String, G4String!both, G4String!caseCompare, G4String!exact, G4String!ignoreCase
+export G4String!leading, G4String!stripType, G4String!trailing, G4Track, G4Trd, G4UIcommand, G4UImanager, G4UImanager!DoublePrecisionStr
 export G4UImanager!GetMasterUIpointer, G4UImanager!GetUIpointer, G4UImanager!UseDoublePrecisionStr, G4UserLimits, G4UserPhysicsListMessenger
 export G4UserStackingAction, G4UserSteppingAction, G4UserTrackingAction, G4VFastSimulationModel, G4VMPLData, G4VModularPhysicsList
 export G4VPVParameterisation, G4VParticleChange, G4VPhysicalVolume, G4VPhysicalVolume!Clean, G4VPhysicsConstructor, G4VPrimaryGenerator
@@ -95,18 +96,19 @@ export SetVisibility, SetVoxelHeader, SetXHalfLength, SetXHalfLength1, SetXHalfL
 export SetYHalfLength2, SetZHalfLength, SolveAlias, StoreHistory, StorePhysicsTable, StoreRandomNumberStatusToG4Event, SurfaceNormal
 export TerminateEventLoop, TerminateOneEvent, TerminateWorker, TotalVolumeEntities, UpdateMaterial, UseCoupledTransportation, VolumeType
 export _fDisplayThreshold, _fDisplayThreshold!, _fIsPhysicsTableBuilt, _fIsPhysicsTableBuilt!, _theMessenger, _theMessenger!, _thePLHelper
-export _thePLHelper!, add!, angle, assign, axis, axisAngle, azimAngle, beta, boost, boostVector, boostX, boostY, boostZ
-export coLinearRapidity, col1, col2, col3, col4, colX, colY, colZ, compare, cos2Theta, cosTheta, cross, decompose, delta, deltaPhi
-export deltaR, diff2, direction, distance2, dot, dx, dy, dz, eta, eulerAngles, fCutsCouple, fCutsCouple!, fFieldManager
-export fFieldManager!, fMass, fMass!, fMaterial, fMaterial!, fSensitiveDetector, fSensitiveDetector!, fSolid, fSolid!, fdiv!, frot
-export frot!, gamma, getAngleAxis, getAxis, getDecomposition, getDelta, getDirection, getEta, getPhi, getPsi, getR, getRho
-export getRotation, getTheta, getTranslation, getX, getY, getZ, howNear, howOrthogonal, howParallel, initialize, inverse, invert
-export isIdentity, isNear, isOrthogonal, isParallel, kExternal, kInside, kNormal, kOutside, kParameterised, kPhi, kRadial3D
-export kReplica, kRho, kStateGas, kStateLiquid, kStateSolid, kStateUndefined, kSurface, kUndefined, kXAxis, kYAxis, kZAxis, mag
-export mag2, matrixMultiplication, mult!, norm2, orthogonal, paren, perp, perp2, perpPart, phi, phiX, phiY, phiZ
-export physicsVector, physicsVector!, polarAngle, project, pseudoRapidity, psi, r, rapidity, rectify, rep3x3, rep4x4, rep4x4Symmetric
-export rho, rndmSaveThisEvent, rndmSaveThisRun, rotate, rotateAxes, rotateUz, rotateX, rotateY, rotateZ, row1, row2, row3
-export row4, rowX, rowY, rowZ, set, setAxis, setCylEta, setCylTheta, setDelta, setEta, setIdentity, setMag, setPerp, setPhi
-export setPsi, setR, setREtaPhi, setRThetaPhi, setRho, setRhoPhiEta, setRhoPhiTheta, setRhoPhiZ, setRows, setTheta, setX, setY
-export setZ, sub!, theta, thetaX, thetaY, thetaZ, transform, tt, tx, tx!, ty, ty!, tz, tz!, unit, vectorMultiplication, x
-export xt, xx, xy, xz, y, yt, yx, yy, yz, z, zt, zx, zy, zz
+export _thePLHelper!, add!, angle, append, assign, axis, axisAngle, azimAngle, beta, boost, boostVector, boostX, boostY, boostZ
+export coLinearRapidity, col1, col2, col3, col4, colX, colY, colZ, compare, compareTo, contains, cos2Theta, cosTheta, cross, data
+export decompose, delta, deltaPhi, deltaR, diff2, direction, distance2, dot, dx, dy, dz, eta, eulerAngles, fCutsCouple
+export fCutsCouple!, fFieldManager, fFieldManager!, fMass, fMass!, fMaterial, fMaterial!, fSensitiveDetector, fSensitiveDetector!
+export fSolid, fSolid!, fdiv!, first, frot, frot!, gamma, getAngleAxis, getAxis, getDecomposition, getDelta, getDirection
+export getEta, getPhi, getPsi, getR, getRho, getRotation, getTheta, getTranslation, getX, getY, getZ, hash, howNear
+export howOrthogonal, howParallel, index, initialize, inverse, invert, isIdentity, isNear, isNull, isOrthogonal, isParallel
+export kExternal, kInside, kNormal, kOutside, kParameterised, kPhi, kRadial3D, kReplica, kRho, kStateGas, kStateLiquid
+export kStateSolid, kStateUndefined, kSurface, kUndefined, kXAxis, kYAxis, kZAxis, last, mag, mag2, matrixMultiplication, mult!
+export norm2, orthogonal, paren, perp, perp2, perpPart, phi, phiX, phiY, phiZ, physicsVector, physicsVector!, polarAngle
+export prepend, project, pseudoRapidity, psi, r, rapidity, rectify, remove, rep3x3, rep4x4, rep4x4Symmetric, replace, rho
+export rndmSaveThisEvent, rndmSaveThisRun, rotate, rotateAxes, rotateUz, rotateX, rotateY, rotateZ, row1, row2, row3, row4, rowX, rowY
+export rowZ, set, setAxis, setCylEta, setCylTheta, setDelta, setEta, setIdentity, setMag, setPerp, setPhi, setPsi, setR
+export setREtaPhi, setRThetaPhi, setRho, setRhoPhiEta, setRhoPhiTheta, setRhoPhiZ, setRows, setTheta, setX, setY, setZ, stlhash
+export strcasecompare, strip, sub!, theta, thetaX, thetaY, thetaZ, toLower, toUpper, transform, tt, tx, tx!, ty, ty!, tz, tz!, unit
+export vectorMultiplication, x, xt, xx, xy, xz, y, yt, yx, yy, yz, z, zt, zx, zy, zz
