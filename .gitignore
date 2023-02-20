@@ -2,4 +2,7 @@
 .browse.VC.*
 .DS_Store
 gen/build/*
+deps/build/*
+deps/build.log
+
 

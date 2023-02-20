@@ -5,4 +5,11 @@ version = "0.1.0"
 
 [deps]
 CxxWrap = "1f15a43c-97ca-5a2a-ae31-89f07a497df4"
+Expat_jll = "2e619515-83b5-522b-bb60-26c02a35a201"
+Geant4_jll = "872b6946-528a-5ac7-9145-d37eec569368"
+Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
+
+[extras]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

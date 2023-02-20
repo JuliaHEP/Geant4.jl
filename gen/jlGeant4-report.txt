@@ -1,0 +1,42 @@
+Undefined types
+---------------
+
+The definition of the following types where not found. Use the extra_headers configuration parameters to specify the header files that defines.
+
+The auto_veto parameter is set to true, generation of the wrappers that would have needed theses types were skipped.
+
+CLHEP::HepEulerAngles::EA
+G4DCtable
+G4DisplacedSolid
+G4LVManager
+G4MTcoutDestination
+G4PVManager
+G4ParticleTable::G4PTblDicIterator
+G4Run
+G4UIbridge
+G4UIcommandTree
+G4UIsession
+G4UserEventAction
+G4UserRunAction
+G4UserWorkerInitialization
+G4UserWorkerThreadInitialization
+G4VGraphicsScene
+G4VMPLData::G4PhysConstVectorData
+G4VMPLManager
+G4VUPLManager
+G4VUserParallelWorld
+G4VisExtent
+G4VoxelLimits
+__void__
+const HepGeom::Normal3D<double>
+const HepGeom::Point3D<double>
+const HepGeom::Vector3D<double>
+std::istream
+std::map<G4String,G4AttDef,std::less<G4String>,std::allocator<std::pair<const G4String,G4AttDef>>>
+std::ostream
+std::vector<G4AttValue,std::allocator<G4AttValue>>
+
+Class(es) from vetoed_finalizer_classes configuration parameter that were not found:
+-------------------------------------------------------------------------------------
+
+None

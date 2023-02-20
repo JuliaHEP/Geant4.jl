@@ -21,11 +21,11 @@ function constructB1Detector()
   solidworld = G4Box("World", 0.5 * world_sizeXY, 0.5 * world_sizeXY, 0.5 * world_sizeZ)
   logicworld = G4LogicalVolume(solidworld, world_mat, "World")
 
-  physWorld = G4PVPlacement(C_NULL,          # no rotation
+  physWorld = G4PVPlacement(nothing,          # no rotation
                             G4ThreeVector(),  # at (0,0,0)
                             logicworld,       # its logical volume
                             "World",          # its name
-                            C_NULL,           # its mother volume
+                            nothing,          # its mother volume
                             false,            # no boolean operation
                             0,                # copy number
                             checkOverlaps)    # overlaps checking
@@ -34,7 +34,7 @@ function constructB1Detector()
   solidEnv = G4Box("Envelope", 0.5 * env_sizeXY, 0.5 * env_sizeXY, 0.5 * env_sizeZ)
   logicEnv = G4LogicalVolume(solidEnv, env_mat, "Envelope")
 
-  G4PVPlacement(C_NULL,            # no rotation
+  G4PVPlacement(nothing,           # no rotation
                 G4ThreeVector(),   # at (0,0,0)
                 logicEnv,          # its logical volume
                 "Envelope",        # its name
@@ -56,7 +56,7 @@ function constructB1Detector()
                 shape1_hz, shape1_phimin, shape1_phimax)
   
   logicShape1 = G4LogicalVolume(solidShape1, shape1_mat, "Shape1")
-  G4PVPlacement(C_NULL,       # no rotation
+  G4PVPlacement(nothing,      # no rotation
                 pos1,         # at position
                 logicShape1,  # its logical volume
                 "Shape1",     # its name
@@ -74,7 +74,7 @@ function constructB1Detector()
   shape2_dz  = 6cm
   solidShape2 = G4Trd("Shape2", 0.5 * shape2_dxa, 0.5 * shape2_dxb, 0.5 * shape2_dya, 0.5 * shape2_dyb, 0.5 * shape2_dz)
   logicShape2 = G4LogicalVolume(solidShape2, shape2_mat, "Shape2")
-  G4PVPlacement(C_NULL,         # no rotation
+  G4PVPlacement(nothing,        # no rotation
                 pos2,           # at position
                 logicShape2,    # its logical volume
                 "Shape2",       # its name
@@ -95,7 +95,7 @@ physics = QBBC()
 # Construct the default run manager
 runManager = G4RunManager()
 SetUserInitialization(runManager, detdesc)
-SetUserInitialization(runManager, ptr(physics))
+SetUserInitialization(runManager, CxxPtr(physics))
 
 # User Actions
 function buildApp(self::G4JLActionInitialization)
@@ -129,8 +129,8 @@ UImanager = G4UImanager!GetUIpointer()
 ApplyCommand(UImanager, "/tracking/verbose 1")
 
 # gamma 6 MeV to the direction (0.,0.,1.)
-ApplyCommand(UImanager, "/gun/particle gamma")
-ApplyCommand(UImanager, "/gun/energy 6 MeV")
+#ApplyCommand(UImanager, "/gun/particle gamma")
+#ApplyCommand(UImanager, "/gun/energy 6 MeV")
 
 # go
 ApplyCommand(UImanager, "/run/beamOn 1")
