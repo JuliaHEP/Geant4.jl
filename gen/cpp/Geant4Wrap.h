@@ -69,7 +69,11 @@ public:
 private:
   G4ParticleGun* gun;
 };
+
 void SetParticleByName(G4ParticleGun* gun, const char* pname);
+inline G4String make_G4String(const char* s) {return G4String(s);}
+//G4Material * G4NistManager::FindOrBuildMaterial(const G4String &, G4bool, G4bool)
+
 
 
 char* G4JL_getenv(const char* x);

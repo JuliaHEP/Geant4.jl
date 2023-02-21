@@ -47,6 +47,7 @@ module Geant4
         c = G4JLActionInitialization(sf)                          # call the construction                        
         return CxxPtr(c)                                          # convert to pointer 
     end
+    Base.convert(::Type{G4String}, s::String) = make_G4String(s)
 
     include("SystemOfUnits.jl")
 

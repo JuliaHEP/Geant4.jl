@@ -2,7 +2,6 @@
 #include "G4FieldManager.hh"
 #include "G4VSensitiveDetector.hh"
 #include "Geant4Wrap.h"
-#include "G4String.hh"
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
 #include "G4VUserDetectorConstruction.hh"
