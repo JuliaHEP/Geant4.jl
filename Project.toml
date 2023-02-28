@@ -3,6 +3,10 @@ uuid = "559df036-b7a0-42fd-85df-7d5dd9d70f44"
 authors = ["Pere Mato <pere.mato@cern.ch>"]
 version = "0.1.0"
 
+[compat]
+julia = "1"
+
+
 [deps]
 CxxWrap = "1f15a43c-97ca-5a2a-ae31-89f07a497df4"
 Expat_jll = "2e619515-83b5-522b-bb60-26c02a35a201"

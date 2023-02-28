@@ -24,11 +24,18 @@ module Geant4
     const G4Transform3D = HepGeom!Transform3D
     export G4ThreeVector, G4RotationMatrix, G4Transform3D
 
+    # Transfer ownership
+    function move(a)
+        r = CxxPtr(a)
+        a.cpp_object = C_NULL
+        return r
+    end
+
     # Useful pointers
-    export CxxPtr, ConstCxxPtr, CxxRef, ConstCxxRef
+    export CxxPtr, ConstCxxPtr, CxxRef, ConstCxxRef, move
 
     # Addional usability functions
-    G4LogicalVolume(s::G4VSolid, m::CxxPtr{G4Material}, l::String) = G4LogicalVolume(CxxPtr(s), m, l)
+    # G4LogicalVolume(s::G4VSolid, m::CxxPtr{G4Material}, l::String) = G4LogicalVolume(CxxPtr(s), m, l)
     G4PVPlacement(r::Union{Nothing, G4RotationMatrix}, d::G4ThreeVector, l::Union{Nothing,G4LogicalVolume}, s::String, 
                   p::Union{Nothing, G4LogicalVolume}, b1::Bool, n::Int, b2::Bool) = 
                   G4PVPlacement(isnothing(r) ? CxxPtr{G4RotationMatrix}(C_NULL) : CxxPtr(r), d, 

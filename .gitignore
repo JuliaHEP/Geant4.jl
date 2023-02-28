@@ -4,5 +4,8 @@
 gen/build/*
 deps/build/*
 deps/build.log
+Manifest.toml
+*/Manifest.toml
+
 
 

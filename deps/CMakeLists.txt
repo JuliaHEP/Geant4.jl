@@ -27,7 +27,7 @@ if(WRAPIT_EXECUTABLE)
     WORKING_DIRECTORY ${SOURCE_DIR}
     DEPENDS ${SOURCE_DIR}/Geant4.wit ${SOURCE_DIR}/Geant4-veto.h)
 else()
-  message(STATUS "The executable wrapit was not found. Buulding using the generated wrapper jlGeant4.cxx/h from the sources.")
+  message(STATUS "The executable wrapit was not found. Building wrapper using the generated jlGeant4.cxx/h files from the sources.")
 endif()
 
 add_library(Geant4Wrap SHARED ${SOURCE_DIR}/cpp/Geant4Wrap.cxx ${SOURCE_DIR}/cpp/jlGeant4.cxx)

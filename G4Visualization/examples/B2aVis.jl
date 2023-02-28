@@ -4,7 +4,7 @@ using G4Visualization
 using Geant4.SystemOfUnits
 using GLMakie
 
-include("../../examples/basic/B1/DetectorB1.jl")
+include("../../examples/basic/B2/DetectorB2a.jl")
 
-pv = constructB1Detector()
+pv = constructB2aDetector()
 draw(pv)
