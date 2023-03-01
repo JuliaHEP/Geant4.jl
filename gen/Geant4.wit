@@ -36,7 +36,6 @@ input               = [ "Geant4Wrap.h",
                         "FTFP_BERT.hh",
                         "G4UserPhysicsListMessenger.hh",
                         #---Solids---------------
-                        "G4VisAttributes.hh",
                         "G4Box.hh",
                         "G4Cons.hh",
                         "G4Tubs.hh",
@@ -49,10 +48,13 @@ input               = [ "Geant4Wrap.h",
                         "CLHEP/Vector/Boost.h",
                         "CLHEP/Vector/LorentzRotation.h",
                         "CLHEP/Geometry/Transform3D.h",
+                        #---Visualization
+                        "G4VisAttributes.hh",
+                        "G4Colour.hh",
                       ]
 
 extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh" ]
-vetoed_finalizer_classes = ["G4PVPlacement"]
+vetoed_finalizer_classes = ["G4PVPlacement", "G4LogicalVolume"]
 export              = "all"
 veto_list           = "Geant4-veto.h"
 cxx-std             = "c++17"

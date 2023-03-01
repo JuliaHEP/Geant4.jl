@@ -62,13 +62,12 @@ function constructB2aDetector()
         fCheckOverlaps)                 # checking overlaps
 
     # Visualization attributes
-    #=
-    boxVisAtt = G4VisAttributes(G4Colour(1.0, 1.0, 1.0))
+    boxVisAtt = G4VisAttributes(G4Colour(1.0, 1.0, 1.0, 0.1))
+    targetVisAtt = G4VisAttributes(G4Colour(0.0, 0.0, 1.0))
     chamberVisAtt = G4VisAttributes(G4Colour(1.0, 1.0, 0.0))
     SetVisAttributes(worldLV, boxVisAtt)
-    SetVisAttributes(targetLV, boxVisAtt)
+    SetVisAttributes(targetLV, targetVisAtt)
     SetVisAttributes(trackerLV, boxVisAtt)
-    =#
 
     # Tracker segments
     firstPosition = -trackerSize + chamberSpacing
@@ -96,7 +95,7 @@ function constructB2aDetector()
         chamberS = G4Tubs("Chamber_solid", 0, rmax, halfWidth, 0, 360deg)
         push!(fLogicChamber, G4LogicalVolume(move(chamberS), m_chamber, "Chamber_LV"))
   
-        # fLogicChamber[copyNo]->SetVisAttributes(chamberVisAtt);
+        SetVisAttributes(fLogicChamber[copyNo], chamberVisAtt)
 
         G4PVPlacement(nothing,              # no rotation
             G4ThreeVector(0, 0, Zposition), # at (x,y,z)

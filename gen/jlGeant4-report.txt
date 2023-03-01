@@ -33,6 +33,7 @@ const HepGeom::Point3D<double>
 const HepGeom::Vector3D<double>
 std::istream
 std::map<G4String,G4AttDef,std::less<G4String>,std::allocator<std::pair<const G4String,G4AttDef>>>
+std::map<G4String,G4Colour,std::less<G4String>,std::allocator<std::pair<const G4String,G4Colour>>>
 std::ostream
 std::vector<G4AttValue,std::allocator<G4AttValue>>
 

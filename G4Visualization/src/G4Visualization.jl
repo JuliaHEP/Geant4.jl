@@ -20,6 +20,10 @@ module G4Visualization
         end
     end
 
+    function convert(::Type{Tuple{RGB, Float64}}, c::ConstCxxRef{G4Colour})
+        return (RGB(GetRed(c),GetGreen(c), GetBlue(c)),GetAlpha(c))
+    end
+
     function GeometryBasics.Tesselation(s::G4VSolid, nvertices::NTuple{N,<:Integer}) where N
         return Tesselation{3,Float64,typeof(s),N}(s, Int.(nvertices))
     end
@@ -47,11 +51,12 @@ module G4Visualization
             map!(c -> c * t, points, points)
             m = GeometryBasics.Mesh(points, faces)
         end
-    
-        if wireframe || level == 2
-            wireframe!(s, m, color=:lightblue, linewidth=1, visible = level == 1 ? false : true)
+        g4vis = GetVisAttributes(lv)
+        color = g4vis != C_NULL ? convert(Tuple{RGB, Float64}, GetColour(g4vis)) : (colors[level], 0.5)
+        if wireframe
+            wireframe!(s, m, color=color, linewidth=1 )
         else
-            mesh!(s, m, color=colors[level], transparency=true, ssao=true, shading=true, visible = level == 1 ? false : true)
+            mesh!(s, m, color=color, transparency=true )
         end
         # Go down to the daughters
         if level < maxlevel

@@ -4,7 +4,7 @@ using G4Visualization
 using Geant4.SystemOfUnits
 using GLMakie
 
-include("../../examples/basic/B2/DetectorB2a.jl")
+include(joinpath(@__DIR__, "../../examples/basic/B2/DetectorB2a.jl"))
 
 pv = constructB2aDetector()
 draw(pv)

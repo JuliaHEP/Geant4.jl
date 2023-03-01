@@ -24,7 +24,6 @@
 #include "QBBC.hh"
 #include "FTFP_BERT.hh"
 #include "G4UserPhysicsListMessenger.hh"
-#include "G4VisAttributes.hh"
 #include "G4Box.hh"
 #include "G4Cons.hh"
 #include "G4Tubs.hh"
@@ -37,3 +36,5 @@
 #include "CLHEP/Vector/Boost.h"
 #include "CLHEP/Vector/LorentzRotation.h"
 #include "CLHEP/Geometry/Transform3D.h"
+#include "G4VisAttributes.hh"
+#include "G4Colour.hh"
