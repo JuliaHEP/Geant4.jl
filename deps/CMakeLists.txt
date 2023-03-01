@@ -10,7 +10,7 @@ get_target_property(JlCxx_location JlCxx::cxxwrap_julia LOCATION)
 get_filename_component(JlCxx_location ${JlCxx_location} DIRECTORY)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib;${JlCxx_location}")
 message(STATUS "Found JlCxx at ${JlCxx_location}")
-
+set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)
 #---Find Geant4---------------------------------------------------------------------
 find_package(Geant4 REQUIRED)
 include(${Geant4_USE_FILE})

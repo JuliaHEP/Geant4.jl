@@ -3,15 +3,15 @@ uuid = "559df036-b7a0-42fd-85df-7d5dd9d70f44"
 authors = ["Pere Mato <pere.mato@cern.ch>"]
 version = "0.1.0"
 
-[compat]
-julia = "1"
-
-
 [deps]
 CxxWrap = "1f15a43c-97ca-5a2a-ae31-89f07a497df4"
 Expat_jll = "2e619515-83b5-522b-bb60-26c02a35a201"
 Geant4_jll = "872b6946-528a-5ac7-9145-d37eec569368"
 Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
+Xerces_jll = "637d83c4-b86a-5d90-b82d-5cf0573a8cfc"
+
+[compat]
+julia = "1"
 
 [extras]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"

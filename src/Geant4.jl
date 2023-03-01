@@ -9,9 +9,9 @@ module Geant4
         #---Call Wrapper init--------------------------------------------------
         G4JL_init()
         #---Setup [data] environment-------------------------------------------
-        GEANT4_DATA_DIR = get(ENV, "GEANT4_DATA_DIR", "/cvmfs/geant4.cern.ch/share/data")
+        GEANT4_DATA_DIR = get(ENV, "GEANT4_DATA_DIR", Geant4_jll.data_dir)
         for line in readlines(joinpath(Geant4_jll.artifact_dir, "bin/geant4.sh"))
-            m = match(r"export[ ]+(.*)=.*/(.*)\"", line)
+            m = match(r"export[ ]+(G4.*)=.*/(.*)$", line)
             if !isnothing(m)
                 G4JL_setenv(String(m[1]), joinpath(GEANT4_DATA_DIR, m[2]))
             end
@@ -35,10 +35,9 @@ module Geant4
     export CxxPtr, ConstCxxPtr, CxxRef, ConstCxxRef, move
 
     # Addional usability functions
-    # G4LogicalVolume(s::G4VSolid, m::CxxPtr{G4Material}, l::String) = G4LogicalVolume(CxxPtr(s), m, l)
     G4PVPlacement(r::Union{Nothing, G4RotationMatrix}, d::G4ThreeVector, l::Union{Nothing,G4LogicalVolume}, s::String, 
                   p::Union{Nothing, G4LogicalVolume}, b1::Bool, n::Int, b2::Bool) = 
-                  G4PVPlacement(isnothing(r) ? CxxPtr{G4RotationMatrix}(C_NULL) : CxxPtr(r), d, 
+                  G4PVPlacement(isnothing(r) ? CxxPtr{G4RotationMatrix}(C_NULL) : move(r), d, 
                                 isnothing(l) ? CxxPtr{G4LogicalVolume}(C_NULL) : CxxPtr(l), s, 
                                 isnothing(p) ? CxxPtr{G4LogicalVolume}(C_NULL) : CxxPtr(p), b1, n, b2)
     #                   
@@ -46,16 +45,16 @@ module Geant4
         ff() = CxxPtr{G4VPhysicalVolume}(f().cpp_object)          # wrap the Julia function to return a pointer to G4PhysicalVolume
         sf = @safe_cfunction($ff, CxxPtr{G4VPhysicalVolume}, ())  # crate a safe c function
         c = G4JLDetectorConstruction(sf)                          # call the construction                        
-        return CxxPtr(c)                                          # convert to pointer 
     end
     function G4JLActionInitialization(f::Function)
         ff(self::ConstCxxPtr{G4JLActionInitialization}) = f(self[])
         sf = @safe_cfunction($ff, Nothing, (ConstCxxPtr{G4JLActionInitialization},))                      # crate a safe c function
         c = G4JLActionInitialization(sf)                          # call the construction                        
-        return CxxPtr(c)                                          # convert to pointer 
     end
     Base.convert(::Type{G4String}, s::String) = make_G4String(s)
 
     include("SystemOfUnits.jl")
 
 end # module Geant4
+
+

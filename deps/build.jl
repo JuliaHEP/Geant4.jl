@@ -1,6 +1,7 @@
 using CxxWrap
 using Geant4_jll
 using Expat_jll
+using Xerces_jll
 
 #---Build the wrapper library----------------------------------------------------------------------
 builddir = joinpath(@__DIR__, "build")
@@ -15,9 +16,10 @@ end
 
 cxxwrap_prefix = CxxWrap.prefix_path()
 geant4_prefix = Geant4_jll.artifact_dir
+xerces_prefix = Xerces_jll.artifact_dir
 
 run(`cmake -DCMAKE_BUILD_TYPE=Release
            -DEXPAT_INCLUDE_DIR=$(Expat_jll.artifact_dir)/include
            -DEXPAT_LIBRARY=$(Expat_jll.libexpat)
-           -DCMAKE_PREFIX_PATH=$cxxwrap_prefix\;$geant4_prefix  $sourcedir`)
+           -DCMAKE_PREFIX_PATH=$cxxwrap_prefix\;$geant4_prefix\;$xerces_prefix  $sourcedir`)
 run(`cmake --build . --config Release`)

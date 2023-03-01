@@ -7,7 +7,7 @@ out_h_fname         = "cpp/jlGeant4.h"
 include_dirs        = [ "/usr/local/opt/llvm/include/c++/v1", 
                         "/usr/local/opt/llvm@13/lib/clang/13.0.1/include", 
                         "./cpp", 
-                        "/Users/mato/.julia/artifacts/db3da3f31301d4e88f11774fa1b6063dc4dd0dff/include/Geant4", 
+                        "/Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4", 
                         "/Applications/Julia-1.8.app/Contents/Resources/julia/include/julia",  
                         "/Users/mato/.julia/artifacts/62eae10c647bb4ea186063b758bc3fc5881a34f1/lib/cmake/JlCxx/../../../include"]
 
@@ -52,10 +52,10 @@ input               = [ "Geant4Wrap.h",
                       ]
 
 extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh" ]
-vetoed_finalizer_classes = ["G4JLDetectorConstruction", "G4JLActionInitialization", "QGS_BIC", "QBBC", "G4JLParticleGun", 
-                            "G4Box", "G4Cons", "G4Orb", "G4Sphere", "G4Trd", "G4LogicalVolume", "G4PVPlacement"]
+vetoed_finalizer_classes = ["G4PVPlacement"]
 export              = "all"
 veto_list           = "Geant4-veto.h"
 cxx-std             = "c++17"
 inheritances        = [ ]
 export_blacklist    = [ ]
+

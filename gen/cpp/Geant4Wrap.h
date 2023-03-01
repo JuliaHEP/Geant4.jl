@@ -48,12 +48,12 @@ class G4JLActionInitialization : public G4VUserActionInitialization
     void BuildForMaster() const override {}
     void Build() const override {return build(this);}
     // Make these public to be used from Julia
-    void SetUserAction(G4VUserPrimaryGeneratorAction& a) const {G4VUserActionInitialization::SetUserAction(&a); }
-    void SetUserAction(G4UserRunAction& a) const {G4VUserActionInitialization::SetUserAction(&a); }
-    void SetUserAction(G4UserEventAction& a) const {G4VUserActionInitialization::SetUserAction(&a); }
-    void SetUserAction(G4UserStackingAction& a) const {G4VUserActionInitialization::SetUserAction(&a); }
-    void SetUserAction(G4UserTrackingAction& a) const {G4VUserActionInitialization::SetUserAction(&a); }
-    void SetUserAction(G4UserSteppingAction& a) const {G4VUserActionInitialization::SetUserAction(&a); }
+    void SetUserAction(G4VUserPrimaryGeneratorAction* a) const {G4VUserActionInitialization::SetUserAction(a); }
+    void SetUserAction(G4UserRunAction* a) const {G4VUserActionInitialization::SetUserAction(a); }
+    void SetUserAction(G4UserEventAction* a) const {G4VUserActionInitialization::SetUserAction(a); }
+    void SetUserAction(G4UserStackingAction* a) const {G4VUserActionInitialization::SetUserAction(a); }
+    void SetUserAction(G4UserTrackingAction* a) const {G4VUserActionInitialization::SetUserAction(a); }
+    void SetUserAction(G4UserSteppingAction* a) const {G4VUserActionInitialization::SetUserAction(a); }
 
   protected:
     build_f build;

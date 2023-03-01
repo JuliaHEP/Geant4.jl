@@ -52,10 +52,10 @@ input               = [ "Geant4Wrap.h",
                       ]
 
 extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh" ]
-vetoed_finalizer_classes = ["G4JLDetectorConstruction", "G4JLActionInitialization", "QGS_BIC", "QBBC", "G4JLParticleGun", 
-                            "G4Box", "G4Cons", "G4Orb", "G4Sphere", "G4Trd", "G4LogicalVolume", "G4PVPlacement"]
+vetoed_finalizer_classes = ["G4PVPlacement"]
 export              = "all"
 veto_list           = "Geant4-veto.h"
 cxx-std             = "c++17"
 inheritances        = [ ]
 export_blacklist    = [ ]
+

@@ -10,24 +10,24 @@ physics = QBBC()
 
 # Construct the default run manager
 runManager = G4RunManager()
-SetUserInitialization(runManager, detdesc)
-SetUserInitialization(runManager, CxxPtr(physics))
+SetUserInitialization(runManager, move(detdesc))
+SetUserInitialization(runManager, move(physics))
 
 # User Actions
 function buildApp(self::G4JLActionInitialization)
-  # Create and register particle gun
+  # Create particle gun
   particle_gun = G4JLParticleGun()
-  SetUserAction(self, particle_gun)
-
   # Setup particle gun
   pg = GetGun(particle_gun)
   SetParticleByName(pg, "e-")
   SetParticleEnergy(pg, 100MeV)
   SetParticleMomentumDirection(pg, G4ThreeVector(0,0,1))
   SetParticlePosition(pg, G4ThreeVector(0,0,-16cm))
+  # Register and relinquish ownership  
+  SetUserAction(self, move(particle_gun))
 end
 app = G4JLActionInitialization(buildApp)
-SetUserInitialization(runManager, app)
+SetUserInitialization(runManager, move(app))
 
 # Get the pointer to the User Interface manager
 UImanager = G4UImanager!GetUIpointer()
