@@ -1,49 +1,66 @@
 using Geant4
 using Geant4.SystemOfUnits
 
-include("DetectorB2a.jl")
+#---Define Detector Parameters struct--------------------------------------------------------------
+include(joinpath(@__DIR__, "DetectorB2a.jl"))
 
-# Detector construction
-detdesc = G4JLDetectorConstruction(constructB2aDetector)
-physics = FTFP_BERT()
-#SetVerboseLevel(physics, 1)
+#---Define Simulation Data struct------------------------------------------------------------------
+using GeometryBasics
+mutable struct B2aSimData <: G4JLSimulationData
+  tracks::Vector{Vector{Point3{Float64}}}   # vector of vector of step positions
+  B2aSimData() = new([])
+end
 
-# Construct the default run manager
-runManager = G4RunManager()
-SetUserInitialization(runManager, move(detdesc))
-SetUserInitialization(runManager, move(physics))
-
-# User Actions
-function buildApp(self::G4JLActionInitialization)
-  # Create particle gun
-  particle_gun = G4JLParticleGun()
-  # Setup particle gun
-  pg = GetGun(particle_gun)
+#---Particle Gun initialization--------------------------------------------------------------------
+function gun_initialize(gen::G4JLParticleGun, det::G4JLDetector)
+  pg = GetGun(gen)
   SetParticleByName(pg, "proton")
   SetParticleEnergy(pg, 3GeV)
   SetParticleMomentumDirection(pg, G4ThreeVector(0,0,1))
   SetParticlePosition(pg, G4ThreeVector(0,0,-16cm))
-  SetParticlePosition(pg, G4ThreeVector(0, 0, -worldZHalfLength))
-  # Register and relinquish ownership  
-  SetUserAction(self, move(particle_gun))
+  SetParticlePosition(pg, G4ThreeVector(0, 0, -det.worldZHalfLength))
+end
+Geant4.getInitializer(::G4JLParticleGun) = gun_initialize
+
+#--------------------------------------------------------------------------------------------------
+#----Actions---------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+#---Step action------------------------------------------------------------------------------------
+function stepaction(step::G4Step, app::G4JLApplication)::Nothing
+  tracks = app.simdata.tracks
+  p = GetPosition(GetPostStepPoint(step))
+  push!(tracks[end], Point3{Float64}(x(p),y(p),z(p)))
+  nothing
+end
+#---Tracking pre-action---------------------------------------------------------------------------- 
+function pretrackaction(track::G4Track, app::G4JLApplication)::Nothing
+  tracks = app.simdata.tracks
+  p = GetPosition(track)[]
+  push!(tracks, [Point3{Float64}(x(p),y(p),z(p))])
+  nothing
+end
+#---Tracking post-action---------------------------------------------------------------------------
+function posttrackaction(track::G4Track, ::G4JLApplication)::Nothing
+  println("Finished track ID $(GetTrackID(track))")
+  nothing
 end
 
-app = G4JLActionInitialization(buildApp)
-SetUserInitialization(runManager, move(app))
+#---Create the Application-------------------------------------------------------------------------
+app = G4JLApplication(B2aDetector(nChambers=5);                   # detector with parameters
+                      simdata = B2aSimData(),                     # simulation data structure
+                      runmanager_type = G4RunManager,             # what RunManager to instantiate
+                      physics_type = FTFP_BERT,                   # what physics list to instantiate
+                      generator_type = G4JLParticleGun,           # what primary generator to instantiate
+                      stepaction_method = stepaction,             # step action method
+                      pretrackaction_method = pretrackaction,     # pre-tracking action
+                      posttrackaction_method = posttrackaction)   # post-tracking action
+              
+#---Configure, Initialize and Run------------------------------------------------------------------                      
+configure(app)
+initialize(app)
 
-# Get the pointer to the User Interface manager
-UImanager = G4UImanager!GetUIpointer()
+#ui = G4UImanager!GetUIpointer()
+#ApplyCommand(ui, "/tracking/verbose 1")
 
-# Initialize kernel
-@show ApplyCommand(UImanager, "/run/initialize")
+beamOn(app, 1)
 
-# Change verbosity and go
-ApplyCommand(UImanager, "/tracking/verbose 1")
-ApplyCommand(UImanager, "/run/beamOn 1")
-
-# 1 event with printing hits
-ApplyCommand(UImanager, "/tracking/verbose 0")
-ApplyCommand(UImanager, "/hits/verbose 2")
-ApplyCommand(UImanager, "/run/beamOn 1")
-
-#

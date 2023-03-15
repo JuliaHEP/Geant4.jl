@@ -1,19 +1,19 @@
 using Geant4
 using Geant4.SystemOfUnits
 
-include("DetectorB1.jl")
+include(joinpath(@__DIR__, "DetectorB1.jl"))
 
-# Detector construction
+# Detector construction----------------------------------------------------------------------------
 detdesc = G4JLDetectorConstruction(constructB1Detector)
 physics = QBBC()
 #SetVerboseLevel(physics, 1)
 
-# Construct the default run manager
+# Construct the default run manager----------------------------------------------------------------
 runManager = G4RunManager()
 SetUserInitialization(runManager, move(detdesc))
 SetUserInitialization(runManager, move(physics))
 
-# User Actions
+# User Actions-------------------------------------------------------------------------------------
 function buildApp(self::G4JLActionInitialization)
   # Create particle gun
   particle_gun = G4JLParticleGun()
@@ -36,7 +36,7 @@ UImanager = G4UImanager!GetUIpointer()
 #BeamOn(runManager, 1)
 
 # Initialize kernel
-@show ApplyCommand(UImanager, "/run/initialize")
+ApplyCommand(UImanager, "/run/initialize")
 
 # Change verbosity
 #ApplyCommand(UImanager, "/control/verbose 2")

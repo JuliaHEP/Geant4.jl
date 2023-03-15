@@ -5,6 +5,8 @@
 #include "G4VUserDetectorConstruction.hh"
 #include "G4VUserActionInitialization.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
+#include "G4UserSteppingAction.hh"
+#include "G4UserTrackingAction.hh"
 #include "G4ParticleGun.hh"
 #include "G4VPhysicalVolume.hh"
 #include "jlcxx/functions.hpp"
@@ -44,9 +46,10 @@ class G4JLActionInitialization : public G4VUserActionInitialization
 {
   public:
     G4JLActionInitialization(build_f f) : build(f) {}
+    G4JLActionInitialization() : build(nullptr) {}
     ~G4JLActionInitialization() override = default;
     void BuildForMaster() const override {}
-    void Build() const override {return build(this);}
+    void Build() const override {if (build != nullptr) return build(this);}
     // Make these public to be used from Julia
     void SetUserAction(G4VUserPrimaryGeneratorAction* a) const {G4VUserActionInitialization::SetUserAction(a); }
     void SetUserAction(G4UserRunAction* a) const {G4VUserActionInitialization::SetUserAction(a); }
@@ -68,6 +71,30 @@ public:
   void GeneratePrimaries(G4Event* event) override {gun->GeneratePrimaryVertex(event);}
 private:
   G4ParticleGun* gun;
+};
+
+typedef  void (*stepaction_f) (const G4Step*);
+//---G4JLSteppingAction-------------------------------------------------------------------------------
+class G4JLSteppingAction : public G4UserSteppingAction {
+public:
+  G4JLSteppingAction(stepaction_f f) : action(f) {}
+  ~G4JLSteppingAction() = default;
+  virtual void UserSteppingAction(const G4Step* step) {action(step);}
+private:
+  stepaction_f action;
+};
+
+//---G4JLTrackingAction-------------------------------------------------------------------------------
+typedef  void (*trackaction_f) (const G4Track*);
+class G4JLTrackingAction : public G4UserTrackingAction {
+  public:  
+    G4JLTrackingAction(trackaction_f pre = nullptr, trackaction_f post = nullptr) : preaction(pre), postaction(post) {} 
+   ~G4JLTrackingAction() = default;
+    void PreUserTrackingAction(const G4Track* track) {if (preaction) preaction(track);}   
+    void PostUserTrackingAction(const G4Track* track) {if (postaction) postaction(track);}
+  private:
+    trackaction_f preaction;
+    trackaction_f postaction;
 };
 
 void SetParticleByName(G4ParticleGun* gun, const char* pname);

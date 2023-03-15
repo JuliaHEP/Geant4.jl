@@ -25,7 +25,7 @@ if(WRAPIT_EXECUTABLE)
   add_custom_command(OUTPUT ${SOURCE_DIR}/cpp/jlGeant4.cxx
     COMMAND ${WRAPIT_EXECUTABLE} --force -v 1 ${SOURCE_DIR}/Geant4.wit
     WORKING_DIRECTORY ${SOURCE_DIR}
-    DEPENDS ${SOURCE_DIR}/Geant4.wit ${SOURCE_DIR}/Geant4-veto.h)
+    DEPENDS ${SOURCE_DIR}/Geant4.wit ${SOURCE_DIR}/Geant4-veto.h  ${SOURCE_DIR}/cpp/Geant4Wrap.h)
 else()
   message(STATUS "The executable wrapit was not found. Building wrapper using the generated jlGeant4.cxx/h files from the sources.")
 endif()

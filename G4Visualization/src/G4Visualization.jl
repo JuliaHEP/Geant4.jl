@@ -31,15 +31,15 @@ module G4Visualization
  
     colors = colormap("Grays", 6)
 
-    function draw(pv::G4VPhysicalVolume; wireframe::Bool=false, bvh::Bool=false, maxlevel::Int64=999)
+    function draw(pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
         lv = GetLogicalVolume(pv)
         fig = Figure(resolution=(1280, 720))
         s = LScene(fig[1,1])
-        draw!(s, lv[], one(Transformation3D{Float64}), 1, wireframe, bvh, maxlevel)
+        draw!(s, lv[], one(Transformation3D{Float64}), 1, wireframe, maxlevel)
         display(fig)
     end
 
-    function draw!(s::LScene, lv::G4LogicalVolume, t::Transformation3D{Float64}, level::Int64, wireframe::Bool, bvh::Bool, maxlevel::Int64)
+    function draw!(s::LScene, lv::G4LogicalVolume, t::Transformation3D{Float64}, level::Int64, wireframe::Bool, maxlevel::Int64)
         vsolid = GetSolid(lv)
         tsolid = GetEntityType(vsolid)
         shape =  getproperty(Main,Symbol(tsolid))
@@ -66,7 +66,7 @@ module G4Visualization
                 g4r = GetRotation(daughter)
                 transformation = Transformation3D{Float64}(convert(RotMatrix3{Float64}, g4r), convert(Vector3{Float64}, g4t))
                 volume = GetLogicalVolume(daughter)
-                draw!(s, volume[], transformation * t, level+1, wireframe, bvh, maxlevel) 
+                draw!(s, volume[], transformation * t, level+1, wireframe, maxlevel) 
             end
         end
     end
