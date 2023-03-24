@@ -37,11 +37,11 @@ mutable struct TestEm3Detector <: G4JLDetector
     fLogicAbsor::Vector{G4LogicalVolume}
     fPhysiAbsor::Vector{CxxPtr{G4VPhysicalVolume}}
 
-    function TestEm3Detector( nbOfAbsor = 2, 
-                              nbOfLayers = 50, 
+    function TestEm3Detector(;nbOfLayers = 50, 
                               calorSizeYZ = 40cm,
-                              absorThickness = [2.3mm, 5.7mm])
-        self = new(nbOfAbsor, nbOfLayers, calorSizeYZ, absorThickness)
+                              absorThickness = [2.3mm, 5.7mm],
+                              absorMaterial = ["G4_Pb", "G4_lAr"])
+        self = new(length(absorThickness), nbOfLayers, calorSizeYZ, absorThickness)
 
         # Compute derived parameters of the calorimeter
         self.fLayerThickness = 0.
@@ -56,7 +56,7 @@ mutable struct TestEm3Detector <: G4JLDetector
 
         nist = G4NistManager!Instance()
         self.fWorldMaterial = FindOrBuildMaterial(nist,"Galactic")
-        self.fAbsorMaterial = [ FindOrBuildMaterial(nist,"G4_Pb"), FindOrBuildMaterial(nist,"G4_lAr")]
+        self.fAbsorMaterial = [FindOrBuildMaterial(nist, mat) for mat in absorMaterial]
         self
     end
 

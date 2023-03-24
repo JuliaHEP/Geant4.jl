@@ -6,7 +6,6 @@ using FHist, Printf, Plots
 include(joinpath(@__DIR__, "DetectorTestEm3.jl"))
 
 #---Define Simulation Data struct------------------------------------------------------------------
-using GeometryBasics
 mutable struct TestEm3SimData <: G4JLSimulationData
     #---Run data-----------------------------------------------------------------------------------
     fParticle::CxxPtr{G4ParticleDefinition}
@@ -40,7 +39,7 @@ mutable struct TestEm3SimData <: G4JLSimulationData
     fTrackLengthCh::Vector{Float64}     # Track length per event
 
     fEdepEventHistos::Vector{Hist1D}
-    fTrackLenghtChHistos::Vector{Hist1D}
+    fTrackLengthChHistos::Vector{Hist1D}
     fEdepHistos::Vector{Hist1D}
     fAbsorLabel::Vector{String}
     
@@ -56,7 +55,7 @@ end
 
 #---Plot the Sumulation data-----------------------------------------------------------------------
 function do_plot(data::TestEm3SimData)
-    (;fEdepHistos, fEdepEventHistos, fTrackLenghtChHistos, fAbsorLabel) = data
+    (;fEdepHistos, fEdepEventHistos, fTrackLengthChHistos, fAbsorLabel) = data
     lay = @layout [°; ° °]
     plot(layout=lay, show=true, size=(1400,1000))
     for (h, l) in zip(fEdepHistos, fAbsorLabel)
@@ -65,7 +64,7 @@ function do_plot(data::TestEm3SimData)
     for (h, l) in zip(fEdepEventHistos, fAbsorLabel)
         plot!(subplot=2, h, title="Energy/event Distribution", label=l, xlabel="MeV")
     end
-    for (h, l) in zip(fTrackLenghtChHistos, fAbsorLabel)
+    for (h, l) in zip(fTrackLengthChHistos, fAbsorLabel)
         plot!(subplot=3, h, title="Track Lengh Distribution", label=l, xlabel="mm")
     end
 end
@@ -152,7 +151,7 @@ function beginrun(run::G4Run, app::G4JLApplication)::Nothing
     #data.fEnergyDeposit = zeros(fNbOfAbsor, fNbOfLayers)
     data.fEdepHistos = [Hist1D(Float64; bins=0.:1.0:fNbOfLayers) for i in 1:fNbOfAbsor]
     data.fEdepEventHistos = [Hist1D(;bins=0:10:1000) for i in 1:fNbOfAbsor]
-    data.fTrackLenghtChHistos = [Hist1D(;bins=0:20:2000) for i in 1:fNbOfAbsor]
+    data.fTrackLengthChHistos = [Hist1D(;bins=0:20:2000) for i in 1:fNbOfAbsor]
     data.fAbsorLabel = ["$(fAbsorThickness[i])mm of $(fAbsorMaterial[i] |> GetName |> String)" for i in 1:fNbOfAbsor]
     nothing
 end
@@ -185,7 +184,7 @@ function endevent(evt::G4Event, app::G4JLApplication)
     (; fNbOfAbsor, fNbOfLayers) = app.detector
     for i in 1:fNbOfAbsor
         push!(data.fEdepEventHistos[i], data.fEnergyDeposit[i])
-        push!(data.fTrackLenghtChHistos[i], data.fTrackLengthCh[i])
+        push!(data.fTrackLengthChHistos[i], data.fTrackLengthCh[i])
     end
     nothing
 end
