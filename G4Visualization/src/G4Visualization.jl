@@ -39,6 +39,20 @@ module G4Visualization
         display(fig)
     end
 
+    using Geant4.SystemOfUnits:cm3,g
+
+    function GetReplicaParameters(pv::CxxPtr{G4VPhysicalVolume})
+        axis = Ref{EAxis}(kYAxis)
+        nReplicas = Ref{Int32}(0)
+        width = Ref{Float64}(0.)
+        offset = Ref{Float64}(0.)
+        consuming = Ref{UInt8}(0)
+        GetReplicationData(pv, axis, nReplicas, width, offset, consuming)
+        return (axis[], nReplicas[], width[])
+    end
+
+    const UnitOnAxis = [(1,0,0), (0,1,0), (0,0,1)]
+
     function draw!(s::LScene, lv::G4LogicalVolume, t::Transformation3D{Float64}, level::Int64, wireframe::Bool, maxlevel::Int64)
         vsolid = GetSolid(lv)
         tsolid = GetEntityType(vsolid)
@@ -52,9 +66,9 @@ module G4Visualization
             m = GeometryBasics.Mesh(points, faces)
         end
         g4vis = GetVisAttributes(lv)
-        color = g4vis != C_NULL ? convert(Tuple{RGB, Float64}, GetColour(g4vis)) : (colors[level], 0.5)
+        color = g4vis != C_NULL ? convert(Tuple{RGB, Float64}, GetColour(g4vis)) : (colors[level], GetDensity(GetMaterial(lv))/(12g/cm3))
         if wireframe
-            wireframe!(s, m, color=color, linewidth=1 )
+            wireframe!(s, m, linewidth=1 )
         else
             mesh!(s, m, color=color, transparency=true )
         end
@@ -62,11 +76,22 @@ module G4Visualization
         if level < maxlevel
             for idx in 1:GetNoDaughters(lv)
                 daughter = GetDaughter(lv, idx-1)
-                g4t = GetTranslation(daughter)
-                g4r = GetRotation(daughter)
-                transformation = Transformation3D{Float64}(convert(RotMatrix3{Float64}, g4r), convert(Vector3{Float64}, g4t))
-                volume = GetLogicalVolume(daughter)
-                draw!(s, volume[], transformation * t, level+1, wireframe, maxlevel) 
+                if IsReplicated(daughter)
+                    volume = GetLogicalVolume(daughter)
+                    axis, nReplicas, width = GetReplicaParameters(daughter)
+                    unitV = G4ThreeVector(UnitOnAxis[axis+1]...)
+                    for i in 1:nReplicas
+                        g4t = unitV * (-width*(nReplicas-1)*0.5 + (i-1)*width)
+                        transformation = Transformation3D{Float64}(one(RotMatrix3{Float64}), convert(Vector3{Float64}, g4t))
+                        draw!(s, volume[], transformation * t, level+1, wireframe, maxlevel)
+                    end
+                else    
+                    g4t = GetTranslation(daughter)
+                    g4r = GetRotation(daughter)
+                    transformation = Transformation3D{Float64}(convert(RotMatrix3{Float64}, g4r), convert(Vector3{Float64}, g4t))
+                    volume = GetLogicalVolume(daughter)
+                    draw!(s, volume[], transformation * t, level+1, wireframe, maxlevel)
+                end
             end
         end
     end

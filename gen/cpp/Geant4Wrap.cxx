@@ -48,6 +48,11 @@ void SetParticleByName(G4ParticleGun* gun, const char* pname)
 	   << "in available particle list" << G4endl;
   }
 }
+G4ParticleDefinition* FindParticle(const char* pname)
+{
+  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+  return particleTable-> FindParticle(pname);
+}
 
 char* G4JL_getenv(const char* x) { return std::getenv(x); };
 

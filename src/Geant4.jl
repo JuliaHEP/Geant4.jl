@@ -18,6 +18,8 @@ module Geant4
         end
     end
 
+    include("SystemOfUnits.jl")
+
     # Typedef hack! 
     const G4RotationMatrix = CLHEP!HepRotation
     const G4ThreeVector = CLHEP!Hep3Vector
@@ -43,15 +45,17 @@ module Geant4
 
     # Cast operations
     Base.convert(::Type{CxxPtr{G4VPhysicalVolume}}, o::G4PVPlacement) =  CxxPtr{G4VPhysicalVolume}(CxxPtr(o))
+    Base.convert(::Type{CxxPtr{G4VPhysicalVolume}}, o::G4PVReplica) =  CxxPtr{G4VPhysicalVolume}(CxxPtr(o))
     Base.convert(::Type{G4String}, s::String) = make_G4String(s)
 
     # Addional usability functions
     G4PVPlacement(r::Union{Nothing, G4RotationMatrix}, d::G4ThreeVector, l::Union{Nothing,G4LogicalVolume}, s::String, 
-                  p::Union{Nothing, G4LogicalVolume}, b1::Bool, n::Int, b2::Bool) = 
+                  p::Union{Nothing, G4LogicalVolume}, b1::Bool, n::Int, b2::Bool=false) = 
                   G4PVPlacement(isnothing(r) ? CxxPtr{G4RotationMatrix}(C_NULL) : move(r), d, 
                                 isnothing(l) ? CxxPtr{G4LogicalVolume}(C_NULL) : CxxPtr(l), s, 
                                 isnothing(p) ? CxxPtr{G4LogicalVolume}(C_NULL) : CxxPtr(p), b1, n, b2)
-                   
+    G4PVReplica(s::String, l::G4LogicalVolume, m::G4LogicalVolume, a::EAxis, n::Int64, t::Float64) = G4PVReplica(s, CxxPtr(l), CxxPtr(m), a, n, t)
+
     function G4JLDetectorConstruction(f::Function)
         sf = @safe_cfunction($f, CxxPtr{G4VPhysicalVolume}, ())  # crate a safe c function
         G4JLDetectorConstruction(preserve(sf))
@@ -63,6 +67,15 @@ module Geant4
         c = G4JLActionInitialization(sf)                          # call the construction                        
     end
 
+    # materials friendly functions (keyword arguments)
+    using .SystemOfUnits:kelvin, atmosphere
+    G4Material(name::String; z::Float64=0., a::Float64=0., density::Float64, ncomponents::Integer=0, 
+               state::G4State=kStateUndefined, temperature::Float64=293.15*kelvin, pressure::Float64=1*atmosphere) = ncomponents == 0 ? G4Material(name, z, a, density, state, temperature, pressure) : G4Material(name, density, ncomponents)
+    AddElement(mat::G4Material, elem::CxxPtr{G4Element}; fractionmass::Float64=0., natoms::Integer=0) = fractionmass != 0. ?  AddElementByMassFraction(mat, elem, fractionmass) : AddElementByNumberOfAtoms(mat, elem, natoms)
+    AddMaterial(mat::G4Material, mat2::CxxPtr{G4Material}; fractionmass=1.0) = AddMaterial(mat, mat2, fractionmass)
+    AddMaterial(mat::G4Material, mat2::G4Material; fractionmass=1.0) = AddMaterial(mat, CxxPtr(mat2), fractionmass)
+    G4Isotope(name::String; z::Integer, n::Integer, a::Float64=0., mlevel::Integer=0) =  G4Isotope(name, z, n, a, mlevel)
+
     # Better HL interface (more Julia friendly)----------------------------------------------------
     export G4JLDetector, G4JLSimulationData, G4JLApplication, configure, initialize, beamOn, getConstructor, getInitializer
 
@@ -70,13 +83,13 @@ module Geant4
     abstract type  G4JLDetector end
     abstract type  G4JLSimulationData end
 
-    getConstructor(::G4JLDetector) = nothing
+    getConstructor(d::G4JLDetector) = error("You need to define the function Geant4.getConstructor($(typeof(d))) returning the actual contruct method")
     getInitializer(::G4VUserPrimaryGeneratorAction) = nothing
 
     struct G4JLNoData <: G4JLSimulationData
     end
     
-    struct G4JLApplication <: G4JLAbstrcatApp
+    mutable struct G4JLApplication <: G4JLAbstrcatApp
         runmanager::G4RunManager
         detector::G4JLDetector
         simdata::G4JLSimulationData
@@ -85,14 +98,22 @@ module Geant4
         builder_type::Type{<:G4VUserDetectorConstruction}
         physics_type::Type{<:G4VUserPhysicsList}
         generator_type::Type{<:G4VUserPrimaryGeneratorAction}
-        #runaction_type::Type{<:G4UserRunAction}
-        #eventaction_type::Type{<:G4UserEventAction}
+        runaction_type::Type{<:G4UserRunAction}
+        eventaction_type::Type{<:G4UserEventAction}
         #stackaction_type::Type{<:G4UserStakingAction}
         trackaction_type::Type{<:G4UserTrackingAction}
         stepaction_type::Type{<:G4UserSteppingAction}
+        # Methods
         stepaction_method::Union{Nothing,Function}
         pretrackaction_method::Union{Nothing,Function}
         posttrackaction_method::Union{Nothing,Function}
+        beginrunaction_method::Union{Nothing,Function}
+        endrunaction_method::Union{Nothing,Function}
+        begineventaction_method::Union{Nothing,Function}
+        endeventaction_method::Union{Nothing,Function}
+        # Instances
+        generator::Any
+        physics::Any
         function G4JLApplication(detector::G4JLDetector;
                                  simdata=G4JLNoData(),
                                  runmanager_type=G4RunManager,
@@ -101,27 +122,40 @@ module Geant4
                                  generator_type=G4JLParticleGun,
                                  stepaction_type=G4JLSteppingAction,
                                  trackaction_type=G4JLTrackingAction,
+                                 runaction_type=G4JLRunAction,
+                                 eventaction_type=G4JLEventAction,
                                  stepaction_method=nothing,
                                  pretrackaction_method=nothing,
-                                 posttrackaction_method=nothing)
-            new(runmanager_type(), detector, simdata, runmanager_type, builder_type, physics_type, generator_type, trackaction_type, stepaction_type,
-                stepaction_method, pretrackaction_method, posttrackaction_method)
+                                 posttrackaction_method=nothing,
+                                 beginrunaction_method=nothing,
+                                 endrunaction_method=nothing,
+                                 begineventaction_method=nothing,
+                                 endeventaction_method=nothing,
+                                 )
+            new(runmanager_type(), detector, simdata, runmanager_type, builder_type, physics_type, generator_type, 
+                runaction_type, eventaction_type, trackaction_type, stepaction_type,
+                stepaction_method, pretrackaction_method, posttrackaction_method, 
+                beginrunaction_method, endrunaction_method, begineventaction_method, endeventaction_method)
         end
     end
     
     function configure(app::G4JLApplication)
-        #---Detector construction----------------------------------------------------------------------
+        #---Detector construction------------------------------------------------------------------
         runmgr = app.runmanager
         det    = app.detector
         sf1 = @safe_cfunction($(()->getConstructor(det)(det)), CxxPtr{G4VPhysicalVolume}, ())  # crate a safe c function
         SetUserInitialization(runmgr, move(app.builder_type(preserve(sf1))))
-        SetUserInitialization(runmgr, move(app.physics_type()))
-        #---User Actions-------------------------------------------------------------------------------
+        #---Physics List---------------------------------------------------------------------------
+        physics = app.physics_type()
+        app.physics = physics
+        SetUserInitialization(runmgr, move(physics))
+        #---Stepping Action---------------------------------------------------------------------------
         ua = G4JLActionInitialization()
         if !isnothing(app.stepaction_method)
             sf2 = @safe_cfunction($((step::ConstCxxPtr{G4Step}) ->  app.stepaction_method(step[], app)), Nothing, (ConstCxxPtr{G4Step},)) 
             SetUserAction(ua, move(app.stepaction_type(preserve(sf2))))
         end
+        #---Tracking Action---------------------------------------------------------------------------
         if !isnothing(app.pretrackaction_method)
             t1 = @safe_cfunction($((track::ConstCxxPtr{G4Track}) ->  app.pretrackaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Track},))
         else
@@ -135,11 +169,41 @@ module Geant4
         if !isnothing(app.pretrackaction_method) || !isnothing(app.posttrackaction_method)
             SetUserAction(ua, move(app.trackaction_type(preserve(t1), preserve(t2))))
         end
+         #---Run Action---------------------------------------------------------------------------
+        if !isnothing(app.beginrunaction_method)
+            r1 = @safe_cfunction($((track::ConstCxxPtr{G4Run}) ->  app.beginrunaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Run},))
+        else
+            r1 = @safe_cfunction($((::ConstCxxPtr{G4Run}) -> nothing), Nothing, (ConstCxxPtr{G4Run},))
+        end
+        if !isnothing(app.endrunaction_method)
+            r2 = @safe_cfunction($((track::ConstCxxPtr{G4Run}) ->  app.endrunaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Run},))
+        else
+            r2 = @safe_cfunction($((::ConstCxxPtr{G4Run}) -> nothing), Nothing, (ConstCxxPtr{G4Run},))
+        end
+        if !isnothing(app.beginrunaction_method) || !isnothing(app.beginrunaction_method)
+            SetUserAction(ua, move(app.runaction_type(preserve(r1), preserve(r2))))
+        end
+         #---Event Action---------------------------------------------------------------------------
+         if !isnothing(app.begineventaction_method)
+            e1 = @safe_cfunction($((track::ConstCxxPtr{G4Event}) ->  app.begineventaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Event},))
+        else
+            e1 = @safe_cfunction($((::ConstCxxPtr{G4Event}) -> nothing), Nothing, (ConstCxxPtr{G4Event},))
+        end
+        if !isnothing(app.endeventaction_method)
+            e2 = @safe_cfunction($((track::ConstCxxPtr{G4Event}) ->  app.endeventaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Event},))
+        else
+            e2 = @safe_cfunction($((::ConstCxxPtr{G4Event}) -> nothing), Nothing, (ConstCxxPtr{G4Event},))
+        end
+        if !isnothing(app.begineventaction_method) || !isnothing(app.begineventaction_method)
+            SetUserAction(ua, move(app.eventaction_type(preserve(e1), preserve(e2))))
+        end
+
         #---Primary particles generator------------------------------------------------------------
-        gen = app.generator_type()
-        init_method = getInitializer(gen)
-        !isnothing(init_method) && init_method(gen, det)
-        SetUserAction(ua, move(gen))
+        generator = app.generator_type()
+        init_method = getInitializer(generator)
+        !isnothing(init_method) && init_method(generator, det)
+        app.generator = generator
+        SetUserAction(ua, CxxPtr(generator))
         #---User initilizatioon--------------------------------------------------------------------
         SetUserInitialization(runmgr, move(ua))
     end
@@ -153,8 +217,6 @@ module Geant4
     end
 
     GetWorldVolume() = GetWorldVolume(GetNavigatorForTracking(G4TransportationManager!GetTransportationManager()))[]
-
-    include("SystemOfUnits.jl")
 
 end # module Geant4
 

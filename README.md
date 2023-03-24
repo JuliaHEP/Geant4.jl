@@ -53,9 +53,13 @@ julia> mag(v)
 To run the tests execute `julia --project . test/runtests.jl`
 
 ## Running the examples
-For the time being there are only two examples: 
-- basic/B1. To run it execute `julia --project=. examples/basic/B1/B1.j` or execute the notebook `B1.ipynb`
-- basic/B2a. To run it execute `julia --project=. examples/basic/B2/B2a.jl`
+For the time being there are only three examples: 
+### basic/B1 
+To run it execute `julia --project=. examples/basic/B1/B1.j` or execute the notebook `B1.ipynb`
+### basic/B2a
+To run it execute `julia --project=. examples/basic/B2/B2a.jl`
+### TestEm3
+This example comes from *extended/electromagnetic/TestEm3* example. Since it requires addional packages such as FHist and Plots it has its own Julia environment in the folder `examples/TestEm3`. To run it execute `julia --project=examples/TestEm3 -i examples/TestEm3/TestEm3.jl` 
 
 ## Running the visualization examples
 The project includes additional functionality for visualization under the directory G4Visualization. This is done in a different directory to separate the dependencies. To run the examples do:

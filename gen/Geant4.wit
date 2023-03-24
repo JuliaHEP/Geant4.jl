@@ -28,8 +28,13 @@ input               = [ "Geant4Wrap.h",
                         "G4LogicalVolume.hh",
                         "G4VPhysicalVolume.hh",
                         "G4PVPlacement.hh",
+                        "G4PVReplica.hh",
                         "G4TransportationManager.hh",
                         "G4Navigator.hh",
+                        #---Materials------------
+                        "G4Material.hh",
+                        "G4Element.hh",
+                        "G4Isotope.hh",
                         #---Physics--------------
                         "G4VUserPhysicsList.hh",
                         "G4VModularPhysicsList.hh",
@@ -37,11 +42,15 @@ input               = [ "Geant4Wrap.h",
                         "QBBC.hh",
                         "FTFP_BERT.hh",
                         "G4UserPhysicsListMessenger.hh",
+                        "G4ParticleDefinition.hh",
                         #---Action---------------
                         "G4UserSteppingAction.hh",
                         "G4Step.hh",
                         "G4StepPoint.hh",
+                        "G4VTouchable.hh",
                         "G4Track.hh",
+                        "G4Run.hh",
+                        "G4Event.hh",
                         #---Solids---------------
                         "G4Box.hh",
                         "G4Cons.hh",
@@ -60,11 +69,10 @@ input               = [ "Geant4Wrap.h",
                         "G4Colour.hh",
                       ]
 
-extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh" ]
-vetoed_finalizer_classes = ["G4PVPlacement", "G4LogicalVolume"]
+extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh", "G4ParticleMessenger.hh", "G4IonTable.hh" ]
+vetoed_finalizer_classes = ["G4PVPlacement", "G4LogicalVolume", "G4PVReplica", "G4Material", "G4Isotope", "G4Element", "G4JLParticleGun"]
 export              = "all"
 veto_list           = "Geant4-veto.h"
 cxx-std             = "c++17"
 inheritances        = [ ]
 export_blacklist    = [ ]
-

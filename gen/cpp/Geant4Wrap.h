@@ -7,6 +7,8 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4UserSteppingAction.hh"
 #include "G4UserTrackingAction.hh"
+#include "G4UserRunAction.hh"
+#include "G4UserEventAction.hh"
 #include "G4ParticleGun.hh"
 #include "G4VPhysicalVolume.hh"
 #include "jlcxx/functions.hpp"
@@ -97,12 +99,37 @@ class G4JLTrackingAction : public G4UserTrackingAction {
     trackaction_f postaction;
 };
 
+//---G4JLRunAction------------------------------------------------------------------------------------
+class G4Run;
+typedef  void (*runaction_f) (const G4Run*);
+class G4JLRunAction : public G4UserRunAction {
+  public:
+    G4JLRunAction(runaction_f begin = nullptr, runaction_f end = nullptr) : beginaction(begin), endaction(end) {} 
+    ~G4JLRunAction() = default;
+    virtual void BeginOfRunAction(const G4Run* run) {if (beginaction) beginaction(run);}
+    virtual void   EndOfRunAction(const G4Run* run) {if (endaction) endaction(run);}
+  private:
+    runaction_f beginaction;
+    runaction_f endaction;
+};
+
+//---G4JLEventAction------------------------------------------------------------------------------------
+typedef  void (*eventaction_f) (const G4Event*);
+class G4JLEventAction : public G4UserEventAction
+{
+  public:  
+    G4JLEventAction(eventaction_f begin = nullptr, eventaction_f end = nullptr) : beginaction(begin), endaction(end) {}  
+   ~G4JLEventAction() = default;
+    virtual void BeginOfEventAction(const G4Event* evt) {if (beginaction) beginaction(evt);}
+    virtual void   EndOfEventAction(const G4Event* evt) {if (endaction) endaction(evt);}
+  private:  
+    eventaction_f beginaction;
+    eventaction_f endaction;
+};
+
 void SetParticleByName(G4ParticleGun* gun, const char* pname);
+G4ParticleDefinition* FindParticle(const char* pname);
 inline G4String make_G4String(const char* s) {return G4String(s);}
-//G4Material * G4NistManager::FindOrBuildMaterial(const G4String &, G4bool, G4bool)
-
-
-
 char* G4JL_getenv(const char* x);
 int   G4JL_setenv(const char* x, const char* v);
 void  G4JL_init(void);
