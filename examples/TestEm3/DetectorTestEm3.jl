@@ -66,6 +66,8 @@ using Geant4.SystemOfUnits:cm3, mole, kelvin, atmosphere, eV, pascal, bar
 const perCent=0.01
 
 function DefineMaterials!(det::TestEm3Detector)
+    # to avoid warnings of redefinitions
+    G4Material!GetMaterial("liquidH2", false) != C_NULL && return
 
     nist = G4NistManager!Instance()
     H  = FindOrBuildElement(nist,1)
@@ -190,7 +192,8 @@ end
 function TestEm3Construct(det::TestEm3Detector)::CxxPtr{G4VPhysicalVolume}
     (; fNbOfAbsor, fNbOfLayers, fCalorSizeYZ, fAbsorThickness, fLayerThickness, fCalorThickness, fWorldSizeYZ, fWorldSizeX, fWorldMaterial, fAbsorMaterial) = det
 
-    isdefined(det,:fSolidWorld) && return det.fPhysiWorld
+    #isdefined(det,:fSolidWorld) && return det.fPhysiWorld
+    println("Building Geometry now!!!")
     
     #---World--------------------------------------------------------------------------------------
     det.fSolidWorld = G4Box("World", fWorldSizeX/2,fWorldSizeYZ/2,fWorldSizeYZ/2)

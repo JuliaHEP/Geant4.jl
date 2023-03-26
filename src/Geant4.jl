@@ -77,7 +77,7 @@ module Geant4
     G4Isotope(name::String; z::Integer, n::Integer, a::Float64=0., mlevel::Integer=0) =  G4Isotope(name, z, n, a, mlevel)
 
     # Better HL interface (more Julia friendly)----------------------------------------------------
-    export G4JLDetector, G4JLSimulationData, G4JLApplication, configure, initialize, beamOn, getConstructor, getInitializer
+    export G4JLDetector, G4JLSimulationData, G4JLApplication, configure, initialize, reinitialize, beamOn, getConstructor, getInitializer
 
     abstract type  G4JLAbstrcatApp end
     abstract type  G4JLDetector end
@@ -210,6 +210,15 @@ module Geant4
 
     function initialize(app::G4JLApplication)
         Initialize(app.runmanager)
+    end
+
+    function reinitialize(app::G4JLApplication, det::G4JLDetector)
+        app.detector = det
+        runmgr = app.runmanager
+        sf1 = @safe_cfunction($(()->getConstructor(det)(det)), CxxPtr{G4VPhysicalVolume}, ())  # crate a safe c function
+        SetUserInitialization(runmgr, move(app.builder_type(preserve(sf1))))
+        ReinitializeGeometry(runmgr)
+        Initialize(runmgr)
     end
 
     function beamOn(app::G4JLApplication, nevents::Int)
