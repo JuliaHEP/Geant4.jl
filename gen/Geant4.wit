@@ -7,7 +7,8 @@ out_h_fname         = "cpp/jlGeant4.h"
 include_dirs        = [ "/usr/local/opt/llvm/include/c++/v1", 
                         "/usr/local/opt/llvm@13/lib/clang/13.0.1/include", 
                         "./cpp", 
-                        "/Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4", 
+                        "/Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4",
+                        "/Users/mato/.julia/artifacts/873cac66ad4ed154c44c11514f103918776c832d/include",
                         "/Applications/Julia-1.8.app/Contents/Resources/julia/include/julia",  
                         "/Users/mato/.julia/artifacts/62eae10c647bb4ea186063b758bc3fc5881a34f1/lib/cmake/JlCxx/../../../include"]
 
@@ -31,6 +32,7 @@ input               = [ "Geant4Wrap.h",
                         "G4PVReplica.hh",
                         "G4TransportationManager.hh",
                         "G4Navigator.hh",
+                        "G4GDMLParser.hh",
                         #---Materials------------
                         "G4Material.hh",
                         "G4Element.hh",

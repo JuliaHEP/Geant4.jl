@@ -10,7 +10,7 @@ G4Allocator<G4Event>
 G4DCtable
 G4DecayTable
 G4DisplacedSolid
-G4ElementVector
+G4GDMLAuxMapType
 G4HCtable
 G4IsotopeTable
 G4IsotopeVector
@@ -47,7 +47,6 @@ std::map<G4String,G4AttDef,std::less<G4String>,std::allocator<std::pair<const G4
 std::map<G4String,G4Colour,std::less<G4String>,std::allocator<std::pair<const G4String,G4Colour>>>
 std::map<int,G4VAuxiliaryTrackInformation *,std::less<int>,std::allocator<std::pair<const int,G4VAuxiliaryTrackInformation *>>>
 std::ostream
-std::vector<CLHEP::Hep3Vector,std::allocator<CLHEP::Hep3Vector>>
 std::vector<G4AttValue,std::allocator<G4AttValue>>
 std::vector<G4Navigator *>::iterator
 std::vector<G4VPhysicalVolume *>::iterator

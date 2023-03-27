@@ -12,7 +12,7 @@ set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib;${JlCxx_location}")
 message(STATUS "Found JlCxx at ${JlCxx_location}")
 set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)
 #---Find Geant4---------------------------------------------------------------------
-find_package(Geant4 REQUIRED)
+find_package(Geant4 REQUIRED gdml)
 include(${Geant4_USE_FILE})
 
 #  Files are in gen folder
@@ -34,7 +34,7 @@ add_library(Geant4Wrap SHARED ${SOURCE_DIR}/cpp/Geant4Wrap.cxx ${SOURCE_DIR}/cpp
 
 #target_compile_definitions(Geant4Wrap PUBLIC VERBOSE_IMPORT)
 target_include_directories(Geant4Wrap PRIVATE ${SOURCE_DIR})
-target_link_libraries(Geant4Wrap JlCxx::cxxwrap_julia JlCxx::cxxwrap_julia_stl Geant4::G4run Geant4::G4physicslists)
+target_link_libraries(Geant4Wrap JlCxx::cxxwrap_julia JlCxx::cxxwrap_julia_stl ${Geant4_LIBRARIES})
 
 install(TARGETS Geant4Wrap
         LIBRARY DESTINATION lib

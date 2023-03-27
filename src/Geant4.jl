@@ -77,7 +77,7 @@ module Geant4
     G4Isotope(name::String; z::Integer, n::Integer, a::Float64=0., mlevel::Integer=0) =  G4Isotope(name, z, n, a, mlevel)
 
     # Better HL interface (more Julia friendly)----------------------------------------------------
-    export G4JLDetector, G4JLSimulationData, G4JLApplication, configure, initialize, reinitialize, beamOn, getConstructor, getInitializer
+    export G4JLDetector, G4JLSimulationData, G4JLApplication, G4JLDetectorGDML, configure, initialize, reinitialize, beamOn, getConstructor, getInitializer
 
     abstract type  G4JLAbstrcatApp end
     abstract type  G4JLDetector end
@@ -85,6 +85,19 @@ module Geant4
 
     getConstructor(d::G4JLDetector) = error("You need to define the function Geant4.getConstructor($(typeof(d))) returning the actual contruct method")
     getInitializer(::G4VUserPrimaryGeneratorAction) = nothing
+
+    struct G4JLDetectorGDML <: G4JLDetector
+        fPhysicalWorld::CxxPtr{G4VPhysicalVolume}
+        function G4JLDetectorGDML(gdmlfile::String; check_overlap::Bool=false)
+            parser = G4GDMLParser()
+            !isfile(gdmlfile) && error("GDML File $gdmlfile does not exists")
+            SetOverlapCheck(parser, check_overlap)
+            Read(parser, gdmlfile)
+            new(GetWorldVolume(parser))
+        end
+    end
+    getConstructor(::G4JLDetectorGDML) = (det::G4JLDetectorGDML) -> det.fPhysicalWorld
+
 
     struct G4JLNoData <: G4JLSimulationData
     end

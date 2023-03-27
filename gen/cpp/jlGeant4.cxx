@@ -247,6 +247,28 @@ namespace jlcxx {
   template<> struct DefaultConstructible<G4TransportationManager> : std::false_type { };
   template<> struct IsMirroredType<G4SafetyHelper> : std::false_type { };
   template<> struct DefaultConstructible<G4SafetyHelper> : std::false_type { };
+  template<> struct IsMirroredType<G4Box> : std::false_type { };
+  template<> struct DefaultConstructible<G4Box> : std::false_type { };
+  template<> struct IsMirroredType<G4Trd> : std::false_type { };
+  template<> struct DefaultConstructible<G4Trd> : std::false_type { };
+  template<> struct IsMirroredType<G4Cons> : std::false_type { };
+  template<> struct DefaultConstructible<G4Cons> : std::false_type { };
+  template<> struct IsMirroredType<G4Sphere> : std::false_type { };
+  template<> struct DefaultConstructible<G4Sphere> : std::false_type { };
+  template<> struct IsMirroredType<G4Orb> : std::false_type { };
+  template<> struct DefaultConstructible<G4Orb> : std::false_type { };
+  template<> struct IsMirroredType<G4Tubs> : std::false_type { };
+  template<> struct DefaultConstructible<G4Tubs> : std::false_type { };
+  template<> struct IsMirroredType<G4GDMLParser> : std::false_type { };
+  template<> struct DefaultConstructible<G4GDMLParser> : std::false_type { };
+  template<> struct IsMirroredType<G4GDMLReadStructure> : std::false_type { };
+  template<> struct DefaultConstructible<G4GDMLReadStructure> : std::false_type { };
+  template<> struct IsMirroredType<G4GDMLWriteStructure> : std::false_type { };
+  template<> struct DefaultConstructible<G4GDMLWriteStructure> : std::false_type { };
+  template<> struct IsMirroredType<G4GDMLMatrix> : std::false_type { };
+  template<> struct DefaultConstructible<G4GDMLMatrix> : std::false_type { };
+  template<> struct IsMirroredType<G4GDMLAuxStructType> : std::false_type { };
+  template<> struct DefaultConstructible<G4GDMLAuxStructType> : std::false_type { };
   template<> struct IsMirroredType<G4VUPLData> : std::false_type { };
   template<> struct DefaultConstructible<G4VUPLData> : std::false_type { };
   template<> struct IsMirroredType<G4UserPhysicsListMessenger> : std::false_type { };
@@ -265,18 +287,6 @@ namespace jlcxx {
   template<> struct DefaultConstructible<QBBC> : std::false_type { };
   template<> struct IsMirroredType<FTFP_BERT> : std::false_type { };
   template<> struct DefaultConstructible<FTFP_BERT> : std::false_type { };
-  template<> struct IsMirroredType<G4Box> : std::false_type { };
-  template<> struct DefaultConstructible<G4Box> : std::false_type { };
-  template<> struct IsMirroredType<G4Cons> : std::false_type { };
-  template<> struct DefaultConstructible<G4Cons> : std::false_type { };
-  template<> struct IsMirroredType<G4Tubs> : std::false_type { };
-  template<> struct DefaultConstructible<G4Tubs> : std::false_type { };
-  template<> struct IsMirroredType<G4Orb> : std::false_type { };
-  template<> struct DefaultConstructible<G4Orb> : std::false_type { };
-  template<> struct IsMirroredType<G4Sphere> : std::false_type { };
-  template<> struct DefaultConstructible<G4Sphere> : std::false_type { };
-  template<> struct IsMirroredType<G4Trd> : std::false_type { };
-  template<> struct DefaultConstructible<G4Trd> : std::false_type { };
   template<> struct IsMirroredType<CLHEP::HepRep4x4Symmetric> : std::false_type { };
   template<> struct DefaultConstructible<CLHEP::HepRep4x4Symmetric> : std::false_type { };
   template<> struct IsMirroredType<CLHEP::HepBoostX> : std::false_type { };
@@ -321,16 +331,16 @@ namespace jlcxx {
   template<> struct SuperType<G4SteppingVerbose> { typedef G4VSteppingVerbose type; };
   template<> struct SuperType<G4PVPlacement> { typedef G4VPhysicalVolume type; };
   template<> struct SuperType<G4PVReplica> { typedef G4VPhysicalVolume type; };
+  template<> struct SuperType<G4Box> { typedef G4CSGSolid type; };
+  template<> struct SuperType<G4Trd> { typedef G4CSGSolid type; };
+  template<> struct SuperType<G4Cons> { typedef G4CSGSolid type; };
+  template<> struct SuperType<G4Sphere> { typedef G4CSGSolid type; };
+  template<> struct SuperType<G4Orb> { typedef G4CSGSolid type; };
+  template<> struct SuperType<G4Tubs> { typedef G4CSGSolid type; };
   template<> struct SuperType<G4VModularPhysicsList> { typedef G4VUserPhysicsList type; };
   template<> struct SuperType<QGS_BIC> { typedef G4VModularPhysicsList type; };
   template<> struct SuperType<QBBC> { typedef G4VModularPhysicsList type; };
   template<> struct SuperType<FTFP_BERT> { typedef G4VModularPhysicsList type; };
-  template<> struct SuperType<G4Box> { typedef G4CSGSolid type; };
-  template<> struct SuperType<G4Cons> { typedef G4CSGSolid type; };
-  template<> struct SuperType<G4Tubs> { typedef G4CSGSolid type; };
-  template<> struct SuperType<G4Orb> { typedef G4CSGSolid type; };
-  template<> struct SuperType<G4Sphere> { typedef G4CSGSolid type; };
-  template<> struct SuperType<G4Trd> { typedef G4CSGSolid type; };
 }
 
 JLCXX_MODULE define_julia_module(jlcxx::Module& types){
@@ -992,14 +1002,63 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& types){
   auto t133 = types.add_type<G4SafetyHelper>("G4SafetyHelper");
   t133.template constructor<>(/*finalize=*/true);
 
+  DEBUG_MSG("Adding wrapper for type G4Box (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:55:7
+  auto t134 = types.add_type<G4Box>("G4Box", jlcxx::julia_base_type<G4CSGSolid>());
+
+  DEBUG_MSG("Adding wrapper for type G4Trd (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:62:7
+  auto t135 = types.add_type<G4Trd>("G4Trd", jlcxx::julia_base_type<G4CSGSolid>());
+
+  DEBUG_MSG("Adding wrapper for type G4Cons (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:77:7
+  auto t136 = types.add_type<G4Cons>("G4Cons", jlcxx::julia_base_type<G4CSGSolid>());
+
+  DEBUG_MSG("Adding wrapper for type G4Sphere (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:80:7
+  auto t137 = types.add_type<G4Sphere>("G4Sphere", jlcxx::julia_base_type<G4CSGSolid>());
+
+  DEBUG_MSG("Adding wrapper for type G4Orb (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:55:7
+  auto t138 = types.add_type<G4Orb>("G4Orb", jlcxx::julia_base_type<G4CSGSolid>());
+
+  DEBUG_MSG("Adding wrapper for type G4Tubs (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:74:7
+  auto t139 = types.add_type<G4Tubs>("G4Tubs", jlcxx::julia_base_type<G4CSGSolid>());
+
+  DEBUG_MSG("Adding wrapper for type G4GDMLParser (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:51:7
+  auto t140 = types.add_type<G4GDMLParser>("G4GDMLParser");
+  t140.template constructor<>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for type G4GDMLReadStructure (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLReadStructure.hh:51:7
+  auto t141 = types.add_type<G4GDMLReadStructure>("G4GDMLReadStructure");
+  t141.template constructor<>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for type G4GDMLWriteStructure (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLWriteStructure.hh:51:7
+  auto t142 = types.add_type<G4GDMLWriteStructure>("G4GDMLWriteStructure");
+  t142.template constructor<>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for type G4GDMLMatrix (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLReadDefine.hh:45:7
+  auto t143 = types.add_type<G4GDMLMatrix>("G4GDMLMatrix");
+  t143.template constructor<>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for type G4GDMLAuxStructType (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLAuxStructType.hh:36:8
+  auto t144 = types.add_type<G4GDMLAuxStructType>("G4GDMLAuxStructType");
+  t144.template constructor<>(/*finalize=*/true);
+
   DEBUG_MSG("Adding wrapper for type G4VUPLData (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VUserPhysicsList.hh:60:7
-  auto t134 = types.add_type<G4VUPLData>("G4VUPLData");
-  t134.template constructor<>(/*finalize=*/true);
+  auto t145 = types.add_type<G4VUPLData>("G4VUPLData");
+  t145.template constructor<>(/*finalize=*/true);
 
   DEBUG_MSG("Adding wrapper for type G4UserPhysicsListMessenger (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4UserPhysicsListMessenger.hh:63:7
-  auto t135 = types.add_type<G4UserPhysicsListMessenger>("G4UserPhysicsListMessenger");
+  auto t146 = types.add_type<G4UserPhysicsListMessenger>("G4UserPhysicsListMessenger");
 
   DEBUG_MSG("Adding wrapper for type G4PhysicsListHelper (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4PhysicsListHelper.hh:50:7
@@ -1007,13 +1066,13 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& types){
 
   DEBUG_MSG("Adding wrapper for type G4VMPLData (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:54:7
-  auto t137 = types.add_type<G4VMPLData>("G4VMPLData");
-  t137.template constructor<>(/*finalize=*/true);
+  auto t148 = types.add_type<G4VMPLData>("G4VMPLData");
+  t148.template constructor<>(/*finalize=*/true);
 
   DEBUG_MSG("Adding wrapper for type G4VModularPhysicsList (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:86:7
-  auto t138 = types.add_type<G4VModularPhysicsList>("G4VModularPhysicsList", jlcxx::julia_base_type<G4VUserPhysicsList>());
-  t138.template constructor<>(/*finalize=*/true);
+  auto t149 = types.add_type<G4VModularPhysicsList>("G4VModularPhysicsList", jlcxx::julia_base_type<G4VUserPhysicsList>());
+  t149.template constructor<>(/*finalize=*/true);
 
   DEBUG_MSG("Adding wrapper for type G4VPhysicsConstructor (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VPhysicsConstructor.hh:108:7
@@ -1021,71 +1080,47 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& types){
 
   DEBUG_MSG("Adding wrapper for type QGS_BIC (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/QGS_BIC.hh:45:7
-  auto t140 = types.add_type<QGS_BIC>("QGS_BIC", jlcxx::julia_base_type<G4VModularPhysicsList>());
-  t140.template constructor<>(/*finalize=*/true);
+  auto t151 = types.add_type<QGS_BIC>("QGS_BIC", jlcxx::julia_base_type<G4VModularPhysicsList>());
+  t151.template constructor<>(/*finalize=*/true);
 
   DEBUG_MSG("Adding wrapper for type QBBC (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/QBBC.hh:43:7
-  auto t141 = types.add_type<QBBC>("QBBC", jlcxx::julia_base_type<G4VModularPhysicsList>());
-  t141.template constructor<>(/*finalize=*/true);
+  auto t152 = types.add_type<QBBC>("QBBC", jlcxx::julia_base_type<G4VModularPhysicsList>());
+  t152.template constructor<>(/*finalize=*/true);
 
   DEBUG_MSG("Adding wrapper for type FTFP_BERT (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/FTFP_BERT.hh:46:7
-  auto t142 = types.add_type<FTFP_BERT>("FTFP_BERT", jlcxx::julia_base_type<G4VModularPhysicsList>());
-  t142.template constructor<>(/*finalize=*/true);
-
-  DEBUG_MSG("Adding wrapper for type G4Box (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:55:7
-  auto t143 = types.add_type<G4Box>("G4Box", jlcxx::julia_base_type<G4CSGSolid>());
-
-  DEBUG_MSG("Adding wrapper for type G4Cons (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:77:7
-  auto t144 = types.add_type<G4Cons>("G4Cons", jlcxx::julia_base_type<G4CSGSolid>());
-
-  DEBUG_MSG("Adding wrapper for type G4Tubs (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:74:7
-  auto t145 = types.add_type<G4Tubs>("G4Tubs", jlcxx::julia_base_type<G4CSGSolid>());
-
-  DEBUG_MSG("Adding wrapper for type G4Orb (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:55:7
-  auto t146 = types.add_type<G4Orb>("G4Orb", jlcxx::julia_base_type<G4CSGSolid>());
-
-  DEBUG_MSG("Adding wrapper for type G4Sphere (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:80:7
-  auto t147 = types.add_type<G4Sphere>("G4Sphere", jlcxx::julia_base_type<G4CSGSolid>());
-
-  DEBUG_MSG("Adding wrapper for type G4Trd (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:62:7
-  auto t148 = types.add_type<G4Trd>("G4Trd", jlcxx::julia_base_type<G4CSGSolid>());
+  auto t153 = types.add_type<FTFP_BERT>("FTFP_BERT", jlcxx::julia_base_type<G4VModularPhysicsList>());
+  t153.template constructor<>(/*finalize=*/true);
 
   DEBUG_MSG("Adding wrapper for type CLHEP::HepRep4x4Symmetric (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/CLHEP/Vector/RotationInterfaces.h:366:8
-  auto t149 = types.add_type<CLHEP::HepRep4x4Symmetric>("CLHEP!HepRep4x4Symmetric");
-  t149.template constructor<>(/*finalize=*/true);
+  auto t154 = types.add_type<CLHEP::HepRep4x4Symmetric>("CLHEP!HepRep4x4Symmetric");
+  t154.template constructor<>(/*finalize=*/true);
 
   DEBUG_MSG("Adding wrapper for type CLHEP::HepBoostX (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/CLHEP/Vector/BoostX.h:37:7
-  auto t150 = types.add_type<CLHEP::HepBoostX>("CLHEP!HepBoostX");
-  t150.template constructor<>(/*finalize=*/true);
+  auto t155 = types.add_type<CLHEP::HepBoostX>("CLHEP!HepBoostX");
+  t155.template constructor<>(/*finalize=*/true);
 
   DEBUG_MSG("Adding wrapper for type CLHEP::HepBoostY (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/CLHEP/Vector/BoostY.h:37:7
-  auto t151 = types.add_type<CLHEP::HepBoostY>("CLHEP!HepBoostY");
-  t151.template constructor<>(/*finalize=*/true);
+  auto t156 = types.add_type<CLHEP::HepBoostY>("CLHEP!HepBoostY");
+  t156.template constructor<>(/*finalize=*/true);
 
   DEBUG_MSG("Adding wrapper for type CLHEP::HepBoostZ (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/CLHEP/Vector/BoostZ.h:37:7
-  auto t152 = types.add_type<CLHEP::HepBoostZ>("CLHEP!HepBoostZ");
-  t152.template constructor<>(/*finalize=*/true);
+  auto t157 = types.add_type<CLHEP::HepBoostZ>("CLHEP!HepBoostZ");
+  t157.template constructor<>(/*finalize=*/true);
 
   DEBUG_MSG("Adding wrapper for type CLHEP::HepLorentzRotation::HepLorentzRotation_row (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/CLHEP/Vector/LorentzRotation.h:176:9
-  auto t153 = types.add_type<CLHEP::HepLorentzRotation::HepLorentzRotation_row>("CLHEP!HepLorentzRotation!HepLorentzRotation_row");
+  auto t158 = types.add_type<CLHEP::HepLorentzRotation::HepLorentzRotation_row>("CLHEP!HepLorentzRotation!HepLorentzRotation_row");
 
   DEBUG_MSG("Adding wrapper for type G4Colour (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:82:7
-  auto t154 = types.add_type<G4Colour>("G4Colour");
-  t154.template constructor<>(/*finalize=*/true);
+  auto t159 = types.add_type<G4Colour>("G4Colour");
+  t159.template constructor<>(/*finalize=*/true);
 
   /**********************************************************************/
   /* Wrappers for the methods of class G4ParticleDefinition
@@ -4834,6 +4869,11 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& types){
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Material.hh:181:17
   t35.method("GetNumberOfElements", static_cast<size_t (G4Material::*)()  const>(&G4Material::GetNumberOfElements));
 
+  DEBUG_MSG("Adding wrapper for const G4ElementVector * G4Material::GetElementVector() (" __HERE__ ")");
+  // signature to use in the veto list: const G4ElementVector * G4Material::GetElementVector()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Material.hh:185:20
+  t35.method("GetElementVector", static_cast<const G4ElementVector * (G4Material::*)()  const>(&G4Material::GetElementVector));
+
   DEBUG_MSG("Adding wrapper for const G4double * G4Material::GetFractionVector() (" __HERE__ ")");
   // signature to use in the veto list: const G4double * G4Material::GetFractionVector()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Material.hh:189:13
@@ -5964,6 +6004,16 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& types){
   // signature to use in the veto list: void G4Step::CopyPostToPreStepPoint()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Step.hh:149:10
   t51.method("CopyPostToPreStepPoint", static_cast<void (G4Step::*)() >(&G4Step::CopyPostToPreStepPoint));
+
+  DEBUG_MSG("Adding wrapper for void G4Step::SetPointerToVectorOfAuxiliaryPoints(std::vector<G4ThreeVector> *) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Step::SetPointerToVectorOfAuxiliaryPoints(std::vector<G4ThreeVector> *)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Step.hh:155:17
+  t51.method("SetPointerToVectorOfAuxiliaryPoints", static_cast<void (G4Step::*)(std::vector<G4ThreeVector> *) >(&G4Step::SetPointerToVectorOfAuxiliaryPoints));
+
+  DEBUG_MSG("Adding wrapper for std::vector<G4ThreeVector> * G4Step::GetPointerToVectorOfAuxiliaryPoints() (" __HERE__ ")");
+  // signature to use in the veto list: std::vector<G4ThreeVector> * G4Step::GetPointerToVectorOfAuxiliaryPoints()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Step.hh:156:40
+  t51.method("GetPointerToVectorOfAuxiliaryPoints", static_cast<std::vector<G4ThreeVector> * (G4Step::*)()  const>(&G4Step::GetPointerToVectorOfAuxiliaryPoints));
 
   DEBUG_MSG("Adding wrapper for size_t G4Step::GetNumberOfSecondariesInCurrentStep() (" __HERE__ ")");
   // signature to use in the veto list: size_t G4Step::GetNumberOfSecondariesInCurrentStep()
@@ -9498,81 +9548,1245 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& types){
 
 
   /**********************************************************************/
+  /* Wrappers for the methods of class G4Box
+   */
+
+
+  DEBUG_MSG("Adding wrapper for void G4Box::G4Box(const G4String &, G4double, G4double, G4double) (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:59:5
+  t134.constructor<const G4String &, G4double, G4double, G4double>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for void G4Box::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Box::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:64:10
+  t134.method("ComputeDimensions", static_cast<void (G4Box::*)(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) >(&G4Box::ComputeDimensions));
+
+  DEBUG_MSG("Adding wrapper for void G4Box::BoundingLimits(G4ThreeVector &, G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Box::BoundingLimits(G4ThreeVector &, G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:68:10
+  t134.method("BoundingLimits", static_cast<void (G4Box::*)(G4ThreeVector &, G4ThreeVector &)  const>(&G4Box::BoundingLimits));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Box::GetXHalfLength() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Box::GetXHalfLength()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:77:21
+  t134.method("GetXHalfLength", static_cast<G4double (G4Box::*)()  const>(&G4Box::GetXHalfLength));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Box::GetYHalfLength() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Box::GetYHalfLength()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:78:21
+  t134.method("GetYHalfLength", static_cast<G4double (G4Box::*)()  const>(&G4Box::GetYHalfLength));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Box::GetZHalfLength() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Box::GetZHalfLength()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:79:21
+  t134.method("GetZHalfLength", static_cast<G4double (G4Box::*)()  const>(&G4Box::GetZHalfLength));
+
+  DEBUG_MSG("Adding wrapper for void G4Box::SetXHalfLength(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Box::SetXHalfLength(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:81:10
+  t134.method("SetXHalfLength", static_cast<void (G4Box::*)(G4double) >(&G4Box::SetXHalfLength));
+
+  DEBUG_MSG("Adding wrapper for void G4Box::SetYHalfLength(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Box::SetYHalfLength(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:82:10
+  t134.method("SetYHalfLength", static_cast<void (G4Box::*)(G4double) >(&G4Box::SetYHalfLength));
+
+  DEBUG_MSG("Adding wrapper for void G4Box::SetZHalfLength(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Box::SetZHalfLength(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:83:10
+  t134.method("SetZHalfLength", static_cast<void (G4Box::*)(G4double) >(&G4Box::SetZHalfLength));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Box::GetCubicVolume() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Box::GetCubicVolume()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:87:21
+  t134.method("GetCubicVolume", static_cast<G4double (G4Box::*)() >(&G4Box::GetCubicVolume));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Box::GetSurfaceArea() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Box::GetSurfaceArea()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:88:21
+  t134.method("GetSurfaceArea", static_cast<G4double (G4Box::*)() >(&G4Box::GetSurfaceArea));
+
+  DEBUG_MSG("Adding wrapper for EInside G4Box::Inside(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: EInside G4Box::Inside(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:90:13
+  t134.method("Inside", static_cast<EInside (G4Box::*)(const G4ThreeVector &)  const>(&G4Box::Inside));
+
+  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Box::SurfaceNormal(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4ThreeVector G4Box::SurfaceNormal(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:91:19
+  t134.method("SurfaceNormal", static_cast<G4ThreeVector (G4Box::*)(const G4ThreeVector &)  const>(&G4Box::SurfaceNormal));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Box::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Box::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:92:14
+  t134.method("DistanceToIn", static_cast<G4double (G4Box::*)(const G4ThreeVector &, const G4ThreeVector &)  const>(&G4Box::DistanceToIn));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Box::DistanceToIn(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Box::DistanceToIn(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:93:14
+  t134.method("DistanceToIn", static_cast<G4double (G4Box::*)(const G4ThreeVector &)  const>(&G4Box::DistanceToIn));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Box::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Box::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:94:14
+  t134.method("DistanceToOut", static_cast<G4double (G4Box::*)(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)  const>(&G4Box::DistanceToOut));
+  t134.method("DistanceToOut", [](G4Box const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a.DistanceToOut(arg0, arg1); });
+  t134.method("DistanceToOut", [](G4Box const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a.DistanceToOut(arg0, arg1, arg2); });
+  t134.method("DistanceToOut", [](G4Box const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a.DistanceToOut(arg0, arg1, arg2, arg3); });
+  t134.method("DistanceToOut", [](G4Box const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a->DistanceToOut(arg0, arg1); });
+  t134.method("DistanceToOut", [](G4Box const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a->DistanceToOut(arg0, arg1, arg2); });
+  t134.method("DistanceToOut", [](G4Box const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a->DistanceToOut(arg0, arg1, arg2, arg3); });
+
+  DEBUG_MSG("Adding wrapper for G4double G4Box::DistanceToOut(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Box::DistanceToOut(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:98:14
+  t134.method("DistanceToOut", static_cast<G4double (G4Box::*)(const G4ThreeVector &)  const>(&G4Box::DistanceToOut));
+
+  DEBUG_MSG("Adding wrapper for G4GeometryType G4Box::GetEntityType() (" __HERE__ ")");
+  // signature to use in the veto list: G4GeometryType G4Box::GetEntityType()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:100:20
+  t134.method("GetEntityType", static_cast<G4GeometryType (G4Box::*)()  const>(&G4Box::GetEntityType));
+
+  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Box::GetPointOnSurface() (" __HERE__ ")");
+  // signature to use in the veto list: G4ThreeVector G4Box::GetPointOnSurface()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:101:19
+  t134.method("GetPointOnSurface", static_cast<G4ThreeVector (G4Box::*)()  const>(&G4Box::GetPointOnSurface));
+
+  DEBUG_MSG("Adding wrapper for G4VSolid * G4Box::Clone() (" __HERE__ ")");
+  // signature to use in the veto list: G4VSolid * G4Box::Clone()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:103:15
+  t134.method("Clone", static_cast<G4VSolid * (G4Box::*)()  const>(&G4Box::Clone));
+
+  DEBUG_MSG("Adding wrapper for G4Polyhedron * G4Box::CreatePolyhedron() (" __HERE__ ")");
+  // signature to use in the veto list: G4Polyhedron * G4Box::CreatePolyhedron()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:111:19
+  t134.method("CreatePolyhedron", static_cast<G4Polyhedron * (G4Box::*)()  const>(&G4Box::CreatePolyhedron));
+
+
+  DEBUG_MSG("Adding wrapper for void G4Box::G4Box(const G4Box &) (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:120:5
+  t134.constructor<const G4Box &>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for G4Box & G4Box::operator=(const G4Box &) (" __HERE__ ")");
+  // signature to use in the veto list: G4Box & G4Box::operator=(const G4Box &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:121:12
+  t134.method("assign", static_cast<G4Box & (G4Box::*)(const G4Box &) >(&G4Box::operator=));
+
+  /* End of G4Box class method wrappers
+   **********************************************************************/
+
+
+  /**********************************************************************/
+  /* Wrappers for the methods of class G4Trd
+   */
+
+
+  DEBUG_MSG("Adding wrapper for void G4Trd::G4Trd(const G4String &, G4double, G4double, G4double, G4double, G4double) (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:66:5
+  t135.constructor<const G4String &, G4double, G4double, G4double, G4double, G4double>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for G4double G4Trd::GetXHalfLength1() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Trd::GetXHalfLength1()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:79:21
+  t135.method("GetXHalfLength1", static_cast<G4double (G4Trd::*)()  const>(&G4Trd::GetXHalfLength1));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Trd::GetXHalfLength2() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Trd::GetXHalfLength2()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:80:21
+  t135.method("GetXHalfLength2", static_cast<G4double (G4Trd::*)()  const>(&G4Trd::GetXHalfLength2));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Trd::GetYHalfLength1() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Trd::GetYHalfLength1()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:81:21
+  t135.method("GetYHalfLength1", static_cast<G4double (G4Trd::*)()  const>(&G4Trd::GetYHalfLength1));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Trd::GetYHalfLength2() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Trd::GetYHalfLength2()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:82:21
+  t135.method("GetYHalfLength2", static_cast<G4double (G4Trd::*)()  const>(&G4Trd::GetYHalfLength2));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Trd::GetZHalfLength() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Trd::GetZHalfLength()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:83:21
+  t135.method("GetZHalfLength", static_cast<G4double (G4Trd::*)()  const>(&G4Trd::GetZHalfLength));
+
+  DEBUG_MSG("Adding wrapper for void G4Trd::SetXHalfLength1(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Trd::SetXHalfLength1(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:87:17
+  t135.method("SetXHalfLength1", static_cast<void (G4Trd::*)(G4double) >(&G4Trd::SetXHalfLength1));
+
+  DEBUG_MSG("Adding wrapper for void G4Trd::SetXHalfLength2(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Trd::SetXHalfLength2(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:88:17
+  t135.method("SetXHalfLength2", static_cast<void (G4Trd::*)(G4double) >(&G4Trd::SetXHalfLength2));
+
+  DEBUG_MSG("Adding wrapper for void G4Trd::SetYHalfLength1(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Trd::SetYHalfLength1(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:89:17
+  t135.method("SetYHalfLength1", static_cast<void (G4Trd::*)(G4double) >(&G4Trd::SetYHalfLength1));
+
+  DEBUG_MSG("Adding wrapper for void G4Trd::SetYHalfLength2(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Trd::SetYHalfLength2(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:90:17
+  t135.method("SetYHalfLength2", static_cast<void (G4Trd::*)(G4double) >(&G4Trd::SetYHalfLength2));
+
+  DEBUG_MSG("Adding wrapper for void G4Trd::SetZHalfLength(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Trd::SetZHalfLength(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:91:17
+  t135.method("SetZHalfLength", static_cast<void (G4Trd::*)(G4double) >(&G4Trd::SetZHalfLength));
+
+  DEBUG_MSG("Adding wrapper for void G4Trd::SetAllParameters(G4double, G4double, G4double, G4double, G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Trd::SetAllParameters(G4double, G4double, G4double, G4double, G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:93:10
+  t135.method("SetAllParameters", static_cast<void (G4Trd::*)(G4double, G4double, G4double, G4double, G4double) >(&G4Trd::SetAllParameters));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Trd::GetCubicVolume() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Trd::GetCubicVolume()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:99:14
+  t135.method("GetCubicVolume", static_cast<G4double (G4Trd::*)() >(&G4Trd::GetCubicVolume));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Trd::GetSurfaceArea() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Trd::GetSurfaceArea()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:100:14
+  t135.method("GetSurfaceArea", static_cast<G4double (G4Trd::*)() >(&G4Trd::GetSurfaceArea));
+
+  DEBUG_MSG("Adding wrapper for void G4Trd::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Trd::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:102:10
+  t135.method("ComputeDimensions", static_cast<void (G4Trd::*)(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) >(&G4Trd::ComputeDimensions));
+
+  DEBUG_MSG("Adding wrapper for void G4Trd::BoundingLimits(G4ThreeVector &, G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Trd::BoundingLimits(G4ThreeVector &, G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:106:10
+  t135.method("BoundingLimits", static_cast<void (G4Trd::*)(G4ThreeVector &, G4ThreeVector &)  const>(&G4Trd::BoundingLimits));
+
+  DEBUG_MSG("Adding wrapper for EInside G4Trd::Inside(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: EInside G4Trd::Inside(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:113:13
+  t135.method("Inside", static_cast<EInside (G4Trd::*)(const G4ThreeVector &)  const>(&G4Trd::Inside));
+
+  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Trd::SurfaceNormal(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4ThreeVector G4Trd::SurfaceNormal(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:115:19
+  t135.method("SurfaceNormal", static_cast<G4ThreeVector (G4Trd::*)(const G4ThreeVector &)  const>(&G4Trd::SurfaceNormal));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Trd::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Trd::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:117:14
+  t135.method("DistanceToIn", static_cast<G4double (G4Trd::*)(const G4ThreeVector &, const G4ThreeVector &)  const>(&G4Trd::DistanceToIn));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Trd::DistanceToIn(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Trd::DistanceToIn(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:120:14
+  t135.method("DistanceToIn", static_cast<G4double (G4Trd::*)(const G4ThreeVector &)  const>(&G4Trd::DistanceToIn));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Trd::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Trd::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:122:14
+  t135.method("DistanceToOut", static_cast<G4double (G4Trd::*)(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)  const>(&G4Trd::DistanceToOut));
+  t135.method("DistanceToOut", [](G4Trd const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a.DistanceToOut(arg0, arg1); });
+  t135.method("DistanceToOut", [](G4Trd const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a.DistanceToOut(arg0, arg1, arg2); });
+  t135.method("DistanceToOut", [](G4Trd const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a.DistanceToOut(arg0, arg1, arg2, arg3); });
+  t135.method("DistanceToOut", [](G4Trd const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a->DistanceToOut(arg0, arg1); });
+  t135.method("DistanceToOut", [](G4Trd const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a->DistanceToOut(arg0, arg1, arg2); });
+  t135.method("DistanceToOut", [](G4Trd const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a->DistanceToOut(arg0, arg1, arg2, arg3); });
+
+  DEBUG_MSG("Adding wrapper for G4double G4Trd::DistanceToOut(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Trd::DistanceToOut(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:128:14
+  t135.method("DistanceToOut", static_cast<G4double (G4Trd::*)(const G4ThreeVector &)  const>(&G4Trd::DistanceToOut));
+
+  DEBUG_MSG("Adding wrapper for G4GeometryType G4Trd::GetEntityType() (" __HERE__ ")");
+  // signature to use in the veto list: G4GeometryType G4Trd::GetEntityType()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:130:20
+  t135.method("GetEntityType", static_cast<G4GeometryType (G4Trd::*)()  const>(&G4Trd::GetEntityType));
+
+  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Trd::GetPointOnSurface() (" __HERE__ ")");
+  // signature to use in the veto list: G4ThreeVector G4Trd::GetPointOnSurface()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:132:19
+  t135.method("GetPointOnSurface", static_cast<G4ThreeVector (G4Trd::*)()  const>(&G4Trd::GetPointOnSurface));
+
+  DEBUG_MSG("Adding wrapper for G4VSolid * G4Trd::Clone() (" __HERE__ ")");
+  // signature to use in the veto list: G4VSolid * G4Trd::Clone()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:134:15
+  t135.method("Clone", static_cast<G4VSolid * (G4Trd::*)()  const>(&G4Trd::Clone));
+
+  DEBUG_MSG("Adding wrapper for G4Polyhedron * G4Trd::CreatePolyhedron() (" __HERE__ ")");
+  // signature to use in the veto list: G4Polyhedron * G4Trd::CreatePolyhedron()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:141:19
+  t135.method("CreatePolyhedron", static_cast<G4Polyhedron * (G4Trd::*)()  const>(&G4Trd::CreatePolyhedron));
+
+
+  DEBUG_MSG("Adding wrapper for void G4Trd::G4Trd(const G4Trd &) (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:150:5
+  t135.constructor<const G4Trd &>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for G4Trd & G4Trd::operator=(const G4Trd &) (" __HERE__ ")");
+  // signature to use in the veto list: G4Trd & G4Trd::operator=(const G4Trd &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:151:12
+  t135.method("assign", static_cast<G4Trd & (G4Trd::*)(const G4Trd &) >(&G4Trd::operator=));
+
+  /* End of G4Trd class method wrappers
+   **********************************************************************/
+
+
+  /**********************************************************************/
+  /* Wrappers for the methods of class G4Cons
+   */
+
+
+  DEBUG_MSG("Adding wrapper for void G4Cons::G4Cons(const G4String &, G4double, G4double, G4double, G4double, G4double, G4double, G4double) (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:81:5
+  t136.constructor<const G4String &, G4double, G4double, G4double, G4double, G4double, G4double, G4double>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetInnerRadiusMinusZ() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::GetInnerRadiusMinusZ()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:95:21
+  t136.method("GetInnerRadiusMinusZ", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetInnerRadiusMinusZ));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetOuterRadiusMinusZ() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::GetOuterRadiusMinusZ()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:96:21
+  t136.method("GetOuterRadiusMinusZ", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetOuterRadiusMinusZ));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetInnerRadiusPlusZ() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::GetInnerRadiusPlusZ()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:97:21
+  t136.method("GetInnerRadiusPlusZ", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetInnerRadiusPlusZ));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetOuterRadiusPlusZ() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::GetOuterRadiusPlusZ()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:98:21
+  t136.method("GetOuterRadiusPlusZ", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetOuterRadiusPlusZ));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetZHalfLength() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::GetZHalfLength()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:99:21
+  t136.method("GetZHalfLength", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetZHalfLength));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetStartPhiAngle() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::GetStartPhiAngle()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:100:21
+  t136.method("GetStartPhiAngle", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetStartPhiAngle));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetDeltaPhiAngle() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::GetDeltaPhiAngle()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:101:21
+  t136.method("GetDeltaPhiAngle", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetDeltaPhiAngle));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetSinStartPhi() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::GetSinStartPhi()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:102:21
+  t136.method("GetSinStartPhi", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetSinStartPhi));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetCosStartPhi() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::GetCosStartPhi()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:103:21
+  t136.method("GetCosStartPhi", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetCosStartPhi));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetSinEndPhi() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::GetSinEndPhi()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:104:21
+  t136.method("GetSinEndPhi", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetSinEndPhi));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetCosEndPhi() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::GetCosEndPhi()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:105:21
+  t136.method("GetCosEndPhi", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetCosEndPhi));
+
+  DEBUG_MSG("Adding wrapper for void G4Cons::SetInnerRadiusMinusZ(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Cons::SetInnerRadiusMinusZ(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:109:17
+  t136.method("SetInnerRadiusMinusZ", static_cast<void (G4Cons::*)(G4double) >(&G4Cons::SetInnerRadiusMinusZ));
+
+  DEBUG_MSG("Adding wrapper for void G4Cons::SetOuterRadiusMinusZ(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Cons::SetOuterRadiusMinusZ(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:110:17
+  t136.method("SetOuterRadiusMinusZ", static_cast<void (G4Cons::*)(G4double) >(&G4Cons::SetOuterRadiusMinusZ));
+
+  DEBUG_MSG("Adding wrapper for void G4Cons::SetInnerRadiusPlusZ(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Cons::SetInnerRadiusPlusZ(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:111:17
+  t136.method("SetInnerRadiusPlusZ", static_cast<void (G4Cons::*)(G4double) >(&G4Cons::SetInnerRadiusPlusZ));
+
+  DEBUG_MSG("Adding wrapper for void G4Cons::SetOuterRadiusPlusZ(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Cons::SetOuterRadiusPlusZ(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:112:17
+  t136.method("SetOuterRadiusPlusZ", static_cast<void (G4Cons::*)(G4double) >(&G4Cons::SetOuterRadiusPlusZ));
+
+  DEBUG_MSG("Adding wrapper for void G4Cons::SetZHalfLength(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Cons::SetZHalfLength(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:113:17
+  t136.method("SetZHalfLength", static_cast<void (G4Cons::*)(G4double) >(&G4Cons::SetZHalfLength));
+
+  DEBUG_MSG("Adding wrapper for void G4Cons::SetStartPhiAngle(G4double, G4bool) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Cons::SetStartPhiAngle(G4double, G4bool)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:114:17
+  t136.method("SetStartPhiAngle", static_cast<void (G4Cons::*)(G4double, G4bool) >(&G4Cons::SetStartPhiAngle));
+  t136.method("SetStartPhiAngle", [](G4Cons& a, G4double arg0)->void{ a.SetStartPhiAngle(arg0); });
+  t136.method("SetStartPhiAngle", [](G4Cons* a, G4double arg0)->void{ a->SetStartPhiAngle(arg0); });
+
+  DEBUG_MSG("Adding wrapper for void G4Cons::SetDeltaPhiAngle(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Cons::SetDeltaPhiAngle(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:115:17
+  t136.method("SetDeltaPhiAngle", static_cast<void (G4Cons::*)(G4double) >(&G4Cons::SetDeltaPhiAngle));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetCubicVolume() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::GetCubicVolume()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:119:21
+  t136.method("GetCubicVolume", static_cast<G4double (G4Cons::*)() >(&G4Cons::GetCubicVolume));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetSurfaceArea() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::GetSurfaceArea()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:120:21
+  t136.method("GetSurfaceArea", static_cast<G4double (G4Cons::*)() >(&G4Cons::GetSurfaceArea));
+
+  DEBUG_MSG("Adding wrapper for void G4Cons::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Cons::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:122:10
+  t136.method("ComputeDimensions", static_cast<void (G4Cons::*)(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) >(&G4Cons::ComputeDimensions));
+
+  DEBUG_MSG("Adding wrapper for void G4Cons::BoundingLimits(G4ThreeVector &, G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Cons::BoundingLimits(G4ThreeVector &, G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:126:10
+  t136.method("BoundingLimits", static_cast<void (G4Cons::*)(G4ThreeVector &, G4ThreeVector &)  const>(&G4Cons::BoundingLimits));
+
+  DEBUG_MSG("Adding wrapper for EInside G4Cons::Inside(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: EInside G4Cons::Inside(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:133:13
+  t136.method("Inside", static_cast<EInside (G4Cons::*)(const G4ThreeVector &)  const>(&G4Cons::Inside));
+
+  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Cons::SurfaceNormal(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4ThreeVector G4Cons::SurfaceNormal(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:135:19
+  t136.method("SurfaceNormal", static_cast<G4ThreeVector (G4Cons::*)(const G4ThreeVector &)  const>(&G4Cons::SurfaceNormal));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:137:14
+  t136.method("DistanceToIn", static_cast<G4double (G4Cons::*)(const G4ThreeVector &, const G4ThreeVector &)  const>(&G4Cons::DistanceToIn));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::DistanceToIn(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::DistanceToIn(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:139:14
+  t136.method("DistanceToIn", static_cast<G4double (G4Cons::*)(const G4ThreeVector &)  const>(&G4Cons::DistanceToIn));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:140:14
+  t136.method("DistanceToOut", static_cast<G4double (G4Cons::*)(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)  const>(&G4Cons::DistanceToOut));
+  t136.method("DistanceToOut", [](G4Cons const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a.DistanceToOut(arg0, arg1); });
+  t136.method("DistanceToOut", [](G4Cons const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a.DistanceToOut(arg0, arg1, arg2); });
+  t136.method("DistanceToOut", [](G4Cons const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a.DistanceToOut(arg0, arg1, arg2, arg3); });
+  t136.method("DistanceToOut", [](G4Cons const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a->DistanceToOut(arg0, arg1); });
+  t136.method("DistanceToOut", [](G4Cons const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a->DistanceToOut(arg0, arg1, arg2); });
+  t136.method("DistanceToOut", [](G4Cons const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a->DistanceToOut(arg0, arg1, arg2, arg3); });
+
+  DEBUG_MSG("Adding wrapper for G4double G4Cons::DistanceToOut(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Cons::DistanceToOut(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:145:14
+  t136.method("DistanceToOut", static_cast<G4double (G4Cons::*)(const G4ThreeVector &)  const>(&G4Cons::DistanceToOut));
+
+  DEBUG_MSG("Adding wrapper for G4GeometryType G4Cons::GetEntityType() (" __HERE__ ")");
+  // signature to use in the veto list: G4GeometryType G4Cons::GetEntityType()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:147:20
+  t136.method("GetEntityType", static_cast<G4GeometryType (G4Cons::*)()  const>(&G4Cons::GetEntityType));
+
+  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Cons::GetPointOnSurface() (" __HERE__ ")");
+  // signature to use in the veto list: G4ThreeVector G4Cons::GetPointOnSurface()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:149:19
+  t136.method("GetPointOnSurface", static_cast<G4ThreeVector (G4Cons::*)()  const>(&G4Cons::GetPointOnSurface));
+
+  DEBUG_MSG("Adding wrapper for G4VSolid * G4Cons::Clone() (" __HERE__ ")");
+  // signature to use in the veto list: G4VSolid * G4Cons::Clone()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:151:15
+  t136.method("Clone", static_cast<G4VSolid * (G4Cons::*)()  const>(&G4Cons::Clone));
+
+  DEBUG_MSG("Adding wrapper for G4Polyhedron * G4Cons::CreatePolyhedron() (" __HERE__ ")");
+  // signature to use in the veto list: G4Polyhedron * G4Cons::CreatePolyhedron()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:158:19
+  t136.method("CreatePolyhedron", static_cast<G4Polyhedron * (G4Cons::*)()  const>(&G4Cons::CreatePolyhedron));
+
+
+  DEBUG_MSG("Adding wrapper for void G4Cons::G4Cons(const G4Cons &) (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:168:5
+  t136.constructor<const G4Cons &>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for G4Cons & G4Cons::operator=(const G4Cons &) (" __HERE__ ")");
+  // signature to use in the veto list: G4Cons & G4Cons::operator=(const G4Cons &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:169:13
+  t136.method("assign", static_cast<G4Cons & (G4Cons::*)(const G4Cons &) >(&G4Cons::operator=));
+
+  /* End of G4Cons class method wrappers
+   **********************************************************************/
+
+
+  /**********************************************************************/
+  /* Wrappers for the methods of class G4Sphere
+   */
+
+
+  DEBUG_MSG("Adding wrapper for void G4Sphere::G4Sphere(const G4String &, G4double, G4double, G4double, G4double, G4double, G4double) (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:84:5
+  t137.constructor<const G4String &, G4double, G4double, G4double, G4double, G4double, G4double>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetInnerRadius() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::GetInnerRadius()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:98:21
+  t137.method("GetInnerRadius", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetInnerRadius));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetOuterRadius() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::GetOuterRadius()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:99:21
+  t137.method("GetOuterRadius", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetOuterRadius));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetStartPhiAngle() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::GetStartPhiAngle()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:100:21
+  t137.method("GetStartPhiAngle", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetStartPhiAngle));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetDeltaPhiAngle() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::GetDeltaPhiAngle()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:101:21
+  t137.method("GetDeltaPhiAngle", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetDeltaPhiAngle));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetStartThetaAngle() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::GetStartThetaAngle()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:102:21
+  t137.method("GetStartThetaAngle", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetStartThetaAngle));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetDeltaThetaAngle() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::GetDeltaThetaAngle()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:103:21
+  t137.method("GetDeltaThetaAngle", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetDeltaThetaAngle));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetSinStartPhi() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::GetSinStartPhi()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:104:21
+  t137.method("GetSinStartPhi", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetSinStartPhi));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetCosStartPhi() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::GetCosStartPhi()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:105:21
+  t137.method("GetCosStartPhi", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetCosStartPhi));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetSinEndPhi() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::GetSinEndPhi()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:106:21
+  t137.method("GetSinEndPhi", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetSinEndPhi));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetCosEndPhi() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::GetCosEndPhi()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:107:21
+  t137.method("GetCosEndPhi", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetCosEndPhi));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetSinStartTheta() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::GetSinStartTheta()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:108:21
+  t137.method("GetSinStartTheta", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetSinStartTheta));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetCosStartTheta() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::GetCosStartTheta()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:109:21
+  t137.method("GetCosStartTheta", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetCosStartTheta));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetSinEndTheta() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::GetSinEndTheta()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:110:21
+  t137.method("GetSinEndTheta", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetSinEndTheta));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetCosEndTheta() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::GetCosEndTheta()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:111:21
+  t137.method("GetCosEndTheta", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetCosEndTheta));
+
+  DEBUG_MSG("Adding wrapper for void G4Sphere::SetInnerRadius(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Sphere::SetInnerRadius(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:115:17
+  t137.method("SetInnerRadius", static_cast<void (G4Sphere::*)(G4double) >(&G4Sphere::SetInnerRadius));
+
+  DEBUG_MSG("Adding wrapper for void G4Sphere::SetOuterRadius(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Sphere::SetOuterRadius(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:116:17
+  t137.method("SetOuterRadius", static_cast<void (G4Sphere::*)(G4double) >(&G4Sphere::SetOuterRadius));
+
+  DEBUG_MSG("Adding wrapper for void G4Sphere::SetStartPhiAngle(G4double, G4bool) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Sphere::SetStartPhiAngle(G4double, G4bool)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:117:17
+  t137.method("SetStartPhiAngle", static_cast<void (G4Sphere::*)(G4double, G4bool) >(&G4Sphere::SetStartPhiAngle));
+  t137.method("SetStartPhiAngle", [](G4Sphere& a, G4double arg0)->void{ a.SetStartPhiAngle(arg0); });
+  t137.method("SetStartPhiAngle", [](G4Sphere* a, G4double arg0)->void{ a->SetStartPhiAngle(arg0); });
+
+  DEBUG_MSG("Adding wrapper for void G4Sphere::SetDeltaPhiAngle(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Sphere::SetDeltaPhiAngle(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:118:17
+  t137.method("SetDeltaPhiAngle", static_cast<void (G4Sphere::*)(G4double) >(&G4Sphere::SetDeltaPhiAngle));
+
+  DEBUG_MSG("Adding wrapper for void G4Sphere::SetStartThetaAngle(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Sphere::SetStartThetaAngle(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:119:17
+  t137.method("SetStartThetaAngle", static_cast<void (G4Sphere::*)(G4double) >(&G4Sphere::SetStartThetaAngle));
+
+  DEBUG_MSG("Adding wrapper for void G4Sphere::SetDeltaThetaAngle(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Sphere::SetDeltaThetaAngle(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:120:17
+  t137.method("SetDeltaThetaAngle", static_cast<void (G4Sphere::*)(G4double) >(&G4Sphere::SetDeltaThetaAngle));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetCubicVolume() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::GetCubicVolume()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:124:14
+  t137.method("GetCubicVolume", static_cast<G4double (G4Sphere::*)() >(&G4Sphere::GetCubicVolume));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetSurfaceArea() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::GetSurfaceArea()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:125:14
+  t137.method("GetSurfaceArea", static_cast<G4double (G4Sphere::*)() >(&G4Sphere::GetSurfaceArea));
+
+  DEBUG_MSG("Adding wrapper for void G4Sphere::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Sphere::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:127:10
+  t137.method("ComputeDimensions", static_cast<void (G4Sphere::*)(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) >(&G4Sphere::ComputeDimensions));
+
+  DEBUG_MSG("Adding wrapper for void G4Sphere::BoundingLimits(G4ThreeVector &, G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Sphere::BoundingLimits(G4ThreeVector &, G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:131:10
+  t137.method("BoundingLimits", static_cast<void (G4Sphere::*)(G4ThreeVector &, G4ThreeVector &)  const>(&G4Sphere::BoundingLimits));
+
+  DEBUG_MSG("Adding wrapper for EInside G4Sphere::Inside(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: EInside G4Sphere::Inside(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:138:13
+  t137.method("Inside", static_cast<EInside (G4Sphere::*)(const G4ThreeVector &)  const>(&G4Sphere::Inside));
+
+  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Sphere::SurfaceNormal(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4ThreeVector G4Sphere::SurfaceNormal(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:140:19
+  t137.method("SurfaceNormal", static_cast<G4ThreeVector (G4Sphere::*)(const G4ThreeVector &)  const>(&G4Sphere::SurfaceNormal));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:142:14
+  t137.method("DistanceToIn", static_cast<G4double (G4Sphere::*)(const G4ThreeVector &, const G4ThreeVector &)  const>(&G4Sphere::DistanceToIn));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::DistanceToIn(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::DistanceToIn(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:145:14
+  t137.method("DistanceToIn", static_cast<G4double (G4Sphere::*)(const G4ThreeVector &)  const>(&G4Sphere::DistanceToIn));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:147:14
+  t137.method("DistanceToOut", static_cast<G4double (G4Sphere::*)(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)  const>(&G4Sphere::DistanceToOut));
+  t137.method("DistanceToOut", [](G4Sphere const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a.DistanceToOut(arg0, arg1); });
+  t137.method("DistanceToOut", [](G4Sphere const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a.DistanceToOut(arg0, arg1, arg2); });
+  t137.method("DistanceToOut", [](G4Sphere const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a.DistanceToOut(arg0, arg1, arg2, arg3); });
+  t137.method("DistanceToOut", [](G4Sphere const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a->DistanceToOut(arg0, arg1); });
+  t137.method("DistanceToOut", [](G4Sphere const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a->DistanceToOut(arg0, arg1, arg2); });
+  t137.method("DistanceToOut", [](G4Sphere const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a->DistanceToOut(arg0, arg1, arg2, arg3); });
+
+  DEBUG_MSG("Adding wrapper for G4double G4Sphere::DistanceToOut(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Sphere::DistanceToOut(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:153:14
+  t137.method("DistanceToOut", static_cast<G4double (G4Sphere::*)(const G4ThreeVector &)  const>(&G4Sphere::DistanceToOut));
+
+  DEBUG_MSG("Adding wrapper for G4GeometryType G4Sphere::GetEntityType() (" __HERE__ ")");
+  // signature to use in the veto list: G4GeometryType G4Sphere::GetEntityType()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:155:20
+  t137.method("GetEntityType", static_cast<G4GeometryType (G4Sphere::*)()  const>(&G4Sphere::GetEntityType));
+
+  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Sphere::GetPointOnSurface() (" __HERE__ ")");
+  // signature to use in the veto list: G4ThreeVector G4Sphere::GetPointOnSurface()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:157:19
+  t137.method("GetPointOnSurface", static_cast<G4ThreeVector (G4Sphere::*)()  const>(&G4Sphere::GetPointOnSurface));
+
+  DEBUG_MSG("Adding wrapper for G4VSolid * G4Sphere::Clone() (" __HERE__ ")");
+  // signature to use in the veto list: G4VSolid * G4Sphere::Clone()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:159:15
+  t137.method("Clone", static_cast<G4VSolid * (G4Sphere::*)()  const>(&G4Sphere::Clone));
+
+  DEBUG_MSG("Adding wrapper for G4Polyhedron * G4Sphere::CreatePolyhedron() (" __HERE__ ")");
+  // signature to use in the veto list: G4Polyhedron * G4Sphere::CreatePolyhedron()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:167:19
+  t137.method("CreatePolyhedron", static_cast<G4Polyhedron * (G4Sphere::*)()  const>(&G4Sphere::CreatePolyhedron));
+
+
+  DEBUG_MSG("Adding wrapper for void G4Sphere::G4Sphere(const G4Sphere &) (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:177:5
+  t137.constructor<const G4Sphere &>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for G4Sphere & G4Sphere::operator=(const G4Sphere &) (" __HERE__ ")");
+  // signature to use in the veto list: G4Sphere & G4Sphere::operator=(const G4Sphere &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:178:15
+  t137.method("assign", static_cast<G4Sphere & (G4Sphere::*)(const G4Sphere &) >(&G4Sphere::operator=));
+
+  /* End of G4Sphere class method wrappers
+   **********************************************************************/
+
+
+  /**********************************************************************/
+  /* Wrappers for the methods of class G4Orb
+   */
+
+
+  DEBUG_MSG("Adding wrapper for void G4Orb::G4Orb(const G4String &, G4double) (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:59:5
+  t138.constructor<const G4String &, G4double>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for G4double G4Orb::GetRadius() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Orb::GetRadius()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:65:21
+  t138.method("GetRadius", static_cast<G4double (G4Orb::*)()  const>(&G4Orb::GetRadius));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Orb::GetRadialTolerance() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Orb::GetRadialTolerance()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:66:21
+  t138.method("GetRadialTolerance", static_cast<G4double (G4Orb::*)()  const>(&G4Orb::GetRadialTolerance));
+
+  DEBUG_MSG("Adding wrapper for void G4Orb::SetRadius(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Orb::SetRadius(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:68:17
+  t138.method("SetRadius", static_cast<void (G4Orb::*)(G4double) >(&G4Orb::SetRadius));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Orb::GetCubicVolume() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Orb::GetCubicVolume()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:72:21
+  t138.method("GetCubicVolume", static_cast<G4double (G4Orb::*)() >(&G4Orb::GetCubicVolume));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Orb::GetSurfaceArea() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Orb::GetSurfaceArea()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:73:21
+  t138.method("GetSurfaceArea", static_cast<G4double (G4Orb::*)() >(&G4Orb::GetSurfaceArea));
+
+  DEBUG_MSG("Adding wrapper for void G4Orb::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Orb::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:75:10
+  t138.method("ComputeDimensions", static_cast<void (G4Orb::*)(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) >(&G4Orb::ComputeDimensions));
+
+  DEBUG_MSG("Adding wrapper for void G4Orb::BoundingLimits(G4ThreeVector &, G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Orb::BoundingLimits(G4ThreeVector &, G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:79:10
+  t138.method("BoundingLimits", static_cast<void (G4Orb::*)(G4ThreeVector &, G4ThreeVector &)  const>(&G4Orb::BoundingLimits));
+
+  DEBUG_MSG("Adding wrapper for EInside G4Orb::Inside(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: EInside G4Orb::Inside(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:86:13
+  t138.method("Inside", static_cast<EInside (G4Orb::*)(const G4ThreeVector &)  const>(&G4Orb::Inside));
+
+  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Orb::SurfaceNormal(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4ThreeVector G4Orb::SurfaceNormal(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:88:19
+  t138.method("SurfaceNormal", static_cast<G4ThreeVector (G4Orb::*)(const G4ThreeVector &)  const>(&G4Orb::SurfaceNormal));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Orb::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Orb::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:90:14
+  t138.method("DistanceToIn", static_cast<G4double (G4Orb::*)(const G4ThreeVector &, const G4ThreeVector &)  const>(&G4Orb::DistanceToIn));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Orb::DistanceToIn(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Orb::DistanceToIn(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:93:14
+  t138.method("DistanceToIn", static_cast<G4double (G4Orb::*)(const G4ThreeVector &)  const>(&G4Orb::DistanceToIn));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Orb::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Orb::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:95:14
+  t138.method("DistanceToOut", static_cast<G4double (G4Orb::*)(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)  const>(&G4Orb::DistanceToOut));
+  t138.method("DistanceToOut", [](G4Orb const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a.DistanceToOut(arg0, arg1); });
+  t138.method("DistanceToOut", [](G4Orb const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a.DistanceToOut(arg0, arg1, arg2); });
+  t138.method("DistanceToOut", [](G4Orb const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a.DistanceToOut(arg0, arg1, arg2, arg3); });
+  t138.method("DistanceToOut", [](G4Orb const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a->DistanceToOut(arg0, arg1); });
+  t138.method("DistanceToOut", [](G4Orb const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a->DistanceToOut(arg0, arg1, arg2); });
+  t138.method("DistanceToOut", [](G4Orb const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a->DistanceToOut(arg0, arg1, arg2, arg3); });
+
+  DEBUG_MSG("Adding wrapper for G4double G4Orb::DistanceToOut(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Orb::DistanceToOut(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:101:14
+  t138.method("DistanceToOut", static_cast<G4double (G4Orb::*)(const G4ThreeVector &)  const>(&G4Orb::DistanceToOut));
+
+  DEBUG_MSG("Adding wrapper for G4GeometryType G4Orb::GetEntityType() (" __HERE__ ")");
+  // signature to use in the veto list: G4GeometryType G4Orb::GetEntityType()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:103:20
+  t138.method("GetEntityType", static_cast<G4GeometryType (G4Orb::*)()  const>(&G4Orb::GetEntityType));
+
+  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Orb::GetPointOnSurface() (" __HERE__ ")");
+  // signature to use in the veto list: G4ThreeVector G4Orb::GetPointOnSurface()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:105:19
+  t138.method("GetPointOnSurface", static_cast<G4ThreeVector (G4Orb::*)()  const>(&G4Orb::GetPointOnSurface));
+
+  DEBUG_MSG("Adding wrapper for G4VSolid * G4Orb::Clone() (" __HERE__ ")");
+  // signature to use in the veto list: G4VSolid * G4Orb::Clone()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:107:15
+  t138.method("Clone", static_cast<G4VSolid * (G4Orb::*)()  const>(&G4Orb::Clone));
+
+  DEBUG_MSG("Adding wrapper for G4Polyhedron * G4Orb::CreatePolyhedron() (" __HERE__ ")");
+  // signature to use in the veto list: G4Polyhedron * G4Orb::CreatePolyhedron()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:115:19
+  t138.method("CreatePolyhedron", static_cast<G4Polyhedron * (G4Orb::*)()  const>(&G4Orb::CreatePolyhedron));
+
+
+  DEBUG_MSG("Adding wrapper for void G4Orb::G4Orb(const G4Orb &) (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:124:5
+  t138.constructor<const G4Orb &>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for G4Orb & G4Orb::operator=(const G4Orb &) (" __HERE__ ")");
+  // signature to use in the veto list: G4Orb & G4Orb::operator=(const G4Orb &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:125:12
+  t138.method("assign", static_cast<G4Orb & (G4Orb::*)(const G4Orb &) >(&G4Orb::operator=));
+
+  /* End of G4Orb class method wrappers
+   **********************************************************************/
+
+
+  /**********************************************************************/
+  /* Wrappers for the methods of class G4Tubs
+   */
+
+
+  DEBUG_MSG("Adding wrapper for void G4Tubs::G4Tubs(const G4String &, G4double, G4double, G4double, G4double, G4double) (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:78:5
+  t139.constructor<const G4String &, G4double, G4double, G4double, G4double, G4double>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetInnerRadius() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Tubs::GetInnerRadius()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:93:21
+  t139.method("GetInnerRadius", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetInnerRadius));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetOuterRadius() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Tubs::GetOuterRadius()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:94:21
+  t139.method("GetOuterRadius", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetOuterRadius));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetZHalfLength() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Tubs::GetZHalfLength()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:95:21
+  t139.method("GetZHalfLength", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetZHalfLength));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetStartPhiAngle() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Tubs::GetStartPhiAngle()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:96:21
+  t139.method("GetStartPhiAngle", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetStartPhiAngle));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetDeltaPhiAngle() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Tubs::GetDeltaPhiAngle()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:97:21
+  t139.method("GetDeltaPhiAngle", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetDeltaPhiAngle));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetSinStartPhi() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Tubs::GetSinStartPhi()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:98:21
+  t139.method("GetSinStartPhi", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetSinStartPhi));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetCosStartPhi() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Tubs::GetCosStartPhi()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:99:21
+  t139.method("GetCosStartPhi", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetCosStartPhi));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetSinEndPhi() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Tubs::GetSinEndPhi()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:100:21
+  t139.method("GetSinEndPhi", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetSinEndPhi));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetCosEndPhi() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Tubs::GetCosEndPhi()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:101:21
+  t139.method("GetCosEndPhi", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetCosEndPhi));
+
+  DEBUG_MSG("Adding wrapper for void G4Tubs::SetInnerRadius(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Tubs::SetInnerRadius(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:105:17
+  t139.method("SetInnerRadius", static_cast<void (G4Tubs::*)(G4double) >(&G4Tubs::SetInnerRadius));
+
+  DEBUG_MSG("Adding wrapper for void G4Tubs::SetOuterRadius(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Tubs::SetOuterRadius(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:106:17
+  t139.method("SetOuterRadius", static_cast<void (G4Tubs::*)(G4double) >(&G4Tubs::SetOuterRadius));
+
+  DEBUG_MSG("Adding wrapper for void G4Tubs::SetZHalfLength(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Tubs::SetZHalfLength(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:107:17
+  t139.method("SetZHalfLength", static_cast<void (G4Tubs::*)(G4double) >(&G4Tubs::SetZHalfLength));
+
+  DEBUG_MSG("Adding wrapper for void G4Tubs::SetStartPhiAngle(G4double, G4bool) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Tubs::SetStartPhiAngle(G4double, G4bool)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:108:17
+  t139.method("SetStartPhiAngle", static_cast<void (G4Tubs::*)(G4double, G4bool) >(&G4Tubs::SetStartPhiAngle));
+  t139.method("SetStartPhiAngle", [](G4Tubs& a, G4double arg0)->void{ a.SetStartPhiAngle(arg0); });
+  t139.method("SetStartPhiAngle", [](G4Tubs* a, G4double arg0)->void{ a->SetStartPhiAngle(arg0); });
+
+  DEBUG_MSG("Adding wrapper for void G4Tubs::SetDeltaPhiAngle(G4double) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Tubs::SetDeltaPhiAngle(G4double)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:109:17
+  t139.method("SetDeltaPhiAngle", static_cast<void (G4Tubs::*)(G4double) >(&G4Tubs::SetDeltaPhiAngle));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetCubicVolume() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Tubs::GetCubicVolume()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:113:21
+  t139.method("GetCubicVolume", static_cast<G4double (G4Tubs::*)() >(&G4Tubs::GetCubicVolume));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetSurfaceArea() (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Tubs::GetSurfaceArea()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:114:21
+  t139.method("GetSurfaceArea", static_cast<G4double (G4Tubs::*)() >(&G4Tubs::GetSurfaceArea));
+
+  DEBUG_MSG("Adding wrapper for void G4Tubs::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Tubs::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:116:10
+  t139.method("ComputeDimensions", static_cast<void (G4Tubs::*)(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) >(&G4Tubs::ComputeDimensions));
+
+  DEBUG_MSG("Adding wrapper for void G4Tubs::BoundingLimits(G4ThreeVector &, G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: void G4Tubs::BoundingLimits(G4ThreeVector &, G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:120:10
+  t139.method("BoundingLimits", static_cast<void (G4Tubs::*)(G4ThreeVector &, G4ThreeVector &)  const>(&G4Tubs::BoundingLimits));
+
+  DEBUG_MSG("Adding wrapper for EInside G4Tubs::Inside(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: EInside G4Tubs::Inside(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:127:13
+  t139.method("Inside", static_cast<EInside (G4Tubs::*)(const G4ThreeVector &)  const>(&G4Tubs::Inside));
+
+  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Tubs::SurfaceNormal(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4ThreeVector G4Tubs::SurfaceNormal(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:129:19
+  t139.method("SurfaceNormal", static_cast<G4ThreeVector (G4Tubs::*)(const G4ThreeVector &)  const>(&G4Tubs::SurfaceNormal));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Tubs::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Tubs::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:131:14
+  t139.method("DistanceToIn", static_cast<G4double (G4Tubs::*)(const G4ThreeVector &, const G4ThreeVector &)  const>(&G4Tubs::DistanceToIn));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Tubs::DistanceToIn(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Tubs::DistanceToIn(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:132:14
+  t139.method("DistanceToIn", static_cast<G4double (G4Tubs::*)(const G4ThreeVector &)  const>(&G4Tubs::DistanceToIn));
+
+  DEBUG_MSG("Adding wrapper for G4double G4Tubs::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Tubs::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:133:14
+  t139.method("DistanceToOut", static_cast<G4double (G4Tubs::*)(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)  const>(&G4Tubs::DistanceToOut));
+  t139.method("DistanceToOut", [](G4Tubs const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a.DistanceToOut(arg0, arg1); });
+  t139.method("DistanceToOut", [](G4Tubs const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a.DistanceToOut(arg0, arg1, arg2); });
+  t139.method("DistanceToOut", [](G4Tubs const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a.DistanceToOut(arg0, arg1, arg2, arg3); });
+  t139.method("DistanceToOut", [](G4Tubs const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a->DistanceToOut(arg0, arg1); });
+  t139.method("DistanceToOut", [](G4Tubs const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a->DistanceToOut(arg0, arg1, arg2); });
+  t139.method("DistanceToOut", [](G4Tubs const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a->DistanceToOut(arg0, arg1, arg2, arg3); });
+
+  DEBUG_MSG("Adding wrapper for G4double G4Tubs::DistanceToOut(const G4ThreeVector &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4Tubs::DistanceToOut(const G4ThreeVector &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:137:14
+  t139.method("DistanceToOut", static_cast<G4double (G4Tubs::*)(const G4ThreeVector &)  const>(&G4Tubs::DistanceToOut));
+
+  DEBUG_MSG("Adding wrapper for G4GeometryType G4Tubs::GetEntityType() (" __HERE__ ")");
+  // signature to use in the veto list: G4GeometryType G4Tubs::GetEntityType()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:139:20
+  t139.method("GetEntityType", static_cast<G4GeometryType (G4Tubs::*)()  const>(&G4Tubs::GetEntityType));
+
+  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Tubs::GetPointOnSurface() (" __HERE__ ")");
+  // signature to use in the veto list: G4ThreeVector G4Tubs::GetPointOnSurface()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:141:19
+  t139.method("GetPointOnSurface", static_cast<G4ThreeVector (G4Tubs::*)()  const>(&G4Tubs::GetPointOnSurface));
+
+  DEBUG_MSG("Adding wrapper for G4VSolid * G4Tubs::Clone() (" __HERE__ ")");
+  // signature to use in the veto list: G4VSolid * G4Tubs::Clone()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:143:15
+  t139.method("Clone", static_cast<G4VSolid * (G4Tubs::*)()  const>(&G4Tubs::Clone));
+
+  DEBUG_MSG("Adding wrapper for G4Polyhedron * G4Tubs::CreatePolyhedron() (" __HERE__ ")");
+  // signature to use in the veto list: G4Polyhedron * G4Tubs::CreatePolyhedron()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:150:25
+  t139.method("CreatePolyhedron", static_cast<G4Polyhedron * (G4Tubs::*)()  const>(&G4Tubs::CreatePolyhedron));
+
+
+  DEBUG_MSG("Adding wrapper for void G4Tubs::G4Tubs(const G4Tubs &) (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:160:5
+  t139.constructor<const G4Tubs &>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for G4Tubs & G4Tubs::operator=(const G4Tubs &) (" __HERE__ ")");
+  // signature to use in the veto list: G4Tubs & G4Tubs::operator=(const G4Tubs &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:161:13
+  t139.method("assign", static_cast<G4Tubs & (G4Tubs::*)(const G4Tubs &) >(&G4Tubs::operator=));
+
+  /* End of G4Tubs class method wrappers
+   **********************************************************************/
+
+
+  /**********************************************************************/
+  /* Wrappers for the methods of class G4GDMLParser
+   */
+
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::G4GDMLParser(G4GDMLReadStructure *) (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:56:5
+  t140.constructor<G4GDMLReadStructure *>(/*finalize=*/true);
+
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::G4GDMLParser(G4GDMLReadStructure *, G4GDMLWriteStructure *) (" __HERE__ ")");
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:57:5
+  t140.constructor<G4GDMLReadStructure *, G4GDMLWriteStructure *>(/*finalize=*/true);
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::Read(const G4String &, G4bool) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::Read(const G4String &, G4bool)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:62:17
+  t140.method("Read", static_cast<void (G4GDMLParser::*)(const G4String &, G4bool) >(&G4GDMLParser::Read));
+  t140.method("Read", [](G4GDMLParser& a, const G4String & arg0)->void{ a.Read(arg0); });
+  t140.method("Read", [](G4GDMLParser* a, const G4String & arg0)->void{ a->Read(arg0); });
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::ReadModule(const G4String &, G4bool) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::ReadModule(const G4String &, G4bool)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:67:17
+  t140.method("ReadModule", static_cast<void (G4GDMLParser::*)(const G4String &, G4bool) >(&G4GDMLParser::ReadModule));
+  t140.method("ReadModule", [](G4GDMLParser& a, const G4String & arg0)->void{ a.ReadModule(arg0); });
+  t140.method("ReadModule", [](G4GDMLParser* a, const G4String & arg0)->void{ a->ReadModule(arg0); });
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::Write(const G4String &, const G4VPhysicalVolume *, G4bool, const G4String &) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::Write(const G4String &, const G4VPhysicalVolume *, G4bool, const G4String &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:72:17
+  t140.method("Write", static_cast<void (G4GDMLParser::*)(const G4String &, const G4VPhysicalVolume *, G4bool, const G4String &) >(&G4GDMLParser::Write));
+  t140.method("Write", [](G4GDMLParser& a, const G4String & arg0)->void{ a.Write(arg0); });
+  t140.method("Write", [](G4GDMLParser& a, const G4String & arg0, const G4VPhysicalVolume * arg1)->void{ a.Write(arg0, arg1); });
+  t140.method("Write", [](G4GDMLParser& a, const G4String & arg0, const G4VPhysicalVolume * arg1, G4bool arg2)->void{ a.Write(arg0, arg1, arg2); });
+  t140.method("Write", [](G4GDMLParser* a, const G4String & arg0)->void{ a->Write(arg0); });
+  t140.method("Write", [](G4GDMLParser* a, const G4String & arg0, const G4VPhysicalVolume * arg1)->void{ a->Write(arg0, arg1); });
+  t140.method("Write", [](G4GDMLParser* a, const G4String & arg0, const G4VPhysicalVolume * arg1, G4bool arg2)->void{ a->Write(arg0, arg1, arg2); });
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::Write(const G4String &, const G4LogicalVolume *, G4bool, const G4String &) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::Write(const G4String &, const G4LogicalVolume *, G4bool, const G4String &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:83:17
+  t140.method("Write", static_cast<void (G4GDMLParser::*)(const G4String &, const G4LogicalVolume *, G4bool, const G4String &) >(&G4GDMLParser::Write));
+  t140.method("Write", [](G4GDMLParser& a, const G4String & arg0, const G4LogicalVolume * arg1)->void{ a.Write(arg0, arg1); });
+  t140.method("Write", [](G4GDMLParser& a, const G4String & arg0, const G4LogicalVolume * arg1, G4bool arg2)->void{ a.Write(arg0, arg1, arg2); });
+  t140.method("Write", [](G4GDMLParser* a, const G4String & arg0, const G4LogicalVolume * arg1)->void{ a->Write(arg0, arg1); });
+  t140.method("Write", [](G4GDMLParser* a, const G4String & arg0, const G4LogicalVolume * arg1, G4bool arg2)->void{ a->Write(arg0, arg1, arg2); });
+
+  DEBUG_MSG("Adding wrapper for G4LogicalVolume * G4GDMLParser::ParseST(const G4String &, G4Material *, G4Material *) (" __HERE__ ")");
+  // signature to use in the veto list: G4LogicalVolume * G4GDMLParser::ParseST(const G4String &, G4Material *, G4Material *)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:94:29
+  t140.method("ParseST", static_cast<G4LogicalVolume * (G4GDMLParser::*)(const G4String &, G4Material *, G4Material *) >(&G4GDMLParser::ParseST));
+
+  DEBUG_MSG("Adding wrapper for G4bool G4GDMLParser::IsValid(const G4String &) (" __HERE__ ")");
+  // signature to use in the veto list: G4bool G4GDMLParser::IsValid(const G4String &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:104:19
+  t140.method("IsValid", static_cast<G4bool (G4GDMLParser::*)(const G4String &)  const>(&G4GDMLParser::IsValid));
+
+  DEBUG_MSG("Adding wrapper for G4double G4GDMLParser::GetConstant(const G4String &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4GDMLParser::GetConstant(const G4String &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:105:21
+  t140.method("GetConstant", static_cast<G4double (G4GDMLParser::*)(const G4String &)  const>(&G4GDMLParser::GetConstant));
+
+  DEBUG_MSG("Adding wrapper for G4double G4GDMLParser::GetVariable(const G4String &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4GDMLParser::GetVariable(const G4String &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:106:21
+  t140.method("GetVariable", static_cast<G4double (G4GDMLParser::*)(const G4String &)  const>(&G4GDMLParser::GetVariable));
+
+  DEBUG_MSG("Adding wrapper for G4double G4GDMLParser::GetQuantity(const G4String &) (" __HERE__ ")");
+  // signature to use in the veto list: G4double G4GDMLParser::GetQuantity(const G4String &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:107:21
+  t140.method("GetQuantity", static_cast<G4double (G4GDMLParser::*)(const G4String &)  const>(&G4GDMLParser::GetQuantity));
+
+  DEBUG_MSG("Adding wrapper for G4ThreeVector G4GDMLParser::GetPosition(const G4String &) (" __HERE__ ")");
+  // signature to use in the veto list: G4ThreeVector G4GDMLParser::GetPosition(const G4String &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:108:26
+  t140.method("GetPosition", static_cast<G4ThreeVector (G4GDMLParser::*)(const G4String &)  const>(&G4GDMLParser::GetPosition));
+
+  DEBUG_MSG("Adding wrapper for G4ThreeVector G4GDMLParser::GetRotation(const G4String &) (" __HERE__ ")");
+  // signature to use in the veto list: G4ThreeVector G4GDMLParser::GetRotation(const G4String &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:109:26
+  t140.method("GetRotation", static_cast<G4ThreeVector (G4GDMLParser::*)(const G4String &)  const>(&G4GDMLParser::GetRotation));
+
+  DEBUG_MSG("Adding wrapper for G4ThreeVector G4GDMLParser::GetScale(const G4String &) (" __HERE__ ")");
+  // signature to use in the veto list: G4ThreeVector G4GDMLParser::GetScale(const G4String &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:110:26
+  t140.method("GetScale", static_cast<G4ThreeVector (G4GDMLParser::*)(const G4String &)  const>(&G4GDMLParser::GetScale));
+
+  DEBUG_MSG("Adding wrapper for G4GDMLMatrix G4GDMLParser::GetMatrix(const G4String &) (" __HERE__ ")");
+  // signature to use in the veto list: G4GDMLMatrix G4GDMLParser::GetMatrix(const G4String &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:111:25
+  t140.method("GetMatrix", static_cast<G4GDMLMatrix (G4GDMLParser::*)(const G4String &)  const>(&G4GDMLParser::GetMatrix));
+
+  DEBUG_MSG("Adding wrapper for G4LogicalVolume * G4GDMLParser::GetVolume(const G4String &) (" __HERE__ ")");
+  // signature to use in the veto list: G4LogicalVolume * G4GDMLParser::GetVolume(const G4String &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:112:29
+  t140.method("GetVolume", static_cast<G4LogicalVolume * (G4GDMLParser::*)(const G4String &)  const>(&G4GDMLParser::GetVolume));
+
+  DEBUG_MSG("Adding wrapper for G4VPhysicalVolume * G4GDMLParser::GetPhysVolume(const G4String &) (" __HERE__ ")");
+  // signature to use in the veto list: G4VPhysicalVolume * G4GDMLParser::GetPhysVolume(const G4String &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:113:31
+  t140.method("GetPhysVolume", static_cast<G4VPhysicalVolume * (G4GDMLParser::*)(const G4String &)  const>(&G4GDMLParser::GetPhysVolume));
+
+  DEBUG_MSG("Adding wrapper for G4VPhysicalVolume * G4GDMLParser::GetWorldVolume(const G4String &) (" __HERE__ ")");
+  // signature to use in the veto list: G4VPhysicalVolume * G4GDMLParser::GetWorldVolume(const G4String &)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:115:12
+  t140.method("GetWorldVolume", static_cast<G4VPhysicalVolume * (G4GDMLParser::*)(const G4String &)  const>(&G4GDMLParser::GetWorldVolume));
+  t140.method("GetWorldVolume", [](G4GDMLParser const& a)->G4VPhysicalVolume *{ return a.GetWorldVolume(); });
+  t140.method("GetWorldVolume", [](G4GDMLParser const* a)->G4VPhysicalVolume *{ return a->GetWorldVolume(); });
+
+  DEBUG_MSG("Adding wrapper for G4GDMLAuxListType G4GDMLParser::GetVolumeAuxiliaryInformation(G4LogicalVolume *) (" __HERE__ ")");
+  // signature to use in the veto list: G4GDMLAuxListType G4GDMLParser::GetVolumeAuxiliaryInformation(G4LogicalVolume *)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:117:12
+  t140.method("GetVolumeAuxiliaryInformation", static_cast<G4GDMLAuxListType (G4GDMLParser::*)(G4LogicalVolume *)  const>(&G4GDMLParser::GetVolumeAuxiliaryInformation));
+
+  DEBUG_MSG("Adding wrapper for const G4GDMLAuxListType * G4GDMLParser::GetAuxList() (" __HERE__ ")");
+  // signature to use in the veto list: const G4GDMLAuxListType * G4GDMLParser::GetAuxList()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:119:37
+  t140.method("GetAuxList", static_cast<const G4GDMLAuxListType * (G4GDMLParser::*)()  const>(&G4GDMLParser::GetAuxList));
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::AddAuxiliary(G4GDMLAuxStructType) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::AddAuxiliary(G4GDMLAuxStructType)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:120:17
+  t140.method("AddAuxiliary", static_cast<void (G4GDMLParser::*)(G4GDMLAuxStructType) >(&G4GDMLParser::AddAuxiliary));
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::StripNamePointers() (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::StripNamePointers()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:121:17
+  t140.method("StripNamePointers", static_cast<void (G4GDMLParser::*)()  const>(&G4GDMLParser::StripNamePointers));
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::SetStripFlag(G4bool) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::SetStripFlag(G4bool)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:122:17
+  t140.method("SetStripFlag", static_cast<void (G4GDMLParser::*)(G4bool) >(&G4GDMLParser::SetStripFlag));
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::SetOverlapCheck(G4bool) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::SetOverlapCheck(G4bool)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:123:17
+  t140.method("SetOverlapCheck", static_cast<void (G4GDMLParser::*)(G4bool) >(&G4GDMLParser::SetOverlapCheck));
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::SetRegionExport(G4bool) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::SetRegionExport(G4bool)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:124:17
+  t140.method("SetRegionExport", static_cast<void (G4GDMLParser::*)(G4bool) >(&G4GDMLParser::SetRegionExport));
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::SetEnergyCutsExport(G4bool) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::SetEnergyCutsExport(G4bool)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:125:17
+  t140.method("SetEnergyCutsExport", static_cast<void (G4GDMLParser::*)(G4bool) >(&G4GDMLParser::SetEnergyCutsExport));
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::SetSDExport(G4bool) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::SetSDExport(G4bool)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:126:17
+  t140.method("SetSDExport", static_cast<void (G4GDMLParser::*)(G4bool) >(&G4GDMLParser::SetSDExport));
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::SetReverseSearch(G4bool) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::SetReverseSearch(G4bool)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:127:17
+  t140.method("SetReverseSearch", static_cast<void (G4GDMLParser::*)(G4bool) >(&G4GDMLParser::SetReverseSearch));
+
+  DEBUG_MSG("Adding wrapper for G4int G4GDMLParser::GetMaxExportLevel() (" __HERE__ ")");
+  // signature to use in the veto list: G4int G4GDMLParser::GetMaxExportLevel()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:129:18
+  t140.method("GetMaxExportLevel", static_cast<G4int (G4GDMLParser::*)()  const>(&G4GDMLParser::GetMaxExportLevel));
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::SetMaxExportLevel(G4int) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::SetMaxExportLevel(G4int)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:130:17
+  t140.method("SetMaxExportLevel", static_cast<void (G4GDMLParser::*)(G4int) >(&G4GDMLParser::SetMaxExportLevel));
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::Clear() (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::Clear()
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:132:17
+  t140.method("Clear", static_cast<void (G4GDMLParser::*)() >(&G4GDMLParser::Clear));
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::AddModule(const G4VPhysicalVolume *const) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::AddModule(const G4VPhysicalVolume *const)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:136:17
+  t140.method("AddModule", static_cast<void (G4GDMLParser::*)(const G4VPhysicalVolume *const) >(&G4GDMLParser::AddModule));
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::AddModule(const G4int) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::AddModule(const G4int)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:137:17
+  t140.method("AddModule", static_cast<void (G4GDMLParser::*)(const G4int) >(&G4GDMLParser::AddModule));
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::SetAddPointerToName(G4bool) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::SetAddPointerToName(G4bool)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:138:17
+  t140.method("SetAddPointerToName", static_cast<void (G4GDMLParser::*)(G4bool) >(&G4GDMLParser::SetAddPointerToName));
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::AddVolumeAuxiliary(G4GDMLAuxStructType, const G4LogicalVolume *const) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::AddVolumeAuxiliary(G4GDMLAuxStructType, const G4LogicalVolume *const)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:139:17
+  t140.method("AddVolumeAuxiliary", static_cast<void (G4GDMLParser::*)(G4GDMLAuxStructType, const G4LogicalVolume *const) >(&G4GDMLParser::AddVolumeAuxiliary));
+
+  DEBUG_MSG("Adding wrapper for void G4GDMLParser::SetOutputFileOverwrite(G4bool) (" __HERE__ ")");
+  // signature to use in the veto list: void G4GDMLParser::SetOutputFileOverwrite(G4bool)
+  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4GDMLParser.hh:141:17
+  t140.method("SetOutputFileOverwrite", static_cast<void (G4GDMLParser::*)(G4bool) >(&G4GDMLParser::SetOutputFileOverwrite));
+
+  /* End of G4GDMLParser class method wrappers
+   **********************************************************************/
+
+
+  /**********************************************************************/
   /* Wrappers for the methods of class G4VUPLData
    */
 
   DEBUG_MSG("Adding wrapper for void G4VUPLData::initialize() (" __HERE__ ")");
   // signature to use in the veto list: void G4VUPLData::initialize()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VUserPhysicsList.hh:66:10
-  t134.method("initialize", static_cast<void (G4VUPLData::*)() >(&G4VUPLData::initialize));
+  t145.method("initialize", static_cast<void (G4VUPLData::*)() >(&G4VUPLData::initialize));
 
   DEBUG_MSG("Adding _theMessenger methods  to provide read access to the field _theMessenger (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VUserPhysicsList.hh:69:33
   // signature to use in the veto list: G4VUPLData::_theMessenger
-  t134.method("_theMessenger", [](const G4VUPLData& a) -> G4UserPhysicsListMessenger * { return a._theMessenger; });
-  t134.method("_theMessenger", [](G4VUPLData& a) -> G4UserPhysicsListMessenger * { return a._theMessenger; });
-  t134.method("_theMessenger", [](const G4VUPLData* a) -> G4UserPhysicsListMessenger * { return a->_theMessenger; });
-  t134.method("_theMessenger", [](G4VUPLData* a) -> G4UserPhysicsListMessenger * { return a->_theMessenger; });
+  t145.method("_theMessenger", [](const G4VUPLData& a) -> G4UserPhysicsListMessenger * { return a._theMessenger; });
+  t145.method("_theMessenger", [](G4VUPLData& a) -> G4UserPhysicsListMessenger * { return a._theMessenger; });
+  t145.method("_theMessenger", [](const G4VUPLData* a) -> G4UserPhysicsListMessenger * { return a->_theMessenger; });
+  t145.method("_theMessenger", [](G4VUPLData* a) -> G4UserPhysicsListMessenger * { return a->_theMessenger; });
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VUserPhysicsList.hh:69:33
   // signature to use in the veto list: G4VUPLData::_theMessenger
   // with ! suffix to veto the setter only
 
   DEBUG_MSG("Adding _theMessenger! methods to provide write access to the field _theMessenger (" __HERE__ ")");
-  t134.method("_theMessenger!", [](G4VUPLData& a, G4UserPhysicsListMessenger * val) -> G4UserPhysicsListMessenger * { return a._theMessenger = val; });
+  t145.method("_theMessenger!", [](G4VUPLData& a, G4UserPhysicsListMessenger * val) -> G4UserPhysicsListMessenger * { return a._theMessenger = val; });
 
   DEBUG_MSG("Adding _theMessenger! methods to provide write access to the field _theMessenger (" __HERE__ ")");
-  t134.method("_theMessenger!", [](G4VUPLData* a, G4UserPhysicsListMessenger * val) -> G4UserPhysicsListMessenger * { return a->_theMessenger = val; });
+  t145.method("_theMessenger!", [](G4VUPLData* a, G4UserPhysicsListMessenger * val) -> G4UserPhysicsListMessenger * { return a->_theMessenger = val; });
 
   DEBUG_MSG("Adding _thePLHelper methods  to provide read access to the field _thePLHelper (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VUserPhysicsList.hh:70:26
   // signature to use in the veto list: G4VUPLData::_thePLHelper
-  t134.method("_thePLHelper", [](const G4VUPLData& a) -> G4PhysicsListHelper * { return a._thePLHelper; });
-  t134.method("_thePLHelper", [](G4VUPLData& a) -> G4PhysicsListHelper * { return a._thePLHelper; });
-  t134.method("_thePLHelper", [](const G4VUPLData* a) -> G4PhysicsListHelper * { return a->_thePLHelper; });
-  t134.method("_thePLHelper", [](G4VUPLData* a) -> G4PhysicsListHelper * { return a->_thePLHelper; });
+  t145.method("_thePLHelper", [](const G4VUPLData& a) -> G4PhysicsListHelper * { return a._thePLHelper; });
+  t145.method("_thePLHelper", [](G4VUPLData& a) -> G4PhysicsListHelper * { return a._thePLHelper; });
+  t145.method("_thePLHelper", [](const G4VUPLData* a) -> G4PhysicsListHelper * { return a->_thePLHelper; });
+  t145.method("_thePLHelper", [](G4VUPLData* a) -> G4PhysicsListHelper * { return a->_thePLHelper; });
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VUserPhysicsList.hh:70:26
   // signature to use in the veto list: G4VUPLData::_thePLHelper
   // with ! suffix to veto the setter only
 
   DEBUG_MSG("Adding _thePLHelper! methods to provide write access to the field _thePLHelper (" __HERE__ ")");
-  t134.method("_thePLHelper!", [](G4VUPLData& a, G4PhysicsListHelper * val) -> G4PhysicsListHelper * { return a._thePLHelper = val; });
+  t145.method("_thePLHelper!", [](G4VUPLData& a, G4PhysicsListHelper * val) -> G4PhysicsListHelper * { return a._thePLHelper = val; });
 
   DEBUG_MSG("Adding _thePLHelper! methods to provide write access to the field _thePLHelper (" __HERE__ ")");
-  t134.method("_thePLHelper!", [](G4VUPLData* a, G4PhysicsListHelper * val) -> G4PhysicsListHelper * { return a->_thePLHelper = val; });
+  t145.method("_thePLHelper!", [](G4VUPLData* a, G4PhysicsListHelper * val) -> G4PhysicsListHelper * { return a->_thePLHelper = val; });
 
   DEBUG_MSG("Adding _fIsPhysicsTableBuilt methods  to provide read access to the field _fIsPhysicsTableBuilt (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VUserPhysicsList.hh:71:12
   // signature to use in the veto list: G4VUPLData::_fIsPhysicsTableBuilt
-  t134.method("_fIsPhysicsTableBuilt", [](const G4VUPLData& a) -> G4bool { return a._fIsPhysicsTableBuilt; });
-  t134.method("_fIsPhysicsTableBuilt", [](G4VUPLData& a) -> G4bool { return a._fIsPhysicsTableBuilt; });
-  t134.method("_fIsPhysicsTableBuilt", [](const G4VUPLData* a) -> G4bool { return a->_fIsPhysicsTableBuilt; });
-  t134.method("_fIsPhysicsTableBuilt", [](G4VUPLData* a) -> G4bool { return a->_fIsPhysicsTableBuilt; });
+  t145.method("_fIsPhysicsTableBuilt", [](const G4VUPLData& a) -> G4bool { return a._fIsPhysicsTableBuilt; });
+  t145.method("_fIsPhysicsTableBuilt", [](G4VUPLData& a) -> G4bool { return a._fIsPhysicsTableBuilt; });
+  t145.method("_fIsPhysicsTableBuilt", [](const G4VUPLData* a) -> G4bool { return a->_fIsPhysicsTableBuilt; });
+  t145.method("_fIsPhysicsTableBuilt", [](G4VUPLData* a) -> G4bool { return a->_fIsPhysicsTableBuilt; });
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VUserPhysicsList.hh:71:12
   // signature to use in the veto list: G4VUPLData::_fIsPhysicsTableBuilt
   // with ! suffix to veto the setter only
 
   DEBUG_MSG("Adding _fIsPhysicsTableBuilt! methods to provide write access to the field _fIsPhysicsTableBuilt (" __HERE__ ")");
-  t134.method("_fIsPhysicsTableBuilt!", [](G4VUPLData& a, G4bool val) -> G4bool { return a._fIsPhysicsTableBuilt = val; });
+  t145.method("_fIsPhysicsTableBuilt!", [](G4VUPLData& a, G4bool val) -> G4bool { return a._fIsPhysicsTableBuilt = val; });
 
   DEBUG_MSG("Adding _fIsPhysicsTableBuilt! methods to provide write access to the field _fIsPhysicsTableBuilt (" __HERE__ ")");
-  t134.method("_fIsPhysicsTableBuilt!", [](G4VUPLData* a, G4bool val) -> G4bool { return a->_fIsPhysicsTableBuilt = val; });
+  t145.method("_fIsPhysicsTableBuilt!", [](G4VUPLData* a, G4bool val) -> G4bool { return a->_fIsPhysicsTableBuilt = val; });
 
   DEBUG_MSG("Adding _fDisplayThreshold methods  to provide read access to the field _fDisplayThreshold (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VUserPhysicsList.hh:72:11
   // signature to use in the veto list: G4VUPLData::_fDisplayThreshold
-  t134.method("_fDisplayThreshold", [](const G4VUPLData& a) -> G4int { return a._fDisplayThreshold; });
-  t134.method("_fDisplayThreshold", [](G4VUPLData& a) -> G4int { return a._fDisplayThreshold; });
-  t134.method("_fDisplayThreshold", [](const G4VUPLData* a) -> G4int { return a->_fDisplayThreshold; });
-  t134.method("_fDisplayThreshold", [](G4VUPLData* a) -> G4int { return a->_fDisplayThreshold; });
+  t145.method("_fDisplayThreshold", [](const G4VUPLData& a) -> G4int { return a._fDisplayThreshold; });
+  t145.method("_fDisplayThreshold", [](G4VUPLData& a) -> G4int { return a._fDisplayThreshold; });
+  t145.method("_fDisplayThreshold", [](const G4VUPLData* a) -> G4int { return a->_fDisplayThreshold; });
+  t145.method("_fDisplayThreshold", [](G4VUPLData* a) -> G4int { return a->_fDisplayThreshold; });
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VUserPhysicsList.hh:72:11
   // signature to use in the veto list: G4VUPLData::_fDisplayThreshold
   // with ! suffix to veto the setter only
 
   DEBUG_MSG("Adding _fDisplayThreshold! methods to provide write access to the field _fDisplayThreshold (" __HERE__ ")");
-  t134.method("_fDisplayThreshold!", [](G4VUPLData& a, G4int val) -> G4int { return a._fDisplayThreshold = val; });
+  t145.method("_fDisplayThreshold!", [](G4VUPLData& a, G4int val) -> G4int { return a._fDisplayThreshold = val; });
 
   DEBUG_MSG("Adding _fDisplayThreshold! methods to provide write access to the field _fDisplayThreshold (" __HERE__ ")");
-  t134.method("_fDisplayThreshold!", [](G4VUPLData* a, G4int val) -> G4int { return a->_fDisplayThreshold = val; });
+  t145.method("_fDisplayThreshold!", [](G4VUPLData* a, G4int val) -> G4int { return a->_fDisplayThreshold = val; });
 
   /* End of G4VUPLData class method wrappers
    **********************************************************************/
@@ -9585,17 +10799,17 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& types){
 
   DEBUG_MSG("Adding wrapper for void G4UserPhysicsListMessenger::G4UserPhysicsListMessenger(G4VUserPhysicsList *) (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4UserPhysicsListMessenger.hh:67:5
-  t135.constructor<G4VUserPhysicsList *>(/*finalize=*/true);
+  t146.constructor<G4VUserPhysicsList *>(/*finalize=*/true);
 
   DEBUG_MSG("Adding wrapper for void G4UserPhysicsListMessenger::SetNewValue(G4UIcommand *, G4String) (" __HERE__ ")");
   // signature to use in the veto list: void G4UserPhysicsListMessenger::SetNewValue(G4UIcommand *, G4String)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4UserPhysicsListMessenger.hh:70:18
-  t135.method("SetNewValue", static_cast<void (G4UserPhysicsListMessenger::*)(G4UIcommand *, G4String) >(&G4UserPhysicsListMessenger::SetNewValue));
+  t146.method("SetNewValue", static_cast<void (G4UserPhysicsListMessenger::*)(G4UIcommand *, G4String) >(&G4UserPhysicsListMessenger::SetNewValue));
 
   DEBUG_MSG("Adding wrapper for G4String G4UserPhysicsListMessenger::GetCurrentValue(G4UIcommand *) (" __HERE__ ")");
   // signature to use in the veto list: G4String G4UserPhysicsListMessenger::GetCurrentValue(G4UIcommand *)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4UserPhysicsListMessenger.hh:71:22
-  t135.method("GetCurrentValue", static_cast<G4String (G4UserPhysicsListMessenger::*)(G4UIcommand *) >(&G4UserPhysicsListMessenger::GetCurrentValue));
+  t146.method("GetCurrentValue", static_cast<G4String (G4UserPhysicsListMessenger::*)(G4UIcommand *) >(&G4UserPhysicsListMessenger::GetCurrentValue));
 
   /* End of G4UserPhysicsListMessenger class method wrappers
    **********************************************************************/
@@ -9608,24 +10822,24 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& types){
   DEBUG_MSG("Adding wrapper for void G4VMPLData::initialize() (" __HERE__ ")");
   // signature to use in the veto list: void G4VMPLData::initialize()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:61:10
-  t137.method("initialize", static_cast<void (G4VMPLData::*)() >(&G4VMPLData::initialize));
+  t148.method("initialize", static_cast<void (G4VMPLData::*)() >(&G4VMPLData::initialize));
 
   DEBUG_MSG("Adding physicsVector methods  to provide read access to the field physicsVector (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:64:28
   // signature to use in the veto list: G4VMPLData::physicsVector
-  t137.method("physicsVector", [](const G4VMPLData& a) -> G4VMPLData::G4PhysConstVectorData * { return a.physicsVector; });
-  t137.method("physicsVector", [](G4VMPLData& a) -> G4VMPLData::G4PhysConstVectorData * { return a.physicsVector; });
-  t137.method("physicsVector", [](const G4VMPLData* a) -> G4VMPLData::G4PhysConstVectorData * { return a->physicsVector; });
-  t137.method("physicsVector", [](G4VMPLData* a) -> G4VMPLData::G4PhysConstVectorData * { return a->physicsVector; });
+  t148.method("physicsVector", [](const G4VMPLData& a) -> G4VMPLData::G4PhysConstVectorData * { return a.physicsVector; });
+  t148.method("physicsVector", [](G4VMPLData& a) -> G4VMPLData::G4PhysConstVectorData * { return a.physicsVector; });
+  t148.method("physicsVector", [](const G4VMPLData* a) -> G4VMPLData::G4PhysConstVectorData * { return a->physicsVector; });
+  t148.method("physicsVector", [](G4VMPLData* a) -> G4VMPLData::G4PhysConstVectorData * { return a->physicsVector; });
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:64:28
   // signature to use in the veto list: G4VMPLData::physicsVector
   // with ! suffix to veto the setter only
 
   DEBUG_MSG("Adding physicsVector! methods to provide write access to the field physicsVector (" __HERE__ ")");
-  t137.method("physicsVector!", [](G4VMPLData& a, G4VMPLData::G4PhysConstVectorData * val) -> G4VMPLData::G4PhysConstVectorData * { return a.physicsVector = val; });
+  t148.method("physicsVector!", [](G4VMPLData& a, G4VMPLData::G4PhysConstVectorData * val) -> G4VMPLData::G4PhysConstVectorData * { return a.physicsVector = val; });
 
   DEBUG_MSG("Adding physicsVector! methods to provide write access to the field physicsVector (" __HERE__ ")");
-  t137.method("physicsVector!", [](G4VMPLData* a, G4VMPLData::G4PhysConstVectorData * val) -> G4VMPLData::G4PhysConstVectorData * { return a->physicsVector = val; });
+  t148.method("physicsVector!", [](G4VMPLData* a, G4VMPLData::G4PhysConstVectorData * val) -> G4VMPLData::G4PhysConstVectorData * { return a->physicsVector = val; });
 
   /* End of G4VMPLData class method wrappers
    **********************************************************************/
@@ -9638,72 +10852,72 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& types){
   DEBUG_MSG("Adding wrapper for void G4VModularPhysicsList::ConstructParticle() (" __HERE__ ")");
   // signature to use in the veto list: void G4VModularPhysicsList::ConstructParticle()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:93:18
-  t138.method("ConstructParticle", static_cast<void (G4VModularPhysicsList::*)() >(&G4VModularPhysicsList::ConstructParticle));
+  t149.method("ConstructParticle", static_cast<void (G4VModularPhysicsList::*)() >(&G4VModularPhysicsList::ConstructParticle));
 
   DEBUG_MSG("Adding wrapper for void G4VModularPhysicsList::ConstructProcess() (" __HERE__ ")");
   // signature to use in the veto list: void G4VModularPhysicsList::ConstructProcess()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:97:18
-  t138.method("ConstructProcess", static_cast<void (G4VModularPhysicsList::*)() >(&G4VModularPhysicsList::ConstructProcess));
+  t149.method("ConstructProcess", static_cast<void (G4VModularPhysicsList::*)() >(&G4VModularPhysicsList::ConstructProcess));
 
   DEBUG_MSG("Adding wrapper for void G4VModularPhysicsList::RegisterPhysics(G4VPhysicsConstructor *) (" __HERE__ ")");
   // signature to use in the veto list: void G4VModularPhysicsList::RegisterPhysics(G4VPhysicsConstructor *)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:102:10
-  t138.method("RegisterPhysics", static_cast<void (G4VModularPhysicsList::*)(G4VPhysicsConstructor *) >(&G4VModularPhysicsList::RegisterPhysics));
+  t149.method("RegisterPhysics", static_cast<void (G4VModularPhysicsList::*)(G4VPhysicsConstructor *) >(&G4VModularPhysicsList::RegisterPhysics));
 
   DEBUG_MSG("Adding wrapper for const G4VPhysicsConstructor * G4VModularPhysicsList::GetPhysics(G4int) (" __HERE__ ")");
   // signature to use in the veto list: const G4VPhysicsConstructor * G4VModularPhysicsList::GetPhysics(G4int)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:105:34
-  t138.method("GetPhysics", static_cast<const G4VPhysicsConstructor * (G4VModularPhysicsList::*)(G4int)  const>(&G4VModularPhysicsList::GetPhysics));
+  t149.method("GetPhysics", static_cast<const G4VPhysicsConstructor * (G4VModularPhysicsList::*)(G4int)  const>(&G4VModularPhysicsList::GetPhysics));
 
   DEBUG_MSG("Adding wrapper for const G4VPhysicsConstructor * G4VModularPhysicsList::GetPhysics(const G4String &) (" __HERE__ ")");
   // signature to use in the veto list: const G4VPhysicsConstructor * G4VModularPhysicsList::GetPhysics(const G4String &)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:106:34
-  t138.method("GetPhysics", static_cast<const G4VPhysicsConstructor * (G4VModularPhysicsList::*)(const G4String &)  const>(&G4VModularPhysicsList::GetPhysics));
+  t149.method("GetPhysics", static_cast<const G4VPhysicsConstructor * (G4VModularPhysicsList::*)(const G4String &)  const>(&G4VModularPhysicsList::GetPhysics));
 
   DEBUG_MSG("Adding wrapper for const G4VPhysicsConstructor * G4VModularPhysicsList::GetPhysicsWithType(G4int) (" __HERE__ ")");
   // signature to use in the veto list: const G4VPhysicsConstructor * G4VModularPhysicsList::GetPhysicsWithType(G4int)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:107:34
-  t138.method("GetPhysicsWithType", static_cast<const G4VPhysicsConstructor * (G4VModularPhysicsList::*)(G4int)  const>(&G4VModularPhysicsList::GetPhysicsWithType));
+  t149.method("GetPhysicsWithType", static_cast<const G4VPhysicsConstructor * (G4VModularPhysicsList::*)(G4int)  const>(&G4VModularPhysicsList::GetPhysicsWithType));
 
   DEBUG_MSG("Adding wrapper for void G4VModularPhysicsList::ReplacePhysics(G4VPhysicsConstructor *) (" __HERE__ ")");
   // signature to use in the veto list: void G4VModularPhysicsList::ReplacePhysics(G4VPhysicsConstructor *)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:109:10
-  t138.method("ReplacePhysics", static_cast<void (G4VModularPhysicsList::*)(G4VPhysicsConstructor *) >(&G4VModularPhysicsList::ReplacePhysics));
+  t149.method("ReplacePhysics", static_cast<void (G4VModularPhysicsList::*)(G4VPhysicsConstructor *) >(&G4VModularPhysicsList::ReplacePhysics));
 
   DEBUG_MSG("Adding wrapper for void G4VModularPhysicsList::RemovePhysics(G4VPhysicsConstructor *) (" __HERE__ ")");
   // signature to use in the veto list: void G4VModularPhysicsList::RemovePhysics(G4VPhysicsConstructor *)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:116:10
-  t138.method("RemovePhysics", static_cast<void (G4VModularPhysicsList::*)(G4VPhysicsConstructor *) >(&G4VModularPhysicsList::RemovePhysics));
+  t149.method("RemovePhysics", static_cast<void (G4VModularPhysicsList::*)(G4VPhysicsConstructor *) >(&G4VModularPhysicsList::RemovePhysics));
 
   DEBUG_MSG("Adding wrapper for void G4VModularPhysicsList::RemovePhysics(G4int) (" __HERE__ ")");
   // signature to use in the veto list: void G4VModularPhysicsList::RemovePhysics(G4int)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:117:10
-  t138.method("RemovePhysics", static_cast<void (G4VModularPhysicsList::*)(G4int) >(&G4VModularPhysicsList::RemovePhysics));
+  t149.method("RemovePhysics", static_cast<void (G4VModularPhysicsList::*)(G4int) >(&G4VModularPhysicsList::RemovePhysics));
 
   DEBUG_MSG("Adding wrapper for void G4VModularPhysicsList::RemovePhysics(const G4String &) (" __HERE__ ")");
   // signature to use in the veto list: void G4VModularPhysicsList::RemovePhysics(const G4String &)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:118:10
-  t138.method("RemovePhysics", static_cast<void (G4VModularPhysicsList::*)(const G4String &) >(&G4VModularPhysicsList::RemovePhysics));
+  t149.method("RemovePhysics", static_cast<void (G4VModularPhysicsList::*)(const G4String &) >(&G4VModularPhysicsList::RemovePhysics));
 
   DEBUG_MSG("Adding wrapper for G4int G4VModularPhysicsList::GetInstanceID() (" __HERE__ ")");
   // signature to use in the veto list: G4int G4VModularPhysicsList::GetInstanceID()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:121:18
-  t138.method("GetInstanceID", static_cast<G4int (G4VModularPhysicsList::*)()  const>(&G4VModularPhysicsList::GetInstanceID));
+  t149.method("GetInstanceID", static_cast<G4int (G4VModularPhysicsList::*)()  const>(&G4VModularPhysicsList::GetInstanceID));
 
   DEBUG_MSG("Adding wrapper for void G4VModularPhysicsList::TerminateWorker() (" __HERE__ ")");
   // signature to use in the veto list: void G4VModularPhysicsList::TerminateWorker()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:123:18
-  t138.method("TerminateWorker", static_cast<void (G4VModularPhysicsList::*)() >(&G4VModularPhysicsList::TerminateWorker));
+  t149.method("TerminateWorker", static_cast<void (G4VModularPhysicsList::*)() >(&G4VModularPhysicsList::TerminateWorker));
 
   DEBUG_MSG("Adding wrapper for void G4VModularPhysicsList::SetVerboseLevel(G4int) (" __HERE__ ")");
   // signature to use in the veto list: void G4VModularPhysicsList::SetVerboseLevel(G4int)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:125:10
-  t138.method("SetVerboseLevel", static_cast<void (G4VModularPhysicsList::*)(G4int) >(&G4VModularPhysicsList::SetVerboseLevel));
+  t149.method("SetVerboseLevel", static_cast<void (G4VModularPhysicsList::*)(G4int) >(&G4VModularPhysicsList::SetVerboseLevel));
 
   DEBUG_MSG("Adding wrapper for G4int G4VModularPhysicsList::GetVerboseLevel() (" __HERE__ ")");
   // signature to use in the veto list: G4int G4VModularPhysicsList::GetVerboseLevel()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4VModularPhysicsList.hh:126:11
-  t138.method("GetVerboseLevel", static_cast<G4int (G4VModularPhysicsList::*)()  const>(&G4VModularPhysicsList::GetVerboseLevel));
+  t149.method("GetVerboseLevel", static_cast<G4int (G4VModularPhysicsList::*)()  const>(&G4VModularPhysicsList::GetVerboseLevel));
 
   /* End of G4VModularPhysicsList class method wrappers
    **********************************************************************/
@@ -9716,7 +10930,7 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& types){
 
   DEBUG_MSG("Adding wrapper for void QGS_BIC::QGS_BIC(G4int) (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/QGS_BIC.hh:48:3
-  t140.constructor<G4int>(/*finalize=*/true);
+  t151.constructor<G4int>(/*finalize=*/true);
 
   /* End of QGS_BIC class method wrappers
    **********************************************************************/
@@ -9729,8 +10943,8 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& types){
 
   DEBUG_MSG("Adding wrapper for void QBBC::QBBC(G4int, const G4String &) (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/QBBC.hh:47:12
-  t141.constructor<G4int>(/*finalize=*/true);
-  t141.constructor<G4int, const G4String &>(/*finalize=*/true);
+  t152.constructor<G4int>(/*finalize=*/true);
+  t152.constructor<G4int, const G4String &>(/*finalize=*/true);
 
   /* End of QBBC class method wrappers
    **********************************************************************/
@@ -9743,969 +10957,9 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& types){
 
   DEBUG_MSG("Adding wrapper for void FTFP_BERT::FTFP_BERT(G4int) (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/FTFP_BERT.hh:49:3
-  t142.constructor<G4int>(/*finalize=*/true);
+  t153.constructor<G4int>(/*finalize=*/true);
 
   /* End of FTFP_BERT class method wrappers
-   **********************************************************************/
-
-
-  /**********************************************************************/
-  /* Wrappers for the methods of class G4Box
-   */
-
-
-  DEBUG_MSG("Adding wrapper for void G4Box::G4Box(const G4String &, G4double, G4double, G4double) (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:59:5
-  t143.constructor<const G4String &, G4double, G4double, G4double>(/*finalize=*/true);
-
-  DEBUG_MSG("Adding wrapper for void G4Box::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Box::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:64:10
-  t143.method("ComputeDimensions", static_cast<void (G4Box::*)(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) >(&G4Box::ComputeDimensions));
-
-  DEBUG_MSG("Adding wrapper for void G4Box::BoundingLimits(G4ThreeVector &, G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Box::BoundingLimits(G4ThreeVector &, G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:68:10
-  t143.method("BoundingLimits", static_cast<void (G4Box::*)(G4ThreeVector &, G4ThreeVector &)  const>(&G4Box::BoundingLimits));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Box::GetXHalfLength() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Box::GetXHalfLength()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:77:21
-  t143.method("GetXHalfLength", static_cast<G4double (G4Box::*)()  const>(&G4Box::GetXHalfLength));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Box::GetYHalfLength() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Box::GetYHalfLength()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:78:21
-  t143.method("GetYHalfLength", static_cast<G4double (G4Box::*)()  const>(&G4Box::GetYHalfLength));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Box::GetZHalfLength() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Box::GetZHalfLength()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:79:21
-  t143.method("GetZHalfLength", static_cast<G4double (G4Box::*)()  const>(&G4Box::GetZHalfLength));
-
-  DEBUG_MSG("Adding wrapper for void G4Box::SetXHalfLength(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Box::SetXHalfLength(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:81:10
-  t143.method("SetXHalfLength", static_cast<void (G4Box::*)(G4double) >(&G4Box::SetXHalfLength));
-
-  DEBUG_MSG("Adding wrapper for void G4Box::SetYHalfLength(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Box::SetYHalfLength(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:82:10
-  t143.method("SetYHalfLength", static_cast<void (G4Box::*)(G4double) >(&G4Box::SetYHalfLength));
-
-  DEBUG_MSG("Adding wrapper for void G4Box::SetZHalfLength(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Box::SetZHalfLength(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:83:10
-  t143.method("SetZHalfLength", static_cast<void (G4Box::*)(G4double) >(&G4Box::SetZHalfLength));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Box::GetCubicVolume() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Box::GetCubicVolume()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:87:21
-  t143.method("GetCubicVolume", static_cast<G4double (G4Box::*)() >(&G4Box::GetCubicVolume));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Box::GetSurfaceArea() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Box::GetSurfaceArea()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:88:21
-  t143.method("GetSurfaceArea", static_cast<G4double (G4Box::*)() >(&G4Box::GetSurfaceArea));
-
-  DEBUG_MSG("Adding wrapper for EInside G4Box::Inside(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: EInside G4Box::Inside(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:90:13
-  t143.method("Inside", static_cast<EInside (G4Box::*)(const G4ThreeVector &)  const>(&G4Box::Inside));
-
-  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Box::SurfaceNormal(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4ThreeVector G4Box::SurfaceNormal(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:91:19
-  t143.method("SurfaceNormal", static_cast<G4ThreeVector (G4Box::*)(const G4ThreeVector &)  const>(&G4Box::SurfaceNormal));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Box::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Box::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:92:14
-  t143.method("DistanceToIn", static_cast<G4double (G4Box::*)(const G4ThreeVector &, const G4ThreeVector &)  const>(&G4Box::DistanceToIn));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Box::DistanceToIn(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Box::DistanceToIn(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:93:14
-  t143.method("DistanceToIn", static_cast<G4double (G4Box::*)(const G4ThreeVector &)  const>(&G4Box::DistanceToIn));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Box::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Box::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:94:14
-  t143.method("DistanceToOut", static_cast<G4double (G4Box::*)(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)  const>(&G4Box::DistanceToOut));
-  t143.method("DistanceToOut", [](G4Box const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a.DistanceToOut(arg0, arg1); });
-  t143.method("DistanceToOut", [](G4Box const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a.DistanceToOut(arg0, arg1, arg2); });
-  t143.method("DistanceToOut", [](G4Box const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a.DistanceToOut(arg0, arg1, arg2, arg3); });
-  t143.method("DistanceToOut", [](G4Box const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a->DistanceToOut(arg0, arg1); });
-  t143.method("DistanceToOut", [](G4Box const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a->DistanceToOut(arg0, arg1, arg2); });
-  t143.method("DistanceToOut", [](G4Box const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a->DistanceToOut(arg0, arg1, arg2, arg3); });
-
-  DEBUG_MSG("Adding wrapper for G4double G4Box::DistanceToOut(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Box::DistanceToOut(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:98:14
-  t143.method("DistanceToOut", static_cast<G4double (G4Box::*)(const G4ThreeVector &)  const>(&G4Box::DistanceToOut));
-
-  DEBUG_MSG("Adding wrapper for G4GeometryType G4Box::GetEntityType() (" __HERE__ ")");
-  // signature to use in the veto list: G4GeometryType G4Box::GetEntityType()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:100:20
-  t143.method("GetEntityType", static_cast<G4GeometryType (G4Box::*)()  const>(&G4Box::GetEntityType));
-
-  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Box::GetPointOnSurface() (" __HERE__ ")");
-  // signature to use in the veto list: G4ThreeVector G4Box::GetPointOnSurface()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:101:19
-  t143.method("GetPointOnSurface", static_cast<G4ThreeVector (G4Box::*)()  const>(&G4Box::GetPointOnSurface));
-
-  DEBUG_MSG("Adding wrapper for G4VSolid * G4Box::Clone() (" __HERE__ ")");
-  // signature to use in the veto list: G4VSolid * G4Box::Clone()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:103:15
-  t143.method("Clone", static_cast<G4VSolid * (G4Box::*)()  const>(&G4Box::Clone));
-
-  DEBUG_MSG("Adding wrapper for G4Polyhedron * G4Box::CreatePolyhedron() (" __HERE__ ")");
-  // signature to use in the veto list: G4Polyhedron * G4Box::CreatePolyhedron()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:111:19
-  t143.method("CreatePolyhedron", static_cast<G4Polyhedron * (G4Box::*)()  const>(&G4Box::CreatePolyhedron));
-
-
-  DEBUG_MSG("Adding wrapper for void G4Box::G4Box(const G4Box &) (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:120:5
-  t143.constructor<const G4Box &>(/*finalize=*/true);
-
-  DEBUG_MSG("Adding wrapper for G4Box & G4Box::operator=(const G4Box &) (" __HERE__ ")");
-  // signature to use in the veto list: G4Box & G4Box::operator=(const G4Box &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Box.hh:121:12
-  t143.method("assign", static_cast<G4Box & (G4Box::*)(const G4Box &) >(&G4Box::operator=));
-
-  /* End of G4Box class method wrappers
-   **********************************************************************/
-
-
-  /**********************************************************************/
-  /* Wrappers for the methods of class G4Cons
-   */
-
-
-  DEBUG_MSG("Adding wrapper for void G4Cons::G4Cons(const G4String &, G4double, G4double, G4double, G4double, G4double, G4double, G4double) (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:81:5
-  t144.constructor<const G4String &, G4double, G4double, G4double, G4double, G4double, G4double, G4double>(/*finalize=*/true);
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetInnerRadiusMinusZ() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::GetInnerRadiusMinusZ()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:95:21
-  t144.method("GetInnerRadiusMinusZ", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetInnerRadiusMinusZ));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetOuterRadiusMinusZ() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::GetOuterRadiusMinusZ()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:96:21
-  t144.method("GetOuterRadiusMinusZ", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetOuterRadiusMinusZ));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetInnerRadiusPlusZ() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::GetInnerRadiusPlusZ()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:97:21
-  t144.method("GetInnerRadiusPlusZ", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetInnerRadiusPlusZ));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetOuterRadiusPlusZ() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::GetOuterRadiusPlusZ()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:98:21
-  t144.method("GetOuterRadiusPlusZ", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetOuterRadiusPlusZ));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetZHalfLength() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::GetZHalfLength()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:99:21
-  t144.method("GetZHalfLength", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetZHalfLength));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetStartPhiAngle() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::GetStartPhiAngle()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:100:21
-  t144.method("GetStartPhiAngle", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetStartPhiAngle));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetDeltaPhiAngle() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::GetDeltaPhiAngle()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:101:21
-  t144.method("GetDeltaPhiAngle", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetDeltaPhiAngle));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetSinStartPhi() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::GetSinStartPhi()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:102:21
-  t144.method("GetSinStartPhi", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetSinStartPhi));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetCosStartPhi() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::GetCosStartPhi()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:103:21
-  t144.method("GetCosStartPhi", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetCosStartPhi));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetSinEndPhi() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::GetSinEndPhi()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:104:21
-  t144.method("GetSinEndPhi", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetSinEndPhi));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetCosEndPhi() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::GetCosEndPhi()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:105:21
-  t144.method("GetCosEndPhi", static_cast<G4double (G4Cons::*)()  const>(&G4Cons::GetCosEndPhi));
-
-  DEBUG_MSG("Adding wrapper for void G4Cons::SetInnerRadiusMinusZ(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Cons::SetInnerRadiusMinusZ(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:109:17
-  t144.method("SetInnerRadiusMinusZ", static_cast<void (G4Cons::*)(G4double) >(&G4Cons::SetInnerRadiusMinusZ));
-
-  DEBUG_MSG("Adding wrapper for void G4Cons::SetOuterRadiusMinusZ(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Cons::SetOuterRadiusMinusZ(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:110:17
-  t144.method("SetOuterRadiusMinusZ", static_cast<void (G4Cons::*)(G4double) >(&G4Cons::SetOuterRadiusMinusZ));
-
-  DEBUG_MSG("Adding wrapper for void G4Cons::SetInnerRadiusPlusZ(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Cons::SetInnerRadiusPlusZ(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:111:17
-  t144.method("SetInnerRadiusPlusZ", static_cast<void (G4Cons::*)(G4double) >(&G4Cons::SetInnerRadiusPlusZ));
-
-  DEBUG_MSG("Adding wrapper for void G4Cons::SetOuterRadiusPlusZ(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Cons::SetOuterRadiusPlusZ(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:112:17
-  t144.method("SetOuterRadiusPlusZ", static_cast<void (G4Cons::*)(G4double) >(&G4Cons::SetOuterRadiusPlusZ));
-
-  DEBUG_MSG("Adding wrapper for void G4Cons::SetZHalfLength(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Cons::SetZHalfLength(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:113:17
-  t144.method("SetZHalfLength", static_cast<void (G4Cons::*)(G4double) >(&G4Cons::SetZHalfLength));
-
-  DEBUG_MSG("Adding wrapper for void G4Cons::SetStartPhiAngle(G4double, G4bool) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Cons::SetStartPhiAngle(G4double, G4bool)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:114:17
-  t144.method("SetStartPhiAngle", static_cast<void (G4Cons::*)(G4double, G4bool) >(&G4Cons::SetStartPhiAngle));
-  t144.method("SetStartPhiAngle", [](G4Cons& a, G4double arg0)->void{ a.SetStartPhiAngle(arg0); });
-  t144.method("SetStartPhiAngle", [](G4Cons* a, G4double arg0)->void{ a->SetStartPhiAngle(arg0); });
-
-  DEBUG_MSG("Adding wrapper for void G4Cons::SetDeltaPhiAngle(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Cons::SetDeltaPhiAngle(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:115:17
-  t144.method("SetDeltaPhiAngle", static_cast<void (G4Cons::*)(G4double) >(&G4Cons::SetDeltaPhiAngle));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetCubicVolume() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::GetCubicVolume()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:119:21
-  t144.method("GetCubicVolume", static_cast<G4double (G4Cons::*)() >(&G4Cons::GetCubicVolume));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::GetSurfaceArea() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::GetSurfaceArea()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:120:21
-  t144.method("GetSurfaceArea", static_cast<G4double (G4Cons::*)() >(&G4Cons::GetSurfaceArea));
-
-  DEBUG_MSG("Adding wrapper for void G4Cons::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Cons::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:122:10
-  t144.method("ComputeDimensions", static_cast<void (G4Cons::*)(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) >(&G4Cons::ComputeDimensions));
-
-  DEBUG_MSG("Adding wrapper for void G4Cons::BoundingLimits(G4ThreeVector &, G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Cons::BoundingLimits(G4ThreeVector &, G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:126:10
-  t144.method("BoundingLimits", static_cast<void (G4Cons::*)(G4ThreeVector &, G4ThreeVector &)  const>(&G4Cons::BoundingLimits));
-
-  DEBUG_MSG("Adding wrapper for EInside G4Cons::Inside(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: EInside G4Cons::Inside(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:133:13
-  t144.method("Inside", static_cast<EInside (G4Cons::*)(const G4ThreeVector &)  const>(&G4Cons::Inside));
-
-  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Cons::SurfaceNormal(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4ThreeVector G4Cons::SurfaceNormal(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:135:19
-  t144.method("SurfaceNormal", static_cast<G4ThreeVector (G4Cons::*)(const G4ThreeVector &)  const>(&G4Cons::SurfaceNormal));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:137:14
-  t144.method("DistanceToIn", static_cast<G4double (G4Cons::*)(const G4ThreeVector &, const G4ThreeVector &)  const>(&G4Cons::DistanceToIn));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::DistanceToIn(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::DistanceToIn(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:139:14
-  t144.method("DistanceToIn", static_cast<G4double (G4Cons::*)(const G4ThreeVector &)  const>(&G4Cons::DistanceToIn));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:140:14
-  t144.method("DistanceToOut", static_cast<G4double (G4Cons::*)(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)  const>(&G4Cons::DistanceToOut));
-  t144.method("DistanceToOut", [](G4Cons const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a.DistanceToOut(arg0, arg1); });
-  t144.method("DistanceToOut", [](G4Cons const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a.DistanceToOut(arg0, arg1, arg2); });
-  t144.method("DistanceToOut", [](G4Cons const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a.DistanceToOut(arg0, arg1, arg2, arg3); });
-  t144.method("DistanceToOut", [](G4Cons const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a->DistanceToOut(arg0, arg1); });
-  t144.method("DistanceToOut", [](G4Cons const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a->DistanceToOut(arg0, arg1, arg2); });
-  t144.method("DistanceToOut", [](G4Cons const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a->DistanceToOut(arg0, arg1, arg2, arg3); });
-
-  DEBUG_MSG("Adding wrapper for G4double G4Cons::DistanceToOut(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Cons::DistanceToOut(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:145:14
-  t144.method("DistanceToOut", static_cast<G4double (G4Cons::*)(const G4ThreeVector &)  const>(&G4Cons::DistanceToOut));
-
-  DEBUG_MSG("Adding wrapper for G4GeometryType G4Cons::GetEntityType() (" __HERE__ ")");
-  // signature to use in the veto list: G4GeometryType G4Cons::GetEntityType()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:147:20
-  t144.method("GetEntityType", static_cast<G4GeometryType (G4Cons::*)()  const>(&G4Cons::GetEntityType));
-
-  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Cons::GetPointOnSurface() (" __HERE__ ")");
-  // signature to use in the veto list: G4ThreeVector G4Cons::GetPointOnSurface()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:149:19
-  t144.method("GetPointOnSurface", static_cast<G4ThreeVector (G4Cons::*)()  const>(&G4Cons::GetPointOnSurface));
-
-  DEBUG_MSG("Adding wrapper for G4VSolid * G4Cons::Clone() (" __HERE__ ")");
-  // signature to use in the veto list: G4VSolid * G4Cons::Clone()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:151:15
-  t144.method("Clone", static_cast<G4VSolid * (G4Cons::*)()  const>(&G4Cons::Clone));
-
-  DEBUG_MSG("Adding wrapper for G4Polyhedron * G4Cons::CreatePolyhedron() (" __HERE__ ")");
-  // signature to use in the veto list: G4Polyhedron * G4Cons::CreatePolyhedron()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:158:19
-  t144.method("CreatePolyhedron", static_cast<G4Polyhedron * (G4Cons::*)()  const>(&G4Cons::CreatePolyhedron));
-
-
-  DEBUG_MSG("Adding wrapper for void G4Cons::G4Cons(const G4Cons &) (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:168:5
-  t144.constructor<const G4Cons &>(/*finalize=*/true);
-
-  DEBUG_MSG("Adding wrapper for G4Cons & G4Cons::operator=(const G4Cons &) (" __HERE__ ")");
-  // signature to use in the veto list: G4Cons & G4Cons::operator=(const G4Cons &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Cons.hh:169:13
-  t144.method("assign", static_cast<G4Cons & (G4Cons::*)(const G4Cons &) >(&G4Cons::operator=));
-
-  /* End of G4Cons class method wrappers
-   **********************************************************************/
-
-
-  /**********************************************************************/
-  /* Wrappers for the methods of class G4Tubs
-   */
-
-
-  DEBUG_MSG("Adding wrapper for void G4Tubs::G4Tubs(const G4String &, G4double, G4double, G4double, G4double, G4double) (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:78:5
-  t145.constructor<const G4String &, G4double, G4double, G4double, G4double, G4double>(/*finalize=*/true);
-
-  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetInnerRadius() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Tubs::GetInnerRadius()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:93:21
-  t145.method("GetInnerRadius", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetInnerRadius));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetOuterRadius() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Tubs::GetOuterRadius()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:94:21
-  t145.method("GetOuterRadius", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetOuterRadius));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetZHalfLength() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Tubs::GetZHalfLength()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:95:21
-  t145.method("GetZHalfLength", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetZHalfLength));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetStartPhiAngle() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Tubs::GetStartPhiAngle()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:96:21
-  t145.method("GetStartPhiAngle", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetStartPhiAngle));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetDeltaPhiAngle() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Tubs::GetDeltaPhiAngle()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:97:21
-  t145.method("GetDeltaPhiAngle", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetDeltaPhiAngle));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetSinStartPhi() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Tubs::GetSinStartPhi()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:98:21
-  t145.method("GetSinStartPhi", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetSinStartPhi));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetCosStartPhi() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Tubs::GetCosStartPhi()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:99:21
-  t145.method("GetCosStartPhi", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetCosStartPhi));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetSinEndPhi() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Tubs::GetSinEndPhi()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:100:21
-  t145.method("GetSinEndPhi", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetSinEndPhi));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetCosEndPhi() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Tubs::GetCosEndPhi()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:101:21
-  t145.method("GetCosEndPhi", static_cast<G4double (G4Tubs::*)()  const>(&G4Tubs::GetCosEndPhi));
-
-  DEBUG_MSG("Adding wrapper for void G4Tubs::SetInnerRadius(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Tubs::SetInnerRadius(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:105:17
-  t145.method("SetInnerRadius", static_cast<void (G4Tubs::*)(G4double) >(&G4Tubs::SetInnerRadius));
-
-  DEBUG_MSG("Adding wrapper for void G4Tubs::SetOuterRadius(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Tubs::SetOuterRadius(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:106:17
-  t145.method("SetOuterRadius", static_cast<void (G4Tubs::*)(G4double) >(&G4Tubs::SetOuterRadius));
-
-  DEBUG_MSG("Adding wrapper for void G4Tubs::SetZHalfLength(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Tubs::SetZHalfLength(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:107:17
-  t145.method("SetZHalfLength", static_cast<void (G4Tubs::*)(G4double) >(&G4Tubs::SetZHalfLength));
-
-  DEBUG_MSG("Adding wrapper for void G4Tubs::SetStartPhiAngle(G4double, G4bool) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Tubs::SetStartPhiAngle(G4double, G4bool)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:108:17
-  t145.method("SetStartPhiAngle", static_cast<void (G4Tubs::*)(G4double, G4bool) >(&G4Tubs::SetStartPhiAngle));
-  t145.method("SetStartPhiAngle", [](G4Tubs& a, G4double arg0)->void{ a.SetStartPhiAngle(arg0); });
-  t145.method("SetStartPhiAngle", [](G4Tubs* a, G4double arg0)->void{ a->SetStartPhiAngle(arg0); });
-
-  DEBUG_MSG("Adding wrapper for void G4Tubs::SetDeltaPhiAngle(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Tubs::SetDeltaPhiAngle(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:109:17
-  t145.method("SetDeltaPhiAngle", static_cast<void (G4Tubs::*)(G4double) >(&G4Tubs::SetDeltaPhiAngle));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetCubicVolume() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Tubs::GetCubicVolume()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:113:21
-  t145.method("GetCubicVolume", static_cast<G4double (G4Tubs::*)() >(&G4Tubs::GetCubicVolume));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Tubs::GetSurfaceArea() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Tubs::GetSurfaceArea()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:114:21
-  t145.method("GetSurfaceArea", static_cast<G4double (G4Tubs::*)() >(&G4Tubs::GetSurfaceArea));
-
-  DEBUG_MSG("Adding wrapper for void G4Tubs::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Tubs::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:116:10
-  t145.method("ComputeDimensions", static_cast<void (G4Tubs::*)(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) >(&G4Tubs::ComputeDimensions));
-
-  DEBUG_MSG("Adding wrapper for void G4Tubs::BoundingLimits(G4ThreeVector &, G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Tubs::BoundingLimits(G4ThreeVector &, G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:120:10
-  t145.method("BoundingLimits", static_cast<void (G4Tubs::*)(G4ThreeVector &, G4ThreeVector &)  const>(&G4Tubs::BoundingLimits));
-
-  DEBUG_MSG("Adding wrapper for EInside G4Tubs::Inside(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: EInside G4Tubs::Inside(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:127:13
-  t145.method("Inside", static_cast<EInside (G4Tubs::*)(const G4ThreeVector &)  const>(&G4Tubs::Inside));
-
-  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Tubs::SurfaceNormal(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4ThreeVector G4Tubs::SurfaceNormal(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:129:19
-  t145.method("SurfaceNormal", static_cast<G4ThreeVector (G4Tubs::*)(const G4ThreeVector &)  const>(&G4Tubs::SurfaceNormal));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Tubs::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Tubs::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:131:14
-  t145.method("DistanceToIn", static_cast<G4double (G4Tubs::*)(const G4ThreeVector &, const G4ThreeVector &)  const>(&G4Tubs::DistanceToIn));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Tubs::DistanceToIn(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Tubs::DistanceToIn(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:132:14
-  t145.method("DistanceToIn", static_cast<G4double (G4Tubs::*)(const G4ThreeVector &)  const>(&G4Tubs::DistanceToIn));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Tubs::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Tubs::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:133:14
-  t145.method("DistanceToOut", static_cast<G4double (G4Tubs::*)(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)  const>(&G4Tubs::DistanceToOut));
-  t145.method("DistanceToOut", [](G4Tubs const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a.DistanceToOut(arg0, arg1); });
-  t145.method("DistanceToOut", [](G4Tubs const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a.DistanceToOut(arg0, arg1, arg2); });
-  t145.method("DistanceToOut", [](G4Tubs const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a.DistanceToOut(arg0, arg1, arg2, arg3); });
-  t145.method("DistanceToOut", [](G4Tubs const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a->DistanceToOut(arg0, arg1); });
-  t145.method("DistanceToOut", [](G4Tubs const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a->DistanceToOut(arg0, arg1, arg2); });
-  t145.method("DistanceToOut", [](G4Tubs const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a->DistanceToOut(arg0, arg1, arg2, arg3); });
-
-  DEBUG_MSG("Adding wrapper for G4double G4Tubs::DistanceToOut(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Tubs::DistanceToOut(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:137:14
-  t145.method("DistanceToOut", static_cast<G4double (G4Tubs::*)(const G4ThreeVector &)  const>(&G4Tubs::DistanceToOut));
-
-  DEBUG_MSG("Adding wrapper for G4GeometryType G4Tubs::GetEntityType() (" __HERE__ ")");
-  // signature to use in the veto list: G4GeometryType G4Tubs::GetEntityType()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:139:20
-  t145.method("GetEntityType", static_cast<G4GeometryType (G4Tubs::*)()  const>(&G4Tubs::GetEntityType));
-
-  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Tubs::GetPointOnSurface() (" __HERE__ ")");
-  // signature to use in the veto list: G4ThreeVector G4Tubs::GetPointOnSurface()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:141:19
-  t145.method("GetPointOnSurface", static_cast<G4ThreeVector (G4Tubs::*)()  const>(&G4Tubs::GetPointOnSurface));
-
-  DEBUG_MSG("Adding wrapper for G4VSolid * G4Tubs::Clone() (" __HERE__ ")");
-  // signature to use in the veto list: G4VSolid * G4Tubs::Clone()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:143:15
-  t145.method("Clone", static_cast<G4VSolid * (G4Tubs::*)()  const>(&G4Tubs::Clone));
-
-  DEBUG_MSG("Adding wrapper for G4Polyhedron * G4Tubs::CreatePolyhedron() (" __HERE__ ")");
-  // signature to use in the veto list: G4Polyhedron * G4Tubs::CreatePolyhedron()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:150:25
-  t145.method("CreatePolyhedron", static_cast<G4Polyhedron * (G4Tubs::*)()  const>(&G4Tubs::CreatePolyhedron));
-
-
-  DEBUG_MSG("Adding wrapper for void G4Tubs::G4Tubs(const G4Tubs &) (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:160:5
-  t145.constructor<const G4Tubs &>(/*finalize=*/true);
-
-  DEBUG_MSG("Adding wrapper for G4Tubs & G4Tubs::operator=(const G4Tubs &) (" __HERE__ ")");
-  // signature to use in the veto list: G4Tubs & G4Tubs::operator=(const G4Tubs &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Tubs.hh:161:13
-  t145.method("assign", static_cast<G4Tubs & (G4Tubs::*)(const G4Tubs &) >(&G4Tubs::operator=));
-
-  /* End of G4Tubs class method wrappers
-   **********************************************************************/
-
-
-  /**********************************************************************/
-  /* Wrappers for the methods of class G4Orb
-   */
-
-
-  DEBUG_MSG("Adding wrapper for void G4Orb::G4Orb(const G4String &, G4double) (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:59:5
-  t146.constructor<const G4String &, G4double>(/*finalize=*/true);
-
-  DEBUG_MSG("Adding wrapper for G4double G4Orb::GetRadius() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Orb::GetRadius()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:65:21
-  t146.method("GetRadius", static_cast<G4double (G4Orb::*)()  const>(&G4Orb::GetRadius));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Orb::GetRadialTolerance() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Orb::GetRadialTolerance()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:66:21
-  t146.method("GetRadialTolerance", static_cast<G4double (G4Orb::*)()  const>(&G4Orb::GetRadialTolerance));
-
-  DEBUG_MSG("Adding wrapper for void G4Orb::SetRadius(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Orb::SetRadius(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:68:17
-  t146.method("SetRadius", static_cast<void (G4Orb::*)(G4double) >(&G4Orb::SetRadius));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Orb::GetCubicVolume() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Orb::GetCubicVolume()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:72:21
-  t146.method("GetCubicVolume", static_cast<G4double (G4Orb::*)() >(&G4Orb::GetCubicVolume));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Orb::GetSurfaceArea() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Orb::GetSurfaceArea()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:73:21
-  t146.method("GetSurfaceArea", static_cast<G4double (G4Orb::*)() >(&G4Orb::GetSurfaceArea));
-
-  DEBUG_MSG("Adding wrapper for void G4Orb::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Orb::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:75:10
-  t146.method("ComputeDimensions", static_cast<void (G4Orb::*)(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) >(&G4Orb::ComputeDimensions));
-
-  DEBUG_MSG("Adding wrapper for void G4Orb::BoundingLimits(G4ThreeVector &, G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Orb::BoundingLimits(G4ThreeVector &, G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:79:10
-  t146.method("BoundingLimits", static_cast<void (G4Orb::*)(G4ThreeVector &, G4ThreeVector &)  const>(&G4Orb::BoundingLimits));
-
-  DEBUG_MSG("Adding wrapper for EInside G4Orb::Inside(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: EInside G4Orb::Inside(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:86:13
-  t146.method("Inside", static_cast<EInside (G4Orb::*)(const G4ThreeVector &)  const>(&G4Orb::Inside));
-
-  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Orb::SurfaceNormal(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4ThreeVector G4Orb::SurfaceNormal(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:88:19
-  t146.method("SurfaceNormal", static_cast<G4ThreeVector (G4Orb::*)(const G4ThreeVector &)  const>(&G4Orb::SurfaceNormal));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Orb::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Orb::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:90:14
-  t146.method("DistanceToIn", static_cast<G4double (G4Orb::*)(const G4ThreeVector &, const G4ThreeVector &)  const>(&G4Orb::DistanceToIn));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Orb::DistanceToIn(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Orb::DistanceToIn(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:93:14
-  t146.method("DistanceToIn", static_cast<G4double (G4Orb::*)(const G4ThreeVector &)  const>(&G4Orb::DistanceToIn));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Orb::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Orb::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:95:14
-  t146.method("DistanceToOut", static_cast<G4double (G4Orb::*)(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)  const>(&G4Orb::DistanceToOut));
-  t146.method("DistanceToOut", [](G4Orb const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a.DistanceToOut(arg0, arg1); });
-  t146.method("DistanceToOut", [](G4Orb const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a.DistanceToOut(arg0, arg1, arg2); });
-  t146.method("DistanceToOut", [](G4Orb const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a.DistanceToOut(arg0, arg1, arg2, arg3); });
-  t146.method("DistanceToOut", [](G4Orb const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a->DistanceToOut(arg0, arg1); });
-  t146.method("DistanceToOut", [](G4Orb const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a->DistanceToOut(arg0, arg1, arg2); });
-  t146.method("DistanceToOut", [](G4Orb const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a->DistanceToOut(arg0, arg1, arg2, arg3); });
-
-  DEBUG_MSG("Adding wrapper for G4double G4Orb::DistanceToOut(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Orb::DistanceToOut(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:101:14
-  t146.method("DistanceToOut", static_cast<G4double (G4Orb::*)(const G4ThreeVector &)  const>(&G4Orb::DistanceToOut));
-
-  DEBUG_MSG("Adding wrapper for G4GeometryType G4Orb::GetEntityType() (" __HERE__ ")");
-  // signature to use in the veto list: G4GeometryType G4Orb::GetEntityType()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:103:20
-  t146.method("GetEntityType", static_cast<G4GeometryType (G4Orb::*)()  const>(&G4Orb::GetEntityType));
-
-  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Orb::GetPointOnSurface() (" __HERE__ ")");
-  // signature to use in the veto list: G4ThreeVector G4Orb::GetPointOnSurface()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:105:19
-  t146.method("GetPointOnSurface", static_cast<G4ThreeVector (G4Orb::*)()  const>(&G4Orb::GetPointOnSurface));
-
-  DEBUG_MSG("Adding wrapper for G4VSolid * G4Orb::Clone() (" __HERE__ ")");
-  // signature to use in the veto list: G4VSolid * G4Orb::Clone()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:107:15
-  t146.method("Clone", static_cast<G4VSolid * (G4Orb::*)()  const>(&G4Orb::Clone));
-
-  DEBUG_MSG("Adding wrapper for G4Polyhedron * G4Orb::CreatePolyhedron() (" __HERE__ ")");
-  // signature to use in the veto list: G4Polyhedron * G4Orb::CreatePolyhedron()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:115:19
-  t146.method("CreatePolyhedron", static_cast<G4Polyhedron * (G4Orb::*)()  const>(&G4Orb::CreatePolyhedron));
-
-
-  DEBUG_MSG("Adding wrapper for void G4Orb::G4Orb(const G4Orb &) (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:124:5
-  t146.constructor<const G4Orb &>(/*finalize=*/true);
-
-  DEBUG_MSG("Adding wrapper for G4Orb & G4Orb::operator=(const G4Orb &) (" __HERE__ ")");
-  // signature to use in the veto list: G4Orb & G4Orb::operator=(const G4Orb &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Orb.hh:125:12
-  t146.method("assign", static_cast<G4Orb & (G4Orb::*)(const G4Orb &) >(&G4Orb::operator=));
-
-  /* End of G4Orb class method wrappers
-   **********************************************************************/
-
-
-  /**********************************************************************/
-  /* Wrappers for the methods of class G4Sphere
-   */
-
-
-  DEBUG_MSG("Adding wrapper for void G4Sphere::G4Sphere(const G4String &, G4double, G4double, G4double, G4double, G4double, G4double) (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:84:5
-  t147.constructor<const G4String &, G4double, G4double, G4double, G4double, G4double, G4double>(/*finalize=*/true);
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetInnerRadius() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::GetInnerRadius()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:98:21
-  t147.method("GetInnerRadius", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetInnerRadius));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetOuterRadius() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::GetOuterRadius()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:99:21
-  t147.method("GetOuterRadius", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetOuterRadius));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetStartPhiAngle() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::GetStartPhiAngle()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:100:21
-  t147.method("GetStartPhiAngle", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetStartPhiAngle));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetDeltaPhiAngle() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::GetDeltaPhiAngle()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:101:21
-  t147.method("GetDeltaPhiAngle", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetDeltaPhiAngle));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetStartThetaAngle() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::GetStartThetaAngle()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:102:21
-  t147.method("GetStartThetaAngle", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetStartThetaAngle));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetDeltaThetaAngle() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::GetDeltaThetaAngle()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:103:21
-  t147.method("GetDeltaThetaAngle", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetDeltaThetaAngle));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetSinStartPhi() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::GetSinStartPhi()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:104:21
-  t147.method("GetSinStartPhi", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetSinStartPhi));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetCosStartPhi() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::GetCosStartPhi()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:105:21
-  t147.method("GetCosStartPhi", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetCosStartPhi));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetSinEndPhi() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::GetSinEndPhi()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:106:21
-  t147.method("GetSinEndPhi", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetSinEndPhi));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetCosEndPhi() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::GetCosEndPhi()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:107:21
-  t147.method("GetCosEndPhi", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetCosEndPhi));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetSinStartTheta() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::GetSinStartTheta()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:108:21
-  t147.method("GetSinStartTheta", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetSinStartTheta));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetCosStartTheta() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::GetCosStartTheta()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:109:21
-  t147.method("GetCosStartTheta", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetCosStartTheta));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetSinEndTheta() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::GetSinEndTheta()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:110:21
-  t147.method("GetSinEndTheta", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetSinEndTheta));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetCosEndTheta() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::GetCosEndTheta()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:111:21
-  t147.method("GetCosEndTheta", static_cast<G4double (G4Sphere::*)()  const>(&G4Sphere::GetCosEndTheta));
-
-  DEBUG_MSG("Adding wrapper for void G4Sphere::SetInnerRadius(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Sphere::SetInnerRadius(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:115:17
-  t147.method("SetInnerRadius", static_cast<void (G4Sphere::*)(G4double) >(&G4Sphere::SetInnerRadius));
-
-  DEBUG_MSG("Adding wrapper for void G4Sphere::SetOuterRadius(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Sphere::SetOuterRadius(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:116:17
-  t147.method("SetOuterRadius", static_cast<void (G4Sphere::*)(G4double) >(&G4Sphere::SetOuterRadius));
-
-  DEBUG_MSG("Adding wrapper for void G4Sphere::SetStartPhiAngle(G4double, G4bool) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Sphere::SetStartPhiAngle(G4double, G4bool)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:117:17
-  t147.method("SetStartPhiAngle", static_cast<void (G4Sphere::*)(G4double, G4bool) >(&G4Sphere::SetStartPhiAngle));
-  t147.method("SetStartPhiAngle", [](G4Sphere& a, G4double arg0)->void{ a.SetStartPhiAngle(arg0); });
-  t147.method("SetStartPhiAngle", [](G4Sphere* a, G4double arg0)->void{ a->SetStartPhiAngle(arg0); });
-
-  DEBUG_MSG("Adding wrapper for void G4Sphere::SetDeltaPhiAngle(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Sphere::SetDeltaPhiAngle(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:118:17
-  t147.method("SetDeltaPhiAngle", static_cast<void (G4Sphere::*)(G4double) >(&G4Sphere::SetDeltaPhiAngle));
-
-  DEBUG_MSG("Adding wrapper for void G4Sphere::SetStartThetaAngle(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Sphere::SetStartThetaAngle(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:119:17
-  t147.method("SetStartThetaAngle", static_cast<void (G4Sphere::*)(G4double) >(&G4Sphere::SetStartThetaAngle));
-
-  DEBUG_MSG("Adding wrapper for void G4Sphere::SetDeltaThetaAngle(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Sphere::SetDeltaThetaAngle(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:120:17
-  t147.method("SetDeltaThetaAngle", static_cast<void (G4Sphere::*)(G4double) >(&G4Sphere::SetDeltaThetaAngle));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetCubicVolume() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::GetCubicVolume()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:124:14
-  t147.method("GetCubicVolume", static_cast<G4double (G4Sphere::*)() >(&G4Sphere::GetCubicVolume));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::GetSurfaceArea() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::GetSurfaceArea()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:125:14
-  t147.method("GetSurfaceArea", static_cast<G4double (G4Sphere::*)() >(&G4Sphere::GetSurfaceArea));
-
-  DEBUG_MSG("Adding wrapper for void G4Sphere::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Sphere::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:127:10
-  t147.method("ComputeDimensions", static_cast<void (G4Sphere::*)(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) >(&G4Sphere::ComputeDimensions));
-
-  DEBUG_MSG("Adding wrapper for void G4Sphere::BoundingLimits(G4ThreeVector &, G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Sphere::BoundingLimits(G4ThreeVector &, G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:131:10
-  t147.method("BoundingLimits", static_cast<void (G4Sphere::*)(G4ThreeVector &, G4ThreeVector &)  const>(&G4Sphere::BoundingLimits));
-
-  DEBUG_MSG("Adding wrapper for EInside G4Sphere::Inside(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: EInside G4Sphere::Inside(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:138:13
-  t147.method("Inside", static_cast<EInside (G4Sphere::*)(const G4ThreeVector &)  const>(&G4Sphere::Inside));
-
-  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Sphere::SurfaceNormal(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4ThreeVector G4Sphere::SurfaceNormal(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:140:19
-  t147.method("SurfaceNormal", static_cast<G4ThreeVector (G4Sphere::*)(const G4ThreeVector &)  const>(&G4Sphere::SurfaceNormal));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:142:14
-  t147.method("DistanceToIn", static_cast<G4double (G4Sphere::*)(const G4ThreeVector &, const G4ThreeVector &)  const>(&G4Sphere::DistanceToIn));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::DistanceToIn(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::DistanceToIn(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:145:14
-  t147.method("DistanceToIn", static_cast<G4double (G4Sphere::*)(const G4ThreeVector &)  const>(&G4Sphere::DistanceToIn));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:147:14
-  t147.method("DistanceToOut", static_cast<G4double (G4Sphere::*)(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)  const>(&G4Sphere::DistanceToOut));
-  t147.method("DistanceToOut", [](G4Sphere const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a.DistanceToOut(arg0, arg1); });
-  t147.method("DistanceToOut", [](G4Sphere const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a.DistanceToOut(arg0, arg1, arg2); });
-  t147.method("DistanceToOut", [](G4Sphere const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a.DistanceToOut(arg0, arg1, arg2, arg3); });
-  t147.method("DistanceToOut", [](G4Sphere const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a->DistanceToOut(arg0, arg1); });
-  t147.method("DistanceToOut", [](G4Sphere const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a->DistanceToOut(arg0, arg1, arg2); });
-  t147.method("DistanceToOut", [](G4Sphere const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a->DistanceToOut(arg0, arg1, arg2, arg3); });
-
-  DEBUG_MSG("Adding wrapper for G4double G4Sphere::DistanceToOut(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Sphere::DistanceToOut(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:153:14
-  t147.method("DistanceToOut", static_cast<G4double (G4Sphere::*)(const G4ThreeVector &)  const>(&G4Sphere::DistanceToOut));
-
-  DEBUG_MSG("Adding wrapper for G4GeometryType G4Sphere::GetEntityType() (" __HERE__ ")");
-  // signature to use in the veto list: G4GeometryType G4Sphere::GetEntityType()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:155:20
-  t147.method("GetEntityType", static_cast<G4GeometryType (G4Sphere::*)()  const>(&G4Sphere::GetEntityType));
-
-  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Sphere::GetPointOnSurface() (" __HERE__ ")");
-  // signature to use in the veto list: G4ThreeVector G4Sphere::GetPointOnSurface()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:157:19
-  t147.method("GetPointOnSurface", static_cast<G4ThreeVector (G4Sphere::*)()  const>(&G4Sphere::GetPointOnSurface));
-
-  DEBUG_MSG("Adding wrapper for G4VSolid * G4Sphere::Clone() (" __HERE__ ")");
-  // signature to use in the veto list: G4VSolid * G4Sphere::Clone()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:159:15
-  t147.method("Clone", static_cast<G4VSolid * (G4Sphere::*)()  const>(&G4Sphere::Clone));
-
-  DEBUG_MSG("Adding wrapper for G4Polyhedron * G4Sphere::CreatePolyhedron() (" __HERE__ ")");
-  // signature to use in the veto list: G4Polyhedron * G4Sphere::CreatePolyhedron()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:167:19
-  t147.method("CreatePolyhedron", static_cast<G4Polyhedron * (G4Sphere::*)()  const>(&G4Sphere::CreatePolyhedron));
-
-
-  DEBUG_MSG("Adding wrapper for void G4Sphere::G4Sphere(const G4Sphere &) (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:177:5
-  t147.constructor<const G4Sphere &>(/*finalize=*/true);
-
-  DEBUG_MSG("Adding wrapper for G4Sphere & G4Sphere::operator=(const G4Sphere &) (" __HERE__ ")");
-  // signature to use in the veto list: G4Sphere & G4Sphere::operator=(const G4Sphere &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Sphere.hh:178:15
-  t147.method("assign", static_cast<G4Sphere & (G4Sphere::*)(const G4Sphere &) >(&G4Sphere::operator=));
-
-  /* End of G4Sphere class method wrappers
-   **********************************************************************/
-
-
-  /**********************************************************************/
-  /* Wrappers for the methods of class G4Trd
-   */
-
-
-  DEBUG_MSG("Adding wrapper for void G4Trd::G4Trd(const G4String &, G4double, G4double, G4double, G4double, G4double) (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:66:5
-  t148.constructor<const G4String &, G4double, G4double, G4double, G4double, G4double>(/*finalize=*/true);
-
-  DEBUG_MSG("Adding wrapper for G4double G4Trd::GetXHalfLength1() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Trd::GetXHalfLength1()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:79:21
-  t148.method("GetXHalfLength1", static_cast<G4double (G4Trd::*)()  const>(&G4Trd::GetXHalfLength1));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Trd::GetXHalfLength2() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Trd::GetXHalfLength2()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:80:21
-  t148.method("GetXHalfLength2", static_cast<G4double (G4Trd::*)()  const>(&G4Trd::GetXHalfLength2));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Trd::GetYHalfLength1() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Trd::GetYHalfLength1()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:81:21
-  t148.method("GetYHalfLength1", static_cast<G4double (G4Trd::*)()  const>(&G4Trd::GetYHalfLength1));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Trd::GetYHalfLength2() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Trd::GetYHalfLength2()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:82:21
-  t148.method("GetYHalfLength2", static_cast<G4double (G4Trd::*)()  const>(&G4Trd::GetYHalfLength2));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Trd::GetZHalfLength() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Trd::GetZHalfLength()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:83:21
-  t148.method("GetZHalfLength", static_cast<G4double (G4Trd::*)()  const>(&G4Trd::GetZHalfLength));
-
-  DEBUG_MSG("Adding wrapper for void G4Trd::SetXHalfLength1(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Trd::SetXHalfLength1(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:87:17
-  t148.method("SetXHalfLength1", static_cast<void (G4Trd::*)(G4double) >(&G4Trd::SetXHalfLength1));
-
-  DEBUG_MSG("Adding wrapper for void G4Trd::SetXHalfLength2(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Trd::SetXHalfLength2(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:88:17
-  t148.method("SetXHalfLength2", static_cast<void (G4Trd::*)(G4double) >(&G4Trd::SetXHalfLength2));
-
-  DEBUG_MSG("Adding wrapper for void G4Trd::SetYHalfLength1(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Trd::SetYHalfLength1(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:89:17
-  t148.method("SetYHalfLength1", static_cast<void (G4Trd::*)(G4double) >(&G4Trd::SetYHalfLength1));
-
-  DEBUG_MSG("Adding wrapper for void G4Trd::SetYHalfLength2(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Trd::SetYHalfLength2(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:90:17
-  t148.method("SetYHalfLength2", static_cast<void (G4Trd::*)(G4double) >(&G4Trd::SetYHalfLength2));
-
-  DEBUG_MSG("Adding wrapper for void G4Trd::SetZHalfLength(G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Trd::SetZHalfLength(G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:91:17
-  t148.method("SetZHalfLength", static_cast<void (G4Trd::*)(G4double) >(&G4Trd::SetZHalfLength));
-
-  DEBUG_MSG("Adding wrapper for void G4Trd::SetAllParameters(G4double, G4double, G4double, G4double, G4double) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Trd::SetAllParameters(G4double, G4double, G4double, G4double, G4double)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:93:10
-  t148.method("SetAllParameters", static_cast<void (G4Trd::*)(G4double, G4double, G4double, G4double, G4double) >(&G4Trd::SetAllParameters));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Trd::GetCubicVolume() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Trd::GetCubicVolume()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:99:14
-  t148.method("GetCubicVolume", static_cast<G4double (G4Trd::*)() >(&G4Trd::GetCubicVolume));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Trd::GetSurfaceArea() (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Trd::GetSurfaceArea()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:100:14
-  t148.method("GetSurfaceArea", static_cast<G4double (G4Trd::*)() >(&G4Trd::GetSurfaceArea));
-
-  DEBUG_MSG("Adding wrapper for void G4Trd::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Trd::ComputeDimensions(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:102:10
-  t148.method("ComputeDimensions", static_cast<void (G4Trd::*)(G4VPVParameterisation *, const G4int, const G4VPhysicalVolume *) >(&G4Trd::ComputeDimensions));
-
-  DEBUG_MSG("Adding wrapper for void G4Trd::BoundingLimits(G4ThreeVector &, G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: void G4Trd::BoundingLimits(G4ThreeVector &, G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:106:10
-  t148.method("BoundingLimits", static_cast<void (G4Trd::*)(G4ThreeVector &, G4ThreeVector &)  const>(&G4Trd::BoundingLimits));
-
-  DEBUG_MSG("Adding wrapper for EInside G4Trd::Inside(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: EInside G4Trd::Inside(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:113:13
-  t148.method("Inside", static_cast<EInside (G4Trd::*)(const G4ThreeVector &)  const>(&G4Trd::Inside));
-
-  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Trd::SurfaceNormal(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4ThreeVector G4Trd::SurfaceNormal(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:115:19
-  t148.method("SurfaceNormal", static_cast<G4ThreeVector (G4Trd::*)(const G4ThreeVector &)  const>(&G4Trd::SurfaceNormal));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Trd::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Trd::DistanceToIn(const G4ThreeVector &, const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:117:14
-  t148.method("DistanceToIn", static_cast<G4double (G4Trd::*)(const G4ThreeVector &, const G4ThreeVector &)  const>(&G4Trd::DistanceToIn));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Trd::DistanceToIn(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Trd::DistanceToIn(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:120:14
-  t148.method("DistanceToIn", static_cast<G4double (G4Trd::*)(const G4ThreeVector &)  const>(&G4Trd::DistanceToIn));
-
-  DEBUG_MSG("Adding wrapper for G4double G4Trd::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Trd::DistanceToOut(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:122:14
-  t148.method("DistanceToOut", static_cast<G4double (G4Trd::*)(const G4ThreeVector &, const G4ThreeVector &, const G4bool, G4bool *, G4ThreeVector *)  const>(&G4Trd::DistanceToOut));
-  t148.method("DistanceToOut", [](G4Trd const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a.DistanceToOut(arg0, arg1); });
-  t148.method("DistanceToOut", [](G4Trd const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a.DistanceToOut(arg0, arg1, arg2); });
-  t148.method("DistanceToOut", [](G4Trd const& a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a.DistanceToOut(arg0, arg1, arg2, arg3); });
-  t148.method("DistanceToOut", [](G4Trd const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1)->G4double{ return a->DistanceToOut(arg0, arg1); });
-  t148.method("DistanceToOut", [](G4Trd const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2)->G4double{ return a->DistanceToOut(arg0, arg1, arg2); });
-  t148.method("DistanceToOut", [](G4Trd const* a, const G4ThreeVector & arg0, const G4ThreeVector & arg1, const G4bool arg2, G4bool * arg3)->G4double{ return a->DistanceToOut(arg0, arg1, arg2, arg3); });
-
-  DEBUG_MSG("Adding wrapper for G4double G4Trd::DistanceToOut(const G4ThreeVector &) (" __HERE__ ")");
-  // signature to use in the veto list: G4double G4Trd::DistanceToOut(const G4ThreeVector &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:128:14
-  t148.method("DistanceToOut", static_cast<G4double (G4Trd::*)(const G4ThreeVector &)  const>(&G4Trd::DistanceToOut));
-
-  DEBUG_MSG("Adding wrapper for G4GeometryType G4Trd::GetEntityType() (" __HERE__ ")");
-  // signature to use in the veto list: G4GeometryType G4Trd::GetEntityType()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:130:20
-  t148.method("GetEntityType", static_cast<G4GeometryType (G4Trd::*)()  const>(&G4Trd::GetEntityType));
-
-  DEBUG_MSG("Adding wrapper for G4ThreeVector G4Trd::GetPointOnSurface() (" __HERE__ ")");
-  // signature to use in the veto list: G4ThreeVector G4Trd::GetPointOnSurface()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:132:19
-  t148.method("GetPointOnSurface", static_cast<G4ThreeVector (G4Trd::*)()  const>(&G4Trd::GetPointOnSurface));
-
-  DEBUG_MSG("Adding wrapper for G4VSolid * G4Trd::Clone() (" __HERE__ ")");
-  // signature to use in the veto list: G4VSolid * G4Trd::Clone()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:134:15
-  t148.method("Clone", static_cast<G4VSolid * (G4Trd::*)()  const>(&G4Trd::Clone));
-
-  DEBUG_MSG("Adding wrapper for G4Polyhedron * G4Trd::CreatePolyhedron() (" __HERE__ ")");
-  // signature to use in the veto list: G4Polyhedron * G4Trd::CreatePolyhedron()
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:141:19
-  t148.method("CreatePolyhedron", static_cast<G4Polyhedron * (G4Trd::*)()  const>(&G4Trd::CreatePolyhedron));
-
-
-  DEBUG_MSG("Adding wrapper for void G4Trd::G4Trd(const G4Trd &) (" __HERE__ ")");
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:150:5
-  t148.constructor<const G4Trd &>(/*finalize=*/true);
-
-  DEBUG_MSG("Adding wrapper for G4Trd & G4Trd::operator=(const G4Trd &) (" __HERE__ ")");
-  // signature to use in the veto list: G4Trd & G4Trd::operator=(const G4Trd &)
-  // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Trd.hh:151:12
-  t148.method("assign", static_cast<G4Trd & (G4Trd::*)(const G4Trd &) >(&G4Trd::operator=));
-
-  /* End of G4Trd class method wrappers
    **********************************************************************/
 
 
@@ -10716,13 +10970,13 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& types){
 
   DEBUG_MSG("Adding wrapper for void CLHEP::HepLorentzRotation::HepLorentzRotation_row::HepLorentzRotation_row(const CLHEP::HepLorentzRotation &, int) (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/CLHEP/Vector/LorentzRotation.h:178:12
-  t153.constructor<const CLHEP::HepLorentzRotation &, int>(/*finalize=*/true);
+  t158.constructor<const CLHEP::HepLorentzRotation &, int>(/*finalize=*/true);
   types.set_override_module(jl_base_module);
 
 
   DEBUG_MSG("Adding getindex method to wrap double CLHEP::HepLorentzRotation::HepLorentzRotation_row::operator[](int) (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/CLHEP/Vector/LorentzRotation.h:179:19
-  t153.method("getindex",
+  t158.method("getindex",
     [](CLHEP::HepLorentzRotation::HepLorentzRotation_row& a, int i){
     return a[i];
   });
@@ -10740,149 +10994,149 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& types){
 
   DEBUG_MSG("Adding wrapper for void G4Colour::G4Colour(G4double, G4double, G4double, G4double) (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:88:3
-  t154.constructor<G4double>(/*finalize=*/true);
-  t154.constructor<G4double, G4double>(/*finalize=*/true);
-  t154.constructor<G4double, G4double, G4double>(/*finalize=*/true);
-  t154.constructor<G4double, G4double, G4double, G4double>(/*finalize=*/true);
+  t159.constructor<G4double>(/*finalize=*/true);
+  t159.constructor<G4double, G4double>(/*finalize=*/true);
+  t159.constructor<G4double, G4double, G4double>(/*finalize=*/true);
+  t159.constructor<G4double, G4double, G4double, G4double>(/*finalize=*/true);
 
 
   DEBUG_MSG("Adding wrapper for void G4Colour::G4Colour(G4ThreeVector) (" __HERE__ ")");
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:91:3
-  t154.constructor<G4ThreeVector>(/*finalize=*/true);
+  t159.constructor<G4ThreeVector>(/*finalize=*/true);
   types.set_override_module(jl_base_module);
 
   DEBUG_MSG("Adding wrapper for G4bool G4Colour::operator!=(const G4Colour &) (" __HERE__ ")");
   // signature to use in the veto list: G4bool G4Colour::operator!=(const G4Colour &)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:98:10
-  t154.method("!=", static_cast<G4bool (G4Colour::*)(const G4Colour &)  const>(&G4Colour::operator!=));
+  t159.method("!=", static_cast<G4bool (G4Colour::*)(const G4Colour &)  const>(&G4Colour::operator!=));
 
   DEBUG_MSG("Adding wrapper for G4bool G4Colour::operator==(const G4Colour &) (" __HERE__ ")");
   // signature to use in the veto list: G4bool G4Colour::operator==(const G4Colour &)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:99:10
-  t154.method("==", static_cast<G4bool (G4Colour::*)(const G4Colour &)  const>(&G4Colour::operator==));
+  t159.method("==", static_cast<G4bool (G4Colour::*)(const G4Colour &)  const>(&G4Colour::operator==));
 
   types.unset_override_module();
 
   DEBUG_MSG("Adding wrapper for G4Colour & G4Colour::operator+=(const G4Colour &) (" __HERE__ ")");
   // signature to use in the veto list: G4Colour & G4Colour::operator+=(const G4Colour &)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:101:13
-  t154.method("add!", static_cast<G4Colour & (G4Colour::*)(const G4Colour &) >(&G4Colour::operator+=));
+  t159.method("add!", static_cast<G4Colour & (G4Colour::*)(const G4Colour &) >(&G4Colour::operator+=));
 
   DEBUG_MSG("Adding wrapper for G4double G4Colour::GetRed() (" __HERE__ ")");
   // signature to use in the veto list: G4double G4Colour::GetRed()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:107:12
-  t154.method("GetRed", static_cast<G4double (G4Colour::*)()  const>(&G4Colour::GetRed));
+  t159.method("GetRed", static_cast<G4double (G4Colour::*)()  const>(&G4Colour::GetRed));
 
   DEBUG_MSG("Adding wrapper for G4double G4Colour::GetGreen() (" __HERE__ ")");
   // signature to use in the veto list: G4double G4Colour::GetGreen()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:108:12
-  t154.method("GetGreen", static_cast<G4double (G4Colour::*)()  const>(&G4Colour::GetGreen));
+  t159.method("GetGreen", static_cast<G4double (G4Colour::*)()  const>(&G4Colour::GetGreen));
 
   DEBUG_MSG("Adding wrapper for G4double G4Colour::GetBlue() (" __HERE__ ")");
   // signature to use in the veto list: G4double G4Colour::GetBlue()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:109:12
-  t154.method("GetBlue", static_cast<G4double (G4Colour::*)()  const>(&G4Colour::GetBlue));
+  t159.method("GetBlue", static_cast<G4double (G4Colour::*)()  const>(&G4Colour::GetBlue));
 
   DEBUG_MSG("Adding wrapper for G4double G4Colour::GetAlpha() (" __HERE__ ")");
   // signature to use in the veto list: G4double G4Colour::GetAlpha()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:110:12
-  t154.method("GetAlpha", static_cast<G4double (G4Colour::*)()  const>(&G4Colour::GetAlpha));
+  t159.method("GetAlpha", static_cast<G4double (G4Colour::*)()  const>(&G4Colour::GetAlpha));
 
   DEBUG_MSG("Adding wrapper for void G4Colour::SetRed(G4double) (" __HERE__ ")");
   // signature to use in the veto list: void G4Colour::SetRed(G4double)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:112:8
-  t154.method("SetRed", static_cast<void (G4Colour::*)(G4double) >(&G4Colour::SetRed));
+  t159.method("SetRed", static_cast<void (G4Colour::*)(G4double) >(&G4Colour::SetRed));
 
   DEBUG_MSG("Adding wrapper for void G4Colour::SetGreen(G4double) (" __HERE__ ")");
   // signature to use in the veto list: void G4Colour::SetGreen(G4double)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:113:8
-  t154.method("SetGreen", static_cast<void (G4Colour::*)(G4double) >(&G4Colour::SetGreen));
+  t159.method("SetGreen", static_cast<void (G4Colour::*)(G4double) >(&G4Colour::SetGreen));
 
   DEBUG_MSG("Adding wrapper for void G4Colour::SetBlue(G4double) (" __HERE__ ")");
   // signature to use in the veto list: void G4Colour::SetBlue(G4double)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:114:8
-  t154.method("SetBlue", static_cast<void (G4Colour::*)(G4double) >(&G4Colour::SetBlue));
+  t159.method("SetBlue", static_cast<void (G4Colour::*)(G4double) >(&G4Colour::SetBlue));
 
   DEBUG_MSG("Adding wrapper for void G4Colour::SetAlpha(G4double) (" __HERE__ ")");
   // signature to use in the veto list: void G4Colour::SetAlpha(G4double)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:115:8
-  t154.method("SetAlpha", static_cast<void (G4Colour::*)(G4double) >(&G4Colour::SetAlpha));
+  t159.method("SetAlpha", static_cast<void (G4Colour::*)(G4double) >(&G4Colour::SetAlpha));
 
   DEBUG_MSG("Adding wrapper for G4Colour G4Colour::White() (" __HERE__ ")");
   // signature to use in the veto list: G4Colour G4Colour::White()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:117:19
-  t154.method("G4Colour!White", static_cast<G4Colour (*)() >(&G4Colour::White));
+  t159.method("G4Colour!White", static_cast<G4Colour (*)() >(&G4Colour::White));
 
   DEBUG_MSG("Adding wrapper for G4Colour G4Colour::Gray() (" __HERE__ ")");
   // signature to use in the veto list: G4Colour G4Colour::Gray()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:118:19
-  t154.method("G4Colour!Gray", static_cast<G4Colour (*)() >(&G4Colour::Gray));
+  t159.method("G4Colour!Gray", static_cast<G4Colour (*)() >(&G4Colour::Gray));
 
   DEBUG_MSG("Adding wrapper for G4Colour G4Colour::Grey() (" __HERE__ ")");
   // signature to use in the veto list: G4Colour G4Colour::Grey()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:119:19
-  t154.method("G4Colour!Grey", static_cast<G4Colour (*)() >(&G4Colour::Grey));
+  t159.method("G4Colour!Grey", static_cast<G4Colour (*)() >(&G4Colour::Grey));
 
   DEBUG_MSG("Adding wrapper for G4Colour G4Colour::Black() (" __HERE__ ")");
   // signature to use in the veto list: G4Colour G4Colour::Black()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:120:19
-  t154.method("G4Colour!Black", static_cast<G4Colour (*)() >(&G4Colour::Black));
+  t159.method("G4Colour!Black", static_cast<G4Colour (*)() >(&G4Colour::Black));
 
   DEBUG_MSG("Adding wrapper for G4Colour G4Colour::Brown() (" __HERE__ ")");
   // signature to use in the veto list: G4Colour G4Colour::Brown()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:121:19
-  t154.method("G4Colour!Brown", static_cast<G4Colour (*)() >(&G4Colour::Brown));
+  t159.method("G4Colour!Brown", static_cast<G4Colour (*)() >(&G4Colour::Brown));
 
   DEBUG_MSG("Adding wrapper for G4Colour G4Colour::Red() (" __HERE__ ")");
   // signature to use in the veto list: G4Colour G4Colour::Red()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:122:19
-  t154.method("G4Colour!Red", static_cast<G4Colour (*)() >(&G4Colour::Red));
+  t159.method("G4Colour!Red", static_cast<G4Colour (*)() >(&G4Colour::Red));
 
   DEBUG_MSG("Adding wrapper for G4Colour G4Colour::Green() (" __HERE__ ")");
   // signature to use in the veto list: G4Colour G4Colour::Green()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:123:19
-  t154.method("G4Colour!Green", static_cast<G4Colour (*)() >(&G4Colour::Green));
+  t159.method("G4Colour!Green", static_cast<G4Colour (*)() >(&G4Colour::Green));
 
   DEBUG_MSG("Adding wrapper for G4Colour G4Colour::Blue() (" __HERE__ ")");
   // signature to use in the veto list: G4Colour G4Colour::Blue()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:124:19
-  t154.method("G4Colour!Blue", static_cast<G4Colour (*)() >(&G4Colour::Blue));
+  t159.method("G4Colour!Blue", static_cast<G4Colour (*)() >(&G4Colour::Blue));
 
   DEBUG_MSG("Adding wrapper for G4Colour G4Colour::Cyan() (" __HERE__ ")");
   // signature to use in the veto list: G4Colour G4Colour::Cyan()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:125:19
-  t154.method("G4Colour!Cyan", static_cast<G4Colour (*)() >(&G4Colour::Cyan));
+  t159.method("G4Colour!Cyan", static_cast<G4Colour (*)() >(&G4Colour::Cyan));
 
   DEBUG_MSG("Adding wrapper for G4Colour G4Colour::Magenta() (" __HERE__ ")");
   // signature to use in the veto list: G4Colour G4Colour::Magenta()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:126:19
-  t154.method("G4Colour!Magenta", static_cast<G4Colour (*)() >(&G4Colour::Magenta));
+  t159.method("G4Colour!Magenta", static_cast<G4Colour (*)() >(&G4Colour::Magenta));
 
   DEBUG_MSG("Adding wrapper for G4Colour G4Colour::Yellow() (" __HERE__ ")");
   // signature to use in the veto list: G4Colour G4Colour::Yellow()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:127:19
-  t154.method("G4Colour!Yellow", static_cast<G4Colour (*)() >(&G4Colour::Yellow));
+  t159.method("G4Colour!Yellow", static_cast<G4Colour (*)() >(&G4Colour::Yellow));
 
   DEBUG_MSG("Adding wrapper for G4bool G4Colour::GetColour(const G4String &, G4Colour &) (" __HERE__ ")");
   // signature to use in the veto list: G4bool G4Colour::GetColour(const G4String &, G4Colour &)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:129:17
-  t154.method("G4Colour!GetColour", static_cast<G4bool (*)(const G4String &, G4Colour &) >(&G4Colour::GetColour));
+  t159.method("G4Colour!GetColour", static_cast<G4bool (*)(const G4String &, G4Colour &) >(&G4Colour::GetColour));
 
   DEBUG_MSG("Adding wrapper for void G4Colour::AddToMap(const G4String &, const G4Colour &) (" __HERE__ ")");
   // signature to use in the veto list: void G4Colour::AddToMap(const G4String &, const G4Colour &)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:135:15
-  t154.method("G4Colour!AddToMap", static_cast<void (*)(const G4String &, const G4Colour &) >(&G4Colour::AddToMap));
+  t159.method("G4Colour!AddToMap", static_cast<void (*)(const G4String &, const G4Colour &) >(&G4Colour::AddToMap));
 
   DEBUG_MSG("Adding wrapper for void G4Colour::InitialiseColourMap() (" __HERE__ ")");
   // signature to use in the veto list: void G4Colour::InitialiseColourMap()
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:139:15
-  t154.method("G4Colour!InitialiseColourMap", static_cast<void (*)() >(&G4Colour::InitialiseColourMap));
+  t159.method("G4Colour!InitialiseColourMap", static_cast<void (*)() >(&G4Colour::InitialiseColourMap));
   types.set_override_module(jl_base_module);
 
   DEBUG_MSG("Adding wrapper for G4bool G4Colour::operator<(const G4Colour &) (" __HERE__ ")");
   // signature to use in the veto list: G4bool G4Colour::operator<(const G4Colour &)
   // defined in /Users/mato/.julia/artifacts/9d4b417a98ec8f720b8871baefe87108f864656f/include/Geant4/G4Colour.hh:142:10
-  t154.method("<", static_cast<G4bool (G4Colour::*)(const G4Colour &)  const>(&G4Colour::operator<));
+  t159.method("<", static_cast<G4bool (G4Colour::*)(const G4Colour &)  const>(&G4Colour::operator<));
 
   /* End of G4Colour class method wrappers
    **********************************************************************/

@@ -2,31 +2,17 @@ using Geant4
 using Geant4.SystemOfUnits
 using FHist, Printf, Plots
 
-#---Define Detector Parameters struct--------------------------------------------------------------
-include(joinpath(@__DIR__, "DetectorTestEm3.jl"))
-
 #---Define Simulation Data struct------------------------------------------------------------------
 mutable struct TestEm3SimData <: G4JLSimulationData
     #---Run data-----------------------------------------------------------------------------------
     fParticle::CxxPtr{G4ParticleDefinition}
     fEkin::Float64
-                           
-    #fSumEAbs::Vector{Float64}
-    #fSum2EAbs::Vector{Float64} 
-    #fSumLAbs::Vector{Float64}
-    #fSum2LAbs::Vector{Float64}
-    
-    #fEdepTot::Float64
-    #fEdepTot2::Float64    
-    #fEleakTot::Float64
-    #fEleakTot2::Float64
-
+                    
     fEtotal::Float64
     fEtotal2::Float64
     
     fEnergyFlow::Vector{Float64}
     fLateralEleak::Vector{Float64}
-    #fEnergyDeposit::Matrix{Float64}
     
     fChargedStep::Int32
     fNeutralStep::Int32
@@ -42,11 +28,6 @@ mutable struct TestEm3SimData <: G4JLSimulationData
     fTrackLengthChHistos::Vector{Hist1D}
     fEdepHistos::Vector{Hist1D}
     fAbsorLabel::Vector{String}
-    
-    #G4double fEdeptrue [kMaxAbsor];
-    #G4double fRmstrue  [kMaxAbsor];
-    #G4double fLimittrue[kMaxAbsor];        
-    #G4bool fApplyLimit;
 
     fTimer::Float64
 
@@ -70,12 +51,13 @@ function do_plot(data::TestEm3SimData)
 end
 
 #---Particle Gun initialization--------------------------------------------------------------------
-function gun_initialize(gen::G4JLParticleGun, det::G4JLDetector)
+function gun_initialize(gen::G4JLParticleGun, det::G4JLDetectorGDML)
   pg = GetGun(gen)
   SetParticleByName(pg, "e-")
   SetParticleEnergy(pg, 1GeV)
   SetParticleMomentumDirection(pg, G4ThreeVector(1,0,0))
-  SetParticlePosition(pg, G4ThreeVector(-0.5 * det.fWorldSizeX, 0 , 0))
+  worldSizeX = det.fPhysicalWorld |> GetLogicalVolume |> GetSolid |> CxxRef{G4Box} |> GetXHalfLength
+  SetParticlePosition(pg, G4ThreeVector(-0.5 * worldSizeX, 0 , 0))
 end
 Geant4.getInitializer(::G4JLParticleGun) = gun_initialize
 
@@ -91,7 +73,7 @@ function stepaction(step::G4Step, app::G4JLApplication)::Nothing
     track = GetTrack(step)
  
     # Return if step in not in the world volume
-    prepoint |> GetPhysicalVolume |> GetLogicalVolume |> GetMaterial == detector.fWorldMaterial && return nothing
+    prepoint |> GetPhysicalVolume |> GetLogicalVolume |> GetMaterial == detector.fPhysicalWorld |> GetLogicalVolume |> GetMaterial && return nothing
  
     particle = GetDefinition(track)
     charge  = GetPDGCharge(particle)
@@ -112,7 +94,6 @@ function stepaction(step::G4Step, app::G4JLApplication)::Nothing
     push!(data.fEdepHistos[absorNum], layerNum, edep)
     nothing
 end
-
 #---Tracking pre-action----------------------------------------------------------------------------
 let G4Gamma, G4Electron, G4Positron, first=true
 global function pretrackaction(track::G4Track, app::G4JLApplication)::Nothing
@@ -141,7 +122,10 @@ end
 #---Begin Run Action-------------------------------------------------------------------------------
 function beginrun(run::G4Run, app::G4JLApplication)::Nothing
     data = app.simdata
-    (; fNbOfAbsor, fNbOfLayers, fAbsorMaterial, fAbsorThickness) = app.detector
+    fNbOfAbsor = 2
+    fNbOfLayers = 50
+    fAbsorThickness = [2.3mm, 5.7mm]
+    fAbsorMaterial = ["G4_Pb", "G4_lAr"]
     gun = GetGun(app.generator)
     data.fParticle = GetParticleDefinition(gun)
     data.fEkin = GetParticleEnergy(gun)
@@ -152,7 +136,7 @@ function beginrun(run::G4Run, app::G4JLApplication)::Nothing
     data.fEdepHistos = [Hist1D(Float64; bins=0.:1.0:fNbOfLayers) for i in 1:fNbOfAbsor]
     data.fEdepEventHistos = [Hist1D(;bins=0:10:1000) for i in 1:fNbOfAbsor]
     data.fTrackLengthChHistos = [Hist1D(;bins=0:20:2000) for i in 1:fNbOfAbsor]
-    data.fAbsorLabel = ["$(fAbsorThickness[i])mm of $(fAbsorMaterial[i] |> GetName |> String)" for i in 1:fNbOfAbsor]
+    data.fAbsorLabel = ["$(fAbsorThickness[i])mm of $(fAbsorMaterial[i])" for i in 1:fNbOfAbsor]
     nothing
 end
 #---End Run Action---------------------------------------------------------------------------------
@@ -173,7 +157,7 @@ end
 #---Begin Event Action-----------------------------------------------------------------------------
 function beginevent(evt::G4Event, app::G4JLApplication)
     data = app.simdata
-    (; fNbOfAbsor, fNbOfLayers) = app.detector
+    fNbOfAbsor = 2
     data.fEnergyDeposit = zeros(fNbOfAbsor)
     data.fTrackLengthCh = zeros(fNbOfAbsor)
     nothing
@@ -181,7 +165,7 @@ end
 #---End Event Action-------------------------------------------------------------------------------
 function endevent(evt::G4Event, app::G4JLApplication)
     data = app.simdata
-    (; fNbOfAbsor, fNbOfLayers) = app.detector
+    fNbOfAbsor = 2
     for i in 1:fNbOfAbsor
         push!(data.fEdepEventHistos[i], data.fEnergyDeposit[i])
         push!(data.fTrackLengthChHistos[i], data.fTrackLengthCh[i])
@@ -190,7 +174,7 @@ function endevent(evt::G4Event, app::G4JLApplication)
 end
 
 #---Create the Application-------------------------------------------------------------------------
-app = G4JLApplication(TestEm3Detector();                          # detector with parameters
+app = G4JLApplication(G4JLDetectorGDML("$(@__DIR__)/TestEm3.gdml");  # detector defined with a GDML file
                       simdata = TestEm3SimData(),                 # simulation data structure
                       runmanager_type = G4RunManager,             # what RunManager to instantiate
                       physics_type = FTFP_BERT,                   # what physics list to instantiate

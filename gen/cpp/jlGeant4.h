@@ -23,6 +23,7 @@
 #include "G4PVReplica.hh"
 #include "G4TransportationManager.hh"
 #include "G4Navigator.hh"
+#include "G4GDMLParser.hh"
 #include "G4Material.hh"
 #include "G4Element.hh"
 #include "G4Isotope.hh"

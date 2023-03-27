@@ -7,7 +7,8 @@ out_h_fname         = "cpp/jlGeant4.h"
 include_dirs        = [ "/usr/local/opt/llvm/include/c++/v1", 
                         "/usr/local/opt/llvm@13/lib/clang/13.0.1/include", 
                         "./cpp", 
-                        "@Geant4_INCLUDE_DIRS@", 
+                        "@Geant4_INCLUDE_DIRS@",
+                        "@XercesC_INCLUDE_DIR@",
                         "@Julia_INCLUDE_DIRS@",  
                         "@JlCxx_DIR@/../../../include"]
 
@@ -31,6 +32,7 @@ input               = [ "Geant4Wrap.h",
                         "G4PVReplica.hh",
                         "G4TransportationManager.hh",
                         "G4Navigator.hh",
+                        "G4GDMLParser.hh",
                         #---Materials------------
                         "G4Material.hh",
                         "G4Element.hh",
