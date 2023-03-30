@@ -6,6 +6,7 @@ using FHist, Printf, Plots
 include(joinpath(@__DIR__, "DetectorTestEm3.jl"))
 
 #---Define Simulation Data struct------------------------------------------------------------------
+const Hist1D64 = Hist1D{Float64, Tuple{StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}, Int64}}}
 mutable struct TestEm3SimData <: G4JLSimulationData
     #---Run data-----------------------------------------------------------------------------------
     fParticle::CxxPtr{G4ParticleDefinition}
@@ -38,9 +39,9 @@ mutable struct TestEm3SimData <: G4JLSimulationData
     fEnergyDeposit::Vector{Float64}     # Energy deposit per event
     fTrackLengthCh::Vector{Float64}     # Track length per event
 
-    fEdepEventHistos::Vector{Hist1D}
-    fTrackLengthChHistos::Vector{Hist1D}
-    fEdepHistos::Vector{Hist1D}
+    fEdepEventHistos::Vector{Hist1D64}
+    fTrackLengthChHistos::Vector{Hist1D64}
+    fEdepHistos::Vector{Hist1D64}
     fAbsorLabel::Vector{String}
     
     #G4double fEdeptrue [kMaxAbsor];
@@ -84,10 +85,9 @@ Geant4.getInitializer(::G4JLParticleGun) = gun_initialize
 #--------------------------------------------------------------------------------------------------
 #---Step action------------------------------------------------------------------------------------
 function stepaction(step::G4Step, app::G4JLApplication)::Nothing
-    data = app.simdata
     detector = app.detector
+    data = app.simdata
     prepoint = GetPreStepPoint(step)
-    endPoint = GetPostStepPoint(step)
     track = GetTrack(step)
  
     # Return if step in not in the world volume
@@ -150,8 +150,8 @@ function beginrun(run::G4Run, app::G4JLApplication)::Nothing
     # init arrays
     #data.fEnergyDeposit = zeros(fNbOfAbsor, fNbOfLayers)
     data.fEdepHistos = [Hist1D(Float64; bins=0.:1.0:fNbOfLayers) for i in 1:fNbOfAbsor]
-    data.fEdepEventHistos = [Hist1D(;bins=0:10:1000) for i in 1:fNbOfAbsor]
-    data.fTrackLengthChHistos = [Hist1D(;bins=0:20:2000) for i in 1:fNbOfAbsor]
+    data.fEdepEventHistos = [Hist1D(;bins=0.:10.:1000.) for i in 1:fNbOfAbsor]
+    data.fTrackLengthChHistos = [Hist1D(;bins=0.:20.:2000.) for i in 1:fNbOfAbsor]
     data.fAbsorLabel = ["$(fAbsorThickness[i])mm of $(fAbsorMaterial[i] |> GetName |> String)" for i in 1:fNbOfAbsor]
     nothing
 end
@@ -190,7 +190,7 @@ function endevent(evt::G4Event, app::G4JLApplication)
 end
 
 #---Create the Application-------------------------------------------------------------------------
-app = G4JLApplication(TestEm3Detector();                          # detector with parameters
+app = G4JLApplication(detector = TestEm3Detector(),               # detector with parameters
                       simdata = TestEm3SimData(),                 # simulation data structure
                       runmanager_type = G4RunManager,             # what RunManager to instantiate
                       physics_type = FTFP_BERT,                   # what physics list to instantiate

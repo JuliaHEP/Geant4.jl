@@ -11,6 +11,10 @@
 #include "G4UserEventAction.hh"
 #include "G4ParticleGun.hh"
 #include "G4VPhysicalVolume.hh"
+#include "G4VSensitiveDetector.hh"
+#include "G4SDManager.hh"
+#include "G4HCofThisEvent.hh"
+#include "G4TouchableHistory.hh"
 #include "jlcxx/functions.hpp"
 
 #include <string>
@@ -30,6 +34,26 @@ public:
                 const char* description);
 };
 
+//--G4JLSensDet------------------------------------------------------------------------------------
+typedef bool (*processhits_f) (G4Step*, G4TouchableHistory*);
+typedef void (*initend_f) (G4HCofThisEvent*);
+class G4JLSensDet : public G4VSensitiveDetector {
+  public:
+    G4JLSensDet(const G4String& name, processhits_f f) : G4VSensitiveDetector(name), processhits(f), initialize(nullptr), endofevent(nullptr) {
+      G4SDManager::GetSDMpointer()->AddNewDetector(this);   // Automatically register the SD to the manager
+    }
+    ~G4JLSensDet() = default;
+    virtual void Initialize(G4HCofThisEvent* hc) override {if (initialize) initialize(hc); }
+    virtual void EndOfEvent(G4HCofThisEvent* hc) override {if (endofevent) endofevent(hc); }
+    virtual G4bool ProcessHits(G4Step* s, G4TouchableHistory* h) override {return processhits(s, h);}
+    void SetInitialize(initend_f f) {initialize = f;}
+    void SetEndOfEvent(initend_f f) {endofevent = f;}
+  private:
+    processhits_f processhits;
+    initend_f initialize;
+    initend_f endofevent;
+};
+
 //---G4JLDetectorConstruction----------------------------------------------------------------------
 typedef  G4VPhysicalVolume* (*construct_f) ();
 class G4JLDetectorConstruction : public G4VUserDetectorConstruction { 
@@ -37,6 +61,9 @@ class G4JLDetectorConstruction : public G4VUserDetectorConstruction {
     G4JLDetectorConstruction(construct_f f) : construct(f) {} 
     ~G4JLDetectorConstruction() = default;
     G4VPhysicalVolume* Construct() {return construct();}
+    void SetSensitiveDetector(const G4String& lv, G4JLSensDet* sd, G4bool m = false) {
+      G4VUserDetectorConstruction::SetSensitiveDetector(lv, sd, m);
+    }
   protected:
     construct_f construct;
 };
@@ -115,8 +142,7 @@ class G4JLRunAction : public G4UserRunAction {
 
 //---G4JLEventAction------------------------------------------------------------------------------------
 typedef  void (*eventaction_f) (const G4Event*);
-class G4JLEventAction : public G4UserEventAction
-{
+class G4JLEventAction : public G4UserEventAction {
   public:  
     G4JLEventAction(eventaction_f begin = nullptr, eventaction_f end = nullptr) : beginaction(begin), endaction(end) {}  
    ~G4JLEventAction() = default;

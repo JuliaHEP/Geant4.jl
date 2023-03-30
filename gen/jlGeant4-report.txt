@@ -7,11 +7,11 @@ The auto_veto parameter is set to true, generation of the wrappers that would ha
 
 CLHEP::HepEulerAngles::EA
 G4Allocator<G4Event>
+G4Allocator<G4HCofThisEvent>
 G4DCtable
 G4DecayTable
 G4DisplacedSolid
 G4GDMLAuxMapType
-G4HCtable
 G4IsotopeTable
 G4IsotopeVector
 G4LVManager

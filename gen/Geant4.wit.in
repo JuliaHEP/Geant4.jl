@@ -53,6 +53,9 @@ input               = [ "Geant4Wrap.h",
                         "G4Track.hh",
                         "G4Run.hh",
                         "G4Event.hh",
+                        "G4VSensitiveDetector.hh",
+                        "G4HCofThisEvent.hh",
+                        "G4TouchableHistory.hh",
                         #---Solids---------------
                         "G4Box.hh",
                         "G4Cons.hh",
@@ -72,7 +75,7 @@ input               = [ "Geant4Wrap.h",
                       ]
 
 extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh", "G4ParticleMessenger.hh", "G4IonTable.hh" ]
-vetoed_finalizer_classes = ["G4PVPlacement", "G4LogicalVolume", "G4PVReplica", "G4Material", "G4Isotope", "G4Element", "G4JLParticleGun"]
+vetoed_finalizer_classes = ["G4PVPlacement", "G4LogicalVolume", "G4PVReplica", "G4Material", "G4Isotope", "G4Element", "G4JLParticleGun", "G4JLDetectorConstruction", "G4JLSensDet"]
 export              = "all"
 veto_list           = "Geant4-veto.h"
 cxx-std             = "c++17"

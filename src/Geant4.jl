@@ -77,15 +77,18 @@ module Geant4
     G4Isotope(name::String; z::Integer, n::Integer, a::Float64=0., mlevel::Integer=0) =  G4Isotope(name, z, n, a, mlevel)
 
     # Better HL interface (more Julia friendly)----------------------------------------------------
-    export G4JLDetector, G4JLSimulationData, G4JLApplication, G4JLDetectorGDML, configure, initialize, reinitialize, beamOn, getConstructor, getInitializer
+    export G4JLDetector, G4JLSimulationData, G4JLApplication, G4JLDetectorGDML, G4JLSDData, G4JLSensitiveDetector, 
+           configure, initialize, reinitialize, beamOn, getConstructor, getInitializer
 
     abstract type  G4JLAbstrcatApp end
     abstract type  G4JLDetector end
     abstract type  G4JLSimulationData end
+    abstract type  G4JLSDData end
 
     getConstructor(d::G4JLDetector) = error("You need to define the function Geant4.getConstructor($(typeof(d))) returning the actual contruct method")
     getInitializer(::G4VUserPrimaryGeneratorAction) = nothing
 
+    #---G4JLDetectorGDML----(GDML reader)---------------------------------------------------------
     struct G4JLDetectorGDML <: G4JLDetector
         fPhysicalWorld::CxxPtr{G4VPhysicalVolume}
         function G4JLDetectorGDML(gdmlfile::String; check_overlap::Bool=false)
@@ -98,66 +101,96 @@ module Geant4
     end
     getConstructor(::G4JLDetectorGDML) = (det::G4JLDetectorGDML) -> det.fPhysicalWorld
 
+    #---SentitiveDetectors------------------------------------------------------------------------
+    struct G4JLSensitiveDetector{UD<:G4JLSDData}
+        base::G4JLSensDet
+        data::UD
+    end
+    
+    function G4JLSensitiveDetector(name::String, data::T; 
+                                   processhits_method=nothing,
+                                   initialize_method=nothing,
+                                   endofevent_method=nothing) where T<:G4JLSDData
+        isnothing(processhits_method) && error("processHits method for ($T,G4Step,G4TouchableHistory) not defined")
+        ph =  @safe_cfunction($((s::CxxPtr{G4Step}, th::CxxPtr{G4TouchableHistory}) ->  CxxBool(processhits_method(data, s[], th[]))), CxxBool, (CxxPtr{G4Step},CxxPtr{G4TouchableHistory}))
+        base = G4JLSensDet(name, preserve(ph))
+        if !isnothing(initialize_method)
+            sf = @safe_cfunction($((hc::CxxPtr{G4HCofThisEvent}) ->  initialize_method(data, hc[])), Nothing, (CxxPtr{G4HCofThisEvent},))
+            SetInitialize(base, preserve(sf))
+        end
+        if !isnothing(endofevent_method)
+            sf = @safe_cfunction($((hc::CxxPtr{G4HCofThisEvent}) ->  endofevent_method(data, hc[])), Nothing, (CxxPtr{G4HCofThisEvent},))
+            SetEndOfEvent(base, preserve(sf))
+        end
+        G4JLSensitiveDetector{T}(base, data)
+    end
 
     struct G4JLNoData <: G4JLSimulationData
     end
     
-    mutable struct G4JLApplication <: G4JLAbstrcatApp
-        runmanager::G4RunManager
-        detector::G4JLDetector
-        simdata::G4JLSimulationData
+    mutable struct G4JLApplication{DET<:G4JLDetector,DAT<:G4JLSimulationData} <: G4JLAbstrcatApp
+        const runmanager::G4RunManager
+        const detector::DET
+        const simdata::DAT
         # Types 
-        runmanager_type::Type{<:G4RunManager}
-        builder_type::Type{<:G4VUserDetectorConstruction}
-        physics_type::Type{<:G4VUserPhysicsList}
-        generator_type::Type{<:G4VUserPrimaryGeneratorAction}
-        runaction_type::Type{<:G4UserRunAction}
-        eventaction_type::Type{<:G4UserEventAction}
+        const runmanager_type::Type{<:G4RunManager}
+        const builder_type::Type{<:G4VUserDetectorConstruction}
+        const physics_type::Type{<:G4VUserPhysicsList}
+        const generator_type::Type{<:G4VUserPrimaryGeneratorAction}
+        const runaction_type::Type{<:G4UserRunAction}
+        const eventaction_type::Type{<:G4UserEventAction}
         #stackaction_type::Type{<:G4UserStakingAction}
-        trackaction_type::Type{<:G4UserTrackingAction}
-        stepaction_type::Type{<:G4UserSteppingAction}
+        const trackaction_type::Type{<:G4UserTrackingAction}
+        const stepaction_type::Type{<:G4UserSteppingAction}
         # Methods
-        stepaction_method::Union{Nothing,Function}
-        pretrackaction_method::Union{Nothing,Function}
-        posttrackaction_method::Union{Nothing,Function}
-        beginrunaction_method::Union{Nothing,Function}
-        endrunaction_method::Union{Nothing,Function}
-        begineventaction_method::Union{Nothing,Function}
-        endeventaction_method::Union{Nothing,Function}
+        const stepaction_method::Union{Nothing,Function}
+        const pretrackaction_method::Union{Nothing,Function}
+        const posttrackaction_method::Union{Nothing,Function}
+        const beginrunaction_method::Union{Nothing,Function}
+        const endrunaction_method::Union{Nothing,Function}
+        const begineventaction_method::Union{Nothing,Function}
+        const endeventaction_method::Union{Nothing,Function}
+        # Sensitive Detectors
+        sdetectors::Dict{String,G4JLSensitiveDetector}
         # Instances
+        detbuilder::Any
         generator::Any
         physics::Any
-        function G4JLApplication(detector::G4JLDetector;
-                                 simdata=G4JLNoData(),
-                                 runmanager_type=G4RunManager,
-                                 builder_type=G4JLDetectorConstruction,
-                                 physics_type=FTFP_BERT,
-                                 generator_type=G4JLParticleGun,
-                                 stepaction_type=G4JLSteppingAction,
-                                 trackaction_type=G4JLTrackingAction,
-                                 runaction_type=G4JLRunAction,
-                                 eventaction_type=G4JLEventAction,
-                                 stepaction_method=nothing,
-                                 pretrackaction_method=nothing,
-                                 posttrackaction_method=nothing,
-                                 beginrunaction_method=nothing,
-                                 endrunaction_method=nothing,
-                                 begineventaction_method=nothing,
-                                 endeventaction_method=nothing,
-                                 )
-            new(runmanager_type(), detector, simdata, runmanager_type, builder_type, physics_type, generator_type, 
-                runaction_type, eventaction_type, trackaction_type, stepaction_type,
-                stepaction_method, pretrackaction_method, posttrackaction_method, 
-                beginrunaction_method, endrunaction_method, begineventaction_method, endeventaction_method)
-        end
     end
+    #---Convenient constructor---------------------------------------------------------------------
+    G4JLApplication(;detector::G4JLDetector,
+                    simdata=G4JLNoData(),
+                    runmanager_type=G4RunManager,
+                    builder_type=G4JLDetectorConstruction,
+                    physics_type=FTFP_BERT,
+                    generator_type=G4JLParticleGun,
+                    stepaction_type=G4JLSteppingAction,
+                    trackaction_type=G4JLTrackingAction,
+                    runaction_type=G4JLRunAction,
+                    eventaction_type=G4JLEventAction,
+                    stepaction_method=nothing,
+                    pretrackaction_method=nothing,
+                    posttrackaction_method=nothing,
+                    beginrunaction_method=nothing,
+                    endrunaction_method=nothing,
+                    begineventaction_method=nothing,
+                    endeventaction_method=nothing,
+                    sdetectors=[],
+                    ) = 
+        G4JLApplication{typeof(detector), typeof(simdata)}(runmanager_type(), detector, simdata, runmanager_type, builder_type, physics_type, generator_type, 
+                                                           runaction_type, eventaction_type, trackaction_type, stepaction_type,
+                                                           stepaction_method, pretrackaction_method, posttrackaction_method, 
+                                                           beginrunaction_method, endrunaction_method, begineventaction_method, endeventaction_method,
+                                                           Dict(sdetectors), nothing, nothing, nothing)
+
     
     function configure(app::G4JLApplication)
         #---Detector construction------------------------------------------------------------------
         runmgr = app.runmanager
         det    = app.detector
         sf1 = @safe_cfunction($(()->getConstructor(det)(det)), CxxPtr{G4VPhysicalVolume}, ())  # crate a safe c function
-        SetUserInitialization(runmgr, move(app.builder_type(preserve(sf1))))
+        app.detbuilder = app.builder_type(preserve(sf1))
+        SetUserInitialization(runmgr, CxxPtr(app.detbuilder))
         #---Physics List---------------------------------------------------------------------------
         physics = app.physics_type()
         app.physics = physics
@@ -193,21 +226,21 @@ module Geant4
         else
             r2 = @safe_cfunction($((::ConstCxxPtr{G4Run}) -> nothing), Nothing, (ConstCxxPtr{G4Run},))
         end
-        if !isnothing(app.beginrunaction_method) || !isnothing(app.beginrunaction_method)
+        if !isnothing(app.beginrunaction_method) || !isnothing(app.endrunaction_method)
             SetUserAction(ua, move(app.runaction_type(preserve(r1), preserve(r2))))
         end
          #---Event Action---------------------------------------------------------------------------
          if !isnothing(app.begineventaction_method)
-            e1 = @safe_cfunction($((track::ConstCxxPtr{G4Event}) ->  app.begineventaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Event},))
+            e1 = @safe_cfunction($((evt::ConstCxxPtr{G4Event}) ->  app.begineventaction_method(evt[], app)), Nothing, (ConstCxxPtr{G4Event},))
         else
             e1 = @safe_cfunction($((::ConstCxxPtr{G4Event}) -> nothing), Nothing, (ConstCxxPtr{G4Event},))
         end
         if !isnothing(app.endeventaction_method)
-            e2 = @safe_cfunction($((track::ConstCxxPtr{G4Event}) ->  app.endeventaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Event},))
+            e2 = @safe_cfunction($((evt::ConstCxxPtr{G4Event}) ->  app.endeventaction_method(evt[], app)), Nothing, (ConstCxxPtr{G4Event},))
         else
             e2 = @safe_cfunction($((::ConstCxxPtr{G4Event}) -> nothing), Nothing, (ConstCxxPtr{G4Event},))
         end
-        if !isnothing(app.begineventaction_method) || !isnothing(app.begineventaction_method)
+        if !isnothing(app.begineventaction_method) || !isnothing(app.endeventaction_method)
             SetUserAction(ua, move(app.eventaction_type(preserve(e1), preserve(e2))))
         end
 
@@ -217,12 +250,22 @@ module Geant4
         !isnothing(init_method) && init_method(generator, det)
         app.generator = generator
         SetUserAction(ua, CxxPtr(generator))
-        #---User initilizatioon--------------------------------------------------------------------
+        #---User initilization---------------------------------------------------------------------
         SetUserInitialization(runmgr, move(ua))
     end
 
     function initialize(app::G4JLApplication)
         Initialize(app.runmanager)
+        #---Add the Sensitive Detectors now that the geometry is constructed-----------------------
+        for (lv,sd) in app.sdetectors
+            if lv[end] == '+'
+                lv = lv[1:end-1]
+                multi = true
+            else
+                multi = false
+            end
+            SetSensitiveDetector(app.detbuilder, lv, CxxPtr(sd.base), multi)
+        end
     end
 
     function reinitialize(app::G4JLApplication, det::G4JLDetector)

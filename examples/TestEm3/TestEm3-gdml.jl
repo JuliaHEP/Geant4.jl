@@ -26,7 +26,7 @@ mutable struct TestEm3SimData <: G4JLSimulationData
 
     fEdepEventHistos::Vector{Hist1D}
     fTrackLengthChHistos::Vector{Hist1D}
-    fEdepHistos::Vector{Hist1D}
+    fEdepHistos::Vector{Hist1D{Float64, Tuple{StepRange{Int64, Int64}}}}
     fAbsorLabel::Vector{String}
 
     fTimer::Float64
@@ -34,7 +34,7 @@ mutable struct TestEm3SimData <: G4JLSimulationData
     TestEm3SimData() = new()
 end
 
-#---Plot the Sumulation data-----------------------------------------------------------------------
+#---Plot the Simulation data-----------------------------------------------------------------------
 function do_plot(data::TestEm3SimData)
     (;fEdepHistos, fEdepEventHistos, fTrackLengthChHistos, fAbsorLabel) = data
     lay = @layout [°; ° °]
@@ -57,7 +57,7 @@ function gun_initialize(gen::G4JLParticleGun, det::G4JLDetectorGDML)
   SetParticleEnergy(pg, 1GeV)
   SetParticleMomentumDirection(pg, G4ThreeVector(1,0,0))
   worldSizeX = det.fPhysicalWorld |> GetLogicalVolume |> GetSolid |> CxxRef{G4Box} |> GetXHalfLength
-  SetParticlePosition(pg, G4ThreeVector(-0.5 * worldSizeX, 0 , 0))
+  SetParticlePosition(pg, G4ThreeVector(-worldSizeX, 0 , 0))
 end
 Geant4.getInitializer(::G4JLParticleGun) = gun_initialize
 
@@ -133,7 +133,7 @@ function beginrun(run::G4Run, app::G4JLApplication)::Nothing
     data.fChargedStep = data.fNeutralStep = 0
     # init arrays
     #data.fEnergyDeposit = zeros(fNbOfAbsor, fNbOfLayers)
-    data.fEdepHistos = [Hist1D(Float64; bins=0.:1.0:fNbOfLayers) for i in 1:fNbOfAbsor]
+    data.fEdepHistos = [Hist1D(; bins=0:1:fNbOfLayers) for i in 1:fNbOfAbsor]
     data.fEdepEventHistos = [Hist1D(;bins=0:10:1000) for i in 1:fNbOfAbsor]
     data.fTrackLengthChHistos = [Hist1D(;bins=0:20:2000) for i in 1:fNbOfAbsor]
     data.fAbsorLabel = ["$(fAbsorThickness[i])mm of $(fAbsorMaterial[i])" for i in 1:fNbOfAbsor]
@@ -174,7 +174,7 @@ function endevent(evt::G4Event, app::G4JLApplication)
 end
 
 #---Create the Application-------------------------------------------------------------------------
-app = G4JLApplication(G4JLDetectorGDML("$(@__DIR__)/TestEm3.gdml");  # detector defined with a GDML file
+app = G4JLApplication(detector = G4JLDetectorGDML("$(@__DIR__)/TestEm3.gdml"),  # detector defined with a GDML file
                       simdata = TestEm3SimData(),                 # simulation data structure
                       runmanager_type = G4RunManager,             # what RunManager to instantiate
                       physics_type = FTFP_BERT,                   # what physics list to instantiate
@@ -192,7 +192,7 @@ app = G4JLApplication(G4JLDetectorGDML("$(@__DIR__)/TestEm3.gdml");  # detector 
 #---Configure, Initialize and Run------------------------------------------------------------------                      
 configure(app)
 initialize(app)
-ui = G4UImanager!GetUIpointer()
+#ui = G4UImanager!GetUIpointer()
 #ApplyCommand(ui, "/tracking/verbose 1")
 beamOn(app, 1000)
 
