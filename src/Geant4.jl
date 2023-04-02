@@ -1,9 +1,19 @@
 module Geant4
-    include(joinpath(@__DIR__, "../gen/jl/Geant4-export.jl"))
     using CxxWrap
     using Geant4_jll
 
-    @wrapmodule(joinpath(@__DIR__, "../deps/build/lib", "libGeant4Wrap"))
+    # Check whether the wrappers have been build locally otherwise use the binary package Geant4_julia_jll
+    gendir = normpath(joinpath(@__DIR__, "../gen"))
+    @show joinpath(gendir, "build/lib")
+    if isdir(joinpath(gendir, "build/lib"))
+        include(joinpath(gendir, "jl/Geant4-export.jl"))
+        @wrapmodule(joinpath(gendir, "build/lib", "libGeant4Wrap"))
+    else
+        using Geant4_julia_jll
+        include(Geant4_julia_jll.Geant4_exports)
+        @wrapmodule(Geant4_julia_jll.libGeant4Wrap)
+    end
+
     function __init__()
         @initcxx
         #---Call Wrapper init--------------------------------------------------
