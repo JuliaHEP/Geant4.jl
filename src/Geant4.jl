@@ -4,7 +4,6 @@ module Geant4
 
     # Check whether the wrappers have been build locally otherwise use the binary package Geant4_julia_jll
     gendir = normpath(joinpath(@__DIR__, "../gen"))
-    @show joinpath(gendir, "build/lib")
     if isdir(joinpath(gendir, "build/lib"))
         include(joinpath(gendir, "jl/Geant4-export.jl"))
         @wrapmodule(joinpath(gendir, "build/lib", "libGeant4Wrap"))
