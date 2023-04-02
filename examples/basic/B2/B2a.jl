@@ -62,7 +62,7 @@ function endeventaction(evt::G4Event, app::G4JLApplication)
   end
   return
 end
-                                    #---Particle Gun initialization--------------------------------------------------------------------
+#---Particle Gun initialization--------------------------------------------------------------------
 function gun_initialize(gen::G4JLParticleGun, det::G4JLDetector)
   pg = GetGun(gen)
   SetParticleByName(pg, "proton")

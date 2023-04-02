@@ -199,10 +199,10 @@ app = G4JLApplication(detector = TestEm3Detector(),               # detector wit
                       stepaction_method = stepaction,             # step action method
                       pretrackaction_method = pretrackaction,     # pre-tracking action
                       posttrackaction_method = posttrackaction,   # post-tracking action
-                      beginrunaction_method=beginrun,             # begin-run action (initialize counters and histograms)
-                      endrunaction_method=endrun,                 # end-run action (print summary)               
-                      begineventaction_method=beginevent,         # begin-event action (initialize per-event data)
-                      endeventaction_method=endevent              # end-event action (fill histogram per event data)
+                      beginrunaction_method = beginrun,           # begin-run action (initialize counters and histograms)
+                      endrunaction_method = endrun,               # end-run action (print summary)               
+                      begineventaction_method = beginevent,       # begin-event action (initialize per-event data)
+                      endeventaction_method = endevent            # end-event action (fill histogram per event data)
                       )
               
 #---Configure, Initialize and Run------------------------------------------------------------------                      
