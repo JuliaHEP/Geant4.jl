@@ -38,6 +38,10 @@ module G4Visualization
         draw!(s, lv[], one(Transformation3D{Float64}), 1, wireframe, maxlevel)
         display(fig)
     end
+    function draw!(s::LScene, pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
+        lv = GetLogicalVolume(pv)
+        draw!(s, lv[], one(Transformation3D{Float64}), 1, wireframe, maxlevel)
+    end
 
     using Geant4.SystemOfUnits:cm3,g
 
