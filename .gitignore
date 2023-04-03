@@ -6,6 +6,7 @@ deps/build
 deps/build.log
 Manifest.toml
 */Manifest.toml
+.ipynb_checkpoints
 
 
 

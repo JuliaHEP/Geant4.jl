@@ -139,8 +139,8 @@ module Geant4
     
     mutable struct G4JLApplication{DET<:G4JLDetector,DAT<:G4JLSimulationData} <: G4JLAbstrcatApp
         const runmanager::G4RunManager
-        const detector::DET
-        const simdata::DAT
+        detector::DET
+        simdata::DAT
         # Types 
         const runmanager_type::Type{<:G4RunManager}
         const builder_type::Type{<:G4VUserDetectorConstruction}
