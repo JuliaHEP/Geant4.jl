@@ -14,9 +14,9 @@ Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 Xerces_jll = "637d83c4-b86a-5d90-b82d-5cf0573a8cfc"
 
 [compat]
-julia = "1.7"
 CxxWrap = "0.13"
 GeometryBasics = "0.4"
+julia = "1.7"
 
 [extras]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
