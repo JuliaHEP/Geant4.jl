@@ -1,5 +1,6 @@
 # Geant4.jl
 
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https:///juliahep.github.io/Geant4.jl/dev/)
 [![Build Status](https://github.com/JuliaHEP/Geant4.jl/workflows/CI/badge.svg)](https://github.com/JuliaHEP/Geant4.jl/actions)
 [![Codecov](https://codecov.io/gh/JuliaHEP/Geant4.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaHEP/Geant4.jl)
 
