@@ -197,7 +197,7 @@ ui = G4UImanager!GetUIpointer()
 
 
 
-CxxPtr{G4UImanager}(Ptr{G4UImanager} @0x0000000004835aa0)</code></pre><pre><code class="language-julia hljs">#---Configure, Initialize and Run------------------------------------------------------------------                      
+CxxPtr{G4UImanager}(Ptr{G4UImanager} @0x0000000004733510)</code></pre><pre><code class="language-julia hljs">#---Configure, Initialize and Run------------------------------------------------------------------                      
 configure(app)
 initialize(app)</code></pre><pre><code class="nohighlight hljs">&lt;&lt;&lt; Geant4 Physics List simulation engine: FTFP_BERT
 
@@ -1081,7 +1081,7 @@ do_plot(app.simdata)</code></pre><pre><code class="nohighlight hljs">-----------
  Mean number of e+             4.64
  Mean number of charged steps  392.720000
  Mean number of neutral steps  464.120000
-------------------------------------------------------------  0.176841 seconds (201.38 k allocations: 3.105 MiB)</code></pre><pre><code class="language-julia hljs">function posttrackaction(track::G4Track, ::G4JLApplication)::Nothing
+------------------------------------------------------------  0.172122 seconds (201.38 k allocations: 3.105 MiB)</code></pre><pre><code class="language-julia hljs">function posttrackaction(track::G4Track, ::G4JLApplication)::Nothing
     println(&quot;Track ID: $(GetTrackID(track)) ended&quot;)
 end</code></pre><pre><code class="nohighlight hljs">posttrackaction (generic function with 1 method)</code></pre><pre><code class="language-julia hljs">beamOn(app, 10)</code></pre><pre><code class="nohighlight hljs">Track ID: 1 ended
 Track ID: 30 ended
@@ -2617,4 +2617,4 @@ Track ID: 138 ended
  Mean number of e+             5.00
  Mean number of charged steps  412.600000
  Mean number of neutral steps  524.800000
-------------------------------------------------------------</code></pre><pre><code class="language-julia hljs"></code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../api/">« APIs</a><a class="docs-footer-nextpage" href="../B1/">Example B1 »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.24 on <span class="colophon-date" title="Thursday 13 April 2023 18:27">Thursday 13 April 2023</span>. Using Julia version 1.8.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+------------------------------------------------------------</code></pre><pre><code class="language-julia hljs"></code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../api/">« APIs</a><a class="docs-footer-nextpage" href="../B1/">Example B1 »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.24 on <span class="colophon-date" title="Thursday 13 April 2023 18:41">Thursday 13 April 2023</span>. Using Julia version 1.8.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
