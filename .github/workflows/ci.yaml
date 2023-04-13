@@ -62,7 +62,7 @@ jobs:
             import Pkg
             Pkg.add("IJulia")
             using IJulia
-            installkernel("Julia", "--project=docs")'
+            installkernel("Julia", "--project=$(pwd())/docs")'
       - run: |
           julia --project=docs -e '
             using Pkg
