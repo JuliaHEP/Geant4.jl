@@ -45,27 +45,38 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           file: lcov.info
-  # docs:
-  #   name: Documentation
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: julia-actions/setup-julia@v1
-  #       with:
-  #         version: '1'
-  #     - run: |
-  #         julia --project=docs -e '
-  #           using Pkg
-  #           Pkg.develop(PackageSpec(path=pwd()))
-  #           Pkg.instantiate()'
-  #     - run: |
-  #         julia --project=docs -e '
-  #           using Documenter: DocMeta, doctest
-  #           using Geom4hep
-  #           DocMeta.setdocmeta!(Geom4hep, :DocTestSetup, :(using Geom4hep); recursive=true)
-  #           doctest(Geom4hep)'
-  #     - run: julia --project=docs docs/make.jl
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: '1'
+      - name: Set up Python
+        uses: actions/setup-python@v3
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip -r requirements.txt
+          python -m pip install jupyter nbconvert nbformat
+          julia --project="" -e '
+            import Pkg
+            Pkg.add("IJulia")
+            using IJulia
+            installkernel("Julia", "--project=@.")'
+      - run: |
+          julia --project=docs -e '
+            using Pkg
+            Pkg.develop(PackageSpec(path=pwd()))
+            Pkg.instantiate()'
+      - run: |
+          julia --project=docs -e '
+            using Documenter: DocMeta, doctest
+            using Geant4
+            DocMeta.setdocmeta!(Geant4, :DocTestSetup, :(using Geant4); recursive=true)
+            doctest(Geant4)'
+      - run: julia --project=docs docs/make.jl
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
 

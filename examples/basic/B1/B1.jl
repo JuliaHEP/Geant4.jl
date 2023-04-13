@@ -10,8 +10,8 @@ physics = QBBC()
 
 # Construct the default run manager----------------------------------------------------------------
 runManager = G4RunManager()
-SetUserInitialization(runManager, move(detdesc))
-SetUserInitialization(runManager, move(physics))
+SetUserInitialization(runManager, move!(detdesc))
+SetUserInitialization(runManager, move!(physics))
 
 # User Actions-------------------------------------------------------------------------------------
 function buildApp(self::G4JLActionInitialization)
@@ -24,10 +24,10 @@ function buildApp(self::G4JLActionInitialization)
   SetParticleMomentumDirection(pg, G4ThreeVector(0,0,1))
   SetParticlePosition(pg, G4ThreeVector(0,0,-16cm))
   # Register and relinquish ownership  
-  SetUserAction(self, move(particle_gun))
+  SetUserAction(self, move!(particle_gun))
 end
 app = G4JLActionInitialization(buildApp)
-SetUserInitialization(runManager, move(app))
+SetUserInitialization(runManager, move!(app))
 
 # Get the pointer to the User Interface manager
 UImanager = G4UImanager!GetUIpointer()

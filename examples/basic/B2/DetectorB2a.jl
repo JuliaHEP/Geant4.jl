@@ -42,7 +42,7 @@ function B2aConstruct(det::B2aDetector)::CxxPtr{G4VPhysicalVolume}
     #---Volumes------------------------------------------------------------------------------------
     det.worldZHalfLength = worldLength/2
     worldS = G4Box("world", det.worldZHalfLength, det.worldZHalfLength, det.worldZHalfLength)
-    worldLV = G4LogicalVolume(move(worldS), m_air, "World")
+    worldLV = G4LogicalVolume(move!(worldS), m_air, "World")
     worldPV = G4PVPlacement(nothing, 
         G4ThreeVector(),                # at (0,0,0)
         worldLV,                        # its logical volume
@@ -54,7 +54,7 @@ function B2aConstruct(det::B2aDetector)::CxxPtr{G4VPhysicalVolume}
 
     positionTarget = G4ThreeVector(0,0,-(targetLength+trackerSize))
     targetS = G4Tubs("target", 0, targetRadius, targetLength/2, 0, 360deg)
-    targetLV = G4LogicalVolume(move(targetS), m_target, "Target")
+    targetLV = G4LogicalVolume(move!(targetS), m_target, "Target")
     G4PVPlacement(nothing,              # no rotation
         positionTarget,                 # at (x,y,z)
         targetLV,                       # its logical volume
@@ -66,7 +66,7 @@ function B2aConstruct(det::B2aDetector)::CxxPtr{G4VPhysicalVolume}
   
     positionTracker = G4ThreeVector(0,0,0)
     trackerS = G4Tubs("tracker", 0, trackerSize, trackerSize, 0, 360deg)
-    trackerLV = G4LogicalVolume(move(trackerS), m_air, "Tracker")
+    trackerLV = G4LogicalVolume(move!(trackerS), m_air, "Tracker")
     G4PVPlacement(nothing,              # no rotation
         positionTracker,                # at (x,y,z)
         trackerLV,                      # its logical volume
@@ -108,7 +108,7 @@ function B2aConstruct(det::B2aDetector)::CxxPtr{G4VPhysicalVolume}
         Zposition = firstPosition + (copyNo-1) * chamberSpacing
         rmax =  rmaxFirst + (copyNo -1) * rmaxIncr
         chamberS = G4Tubs("Chamber_solid", 0, rmax, halfWidth, 0, 360deg)
-        push!(fLogicChamber, G4LogicalVolume(move(chamberS), m_chamber, "Chamber_LV"))
+        push!(fLogicChamber, G4LogicalVolume(move!(chamberS), m_chamber, "Chamber_LV"))
   
         SetVisAttributes(fLogicChamber[copyNo], chamberVisAtt)
 
@@ -130,7 +130,7 @@ function B2aConstruct(det::B2aDetector)::CxxPtr{G4VPhysicalVolume}
     # Sets a max step length in the tracker region, with G4StepLimiter
     maxStep = chamberWidth/2
     fStepLimit = G4UserLimits(maxStep)
-    SetUserLimits(trackerLV, move(fStepLimit))
+    SetUserLimits(trackerLV, move!(fStepLimit))
    
     # Always return the physical world-------------------------------------------------------------
     return worldPV

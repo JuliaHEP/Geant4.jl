@@ -69,9 +69,3 @@ The project includes additional functionality for visualization under the direct
 - `julia --project=G4Visualization -i  G4Visualization/examples/B1vis.jl`
   
   Note the option `-i` to keep the interactive session open.
-
-
-
-
-
-

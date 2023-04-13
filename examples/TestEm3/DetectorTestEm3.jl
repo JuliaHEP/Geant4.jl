@@ -86,8 +86,8 @@ function DefineMaterials!(det::TestEm3Detector)
     U8 = G4Isotope("U238", z=92, n=238, a=238.03*g/mole)
   
     U  = G4Element("enriched Uranium", "U", 2)
-    AddIsotope(U, move(U5), 0.90)
-    AddIsotope(U, move(U8), 0.10)
+    AddIsotope(U, move!(U5), 0.90)
+    AddIsotope(U, move!(U8), 0.10)
 
     G4Material("liquidH2",    z=1.,  a= 1.008*g/mole,  density= 70.8*mg/cm3)
     G4Material("Aluminium",   z=13., a= 26.98*g/mole,  density= 2.700*g/cm3)
@@ -182,7 +182,7 @@ function DefineMaterials!(det::TestEm3Detector)
 
     # examples of vacuum
     universe_mean_density = 1.e-25*g/cm3
-    move(G4Material("Galactic", z=1., a=1.008*g/mole, density=universe_mean_density, state=kStateGas, temperature=2.73*kelvin, pressure=3.e-18*pascal))
+    move!(G4Material("Galactic", z=1., a=1.008*g/mole, density=universe_mean_density, state=kStateGas, temperature=2.73*kelvin, pressure=3.e-18*pascal))
   
     beam = G4Material("Beam", density=1.e-5*g/cm3, ncomponents=1, state=kStateGas, temperature=273.15*kelvin, pressure=2e-2*bar)
     AddMaterial(beam, Air, fractionmass=1.)
