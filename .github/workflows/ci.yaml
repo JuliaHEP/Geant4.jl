@@ -57,8 +57,7 @@ jobs:
         uses: actions/setup-python@v3
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip -r requirements.txt
-          python -m pip install jupyter nbconvert nbformat
+          python -m pip install jupyter nbconvert
           julia --project="" -e '
             import Pkg
             Pkg.add("IJulia")
