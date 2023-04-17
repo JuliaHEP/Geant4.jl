@@ -1,4 +1,5 @@
-# Geant4.jl
+![Geant4](docs/src/assets/logo.png)
+
 
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https:///juliahep.github.io/Geant4.jl/dev/)
 [![Build Status](https://github.com/JuliaHEP/Geant4.jl/workflows/CI/badge.svg)](https://github.com/JuliaHEP/Geant4.jl/actions)
