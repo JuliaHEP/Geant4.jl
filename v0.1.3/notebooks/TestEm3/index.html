@@ -1,0 +1,2620 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Example TestEm3 · Geant4.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">APIs</a></li><li><span class="tocitem">Examples</span><ul><li class="is-active"><a class="tocitem" href>Example TestEm3</a></li><li><a class="tocitem" href="../B1/">Example B1</a></li><li><a class="tocitem" href="../B2a/">Example B2a</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>Example TestEm3</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Example TestEm3</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/notebooks/TestEm3.md#L" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="TestEM3-Example"><a class="docs-heading-anchor" href="#TestEM3-Example">TestEM3 Example</a><a id="TestEM3-Example-1"></a><a class="docs-heading-anchor-permalink" href="#TestEM3-Example" title="Permalink"></a></h1><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits
+using FHist, Printf, Plots</code></pre><pre><code class="language-julia hljs">#---Define Detector Parameters struct--------------------------------------------------------------
+include(joinpath(@__DIR__, &quot;DetectorTestEm3.jl&quot;))</code></pre><pre><code class="language-julia hljs">#---Define Simulation Data struct------------------------------------------------------------------
+mutable struct TestEm3SimData &lt;: G4JLSimulationData
+    #---Run data-----------------------------------------------------------------------------------
+    fParticle::CxxPtr{G4ParticleDefinition}
+    fEkin::Float64
+
+    fEtotal::Float64
+    fEtotal2::Float64
+    
+    fEnergyFlow::Vector{Float64}
+    fLateralEleak::Vector{Float64}
+    
+    fChargedStep::Int32
+    fNeutralStep::Int32
+
+    fN_gamma::Int32
+    fN_elec::Int32
+    fN_pos::Int32
+
+    fEnergyDeposit::Vector{Float64}     # Energy deposit per event
+    fTrackLengthCh::Vector{Float64}     # Track length per event
+
+    fEdepEventHistos::Vector{Hist1D}
+    fTrackLengthChHistos::Vector{Hist1D}
+    fEdepHistos::Vector{Hist1D}
+    fAbsorLabel::Vector{String}
+
+    fTimer::Float64
+
+    TestEm3SimData() = new()
+end</code></pre><pre><code class="language-julia hljs">#---Plot the Sumulation data-----------------------------------------------------------------------
+function do_plot(data::TestEm3SimData)
+    (;fEdepHistos, fEdepEventHistos, fTrackLengthChHistos, fAbsorLabel) = data
+    lay = @layout [°; ° °]
+    p = plot(layout=lay, show=true, size=(1000,800))
+    for (h, l) in zip(fEdepHistos, fAbsorLabel)
+        plot!(subplot=1, h, title=&quot;Energy Deposition&quot;, xlabel=&quot;layer #&quot;, label=l, show=true)
+    end
+    for (h, l) in zip(fEdepEventHistos, fAbsorLabel)
+        plot!(subplot=2, h, title=&quot;Energy/event Distribution&quot;, label=l, xlabel=&quot;MeV&quot;)
+    end
+    for (h, l) in zip(fTrackLengthChHistos, fAbsorLabel)
+        plot!(subplot=3, h, title=&quot;Track Lengh Distribution&quot;, label=l, xlabel=&quot;mm&quot;)
+    end
+    p
+end</code></pre><pre><code class="nohighlight hljs">do_plot (generic function with 1 method)</code></pre><pre><code class="language-julia hljs">#---Particle Gun initialization--------------------------------------------------------------------
+function gun_initialize(gen::G4JLParticleGun, det::G4JLDetector)
+    pg = GetGun(gen)
+    SetParticleByName(pg, &quot;e-&quot;)
+    SetParticleEnergy(pg, 1GeV)
+    SetParticleMomentumDirection(pg, G4ThreeVector(1,0,0))
+    SetParticlePosition(pg, G4ThreeVector(-0.5 * det.fWorldSizeX, 0 , 0))
+  end
+  Geant4.getInitializer(::G4JLParticleGun) = gun_initialize</code></pre><pre><code class="language-julia hljs">#--------------------------------------------------------------------------------------------------
+#----Actions---------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+#---Step action------------------------------------------------------------------------------------
+function stepaction(step::G4Step, app::G4JLApplication)::Nothing
+    data = app.simdata
+    detector = app.detector
+    prepoint = GetPreStepPoint(step)
+    endPoint = GetPostStepPoint(step)
+    track = GetTrack(step)
+ 
+    # Return if step in not in the world volume
+    prepoint |&gt; GetPhysicalVolume |&gt; GetLogicalVolume |&gt; GetMaterial == detector.fWorldMaterial &amp;&amp; return nothing
+ 
+    particle = GetDefinition(track)
+    charge  = GetPDGCharge(particle)
+    stepl = 0.
+    if charge != 0.
+        stepl = GetStepLength(step)
+        data.fChargedStep += 1
+    else
+        data.fNeutralStep += 1
+    end
+    edep = GetTotalEnergyDeposit(step) * GetWeight(track)
+    absorNum  = GetCopyNumber(GetTouchable(prepoint), 0)
+    layerNum  = GetCopyNumber(GetTouchable(prepoint), 1) + 1  # replicas copynumber starts at 0
+
+    data.fEnergyDeposit[absorNum] += edep
+    data.fTrackLengthCh[absorNum] += stepl 	
+
+    push!(data.fEdepHistos[absorNum], layerNum, edep)
+    nothing
+end
+
+#---Tracking pre-action----------------------------------------------------------------------------
+let G4Gamma, G4Electron, G4Positron, first=true
+global function pretrackaction(track::G4Track, app::G4JLApplication)::Nothing
+    if first
+        G4Gamma    = FindParticle(&quot;gamma&quot;)
+        G4Electron = FindParticle(&quot;e-&quot;)
+        G4Positron = FindParticle(&quot;e+&quot;)
+        first = false
+    end
+    data = app.simdata
+    d = GetDefinition(track)
+    if d === G4Gamma 
+        data.fN_gamma += 1
+    elseif d === G4Electron
+        data.fN_elec +=1
+    elseif d === G4Positron
+        data.fN_pos += 1
+    end
+    nothing
+end
+end
+#---Tracking post-action---------------------------------------------------------------------------
+function posttrackaction(track::G4Track, ::G4JLApplication)::Nothing
+  nothing
+end
+#---Begin Run Action-------------------------------------------------------------------------------
+function beginrun(run::G4Run, app::G4JLApplication)::Nothing
+    data = app.simdata
+    (; fNbOfAbsor, fNbOfLayers, fAbsorMaterial, fAbsorThickness) = app.detector
+    gun = GetGun(app.generator)
+    data.fParticle = GetParticleDefinition(gun)
+    data.fEkin = GetParticleEnergy(gun)
+    data.fN_gamma = data.fN_elec = data.fN_pos = 0
+    data.fChargedStep = data.fNeutralStep = 0
+    # init arrays
+    #data.fEnergyDeposit = zeros(fNbOfAbsor, fNbOfLayers)
+    data.fEdepHistos = [Hist1D(Float64; bins=0.:1.0:fNbOfLayers) for i in 1:fNbOfAbsor]
+    data.fEdepEventHistos = [Hist1D(;bins=0:10:1000) for i in 1:fNbOfAbsor]
+    data.fTrackLengthChHistos = [Hist1D(;bins=0:20:2000) for i in 1:fNbOfAbsor]
+    data.fAbsorLabel = [&quot;$(fAbsorThickness[i])mm of $(fAbsorMaterial[i] |&gt; GetName |&gt; String)&quot; for i in 1:fNbOfAbsor]
+    nothing
+end
+#---End Run Action---------------------------------------------------------------------------------
+function endrun(run::G4Run, app::G4JLApplication)::Nothing
+    data = app.simdata
+    nEvt = GetNumberOfEvent(run)
+    norm = nEvt &gt; 0 ? 1/nEvt : 1.
+
+    @printf &quot;------------------------------------------------------------\n&quot;
+    @printf &quot; Beam particle %s E = %.2f GeV\n&quot; String(GetParticleName(data.fParticle)) data.fEkin/GeV 
+    @printf &quot; Mean number of gamma          %.2f\n&quot; data.fN_gamma*norm 
+    @printf &quot; Mean number of e-             %.2f\n&quot; data.fN_elec*norm 
+    @printf &quot; Mean number of e+             %.2f\n&quot; data.fN_pos*norm 
+    @printf &quot; Mean number of charged steps  %f\n&quot;   data.fChargedStep*norm 
+    @printf &quot; Mean number of neutral steps  %f\n&quot;   data.fNeutralStep*norm 
+    @printf &quot;------------------------------------------------------------&quot;
+end
+#---Begin Event Action-----------------------------------------------------------------------------
+function beginevent(evt::G4Event, app::G4JLApplication)
+    data = app.simdata
+    (; fNbOfAbsor, fNbOfLayers) = app.detector
+    data.fEnergyDeposit = zeros(fNbOfAbsor)
+    data.fTrackLengthCh = zeros(fNbOfAbsor)
+    nothing
+end
+#---End Event Action-------------------------------------------------------------------------------
+function endevent(evt::G4Event, app::G4JLApplication)
+    data = app.simdata
+    (; fNbOfAbsor, fNbOfLayers) = app.detector
+    for i in 1:fNbOfAbsor
+        push!(data.fEdepEventHistos[i], data.fEnergyDeposit[i])
+        push!(data.fTrackLengthChHistos[i], data.fTrackLengthCh[i])
+    end
+    nothing
+end
+</code></pre><pre><code class="nohighlight hljs">endevent (generic function with 1 method)</code></pre><pre><code class="language-julia hljs">#---Create the Application-------------------------------------------------------------------------
+app = G4JLApplication(detector = TestEm3Detector(),               # detector with parameters
+                      simdata = TestEm3SimData(),                 # simulation data structure
+                      runmanager_type = G4RunManager,             # what RunManager to instantiate
+                      physics_type = FTFP_BERT,                   # what physics list to instantiate
+                      generator_type = G4JLParticleGun,           # what primary generator to instantiate
+                      #----Actions--------------------------------
+                      stepaction_method = stepaction,             # step action method
+                      pretrackaction_method = pretrackaction,     # pre-tracking action
+                      posttrackaction_method = posttrackaction,   # post-tracking action
+                      beginrunaction_method = beginrun,           # begin-run action (initialize counters and histograms)
+                      endrunaction_method = endrun,               # end-run action (print summary)               
+                      begineventaction_method = beginevent,       # begin-event action (initialize per-event data)
+                      endeventaction_method = endevent            # end-event action (fill histogram per event data)
+                      )
+              
+
+ui = G4UImanager!GetUIpointer()
+#ApplyCommand(ui, &quot;/tracking/verbose 1&quot;)
+</code></pre><pre><code class="nohighlight hljs">**************************************************************
+ Geant4 version Name: geant4-11-01-patch-01 [MT]   (10-February-2023)
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+
+
+
+
+
+CxxPtr{G4UImanager}(Ptr{G4UImanager} @0x00000000048f25a0)</code></pre><pre><code class="language-julia hljs">#---Configure, Initialize and Run------------------------------------------------------------------                      
+configure(app)
+initialize(app)</code></pre><pre><code class="nohighlight hljs">&lt;&lt;&lt; Geant4 Physics List simulation engine: FTFP_BERT
+
+Building Geometry now!!!
+
+ hInelastic FTFP_BERT : threshold between BERT and FTFP is over the interval 
+ for pions :   3 to 6 GeV
+ for kaons :   3 to 6 GeV
+ for proton :  3 to 6 GeV
+ for neutron : 3 to 6 GeV
+
+### Adding tracking cuts for neutron  TimeCut(ns)= 10000  KinEnergyCut(MeV)= 0</code></pre><pre><code class="language-julia hljs">beamOn(app, 1000)</code></pre><pre><code class="nohighlight hljs">=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                1
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      100 TeV
+Number of bins per decade of a table               7
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         1 keV
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Urban
+Use built-in Birks satuaration                     0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 0
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           1
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 100 TeV in 61 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  100 TeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 100 TeV in 56 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+       Klein-Nishina : Emin=    0 eV  Emax=  100 TeV
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 100 TeV, 18 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+     BetheHeitlerLPM : Emin=    0 eV  Emax=  100 TeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 150 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 150 keV to 100 TeV in 62 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  100 TeV  CullenGenerator
+
+msc:  for e-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  100 MeV Nbins=42 100 eV  - 100 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+        WentzelVIUni : Emin=  100 MeV Emax=  100 TeV Nbins=42 100 MeV - 100 TeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e-  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  100 TeV
+
+eBrem:  for e-  XStype:4  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      LPM flag: 1 for E &gt; 1 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    0 eV  Emax=    1 GeV  ModifiedTsai
+            eBremLPM : Emin=    1 GeV Emax=  100 TeV  ModifiedTsai
+
+CoulombScat:  for e- XStype:1 SubType=1 BuildTable=1
+      Lambda table from 100 MeV to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=  100 MeV Emax=  100 TeV
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  100 MeV Nbins=42 100 eV  - 100 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+        WentzelVIUni : Emin=  100 MeV Emax=  100 TeV Nbins=42 100 MeV - 100 TeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  100 TeV
+
+eBrem:  for e+  XStype:4  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      LPM flag: 1 for E &gt; 1 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    0 eV  Emax=    1 GeV  ModifiedTsai
+            eBremLPM : Emin=    1 GeV Emax=  100 TeV  ModifiedTsai
+
+annihil:  for e+ XStype:2 SubType=5 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            eplus2gg : Emin=    0 eV  Emax=  100 TeV
+
+CoulombScat:  for e+ XStype:1 SubType=1 BuildTable=1
+      Lambda table from 100 MeV to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=  100 MeV Emax=  100 TeV
+
+msc:  for proton  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for proton  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=    2 MeV
+          BetheBloch : Emin=    2 MeV Emax=  100 TeV
+
+hBrems:  for proton  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for proton  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Sampling table 17x1001; from 7.50618 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for proton XStype:1 SubType=1 BuildTable=1
+      Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for GenericIon  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+ionIoni:  for GenericIon  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.02
+      Stopping Power data for 17 ion/material pairs
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            BraggIon : Emin=    0 eV  Emax=    2 MeV
+          BetheBloch : Emin=    2 MeV Emax=  100 TeV
+
+msc:  for alpha  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+ionIoni:  for alpha  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.02
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            BraggIon : Emin=    0 eV  Emax=7.9452 MeV
+          BetheBloch : Emin=7.9452 MeV Emax=  100 TeV
+
+msc:  for anti_proton  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for anti_proton  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO : Emin=    0 eV  Emax=    2 MeV
+          BetheBloch : Emin=    2 MeV Emax=  100 TeV
+
+hBrems:  for anti_proton  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for anti_proton  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Sampling table 17x1001; from 7.50618 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for anti_proton XStype:1 SubType=1 BuildTable=1
+      Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for kaon+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for kaon+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=1.05231 MeV
+          BetheBloch : Emin=1.05231 MeV Emax=  100 TeV
+
+hBrems:  for kaon+  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for kaon+  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Sampling table 18x1001; from 3.94942 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for kaon+ XStype:1 SubType=1 BuildTable=1
+      Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for kaon-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for kaon-  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO : Emin=    0 eV  Emax=1.05231 MeV
+          BetheBloch : Emin=1.05231 MeV Emax=  100 TeV
+
+hBrems:  for kaon-  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for kaon-  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Sampling table 18x1001; from 3.94942 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for kaon- XStype:1 SubType=1 BuildTable=1
+      Used Lambda table of kaon+
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for mu+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+muIoni:  for mu+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=  200 keV
+        MuBetheBloch : Emin=  200 keV Emax=  100 TeV
+
+muBrems:  for mu+  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+              MuBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+muPairProd:  for mu+  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Sampling table 21x1001; from 0.85 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+          muPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for mu+ XStype:1 SubType=1 BuildTable=1
+      Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for mu-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+muIoni:  for mu-  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO : Emin=    0 eV  Emax=  200 keV
+        MuBetheBloch : Emin=  200 keV Emax=  100 TeV
+
+muBrems:  for mu-  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+              MuBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+muPairProd:  for mu-  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Sampling table 21x1001; from 0.85 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+          muPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for mu- XStype:1 SubType=1 BuildTable=1
+      Used Lambda table of mu+
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for pi+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for pi+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=297.505 keV
+          BetheBloch : Emin=297.505 keV Emax=  100 TeV
+
+hBrems:  for pi+  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for pi+  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Sampling table 20x1001; from 1.11656 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for pi+ XStype:1 SubType=1 BuildTable=1
+      Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for pi-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for pi-  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO : Emin=    0 eV  Emax=297.505 keV
+          BetheBloch : Emin=297.505 keV Emax=  100 TeV
+
+hBrems:  for pi-  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for pi-  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Sampling table 20x1001; from 1.11656 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for pi- XStype:1 SubType=1 BuildTable=1
+      Used Lambda table of pi+
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+====================================================================
+                  HADRONIC PROCESSES SUMMARY (verbose level 1)
+
+---------------------------------------------------
+                           Hadronic Processes for neutron
+
+  Process: hadElastic
+        Model:             hElasticCHIPS: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:        G4NeutronElasticXS: 0 eV  ---&gt; 100 TeV
+
+
+  Process: neutronInelastic
+        Model:                      FTFP: 3 GeV ---&gt; 100 TeV
+        Model:            BertiniCascade: 0 eV  ---&gt; 6 GeV
+     Cr_sctns:      G4NeutronInelasticXS: 0 eV  ---&gt; 100 TeV
+
+
+  Process: nCapture
+        Model:               nRadCapture: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:        G4NeutronCaptureXS: 0 eV  ---&gt; 100 TeV
+
+
+  Process: nKiller
+
+---------------------------------------------------
+                           Hadronic Processes for B-
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: B-Inelastic
+        Model:                      FTFP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for D-
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: D-Inelastic
+        Model:                      FTFP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for GenericIon
+
+  Process: ionInelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---&gt; 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---&gt; 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for He3
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: He3Inelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---&gt; 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---&gt; 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for alpha
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: alphaInelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---&gt; 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---&gt; 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for anti_He3
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---&gt; 100.1 MeV/n
+        Model:              AntiAElastic: 100 MeV/n ---&gt; 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: anti_He3Inelastic
+        Model:                      FTFP: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: hFritiofCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for anti_alpha
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---&gt; 100.1 MeV/n
+        Model:              AntiAElastic: 100 MeV/n ---&gt; 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: anti_alphaInelastic
+        Model:                      FTFP: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: hFritiofCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for anti_deuteron
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---&gt; 100.1 MeV/n
+        Model:              AntiAElastic: 100 MeV/n ---&gt; 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: anti_deuteronInelastic
+        Model:                      FTFP: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: hFritiofCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for anti_hypertriton
+
+  Process: hFritiofCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for anti_lambda
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: anti_lambdaInelastic
+        Model:                      FTFP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: hFritiofCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for anti_neutron
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100.1 MeV
+        Model:              AntiAElastic: 100 MeV ---&gt; 100 TeV
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: anti_neutronInelastic
+        Model:                      FTFP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: hFritiofCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for anti_proton
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100.1 MeV
+        Model:              AntiAElastic: 100 MeV ---&gt; 100 TeV
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: anti_protonInelastic
+        Model:                      FTFP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: hFritiofCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for anti_triton
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---&gt; 100.1 MeV/n
+        Model:              AntiAElastic: 100 MeV/n ---&gt; 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: anti_tritonInelastic
+        Model:                      FTFP: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: hFritiofCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for deuteron
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: dInelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---&gt; 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---&gt; 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for e+
+
+  Process: positronNuclear
+        Model:   G4ElectroVDNuclearModel: 0 eV  ---&gt; 1 PeV
+     Cr_sctns:          ElectroNuclearXS: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for e-
+
+  Process: electronNuclear
+        Model:   G4ElectroVDNuclearModel: 0 eV  ---&gt; 1 PeV
+     Cr_sctns:          ElectroNuclearXS: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for gamma
+
+  Process: photonNuclear
+        Model:               GammaNPreco: 0 eV  ---&gt; 200 MeV
+        Model:            BertiniCascade: 199 MeV ---&gt; 6 GeV
+        Model:           TheoFSGenerator: 3 GeV ---&gt; 100 TeV
+     Cr_sctns:            GammaNuclearXS: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for kaon+
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: kaon+Inelastic
+        Model:                      FTFP: 3 GeV ---&gt; 100 TeV
+        Model:            BertiniCascade: 0 eV  ---&gt; 6 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for kaon-
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: kaon-Inelastic
+        Model:                      FTFP: 3 GeV ---&gt; 100 TeV
+        Model:            BertiniCascade: 0 eV  ---&gt; 6 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: hBertiniCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for lambda
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: lambdaInelastic
+        Model:                      FTFP: 3 GeV ---&gt; 100 TeV
+        Model:            BertiniCascade: 0 eV  ---&gt; 6 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for mu+
+
+  Process: muonNuclear
+        Model:      G4MuonVDNuclearModel: 0 eV  ---&gt; 1 PeV
+     Cr_sctns:     KokoulinMuonNuclearXS: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for mu-
+
+  Process: muonNuclear
+        Model:      G4MuonVDNuclearModel: 0 eV  ---&gt; 1 PeV
+     Cr_sctns:     KokoulinMuonNuclearXS: 0 eV  ---&gt; 100 TeV
+
+
+  Process: muMinusCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for pi+
+
+  Process: hadElastic
+        Model:           hElasticGlauber: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: pi+Inelastic
+        Model:                      FTFP: 3 GeV ---&gt; 100 TeV
+        Model:            BertiniCascade: 0 eV  ---&gt; 6 GeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for pi-
+
+  Process: hadElastic
+        Model:           hElasticGlauber: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: pi-Inelastic
+        Model:                      FTFP: 3 GeV ---&gt; 100 TeV
+        Model:            BertiniCascade: 0 eV  ---&gt; 6 GeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: hBertiniCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for proton
+
+  Process: hadElastic
+        Model:             hElasticCHIPS: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: protonInelastic
+        Model:                      FTFP: 3 GeV ---&gt; 100 TeV
+        Model:            BertiniCascade: 0 eV  ---&gt; 6 GeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for sigma-
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: sigma-Inelastic
+        Model:                      FTFP: 3 GeV ---&gt; 100 TeV
+        Model:            BertiniCascade: 0 eV  ---&gt; 6 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: hBertiniCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for triton
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: tInelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---&gt; 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---&gt; 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
+
+
+================================================================
+### G4LevelReader: broken transition 0 from level 24 to 24 for isotope Z= 89 A= 219 - use ground level
+=======================================================================
+======       Pre-compound/De-excitation Physics Parameters     ========
+=======================================================================
+Type of pre-compound inverse x-section              3
+Pre-compound model active                           1
+Pre-compound excitation low energy                  100 keV
+Pre-compound excitation high energy                 30 MeV
+Type of de-excitation inverse x-section             3
+Type of de-excitation factory                       Evaporation+GEM
+Number of de-excitation channels                    68
+Min excitation energy                               10 eV 
+Min energy per nucleon for multifragmentation       200 GeV
+Limit excitation energy for Fermi BreakUp           20 MeV
+Level density (1/MeV)                               0.075
+Use simple level density model                      1
+Use discrete excitation energy of the residual      1
+Time limit for long lived isomeres                  1 ns 
+Isomer production flag                              1
+Internal e- conversion flag                         1
+Store e- internal conversion data                   0
+Correlated gamma emission flag                      0
+Max 2J for sampling of angular correlations         10
+=======================================================================
+------------------------------------------------------------
+ Beam particle e- E = 1.00 GeV
+ Mean number of gamma          521.39
+ Mean number of e-             895.97
+ Mean number of e+             53.34
+ Mean number of charged steps  3735.794000
+ Mean number of neutral steps  3705.362000
+------------------------------------------------------------</code></pre><pre><code class="language-julia hljs">do_plot(app.simdata)</code></pre><p><img src="../TestEm3_files/TestEm3_10_0.svg" alt="svg"/></p><pre><code class="language-julia hljs">pg = GetGun(app.generator)
+SetParticleEnergy(pg, 100MeV)</code></pre><pre><code class="language-julia hljs">beamOn(app, 100)
+do_plot(app.simdata)</code></pre><pre><code class="nohighlight hljs">------------------------------------------------------------
+ Beam particle e- E = 0.10 GeV
+ Mean number of gamma          51.95
+ Mean number of e-             89.63
+ Mean number of e+             4.74
+ Mean number of charged steps  364.140000
+ Mean number of neutral steps  364.130000
+------------------------------------------------------------</code></pre><p><img src="../TestEm3_files/TestEm3_12_1.svg" alt="svg"/></p><pre><code class="language-julia hljs">reinitialize(app, TestEm3Detector(absorThickness = [2.3mm, 5.7mm, 1mm],
+                                  absorMaterial = [&quot;G4_Pb&quot;, &quot;G4_lAr&quot;, &quot;G4_Al&quot;]))</code></pre><pre><code class="nohighlight hljs">Building Geometry now!!!</code></pre><pre><code class="language-julia hljs">beamOn(app, 100)
+do_plot(app.simdata)</code></pre><pre><code class="nohighlight hljs">------------------------------------------------------------
+ Beam particle e- E = 0.10 GeV
+ Mean number of gamma          49.00
+ Mean number of e-             86.10
+ Mean number of e+             4.52
+ Mean number of charged steps  400.700000
+ Mean number of neutral steps  457.420000
+------------------------------------------------------------</code></pre><p><img src="../TestEm3_files/TestEm3_14_1.svg" alt="svg"/></p><pre><code class="language-julia hljs">using BenchmarkTools</code></pre><pre><code class="language-julia hljs">@time beamOn(app, 100)</code></pre><pre><code class="nohighlight hljs">------------------------------------------------------------
+ Beam particle e- E = 0.10 GeV
+ Mean number of gamma          50.10
+ Mean number of e-             88.24
+ Mean number of e+             4.64
+ Mean number of charged steps  392.720000
+ Mean number of neutral steps  464.120000
+------------------------------------------------------------  0.168781 seconds (201.38 k allocations: 3.105 MiB)</code></pre><pre><code class="language-julia hljs">function posttrackaction(track::G4Track, ::G4JLApplication)::Nothing
+    println(&quot;Track ID: $(GetTrackID(track)) ended&quot;)
+end</code></pre><pre><code class="nohighlight hljs">posttrackaction (generic function with 1 method)</code></pre><pre><code class="language-julia hljs">beamOn(app, 10)</code></pre><pre><code class="nohighlight hljs">Track ID: 1 ended
+Track ID: 30 ended
+Track ID: 32 ended
+Track ID: 31 ended
+Track ID: 29 ended
+Track ID: 35 ended
+Track ID: 36 ended
+Track ID: 37 ended
+Track ID: 34 ended
+Track ID: 33 ended
+Track ID: 28 ended
+Track ID: 38 ended
+Track ID: 27 ended
+Track ID: 39 ended
+Track ID: 26 ended
+Track ID: 41 ended
+Track ID: 40 ended
+Track ID: 25 ended
+Track ID: 44 ended
+Track ID: 43 ended
+Track ID: 42 ended
+Track ID: 24 ended
+Track ID: 45 ended
+Track ID: 23 ended
+Track ID: 46 ended
+Track ID: 22 ended
+Track ID: 21 ended
+Track ID: 20 ended
+Track ID: 19 ended
+Track ID: 48 ended
+Track ID: 47 ended
+Track ID: 18 ended
+Track ID: 49 ended
+Track ID: 50 ended
+Track ID: 17 ended
+Track ID: 51 ended
+Track ID: 16 ended
+Track ID: 53 ended
+Track ID: 55 ended
+Track ID: 58 ended
+Track ID: 57 ended
+Track ID: 56 ended
+Track ID: 54 ended
+Track ID: 62 ended
+Track ID: 61 ended
+Track ID: 60 ended
+Track ID: 59 ended
+Track ID: 52 ended
+Track ID: 63 ended
+Track ID: 64 ended
+Track ID: 15 ended
+Track ID: 67 ended
+Track ID: 66 ended
+Track ID: 65 ended
+Track ID: 14 ended
+Track ID: 68 ended
+Track ID: 13 ended
+Track ID: 69 ended
+Track ID: 12 ended
+Track ID: 73 ended
+Track ID: 72 ended
+Track ID: 71 ended
+Track ID: 70 ended
+Track ID: 75 ended
+Track ID: 76 ended
+Track ID: 74 ended
+Track ID: 77 ended
+Track ID: 11 ended
+Track ID: 79 ended
+Track ID: 82 ended
+Track ID: 84 ended
+Track ID: 83 ended
+Track ID: 85 ended
+Track ID: 81 ended
+Track ID: 87 ended
+Track ID: 86 ended
+Track ID: 80 ended
+Track ID: 92 ended
+Track ID: 93 ended
+Track ID: 95 ended
+Track ID: 94 ended
+Track ID: 91 ended
+Track ID: 90 ended
+Track ID: 89 ended
+Track ID: 88 ended
+Track ID: 78 ended
+Track ID: 96 ended
+Track ID: 97 ended
+Track ID: 10 ended
+Track ID: 100 ended
+Track ID: 99 ended
+Track ID: 98 ended
+Track ID: 101 ended
+Track ID: 102 ended
+Track ID: 9 ended
+Track ID: 104 ended
+Track ID: 110 ended
+Track ID: 113 ended
+Track ID: 112 ended
+Track ID: 111 ended
+Track ID: 109 ended
+Track ID: 114 ended
+Track ID: 108 ended
+Track ID: 116 ended
+Track ID: 115 ended
+Track ID: 107 ended
+Track ID: 117 ended
+Track ID: 106 ended
+Track ID: 118 ended
+Track ID: 105 ended
+Track ID: 119 ended
+Track ID: 103 ended
+Track ID: 121 ended
+Track ID: 123 ended
+Track ID: 122 ended
+Track ID: 124 ended
+Track ID: 126 ended
+Track ID: 125 ended
+Track ID: 120 ended
+Track ID: 127 ended
+Track ID: 8 ended
+Track ID: 130 ended
+Track ID: 129 ended
+Track ID: 128 ended
+Track ID: 131 ended
+Track ID: 132 ended
+Track ID: 7 ended
+Track ID: 133 ended
+Track ID: 134 ended
+Track ID: 135 ended
+Track ID: 6 ended
+Track ID: 136 ended
+Track ID: 5 ended
+Track ID: 137 ended
+Track ID: 4 ended
+Track ID: 138 ended
+Track ID: 3 ended
+Track ID: 142 ended
+Track ID: 141 ended
+Track ID: 140 ended
+Track ID: 139 ended
+Track ID: 2 ended
+Track ID: 143 ended
+Track ID: 1 ended
+Track ID: 21 ended
+Track ID: 23 ended
+Track ID: 22 ended
+Track ID: 20 ended
+Track ID: 19 ended
+Track ID: 25 ended
+Track ID: 27 ended
+Track ID: 31 ended
+Track ID: 30 ended
+Track ID: 29 ended
+Track ID: 28 ended
+Track ID: 26 ended
+Track ID: 35 ended
+Track ID: 34 ended
+Track ID: 33 ended
+Track ID: 32 ended
+Track ID: 24 ended
+Track ID: 18 ended
+Track ID: 38 ended
+Track ID: 37 ended
+Track ID: 36 ended
+Track ID: 17 ended
+Track ID: 39 ended
+Track ID: 16 ended
+Track ID: 40 ended
+Track ID: 15 ended
+Track ID: 44 ended
+Track ID: 43 ended
+Track ID: 42 ended
+Track ID: 41 ended
+Track ID: 14 ended
+Track ID: 46 ended
+Track ID: 45 ended
+Track ID: 47 ended
+Track ID: 48 ended
+Track ID: 13 ended
+Track ID: 50 ended
+Track ID: 52 ended
+Track ID: 54 ended
+Track ID: 53 ended
+Track ID: 51 ended
+Track ID: 55 ended
+Track ID: 49 ended
+Track ID: 57 ended
+Track ID: 56 ended
+Track ID: 12 ended
+Track ID: 11 ended
+Track ID: 59 ended
+Track ID: 67 ended
+Track ID: 68 ended
+Track ID: 66 ended
+Track ID: 70 ended
+Track ID: 69 ended
+Track ID: 65 ended
+Track ID: 71 ended
+Track ID: 64 ended
+Track ID: 72 ended
+Track ID: 63 ended
+Track ID: 73 ended
+Track ID: 74 ended
+Track ID: 62 ended
+Track ID: 75 ended
+Track ID: 61 ended
+Track ID: 80 ended
+Track ID: 79 ended
+Track ID: 78 ended
+Track ID: 77 ended
+Track ID: 76 ended
+Track ID: 60 ended
+Track ID: 83 ended
+Track ID: 85 ended
+Track ID: 86 ended
+Track ID: 84 ended
+Track ID: 87 ended
+Track ID: 82 ended
+Track ID: 88 ended
+Track ID: 90 ended
+Track ID: 89 ended
+Track ID: 81 ended
+Track ID: 92 ended
+Track ID: 94 ended
+Track ID: 93 ended
+Track ID: 91 ended
+Track ID: 95 ended
+Track ID: 58 ended
+Track ID: 103 ended
+Track ID: 104 ended
+Track ID: 102 ended
+Track ID: 105 ended
+Track ID: 101 ended
+Track ID: 107 ended
+Track ID: 106 ended
+Track ID: 100 ended
+Track ID: 114 ended
+Track ID: 113 ended
+Track ID: 112 ended
+Track ID: 111 ended
+Track ID: 110 ended
+Track ID: 109 ended
+Track ID: 108 ended
+Track ID: 99 ended
+Track ID: 98 ended
+Track ID: 116 ended
+Track ID: 115 ended
+Track ID: 97 ended
+Track ID: 119 ended
+Track ID: 118 ended
+Track ID: 117 ended
+Track ID: 120 ended
+Track ID: 121 ended
+Track ID: 96 ended
+Track ID: 122 ended
+Track ID: 10 ended
+Track ID: 123 ended
+Track ID: 9 ended
+Track ID: 125 ended
+Track ID: 127 ended
+Track ID: 128 ended
+Track ID: 126 ended
+Track ID: 129 ended
+Track ID: 124 ended
+Track ID: 8 ended
+Track ID: 7 ended
+Track ID: 132 ended
+Track ID: 131 ended
+Track ID: 130 ended
+Track ID: 133 ended
+Track ID: 134 ended
+Track ID: 6 ended
+Track ID: 135 ended
+Track ID: 5 ended
+Track ID: 137 ended
+Track ID: 136 ended
+Track ID: 4 ended
+Track ID: 141 ended
+Track ID: 140 ended
+Track ID: 139 ended
+Track ID: 138 ended
+Track ID: 3 ended
+Track ID: 142 ended
+Track ID: 143 ended
+Track ID: 144 ended
+Track ID: 2 ended
+Track ID: 146 ended
+Track ID: 145 ended
+Track ID: 147 ended
+Track ID: 148 ended
+Track ID: 1 ended
+Track ID: 32 ended
+Track ID: 33 ended
+Track ID: 31 ended
+Track ID: 30 ended
+Track ID: 35 ended
+Track ID: 45 ended
+Track ID: 46 ended
+Track ID: 44 ended
+Track ID: 48 ended
+Track ID: 47 ended
+Track ID: 43 ended
+Track ID: 51 ended
+Track ID: 50 ended
+Track ID: 49 ended
+Track ID: 42 ended
+Track ID: 52 ended
+Track ID: 41 ended
+Track ID: 54 ended
+Track ID: 53 ended
+Track ID: 40 ended
+Track ID: 55 ended
+Track ID: 39 ended
+Track ID: 56 ended
+Track ID: 38 ended
+Track ID: 57 ended
+Track ID: 37 ended
+Track ID: 61 ended
+Track ID: 60 ended
+Track ID: 59 ended
+Track ID: 58 ended
+Track ID: 36 ended
+Track ID: 62 ended
+Track ID: 34 ended
+Track ID: 29 ended
+Track ID: 64 ended
+Track ID: 63 ended
+Track ID: 28 ended
+Track ID: 66 ended
+Track ID: 65 ended
+Track ID: 27 ended
+Track ID: 67 ended
+Track ID: 26 ended
+Track ID: 69 ended
+Track ID: 72 ended
+Track ID: 74 ended
+Track ID: 73 ended
+Track ID: 71 ended
+Track ID: 75 ended
+Track ID: 70 ended
+Track ID: 76 ended
+Track ID: 68 ended
+Track ID: 79 ended
+Track ID: 80 ended
+Track ID: 78 ended
+Track ID: 83 ended
+Track ID: 82 ended
+Track ID: 81 ended
+Track ID: 77 ended
+Track ID: 84 ended
+Track ID: 25 ended
+Track ID: 85 ended
+Track ID: 24 ended
+Track ID: 87 ended
+Track ID: 89 ended
+Track ID: 91 ended
+Track ID: 90 ended
+Track ID: 88 ended
+Track ID: 92 ended
+Track ID: 86 ended
+Track ID: 23 ended
+Track ID: 93 ended
+Track ID: 22 ended
+Track ID: 94 ended
+Track ID: 21 ended
+Track ID: 95 ended
+Track ID: 20 ended
+Track ID: 96 ended
+Track ID: 19 ended
+Track ID: 97 ended
+Track ID: 18 ended
+Track ID: 98 ended
+Track ID: 17 ended
+Track ID: 99 ended
+Track ID: 16 ended
+Track ID: 101 ended
+Track ID: 100 ended
+Track ID: 15 ended
+Track ID: 103 ended
+Track ID: 102 ended
+Track ID: 14 ended
+Track ID: 105 ended
+Track ID: 108 ended
+Track ID: 109 ended
+Track ID: 107 ended
+Track ID: 110 ended
+Track ID: 111 ended
+Track ID: 112 ended
+Track ID: 106 ended
+Track ID: 113 ended
+Track ID: 104 ended
+Track ID: 115 ended
+Track ID: 116 ended
+Track ID: 114 ended
+Track ID: 117 ended
+Track ID: 13 ended
+Track ID: 119 ended
+Track ID: 118 ended
+Track ID: 12 ended
+Track ID: 11 ended
+Track ID: 120 ended
+Track ID: 10 ended
+Track ID: 121 ended
+Track ID: 9 ended
+Track ID: 124 ended
+Track ID: 123 ended
+Track ID: 122 ended
+Track ID: 8 ended
+Track ID: 126 ended
+Track ID: 134 ended
+Track ID: 135 ended
+Track ID: 133 ended
+Track ID: 138 ended
+Track ID: 137 ended
+Track ID: 136 ended
+Track ID: 132 ended
+Track ID: 139 ended
+Track ID: 131 ended
+Track ID: 141 ended
+Track ID: 140 ended
+Track ID: 130 ended
+Track ID: 143 ended
+Track ID: 142 ended
+Track ID: 129 ended
+Track ID: 144 ended
+Track ID: 128 ended
+Track ID: 147 ended
+Track ID: 146 ended
+Track ID: 145 ended
+Track ID: 127 ended
+Track ID: 150 ended
+Track ID: 149 ended
+Track ID: 148 ended
+Track ID: 125 ended
+Track ID: 153 ended
+Track ID: 154 ended
+Track ID: 152 ended
+Track ID: 156 ended
+Track ID: 155 ended
+Track ID: 151 ended
+Track ID: 158 ended
+Track ID: 160 ended
+Track ID: 162 ended
+Track ID: 161 ended
+Track ID: 159 ended
+Track ID: 165 ended
+Track ID: 164 ended
+Track ID: 163 ended
+Track ID: 157 ended
+Track ID: 7 ended
+Track ID: 166 ended
+Track ID: 6 ended
+Track ID: 167 ended
+Track ID: 5 ended
+Track ID: 168 ended
+Track ID: 4 ended
+Track ID: 169 ended
+Track ID: 3 ended
+Track ID: 170 ended
+Track ID: 2 ended
+Track ID: 171 ended
+Track ID: 1 ended
+Track ID: 11 ended
+Track ID: 13 ended
+Track ID: 12 ended
+Track ID: 10 ended
+Track ID: 14 ended
+Track ID: 9 ended
+Track ID: 15 ended
+Track ID: 8 ended
+Track ID: 17 ended
+Track ID: 30 ended
+Track ID: 31 ended
+Track ID: 29 ended
+Track ID: 32 ended
+Track ID: 28 ended
+Track ID: 33 ended
+Track ID: 27 ended
+Track ID: 34 ended
+Track ID: 26 ended
+Track ID: 37 ended
+Track ID: 36 ended
+Track ID: 35 ended
+Track ID: 25 ended
+Track ID: 38 ended
+Track ID: 24 ended
+Track ID: 39 ended
+Track ID: 40 ended
+Track ID: 23 ended
+Track ID: 41 ended
+Track ID: 22 ended
+Track ID: 42 ended
+Track ID: 21 ended
+Track ID: 47 ended
+Track ID: 46 ended
+Track ID: 45 ended
+Track ID: 44 ended
+Track ID: 43 ended
+Track ID: 48 ended
+Track ID: 49 ended
+Track ID: 20 ended
+Track ID: 51 ended
+Track ID: 50 ended
+Track ID: 19 ended
+Track ID: 53 ended
+Track ID: 52 ended
+Track ID: 54 ended
+Track ID: 56 ended
+Track ID: 55 ended
+Track ID: 18 ended
+Track ID: 16 ended
+Track ID: 57 ended
+Track ID: 58 ended
+Track ID: 7 ended
+Track ID: 60 ended
+Track ID: 59 ended
+Track ID: 6 ended
+Track ID: 62 ended
+Track ID: 66 ended
+Track ID: 67 ended
+Track ID: 65 ended
+Track ID: 71 ended
+Track ID: 70 ended
+Track ID: 69 ended
+Track ID: 68 ended
+Track ID: 64 ended
+Track ID: 73 ended
+Track ID: 72 ended
+Track ID: 63 ended
+Track ID: 76 ended
+Track ID: 78 ended
+Track ID: 80 ended
+Track ID: 79 ended
+Track ID: 77 ended
+Track ID: 81 ended
+Track ID: 82 ended
+Track ID: 83 ended
+Track ID: 75 ended
+Track ID: 84 ended
+Track ID: 85 ended
+Track ID: 74 ended
+Track ID: 61 ended
+Track ID: 90 ended
+Track ID: 91 ended
+Track ID: 89 ended
+Track ID: 92 ended
+Track ID: 88 ended
+Track ID: 96 ended
+Track ID: 95 ended
+Track ID: 94 ended
+Track ID: 93 ended
+Track ID: 87 ended
+Track ID: 99 ended
+Track ID: 98 ended
+Track ID: 97 ended
+Track ID: 86 ended
+Track ID: 104 ended
+Track ID: 103 ended
+Track ID: 102 ended
+Track ID: 101 ended
+Track ID: 100 ended
+Track ID: 106 ended
+Track ID: 108 ended
+Track ID: 107 ended
+Track ID: 105 ended
+Track ID: 109 ended
+Track ID: 5 ended
+Track ID: 112 ended
+Track ID: 111 ended
+Track ID: 110 ended
+Track ID: 4 ended
+Track ID: 114 ended
+Track ID: 113 ended
+Track ID: 3 ended
+Track ID: 116 ended
+Track ID: 124 ended
+Track ID: 128 ended
+Track ID: 127 ended
+Track ID: 126 ended
+Track ID: 125 ended
+Track ID: 123 ended
+Track ID: 122 ended
+Track ID: 130 ended
+Track ID: 129 ended
+Track ID: 121 ended
+Track ID: 131 ended
+Track ID: 120 ended
+Track ID: 132 ended
+Track ID: 119 ended
+Track ID: 133 ended
+Track ID: 118 ended
+Track ID: 136 ended
+Track ID: 135 ended
+Track ID: 134 ended
+Track ID: 117 ended
+Track ID: 138 ended
+Track ID: 137 ended
+Track ID: 115 ended
+Track ID: 140 ended
+Track ID: 139 ended
+Track ID: 2 ended
+Track ID: 143 ended
+Track ID: 142 ended
+Track ID: 141 ended
+Track ID: 1 ended
+Track ID: 16 ended
+Track ID: 17 ended
+Track ID: 15 ended
+Track ID: 19 ended
+Track ID: 23 ended
+Track ID: 24 ended
+Track ID: 22 ended
+Track ID: 29 ended
+Track ID: 28 ended
+Track ID: 27 ended
+Track ID: 26 ended
+Track ID: 25 ended
+Track ID: 21 ended
+Track ID: 34 ended
+Track ID: 33 ended
+Track ID: 32 ended
+Track ID: 31 ended
+Track ID: 30 ended
+Track ID: 20 ended
+Track ID: 40 ended
+Track ID: 39 ended
+Track ID: 38 ended
+Track ID: 37 ended
+Track ID: 36 ended
+Track ID: 35 ended
+Track ID: 18 ended
+Track ID: 43 ended
+Track ID: 44 ended
+Track ID: 42 ended
+Track ID: 45 ended
+Track ID: 41 ended
+Track ID: 47 ended
+Track ID: 46 ended
+Track ID: 14 ended
+Track ID: 48 ended
+Track ID: 13 ended
+Track ID: 12 ended
+Track ID: 50 ended
+Track ID: 55 ended
+Track ID: 57 ended
+Track ID: 56 ended
+Track ID: 54 ended
+Track ID: 58 ended
+Track ID: 53 ended
+Track ID: 65 ended
+Track ID: 64 ended
+Track ID: 63 ended
+Track ID: 62 ended
+Track ID: 61 ended
+Track ID: 60 ended
+Track ID: 67 ended
+Track ID: 68 ended
+Track ID: 66 ended
+Track ID: 69 ended
+Track ID: 71 ended
+Track ID: 70 ended
+Track ID: 59 ended
+Track ID: 52 ended
+Track ID: 75 ended
+Track ID: 74 ended
+Track ID: 73 ended
+Track ID: 72 ended
+Track ID: 51 ended
+Track ID: 49 ended
+Track ID: 79 ended
+Track ID: 83 ended
+Track ID: 82 ended
+Track ID: 81 ended
+Track ID: 80 ended
+Track ID: 78 ended
+Track ID: 85 ended
+Track ID: 84 ended
+Track ID: 77 ended
+Track ID: 87 ended
+Track ID: 89 ended
+Track ID: 90 ended
+Track ID: 88 ended
+Track ID: 93 ended
+Track ID: 92 ended
+Track ID: 91 ended
+Track ID: 86 ended
+Track ID: 76 ended
+Track ID: 95 ended
+Track ID: 97 ended
+Track ID: 102 ended
+Track ID: 101 ended
+Track ID: 100 ended
+Track ID: 99 ended
+Track ID: 98 ended
+Track ID: 96 ended
+Track ID: 104 ended
+Track ID: 103 ended
+Track ID: 94 ended
+Track ID: 11 ended
+Track ID: 106 ended
+Track ID: 105 ended
+Track ID: 10 ended
+Track ID: 108 ended
+Track ID: 110 ended
+Track ID: 115 ended
+Track ID: 114 ended
+Track ID: 113 ended
+Track ID: 112 ended
+Track ID: 116 ended
+Track ID: 117 ended
+Track ID: 111 ended
+Track ID: 109 ended
+Track ID: 119 ended
+Track ID: 118 ended
+Track ID: 107 ended
+Track ID: 120 ended
+Track ID: 121 ended
+Track ID: 9 ended
+Track ID: 122 ended
+Track ID: 8 ended
+Track ID: 7 ended
+Track ID: 124 ended
+Track ID: 123 ended
+Track ID: 6 ended
+Track ID: 125 ended
+Track ID: 5 ended
+Track ID: 129 ended
+Track ID: 128 ended
+Track ID: 127 ended
+Track ID: 126 ended
+Track ID: 131 ended
+Track ID: 132 ended
+Track ID: 130 ended
+Track ID: 133 ended
+Track ID: 4 ended
+Track ID: 136 ended
+Track ID: 135 ended
+Track ID: 134 ended
+Track ID: 3 ended
+Track ID: 137 ended
+Track ID: 2 ended
+Track ID: 140 ended
+Track ID: 142 ended
+Track ID: 143 ended
+Track ID: 141 ended
+Track ID: 146 ended
+Track ID: 145 ended
+Track ID: 144 ended
+Track ID: 139 ended
+Track ID: 138 ended
+Track ID: 147 ended
+Track ID: 149 ended
+Track ID: 148 ended
+Track ID: 1 ended
+Track ID: 19 ended
+Track ID: 21 ended
+Track ID: 23 ended
+Track ID: 24 ended
+Track ID: 22 ended
+Track ID: 25 ended
+Track ID: 20 ended
+Track ID: 18 ended
+Track ID: 28 ended
+Track ID: 27 ended
+Track ID: 26 ended
+Track ID: 17 ended
+Track ID: 16 ended
+Track ID: 30 ended
+Track ID: 38 ended
+Track ID: 39 ended
+Track ID: 37 ended
+Track ID: 40 ended
+Track ID: 41 ended
+Track ID: 43 ended
+Track ID: 42 ended
+Track ID: 36 ended
+Track ID: 47 ended
+Track ID: 46 ended
+Track ID: 45 ended
+Track ID: 44 ended
+Track ID: 35 ended
+Track ID: 49 ended
+Track ID: 52 ended
+Track ID: 55 ended
+Track ID: 54 ended
+Track ID: 53 ended
+Track ID: 51 ended
+Track ID: 56 ended
+Track ID: 57 ended
+Track ID: 58 ended
+Track ID: 50 ended
+Track ID: 61 ended
+Track ID: 60 ended
+Track ID: 59 ended
+Track ID: 62 ended
+Track ID: 63 ended
+Track ID: 48 ended
+Track ID: 64 ended
+Track ID: 65 ended
+Track ID: 34 ended
+Track ID: 66 ended
+Track ID: 33 ended
+Track ID: 32 ended
+Track ID: 69 ended
+Track ID: 68 ended
+Track ID: 67 ended
+Track ID: 31 ended
+Track ID: 70 ended
+Track ID: 29 ended
+Track ID: 15 ended
+Track ID: 72 ended
+Track ID: 73 ended
+Track ID: 74 ended
+Track ID: 71 ended
+Track ID: 14 ended
+Track ID: 75 ended
+Track ID: 13 ended
+Track ID: 78 ended
+Track ID: 77 ended
+Track ID: 76 ended
+Track ID: 79 ended
+Track ID: 81 ended
+Track ID: 80 ended
+Track ID: 12 ended
+Track ID: 82 ended
+Track ID: 11 ended
+Track ID: 84 ended
+Track ID: 83 ended
+Track ID: 10 ended
+Track ID: 86 ended
+Track ID: 88 ended
+Track ID: 90 ended
+Track ID: 89 ended
+Track ID: 87 ended
+Track ID: 93 ended
+Track ID: 92 ended
+Track ID: 91 ended
+Track ID: 85 ended
+Track ID: 94 ended
+Track ID: 95 ended
+Track ID: 9 ended
+Track ID: 99 ended
+Track ID: 98 ended
+Track ID: 97 ended
+Track ID: 100 ended
+Track ID: 101 ended
+Track ID: 96 ended
+Track ID: 106 ended
+Track ID: 111 ended
+Track ID: 110 ended
+Track ID: 109 ended
+Track ID: 108 ended
+Track ID: 107 ended
+Track ID: 105 ended
+Track ID: 104 ended
+Track ID: 113 ended
+Track ID: 112 ended
+Track ID: 103 ended
+Track ID: 114 ended
+Track ID: 102 ended
+Track ID: 115 ended
+Track ID: 8 ended
+Track ID: 118 ended
+Track ID: 117 ended
+Track ID: 116 ended
+Track ID: 121 ended
+Track ID: 122 ended
+Track ID: 120 ended
+Track ID: 123 ended
+Track ID: 119 ended
+Track ID: 124 ended
+Track ID: 7 ended
+Track ID: 130 ended
+Track ID: 129 ended
+Track ID: 128 ended
+Track ID: 127 ended
+Track ID: 126 ended
+Track ID: 131 ended
+Track ID: 134 ended
+Track ID: 133 ended
+Track ID: 132 ended
+Track ID: 125 ended
+Track ID: 6 ended
+Track ID: 136 ended
+Track ID: 135 ended
+Track ID: 5 ended
+Track ID: 137 ended
+Track ID: 4 ended
+Track ID: 141 ended
+Track ID: 140 ended
+Track ID: 142 ended
+Track ID: 143 ended
+Track ID: 144 ended
+Track ID: 145 ended
+Track ID: 139 ended
+Track ID: 138 ended
+Track ID: 3 ended
+Track ID: 150 ended
+Track ID: 149 ended
+Track ID: 148 ended
+Track ID: 147 ended
+Track ID: 146 ended
+Track ID: 2 ended
+Track ID: 151 ended
+Track ID: 1 ended
+Track ID: 14 ended
+Track ID: 15 ended
+Track ID: 13 ended
+Track ID: 12 ended
+Track ID: 16 ended
+Track ID: 11 ended
+Track ID: 17 ended
+Track ID: 10 ended
+Track ID: 21 ended
+Track ID: 20 ended
+Track ID: 19 ended
+Track ID: 18 ended
+Track ID: 9 ended
+Track ID: 8 ended
+Track ID: 22 ended
+Track ID: 7 ended
+Track ID: 23 ended
+Track ID: 6 ended
+Track ID: 26 ended
+Track ID: 25 ended
+Track ID: 24 ended
+Track ID: 5 ended
+Track ID: 28 ended
+Track ID: 36 ended
+Track ID: 38 ended
+Track ID: 37 ended
+Track ID: 35 ended
+Track ID: 41 ended
+Track ID: 40 ended
+Track ID: 39 ended
+Track ID: 34 ended
+Track ID: 43 ended
+Track ID: 42 ended
+Track ID: 33 ended
+Track ID: 44 ended
+Track ID: 32 ended
+Track ID: 45 ended
+Track ID: 31 ended
+Track ID: 46 ended
+Track ID: 47 ended
+Track ID: 48 ended
+Track ID: 30 ended
+Track ID: 50 ended
+Track ID: 49 ended
+Track ID: 51 ended
+Track ID: 54 ended
+Track ID: 53 ended
+Track ID: 52 ended
+Track ID: 29 ended
+Track ID: 55 ended
+Track ID: 27 ended
+Track ID: 65 ended
+Track ID: 66 ended
+Track ID: 64 ended
+Track ID: 68 ended
+Track ID: 72 ended
+Track ID: 73 ended
+Track ID: 71 ended
+Track ID: 75 ended
+Track ID: 74 ended
+Track ID: 70 ended
+Track ID: 69 ended
+Track ID: 77 ended
+Track ID: 76 ended
+Track ID: 67 ended
+Track ID: 78 ended
+Track ID: 80 ended
+Track ID: 79 ended
+Track ID: 63 ended
+Track ID: 81 ended
+Track ID: 62 ended
+Track ID: 86 ended
+Track ID: 85 ended
+Track ID: 87 ended
+Track ID: 88 ended
+Track ID: 84 ended
+Track ID: 83 ended
+Track ID: 82 ended
+Track ID: 89 ended
+Track ID: 90 ended
+Track ID: 61 ended
+Track ID: 91 ended
+Track ID: 60 ended
+Track ID: 92 ended
+Track ID: 59 ended
+Track ID: 94 ended
+Track ID: 93 ended
+Track ID: 58 ended
+Track ID: 96 ended
+Track ID: 95 ended
+Track ID: 101 ended
+Track ID: 102 ended
+Track ID: 100 ended
+Track ID: 104 ended
+Track ID: 106 ended
+Track ID: 108 ended
+Track ID: 107 ended
+Track ID: 105 ended
+Track ID: 110 ended
+Track ID: 109 ended
+Track ID: 103 ended
+Track ID: 99 ended
+Track ID: 111 ended
+Track ID: 98 ended
+Track ID: 112 ended
+Track ID: 97 ended
+Track ID: 113 ended
+Track ID: 115 ended
+Track ID: 118 ended
+Track ID: 117 ended
+Track ID: 116 ended
+Track ID: 114 ended
+Track ID: 119 ended
+Track ID: 57 ended
+Track ID: 120 ended
+Track ID: 56 ended
+Track ID: 123 ended
+Track ID: 122 ended
+Track ID: 121 ended
+Track ID: 4 ended
+Track ID: 124 ended
+Track ID: 3 ended
+Track ID: 126 ended
+Track ID: 130 ended
+Track ID: 131 ended
+Track ID: 129 ended
+Track ID: 133 ended
+Track ID: 132 ended
+Track ID: 128 ended
+Track ID: 137 ended
+Track ID: 136 ended
+Track ID: 135 ended
+Track ID: 134 ended
+Track ID: 127 ended
+Track ID: 138 ended
+Track ID: 125 ended
+Track ID: 140 ended
+Track ID: 141 ended
+Track ID: 139 ended
+Track ID: 142 ended
+Track ID: 2 ended
+Track ID: 1 ended
+Track ID: 19 ended
+Track ID: 21 ended
+Track ID: 20 ended
+Track ID: 18 ended
+Track ID: 22 ended
+Track ID: 17 ended
+Track ID: 23 ended
+Track ID: 16 ended
+Track ID: 24 ended
+Track ID: 15 ended
+Track ID: 26 ended
+Track ID: 28 ended
+Track ID: 29 ended
+Track ID: 27 ended
+Track ID: 30 ended
+Track ID: 25 ended
+Track ID: 33 ended
+Track ID: 34 ended
+Track ID: 32 ended
+Track ID: 35 ended
+Track ID: 31 ended
+Track ID: 37 ended
+Track ID: 36 ended
+Track ID: 14 ended
+Track ID: 39 ended
+Track ID: 38 ended
+Track ID: 13 ended
+Track ID: 40 ended
+Track ID: 12 ended
+Track ID: 41 ended
+Track ID: 11 ended
+Track ID: 10 ended
+Track ID: 44 ended
+Track ID: 47 ended
+Track ID: 49 ended
+Track ID: 48 ended
+Track ID: 46 ended
+Track ID: 51 ended
+Track ID: 50 ended
+Track ID: 45 ended
+Track ID: 52 ended
+Track ID: 43 ended
+Track ID: 42 ended
+Track ID: 53 ended
+Track ID: 56 ended
+Track ID: 55 ended
+Track ID: 54 ended
+Track ID: 9 ended
+Track ID: 57 ended
+Track ID: 8 ended
+Track ID: 58 ended
+Track ID: 7 ended
+Track ID: 60 ended
+Track ID: 69 ended
+Track ID: 70 ended
+Track ID: 68 ended
+Track ID: 73 ended
+Track ID: 72 ended
+Track ID: 71 ended
+Track ID: 67 ended
+Track ID: 74 ended
+Track ID: 66 ended
+Track ID: 78 ended
+Track ID: 77 ended
+Track ID: 76 ended
+Track ID: 75 ended
+Track ID: 65 ended
+Track ID: 80 ended
+Track ID: 79 ended
+Track ID: 64 ended
+Track ID: 81 ended
+Track ID: 63 ended
+Track ID: 82 ended
+Track ID: 62 ended
+Track ID: 83 ended
+Track ID: 61 ended
+Track ID: 86 ended
+Track ID: 85 ended
+Track ID: 84 ended
+Track ID: 59 ended
+Track ID: 95 ended
+Track ID: 96 ended
+Track ID: 94 ended
+Track ID: 99 ended
+Track ID: 98 ended
+Track ID: 97 ended
+Track ID: 93 ended
+Track ID: 100 ended
+Track ID: 92 ended
+Track ID: 102 ended
+Track ID: 101 ended
+Track ID: 91 ended
+Track ID: 107 ended
+Track ID: 106 ended
+Track ID: 105 ended
+Track ID: 104 ended
+Track ID: 103 ended
+Track ID: 90 ended
+Track ID: 108 ended
+Track ID: 89 ended
+Track ID: 88 ended
+Track ID: 109 ended
+Track ID: 87 ended
+Track ID: 110 ended
+Track ID: 6 ended
+Track ID: 112 ended
+Track ID: 121 ended
+Track ID: 122 ended
+Track ID: 120 ended
+Track ID: 123 ended
+Track ID: 119 ended
+Track ID: 124 ended
+Track ID: 118 ended
+Track ID: 125 ended
+Track ID: 117 ended
+Track ID: 116 ended
+Track ID: 126 ended
+Track ID: 127 ended
+Track ID: 115 ended
+Track ID: 128 ended
+Track ID: 114 ended
+Track ID: 129 ended
+Track ID: 113 ended
+Track ID: 131 ended
+Track ID: 130 ended
+Track ID: 132 ended
+Track ID: 133 ended
+Track ID: 111 ended
+Track ID: 134 ended
+Track ID: 136 ended
+Track ID: 135 ended
+Track ID: 5 ended
+Track ID: 138 ended
+Track ID: 139 ended
+Track ID: 137 ended
+Track ID: 140 ended
+Track ID: 4 ended
+Track ID: 143 ended
+Track ID: 142 ended
+Track ID: 141 ended
+Track ID: 3 ended
+Track ID: 145 ended
+Track ID: 147 ended
+Track ID: 148 ended
+Track ID: 146 ended
+Track ID: 150 ended
+Track ID: 149 ended
+Track ID: 144 ended
+Track ID: 151 ended
+Track ID: 152 ended
+Track ID: 2 ended
+Track ID: 155 ended
+Track ID: 154 ended
+Track ID: 153 ended
+Track ID: 1 ended
+Track ID: 20 ended
+Track ID: 21 ended
+Track ID: 24 ended
+Track ID: 23 ended
+Track ID: 25 ended
+Track ID: 22 ended
+Track ID: 26 ended
+Track ID: 19 ended
+Track ID: 29 ended
+Track ID: 31 ended
+Track ID: 30 ended
+Track ID: 28 ended
+Track ID: 32 ended
+Track ID: 27 ended
+Track ID: 33 ended
+Track ID: 18 ended
+Track ID: 34 ended
+Track ID: 17 ended
+Track ID: 35 ended
+Track ID: 16 ended
+Track ID: 39 ended
+Track ID: 38 ended
+Track ID: 37 ended
+Track ID: 36 ended
+Track ID: 15 ended
+Track ID: 41 ended
+Track ID: 40 ended
+Track ID: 14 ended
+Track ID: 44 ended
+Track ID: 43 ended
+Track ID: 42 ended
+Track ID: 13 ended
+Track ID: 49 ended
+Track ID: 48 ended
+Track ID: 47 ended
+Track ID: 46 ended
+Track ID: 45 ended
+Track ID: 12 ended
+Track ID: 52 ended
+Track ID: 51 ended
+Track ID: 50 ended
+Track ID: 11 ended
+Track ID: 54 ended
+Track ID: 56 ended
+Track ID: 58 ended
+Track ID: 61 ended
+Track ID: 63 ended
+Track ID: 62 ended
+Track ID: 60 ended
+Track ID: 64 ended
+Track ID: 59 ended
+Track ID: 69 ended
+Track ID: 68 ended
+Track ID: 67 ended
+Track ID: 66 ended
+Track ID: 65 ended
+Track ID: 70 ended
+Track ID: 71 ended
+Track ID: 57 ended
+Track ID: 55 ended
+Track ID: 73 ended
+Track ID: 72 ended
+Track ID: 53 ended
+Track ID: 74 ended
+Track ID: 76 ended
+Track ID: 75 ended
+Track ID: 10 ended
+Track ID: 80 ended
+Track ID: 79 ended
+Track ID: 78 ended
+Track ID: 77 ended
+Track ID: 9 ended
+Track ID: 82 ended
+Track ID: 84 ended
+Track ID: 85 ended
+Track ID: 83 ended
+Track ID: 90 ended
+Track ID: 89 ended
+Track ID: 88 ended
+Track ID: 87 ended
+Track ID: 86 ended
+Track ID: 81 ended
+Track ID: 92 ended
+Track ID: 94 ended
+Track ID: 93 ended
+Track ID: 91 ended
+Track ID: 96 ended
+Track ID: 95 ended
+Track ID: 8 ended
+Track ID: 99 ended
+Track ID: 98 ended
+Track ID: 97 ended
+Track ID: 7 ended
+Track ID: 103 ended
+Track ID: 102 ended
+Track ID: 101 ended
+Track ID: 100 ended
+Track ID: 6 ended
+Track ID: 105 ended
+Track ID: 107 ended
+Track ID: 111 ended
+Track ID: 110 ended
+Track ID: 109 ended
+Track ID: 108 ended
+Track ID: 112 ended
+Track ID: 114 ended
+Track ID: 113 ended
+Track ID: 106 ended
+Track ID: 118 ended
+Track ID: 117 ended
+Track ID: 116 ended
+Track ID: 115 ended
+Track ID: 104 ended
+Track ID: 123 ended
+Track ID: 124 ended
+Track ID: 122 ended
+Track ID: 125 ended
+Track ID: 121 ended
+Track ID: 126 ended
+Track ID: 120 ended
+Track ID: 128 ended
+Track ID: 131 ended
+Track ID: 132 ended
+Track ID: 130 ended
+Track ID: 134 ended
+Track ID: 133 ended
+Track ID: 129 ended
+Track ID: 135 ended
+Track ID: 127 ended
+Track ID: 136 ended
+Track ID: 137 ended
+Track ID: 119 ended
+Track ID: 141 ended
+Track ID: 140 ended
+Track ID: 139 ended
+Track ID: 138 ended
+Track ID: 5 ended
+Track ID: 143 ended
+Track ID: 147 ended
+Track ID: 148 ended
+Track ID: 146 ended
+Track ID: 149 ended
+Track ID: 145 ended
+Track ID: 150 ended
+Track ID: 144 ended
+Track ID: 152 ended
+Track ID: 151 ended
+Track ID: 142 ended
+Track ID: 153 ended
+Track ID: 155 ended
+Track ID: 154 ended
+Track ID: 4 ended
+Track ID: 158 ended
+Track ID: 161 ended
+Track ID: 163 ended
+Track ID: 162 ended
+Track ID: 160 ended
+Track ID: 167 ended
+Track ID: 166 ended
+Track ID: 165 ended
+Track ID: 164 ended
+Track ID: 159 ended
+Track ID: 157 ended
+Track ID: 169 ended
+Track ID: 170 ended
+Track ID: 168 ended
+Track ID: 172 ended
+Track ID: 171 ended
+Track ID: 156 ended
+Track ID: 173 ended
+Track ID: 174 ended
+Track ID: 3 ended
+Track ID: 175 ended
+Track ID: 2 ended
+Track ID: 181 ended
+Track ID: 180 ended
+Track ID: 179 ended
+Track ID: 178 ended
+Track ID: 177 ended
+Track ID: 176 ended
+Track ID: 183 ended
+Track ID: 186 ended
+Track ID: 185 ended
+Track ID: 184 ended
+Track ID: 182 ended
+Track ID: 187 ended
+Track ID: 1 ended
+Track ID: 26 ended
+Track ID: 27 ended
+Track ID: 25 ended
+Track ID: 24 ended
+Track ID: 23 ended
+Track ID: 28 ended
+Track ID: 22 ended
+Track ID: 29 ended
+Track ID: 21 ended
+Track ID: 20 ended
+Track ID: 30 ended
+Track ID: 19 ended
+Track ID: 32 ended
+Track ID: 34 ended
+Track ID: 35 ended
+Track ID: 33 ended
+Track ID: 36 ended
+Track ID: 31 ended
+Track ID: 38 ended
+Track ID: 40 ended
+Track ID: 39 ended
+Track ID: 37 ended
+Track ID: 41 ended
+Track ID: 18 ended
+Track ID: 43 ended
+Track ID: 42 ended
+Track ID: 17 ended
+Track ID: 45 ended
+Track ID: 46 ended
+Track ID: 44 ended
+Track ID: 47 ended
+Track ID: 16 ended
+Track ID: 48 ended
+Track ID: 15 ended
+Track ID: 50 ended
+Track ID: 52 ended
+Track ID: 53 ended
+Track ID: 51 ended
+Track ID: 54 ended
+Track ID: 49 ended
+Track ID: 14 ended
+Track ID: 13 ended
+Track ID: 56 ended
+Track ID: 59 ended
+Track ID: 60 ended
+Track ID: 58 ended
+Track ID: 62 ended
+Track ID: 61 ended
+Track ID: 57 ended
+Track ID: 65 ended
+Track ID: 67 ended
+Track ID: 68 ended
+Track ID: 66 ended
+Track ID: 69 ended
+Track ID: 64 ended
+Track ID: 63 ended
+Track ID: 55 ended
+Track ID: 12 ended
+Track ID: 70 ended
+Track ID: 11 ended
+Track ID: 71 ended
+Track ID: 10 ended
+Track ID: 74 ended
+Track ID: 73 ended
+Track ID: 72 ended
+Track ID: 9 ended
+Track ID: 79 ended
+Track ID: 78 ended
+Track ID: 77 ended
+Track ID: 76 ended
+Track ID: 75 ended
+Track ID: 8 ended
+Track ID: 80 ended
+Track ID: 7 ended
+Track ID: 82 ended
+Track ID: 87 ended
+Track ID: 88 ended
+Track ID: 86 ended
+Track ID: 90 ended
+Track ID: 89 ended
+Track ID: 85 ended
+Track ID: 91 ended
+Track ID: 84 ended
+Track ID: 92 ended
+Track ID: 83 ended
+Track ID: 93 ended
+Track ID: 81 ended
+Track ID: 94 ended
+Track ID: 95 ended
+Track ID: 6 ended
+Track ID: 97 ended
+Track ID: 96 ended
+Track ID: 5 ended
+Track ID: 99 ended
+Track ID: 104 ended
+Track ID: 105 ended
+Track ID: 103 ended
+Track ID: 107 ended
+Track ID: 106 ended
+Track ID: 102 ended
+Track ID: 108 ended
+Track ID: 101 ended
+Track ID: 110 ended
+Track ID: 109 ended
+Track ID: 100 ended
+Track ID: 112 ended
+Track ID: 113 ended
+Track ID: 114 ended
+Track ID: 111 ended
+Track ID: 98 ended
+Track ID: 4 ended
+Track ID: 117 ended
+Track ID: 120 ended
+Track ID: 121 ended
+Track ID: 119 ended
+Track ID: 124 ended
+Track ID: 123 ended
+Track ID: 122 ended
+Track ID: 118 ended
+Track ID: 125 ended
+Track ID: 116 ended
+Track ID: 126 ended
+Track ID: 128 ended
+Track ID: 127 ended
+Track ID: 115 ended
+Track ID: 3 ended
+Track ID: 134 ended
+Track ID: 133 ended
+Track ID: 132 ended
+Track ID: 131 ended
+Track ID: 130 ended
+Track ID: 129 ended
+Track ID: 135 ended
+Track ID: 137 ended
+Track ID: 136 ended
+Track ID: 2 ended
+Track ID: 138 ended
+------------------------------------------------------------
+ Beam particle e- E = 0.10 GeV
+ Mean number of gamma          52.10
+ Mean number of e-             95.60
+ Mean number of e+             5.00
+ Mean number of charged steps  412.600000
+ Mean number of neutral steps  524.800000
+------------------------------------------------------------</code></pre><pre><code class="language-julia hljs"></code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../api/">« APIs</a><a class="docs-footer-nextpage" href="../B1/">Example B1 »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.24 on <span class="colophon-date" title="Monday 17 April 2023 15:24">Monday 17 April 2023</span>. Using Julia version 1.8.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
