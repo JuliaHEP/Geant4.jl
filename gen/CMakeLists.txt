@@ -23,6 +23,7 @@ find_program(WRAPIT_EXECUTABLE wrapit)
 if(WRAPIT_EXECUTABLE)
   configure_file(${SOURCE_DIR}/Geant4.wit.in ${SOURCE_DIR}/Geant4.wit @ONLY)
   add_custom_command(OUTPUT ${SOURCE_DIR}/cpp/jlGeant4.cxx
+    COMMAND mkdir -p ${SOURCE_DIR}/jl
     COMMAND ${WRAPIT_EXECUTABLE} --force -v 1 ${SOURCE_DIR}/Geant4.wit
     WORKING_DIRECTORY ${SOURCE_DIR}
     DEPENDS ${SOURCE_DIR}/Geant4.wit ${SOURCE_DIR}/Geant4-veto.h  ${SOURCE_DIR}/cpp/Geant4Wrap.h)

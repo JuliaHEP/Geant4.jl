@@ -62,3 +62,10 @@ void G4JL_init(void) {
   auto sm = G4StateManager::GetStateManager();
   sm-> SetExceptionHandler(new G4JLExceptionHandler());
 }
+
+void G4JLActionInitialization::BuildForMaster() const { 
+  if (master_build != nullptr) master_build(this);
+}
+void G4JLActionInitialization::Build() const {
+  if (build != nullptr) build(this);
+}

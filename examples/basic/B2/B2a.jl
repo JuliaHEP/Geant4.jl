@@ -32,7 +32,6 @@ function _initialize(data::B2aSDData, ::G4HCofThisEvent)::Nothing
 end
 #---End of Event method----------------------------------------------------------------------------
 function _endOfEvent(data::B2aSDData, ::G4HCofThisEvent)::Nothing
-  #println(data.trackerHits)
   return
 end
 #---Process Hit method-----------------------------------------------------------------------------
@@ -54,7 +53,6 @@ chamber_SD = G4JLSensitiveDetector("Chamber_SD", B2aSDData();           # SD nam
 
 #---End Event Action-------------------------------------------------------------------------------
 function endeventaction(evt::G4Event, app::G4JLApplication)
-  #hits = chamber_SD.data.trackerHits
   hits = app.sdetectors["Chamber_LV+"].data.trackerHits
   eventID = evt |> GetEventID
   if eventID < 10 || eventID % 100 == 0
@@ -62,22 +60,22 @@ function endeventaction(evt::G4Event, app::G4JLApplication)
   end
   return
 end
-#---Particle Gun initialization--------------------------------------------------------------------
-function gun_initialize(gen::G4JLParticleGun, det::G4JLDetector)
-  pg = GetGun(gen)
-  SetParticleByName(pg, "proton")
-  SetParticleEnergy(pg, 3GeV)
-  SetParticleMomentumDirection(pg, G4ThreeVector(0,0,1))
-  SetParticlePosition(pg, G4ThreeVector(0,0,-16cm))
-  SetParticlePosition(pg, G4ThreeVector(0, 0, -det.worldZHalfLength))
-end
-Geant4.getInitializer(::G4JLParticleGun) = gun_initialize
 
+#--------------------------------------------------------------------------------------------------
+#---Particle Gun initialization--------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+particlegun = G4JLGunGenerator(particle = "proton", 
+                               energy = 3GeV, 
+                               direction = G4ThreeVector(0,0,1), 
+                               position = G4ThreeVector(0,0,-2940.0))
+
+#--------------------------------------------------------------------------------------------------
 #---Create the Application-------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 app = G4JLApplication(;detector = B2aDetector(nChambers=5),          # detector with parameters
+                       generator = particlegun,                      # primary particle generator
                        runmanager_type = G4RunManager,               # what RunManager to instantiate
                        physics_type = FTFP_BERT,                     # what physics list to instantiate
-                       generator_type = G4JLParticleGun,             # what primary generator to instantiate
                        endeventaction_method = endeventaction,       # end event action
                        sdetectors = ["Chamber_LV+" => chamber_SD]    # mapping of LVs to SDs (+ means multiple LVs with same name)
                       )             
@@ -85,6 +83,3 @@ app = G4JLApplication(;detector = B2aDetector(nChambers=5),          # detector 
 #---Configure, Initialize and Run------------------------------------------------------------------                      
 configure(app)
 initialize(app)
-
-beamOn(app, 1)
-

@@ -59,13 +59,21 @@ To run the tests execute `julia --project . test/runtests.jl`
 
 ## Running the examples
 For the time being there are only three examples: 
-### basic/B1 
+### basic/B1
+This is most basic example using a more Geant4 native interface.  
 To run it execute `julia --project=. examples/basic/B1/B1.j` or execute the notebook `B1.ipynb`
 ### basic/B2a
+Basic example using a sensitive detector to collect 'hits'.  
+To run it execute `julia --project=. examples/basic/B2/B2a.jl`
+### extended/RE03
+Example using the Geant4 built-in scoring mechanism.   
 To run it execute `julia --project=. examples/basic/B2/B2a.jl`
 ### TestEm3
-This example comes from *extended/electromagnetic/TestEm3* example. Since it requires addional packages such as FHist and Plots it has its own Julia environment in the folder `examples/TestEm3`. To run it execute `julia --project=examples/TestEm3 -i examples/TestEm3/TestEm3.jl` 
-
+This example comes from *extended/electromagnetic/TestEm3* example. Since it requires additional packages such as FHist and Plots it has its own Julia environment in the folder `examples/TestEm3`. It is based on user actions.  
+To run it execute `julia --project=examples/TestEm3 -i examples/TestEm3/TestEm3.jl` 
+### WaterPhantom
+Example in a notebook format similar to RE03 but with different primary particle generator (MedicalBeam) and using the scoring mechanism. Plots are produced after each run.
+ 
 ## Running the visualization examples
 The project includes additional functionality for visualization under the directory G4Visualization. This is done in a different directory to separate the dependencies. To run the examples do:
 - `julia --project=G4Visualization -i  G4Visualization/examples/B1vis.jl`

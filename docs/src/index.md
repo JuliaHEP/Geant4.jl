@@ -117,6 +117,19 @@ To run it execute
 ```
 julia --project=. examples/basic/B2/B2a.jl
 ```
+### extended/RE03
+This example makes use of the built-in scoring capability of Geant4 with a new Julia API interface creating an instance of `G4JLScoringMesh`, instead of using the native Geant4 UI. The user defines a scoring mesh, and quantities to be collect and gets the results after the run. 
+
+To run it execute
+```
+julia --project=. examples/extended/RE03/RE03.jl
+```
+### WaterPhantom
+This example is similar to RE03 but it defines a custom primary particle generator (`MedicalBeam`) instead of using the predefined particle gun generator (`G4JLGunGenerator`). It is a notebook and produces plots after each run.   
+To run it execute
+```
+jupyter notebook examples/WaterPhantom/WaterPhantom.ipynb
+```
 
 ### TestEm3
 This example comes from *extended/electromagnetic/TestEm3* example. Since it requires additional packages such as `FHist` for histograms and `Plots` for their visualisation, it has its own Julia environment in the folder `examples/TestEm3`. It uses the Julia high-level interface with the instantiation of a `G4JLApplication` declaring all the elements of the application.

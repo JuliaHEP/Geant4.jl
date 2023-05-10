@@ -71,14 +71,10 @@ function do_plot(data::TestEm3SimData)
 end
 
 #---Particle Gun initialization--------------------------------------------------------------------
-function gun_initialize(gen::G4JLParticleGun, det::G4JLDetector)
-  pg = GetGun(gen)
-  SetParticleByName(pg, "e-")
-  SetParticleEnergy(pg, 1GeV)
-  SetParticleMomentumDirection(pg, G4ThreeVector(1,0,0))
-  SetParticlePosition(pg, G4ThreeVector(-0.5 * det.fWorldSizeX, 0 , 0))
-end
-Geant4.getInitializer(::G4JLParticleGun) = gun_initialize
+particlegun = G4JLGunGenerator(particle = "e-", 
+                               energy = 1GeV, 
+                               direction = G4ThreeVector(1,0,0), 
+                               position = G4ThreeVector(0,0,0))  # temporary potition, will update once the detector is constructed
 
 #--------------------------------------------------------------------------------------------------
 #----Actions---------------------------------------------------------------------------------------
@@ -142,7 +138,7 @@ end
 function beginrun(run::G4Run, app::G4JLApplication)::Nothing
     data = app.simdata
     (; fNbOfAbsor, fNbOfLayers, fAbsorMaterial, fAbsorThickness) = app.detector
-    gun = GetGun(app.generator)
+    gun = app.generator.data.gun
     data.fParticle = GetParticleDefinition(gun)
     data.fEkin = GetParticleEnergy(gun)
     data.fN_gamma = data.fN_elec = data.fN_pos = 0
@@ -192,9 +188,9 @@ end
 #---Create the Application-------------------------------------------------------------------------
 app = G4JLApplication(detector = TestEm3Detector(),               # detector with parameters
                       simdata = TestEm3SimData(),                 # simulation data structure
+                      generator = particlegun,                    # primary particle generator 
                       runmanager_type = G4RunManager,             # what RunManager to instantiate
                       physics_type = FTFP_BERT,                   # what physics list to instantiate
-                      generator_type = G4JLParticleGun,           # what primary generator to instantiate
                       #----Actions--------------------------------
                       stepaction_method = stepaction,             # step action method
                       pretrackaction_method = pretrackaction,     # pre-tracking action
@@ -208,8 +204,8 @@ app = G4JLApplication(detector = TestEm3Detector(),               # detector wit
 #---Configure, Initialize and Run------------------------------------------------------------------                      
 configure(app)
 initialize(app)
-ui = G4UImanager!GetUIpointer()
-#ApplyCommand(ui, "/tracking/verbose 1")
+SetParticlePosition(particlegun, G4ThreeVector(-app.detector.fWorldSizeX/2,0,0))  # Only now is known the size of the 'world'
+
 beamOn(app, 1000)
 
 #---Generate the plots with the results------------------------------------------------------------

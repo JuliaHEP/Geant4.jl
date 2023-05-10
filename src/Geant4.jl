@@ -29,6 +29,7 @@ module Geant4
 
     include("SystemOfUnits.jl")
     include("G4Utils.jl")
+    include("G4Scoring.jl")
     include("G4JLInterface.jl")
 
 end

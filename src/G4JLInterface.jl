@@ -1,6 +1,6 @@
 #---Exports from this section----------------------------------------------------------------------
 export G4JLDetector, G4JLSimulationData, G4JLApplication, G4JLDetectorGDML, G4JLSDData, G4JLSensitiveDetector, 
-        configure, initialize, reinitialize, beamOn, getConstructor, getInitializer
+        configure, initialize, reinitialize, beamOn, getConstructor, getInitializer, G4JLGunGenerator, G4JLPrimaryGenerator, G4JLGeneratorData
 
 #---Geometry usability functions-------------------------------------------------------------------
 G4PVPlacement(r::Union{Nothing, G4RotationMatrix}, d::G4ThreeVector, l::Union{Nothing,G4LogicalVolume}, s::String, 
@@ -20,7 +20,7 @@ end
 function G4JLActionInitialization(f::Function)
     ff(self::ConstCxxPtr{G4JLActionInitialization}) = f(self[])
     sf = @safe_cfunction($ff, Nothing, (ConstCxxPtr{G4JLActionInitialization},))  # crate a safe c function
-    G4JLActionInitialization(sf)                                                  # call the construction                        
+    G4JLActionInitialization(preserve(sf))                                        # call the construction                        
 end
 
 #---Material friendly functions (keyword arguments)------------------------------------------------
@@ -39,6 +39,7 @@ abstract type  G4JLAbstrcatApp end
 abstract type  G4JLDetector end
 abstract type  G4JLSimulationData end
 abstract type  G4JLSDData end
+abstract type  G4JLGeneratorData end
 
 getConstructor(d::G4JLDetector) = error("You need to define the function Geant4.getConstructor($(typeof(d))) returning the actual contruct method")
 getInitializer(::G4VUserPrimaryGeneratorAction) = nothing
@@ -60,6 +61,71 @@ function G4JLDetectorGDML(gdmlfile::String; check_overlap::Bool=false)
     Read(parser, gdmlfile)
     G4JLDetectorGDML(GetWorldVolume(parser))
 end
+
+#---Primary Particle Generator----------------------------------------------------------------------
+mutable struct G4JLPrimaryGenerator{UD<:G4JLGeneratorData}
+    const name::String
+    const data::UD
+    const init_method::Function    #  (::UD, ::G4JLApplication)::Nothing
+    const gen_method::Function     #  (::CxxPtr{G4Event}, ::UD)::Nothing
+    base::Union{Nothing, G4JLGeneratorAction}
+end
+"""
+    G4JLPrimaryGenerator(name::String, data::DATA; <keyword arguments>) where DATA<:G4JLGeneratorData
+
+Creatre a G4JLPrimaryGenerator with its name and associated DATA structure
+# Arguments
+"""
+function G4JLPrimaryGenerator(name::String, data::T;
+                              init_method=nothing,
+                              generate_method=nothing) where T<:G4JLGeneratorData
+    isnothing(generate_method) && error("primary particle generator method not defined")
+    G4JLPrimaryGenerator{T}(name, data, init_method, generate_method, nothing)   
+end
+
+#---Implementation (user friendly) Particle Gun----------------------------------------------------
+mutable struct G4JLParticleGunData <: G4JLGeneratorData
+    gun::Union{Nothing, CxxPtr{G4ParticleGun}}
+    particle::String
+    direction::G4ThreeVector
+    position::G4ThreeVector
+    energy::Float64
+end
+function G4JLPrimaryGenerator{G4JLParticleGunData}(;particle="e-", energy=10., direction=G4ThreeVector(), position=G4ThreeVector())
+    data = G4JLParticleGunData(nothing, particle, direction, position, energy)
+    function init(data::G4JLParticleGunData, ::Any)
+        pg = data.gun = move!(G4ParticleGun())
+        SetParticleByName(pg, data.particle)
+        SetParticleEnergy(pg, data.energy)
+        SetParticleMomentumDirection(pg, data.direction)
+        SetParticlePosition(pg, data.position)
+    end
+    function gen( evt::CxxPtr{G4Event}, data::G4JLParticleGunData)::Nothing
+        GeneratePrimaryVertex(data.gun, evt)
+    end
+    G4JLPrimaryGenerator("ParticleGun", data; init_method=init, generate_method=gen)
+end
+
+const G4JLGunGenerator = G4JLPrimaryGenerator{G4JLParticleGunData}
+
+function SetParticleByName(gen::G4JLGunGenerator, particle::String)
+    gen.data.particle=particle
+    SetParticleByName(gen.data.gun, particle)
+end
+function SetParticleEnergy(gen::G4JLGunGenerator, energy::Float64)
+    gen.data.energy=energy
+    SetParticleEnergy(gen.data.gun, energy)
+end
+function SetParticleMomentumDirection(gen::G4JLGunGenerator, direction::G4ThreeVector)
+    gen.data.direction=direction
+    SetParticleMomentumDirection(gen.data.gun, direction)
+end
+function SetParticlePosition(gen::G4JLGunGenerator, position::G4ThreeVector)
+    gen.data.direction=position
+    SetParticlePosition(gen.data.gun, position)
+end
+
+
 
 #---SentitiveDetectors-----------------------------------------------------------------------------
 struct G4JLSensitiveDetector{UD<:G4JLSDData}
@@ -103,11 +169,11 @@ mutable struct G4JLApplication{DET<:G4JLDetector,DAT<:G4JLSimulationData} <: G4J
     const runmanager::G4RunManager
     detector::DET
     simdata::DAT
+    generator::G4JLPrimaryGenerator
     # Types 
     const runmanager_type::Type{<:G4RunManager}
     const builder_type::Type{<:G4VUserDetectorConstruction}
     const physics_type::Type{<:G4VUserPhysicsList}
-    const generator_type::Type{<:G4VUserPrimaryGeneratorAction}
     const runaction_type::Type{<:G4UserRunAction}
     const eventaction_type::Type{<:G4UserEventAction}
     #stackaction_type::Type{<:G4UserStakingAction}
@@ -123,9 +189,10 @@ mutable struct G4JLApplication{DET<:G4JLDetector,DAT<:G4JLSimulationData} <: G4J
     const endeventaction_method::Union{Nothing,Function}
     # Sensitive Detectors
     sdetectors::Dict{String,G4JLSensitiveDetector}
+    # Scoring Meshes
+    scorers::Vector{G4JLScoringMesh}
     # Instances
     detbuilder::Any
-    generator::Any
     physics::Any
 end
 """
@@ -135,10 +202,10 @@ Initialize a G4JLApplication with its associated tyopes and methods.
 # Arguments
 - `detector::G4JLDetector`: detector description object
 - `simdata=G4JLNoData()`: simulation data object
+- `generator=G4JLParticleGun()`: primary particle generator
 - `runmanager_type=G4RunManager`: run manager type
 - `builder_type=G4JLDetectorConstruction`: detector builder type (the default should be fine most cases)
 - `physics_type=FTFP_BERT`: physics list type
-- `generator_type=G4JLParticleGun`: generator type
 - `stepaction_type=G4JLSteppingAction`: stepping action type (the default should be fine most cases)
 - `trackaction_type=G4JLTrackingAction`: rtacking action type (the default should be fine most cases)
 - `runaction_type=G4JLRunAction`: run action type (the default should be fine most cases)
@@ -151,13 +218,14 @@ Initialize a G4JLApplication with its associated tyopes and methods.
 - `begineventaction_method=nothing`: begin event action method with signature `(::G4Event, ::G4JLApplication)::Nothing`
 - `endeventaction_method=nothing`: end end action method with signature `(::G4Event, ::G4JLApplication)::Nothing`
 - `sdetectors::Vector{}=[]`: vector of pairs `lv::String => sd::G4JLSensitiveDetector` to associate logical volumes to sensitive detector
+- `scorers::Vector{}=[]`: vector of `G4JLScoringMesh`s
 """
-G4JLApplication(;detector::G4JLDetector,
+function G4JLApplication(;detector::G4JLDetector,
                 simdata=G4JLNoData(),
+                generator=NG4JLParticleGun(),
                 runmanager_type=G4RunManager,
                 builder_type=G4JLDetectorConstruction,
                 physics_type=FTFP_BERT,
-                generator_type=G4JLParticleGun,
                 stepaction_type=G4JLSteppingAction,
                 trackaction_type=G4JLTrackingAction,
                 runaction_type=G4JLRunAction,
@@ -170,12 +238,14 @@ G4JLApplication(;detector::G4JLDetector,
                 begineventaction_method=nothing,
                 endeventaction_method=nothing,
                 sdetectors=[],
-                ) = 
-    G4JLApplication{typeof(detector), typeof(simdata)}(runmanager_type(), detector, simdata, runmanager_type, builder_type, physics_type, generator_type, 
+                scorers=[],
+                )
+    G4JLApplication{typeof(detector), typeof(simdata)}( runmanager_type(), detector, simdata, generator, runmanager_type, builder_type, physics_type, 
                                                         runaction_type, eventaction_type, trackaction_type, stepaction_type,
                                                         stepaction_method, pretrackaction_method, posttrackaction_method, 
                                                         beginrunaction_method, endrunaction_method, begineventaction_method, endeventaction_method,
-                                                        Dict(sdetectors), nothing, nothing, nothing)
+                                                        Dict(sdetectors), scorers, nothing, nothing)
+end
 
 """
     configure(app::G4JLApplication)
@@ -192,63 +262,87 @@ function configure(app::G4JLApplication)
     physics = app.physics_type()
     app.physics = physics
     SetUserInitialization(runmgr, move!(physics))
-    #---Stepping Action---------------------------------------------------------------------------
-    ua = G4JLActionInitialization()
-    if !isnothing(app.stepaction_method)
-        sf2 = @safe_cfunction($((step::ConstCxxPtr{G4Step}) ->  app.stepaction_method(step[], app)), Nothing, (ConstCxxPtr{G4Step},)) 
-        SetUserAction(ua, move!(app.stepaction_type(preserve(sf2))))
-    end
-    #---Tracking Action---------------------------------------------------------------------------
-    if !isnothing(app.pretrackaction_method)
-        t1 = @safe_cfunction($((track::ConstCxxPtr{G4Track}) ->  app.pretrackaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Track},))
-    else
-        t1 = @safe_cfunction($((::ConstCxxPtr{G4Track}) -> nothing), Nothing, (ConstCxxPtr{G4Track},))
-    end
-    if !isnothing(app.posttrackaction_method)
-        t2 = @safe_cfunction($((track::ConstCxxPtr{G4Track}) ->  app.posttrackaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Track},))
-    else
-        t2 = @safe_cfunction($((::ConstCxxPtr{G4Track}) -> nothing), Nothing, (ConstCxxPtr{G4Track},))
-    end
-    if !isnothing(app.pretrackaction_method) || !isnothing(app.posttrackaction_method)
-        SetUserAction(ua, move!(app.trackaction_type(preserve(t1), preserve(t2))))
-    end
+    #---Actions--------------------------------------------------------------------------------
+    function build(uai::ConstCxxPtr{G4JLActionInitialization}, app::G4JLApplication)::Nothing
+        if !isnothing(app.stepaction_method)
+            sf2 = @safe_cfunction($((step::ConstCxxPtr{G4Step}) ->  app.stepaction_method(step[], app)), Nothing, (ConstCxxPtr{G4Step},)) 
+            SetUserAction(uai, move!(app.stepaction_type(preserve(sf2))))
+        end
+        #---Tracking Action---------------------------------------------------------------------------
+        if !isnothing(app.pretrackaction_method)
+            t1 = @safe_cfunction($((track::ConstCxxPtr{G4Track}) ->  app.pretrackaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Track},))
+        else
+            t1 = @safe_cfunction($((::ConstCxxPtr{G4Track}) -> nothing), Nothing, (ConstCxxPtr{G4Track},))
+        end
+        if !isnothing(app.posttrackaction_method)
+            t2 = @safe_cfunction($((track::ConstCxxPtr{G4Track}) ->  app.posttrackaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Track},))
+        else
+            t2 = @safe_cfunction($((::ConstCxxPtr{G4Track}) -> nothing), Nothing, (ConstCxxPtr{G4Track},))
+        end
+        if !isnothing(app.pretrackaction_method) || !isnothing(app.posttrackaction_method)
+            SetUserAction(uai, move!(app.trackaction_type(preserve(t1), preserve(t2))))
+        end
         #---Run Action---------------------------------------------------------------------------
-    if !isnothing(app.beginrunaction_method)
-        r1 = @safe_cfunction($((track::ConstCxxPtr{G4Run}) ->  app.beginrunaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Run},))
-    else
-        r1 = @safe_cfunction($((::ConstCxxPtr{G4Run}) -> nothing), Nothing, (ConstCxxPtr{G4Run},))
-    end
-    if !isnothing(app.endrunaction_method)
-        r2 = @safe_cfunction($((track::ConstCxxPtr{G4Run}) ->  app.endrunaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Run},))
-    else
-        r2 = @safe_cfunction($((::ConstCxxPtr{G4Run}) -> nothing), Nothing, (ConstCxxPtr{G4Run},))
-    end
-    if !isnothing(app.beginrunaction_method) || !isnothing(app.endrunaction_method)
-        SetUserAction(ua, move!(app.runaction_type(preserve(r1), preserve(r2))))
-    end
+        if !isnothing(app.beginrunaction_method)
+            r1 = @safe_cfunction($((track::ConstCxxPtr{G4Run}) ->  app.beginrunaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Run},))
+        else
+            r1 = @safe_cfunction($((::ConstCxxPtr{G4Run}) -> nothing), Nothing, (ConstCxxPtr{G4Run},))
+        end
+        if !isnothing(app.endrunaction_method)
+            r2 = @safe_cfunction($((track::ConstCxxPtr{G4Run}) ->  app.endrunaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Run},))
+        else
+            r2 = @safe_cfunction($((::ConstCxxPtr{G4Run}) -> nothing), Nothing, (ConstCxxPtr{G4Run},))
+        end
+        if !isnothing(app.beginrunaction_method) || !isnothing(app.endrunaction_method)
+            SetUserAction(uai, move!(app.runaction_type(preserve(r1), preserve(r2))))
+        end
         #---Event Action---------------------------------------------------------------------------
         if !isnothing(app.begineventaction_method)
-        e1 = @safe_cfunction($((evt::ConstCxxPtr{G4Event}) ->  app.begineventaction_method(evt[], app)), Nothing, (ConstCxxPtr{G4Event},))
-    else
-        e1 = @safe_cfunction($((::ConstCxxPtr{G4Event}) -> nothing), Nothing, (ConstCxxPtr{G4Event},))
+            e1 = @safe_cfunction($((evt::ConstCxxPtr{G4Event}) ->  app.begineventaction_method(evt[], app)), Nothing, (ConstCxxPtr{G4Event},))
+        else
+            e1 = @safe_cfunction($((::ConstCxxPtr{G4Event}) -> nothing), Nothing, (ConstCxxPtr{G4Event},))
+        end
+        if !isnothing(app.endeventaction_method)
+            e2 = @safe_cfunction($((evt::ConstCxxPtr{G4Event}) ->  app.endeventaction_method(evt[], app)), Nothing, (ConstCxxPtr{G4Event},))
+        else
+            e2 = @safe_cfunction($((::ConstCxxPtr{G4Event}) -> nothing), Nothing, (ConstCxxPtr{G4Event},))
+        end
+        if !isnothing(app.begineventaction_method) || !isnothing(app.endeventaction_method)
+            SetUserAction(uai, move!(app.eventaction_type(preserve(e1), preserve(e2))))
+        end
+        #---Primary particles generator------------------------------------------------------------
+        gen = app.generator
+        g1 =  @safe_cfunction($((e::CxxPtr{G4Event}) ->  gen.gen_method(e, gen.data)), Nothing, (CxxPtr{G4Event},))
+        gen.base = G4JLGeneratorAction(preserve(g1))
+        init_method = gen.init_method
+        !isnothing(init_method) && init_method(gen.data, app)
+        SetUserAction(uai, CxxPtr(gen.base))
     end
-    if !isnothing(app.endeventaction_method)
-        e2 = @safe_cfunction($((evt::ConstCxxPtr{G4Event}) ->  app.endeventaction_method(evt[], app)), Nothing, (ConstCxxPtr{G4Event},))
-    else
-        e2 = @safe_cfunction($((::ConstCxxPtr{G4Event}) -> nothing), Nothing, (ConstCxxPtr{G4Event},))
+    function master_build(uai::ConstCxxPtr{G4JLActionInitialization}, app::G4JLApplication)::Nothing
+        #---Run Action---------------------------------------------------------------------------
+        if !isnothing(app.beginrunaction_method)
+            r1 = @safe_cfunction($((track::ConstCxxPtr{G4Run}) ->  app.beginrunaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Run},))
+        else
+            r1 = @safe_cfunction($((::ConstCxxPtr{G4Run}) -> nothing), Nothing, (ConstCxxPtr{G4Run},))
+        end
+        if !isnothing(app.endrunaction_method)
+            r2 = @safe_cfunction($((track::ConstCxxPtr{G4Run}) ->  app.endrunaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Run},))
+        else
+            r2 = @safe_cfunction($((::ConstCxxPtr{G4Run}) -> nothing), Nothing, (ConstCxxPtr{G4Run},))
+        end
+        if !isnothing(app.beginrunaction_method) || !isnothing(app.endrunaction_method)
+            SetUserAction(uai, move!(app.runaction_type(preserve(r1), preserve(r2))))
+        end
     end
-    if !isnothing(app.begineventaction_method) || !isnothing(app.endeventaction_method)
-        SetUserAction(ua, move!(app.eventaction_type(preserve(e1), preserve(e2))))
+    #---User Actions Initialization------------------------------------------------------------
+    b1 =  @safe_cfunction($((ua::ConstCxxPtr{G4JLActionInitialization}) ->  build(ua, app)), Nothing, (ConstCxxPtr{G4JLActionInitialization},))
+    b2 =  @safe_cfunction($((ua::ConstCxxPtr{G4JLActionInitialization}) ->  master_build(ua, app)), Nothing, (ConstCxxPtr{G4JLActionInitialization},))
+    ai = G4JLActionInitialization(preserve(b1), preserve(b2))
+    SetUserInitialization(runmgr, move!(ai))
+    #---Setup Scoring--------------------------------------------------------------------------
+    if !isempty(app.scorers)
+        G4ScoringManager!GetScoringManager()
     end
-
-    #---Primary particles generator------------------------------------------------------------
-    generator = app.generator_type()
-    init_method = getInitializer(generator)
-    !isnothing(init_method) && init_method(generator, det)
-    app.generator = generator
-    SetUserAction(ua, CxxPtr(generator))
-    #---User initilization---------------------------------------------------------------------
-    SetUserInitialization(runmgr, move!(ua))
 end
 """
     initialize(app::G4JLApplication)
@@ -266,6 +360,16 @@ function initialize(app::G4JLApplication)
             multi = false
         end
         SetSensitiveDetector(app.detbuilder, lv, CxxPtr(sd.base), multi)
+    end
+    #---Process scorers------------------------------------------------------------------------
+    for sc in app.scorers
+        uicmd = toUIstring(sc)
+        uimgr = G4UImanager!GetUIpointer()
+        for s = eachsplit(uicmd,'\n')
+            ApplyCommand(uimgr, String(s)) == 0 || error("Got an error processing UI command '$s'")
+        end
+        ApplyCommand(uimgr, "/score/close")
+        ApplyCommand(uimgr, "/score/list")
     end
 end
 """

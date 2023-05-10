@@ -74,11 +74,11 @@ typedef  void (*build_f)(const G4JLActionInitialization*);
 class G4JLActionInitialization : public G4VUserActionInitialization
 {
   public:
-    G4JLActionInitialization(build_f f) : build(f) {}
-    G4JLActionInitialization() : build(nullptr) {}
+    G4JLActionInitialization(build_f f, build_f mf = nullptr) : build(f), master_build(mf) {}
+    G4JLActionInitialization() : build(nullptr), master_build(nullptr) {}
     ~G4JLActionInitialization() override = default;
-    void BuildForMaster() const override {}
-    void Build() const override {if (build != nullptr) return build(this);}
+    void BuildForMaster() const override;
+    void Build() const override;
     // Make these public to be used from Julia
     void SetUserAction(G4VUserPrimaryGeneratorAction* a) const {G4VUserActionInitialization::SetUserAction(a); }
     void SetUserAction(G4UserRunAction* a) const {G4VUserActionInitialization::SetUserAction(a); }
@@ -89,6 +89,7 @@ class G4JLActionInitialization : public G4VUserActionInitialization
 
   protected:
     build_f build;
+    build_f master_build;
 };
 
 //---G4JLParticleGun-------------------------------------------------------------------------------
@@ -100,6 +101,17 @@ public:
   void GeneratePrimaries(G4Event* event) override {gun->GeneratePrimaryVertex(event);}
 private:
   G4ParticleGun* gun;
+};
+
+//---G4JLGeneratorAction-----------------------------------------------------------------------------
+typedef  void (*generate_f) (G4Event*);
+class G4JLGeneratorAction : public G4VUserPrimaryGeneratorAction {
+public:
+  G4JLGeneratorAction(generate_f f) : generate(f) {}
+  ~G4JLGeneratorAction() = default;
+  void GeneratePrimaries(G4Event* event) override { generate(event); }
+private:
+  generate_f generate;
 };
 
 typedef  void (*stepaction_f) (const G4Step*);
