@@ -1,6 +1,6 @@
 [deps]
-CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 FHist = "68837c9b-b678-4cd5-9925-8a54edc8f695"
 Geant4 = "559df036-b7a0-42fd-85df-7d5dd9d70f44"
 Geant4_julia_jll = "e202cb52-5471-567a-9cb0-0ca301e27810"

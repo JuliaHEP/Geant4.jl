@@ -20,7 +20,7 @@ end
 function G4JLActionInitialization(f::Function)
     ff(self::ConstCxxPtr{G4JLActionInitialization}) = f(self[])
     sf = @safe_cfunction($ff, Nothing, (ConstCxxPtr{G4JLActionInitialization},))  # crate a safe c function
-    G4JLActionInitialization(preserve(sf))                                        # call the construction                        
+    G4JLActionInitialization(preserve(sf), preserve(sf))                          # call the construction                        
 end
 
 #---Material friendly functions (keyword arguments)------------------------------------------------
