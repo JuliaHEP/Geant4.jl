@@ -5,6 +5,7 @@ The definition of the following types where not found. Use the extra_headers con
 
 The auto_veto parameter is set to true, generation of the wrappers that would have needed theses types were skipped.
 
+
 CLHEP::HepEulerAngles::EA
 G4Allocator<G4Event>
 G4Allocator<G4HCofThisEvent>

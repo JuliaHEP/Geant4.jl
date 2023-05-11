@@ -9,8 +9,8 @@ include_dirs        = [ "/usr/local/opt/llvm/include/c++/v1",
                         "./cpp", 
                         "/Users/mato/.julia/artifacts/3ddffb81697f6dd4742c75d8b8d14865fe8a388c/include/Geant4",
                         "/Users/mato/.julia/artifacts/873cac66ad4ed154c44c11514f103918776c832d/include",
-                        "/Applications/Julia-1.8.app/Contents/Resources/julia/include/julia",  
-                        "/Users/mato/.julia/artifacts/6fab6270d8576dd5a20a5e0ed05a971c7673cf21/lib/cmake/JlCxx/../../../include"]
+                        "/Applications/Julia-1.9.app/Contents/Resources/julia/include/julia",  
+                        "/Users/mato/.julia/artifacts/eb9099719fd3959a5d4f2e7f445657537479e22c/lib/cmake/JlCxx/../../../include"]
 
 input               = [ "Geant4Wrap.h",
                         "G4RunManager.hh",

@@ -31,7 +31,8 @@ else()
   message(STATUS "The executable wrapit was not found. Building wrapper using the generated jlGeant4.cxx/h files from the sources.")
 endif()
 
-add_library(Geant4Wrap SHARED ${SOURCE_DIR}/cpp/Geant4Wrap.cxx ${SOURCE_DIR}/cpp/jlGeant4.cxx)
+file(GLOB GEN_SOURCES CONFIGURE_DEPENDS  ${SOURCE_DIR}/cpp/jl*.cxx)
+add_library(Geant4Wrap SHARED ${SOURCE_DIR}/cpp/Geant4Wrap.cxx ${GEN_SOURCES})
 
 #target_compile_definitions(Geant4Wrap PUBLIC VERBOSE_IMPORT)
 target_include_directories(Geant4Wrap PRIVATE ${SOURCE_DIR})
