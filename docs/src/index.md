@@ -100,6 +100,33 @@ The user can define sensitive detectors by defining a data structure and 3 callb
 - **endOfEvent method**. User method that is called at the end of each event. The signature is `(::B2aSDData, ::G4HCofThisEvent)::Nothing`.
 - **processHits method**. User method that is called at simulation step that ends at the associated logical volume. The signature is `(::B2aSDData, ::G4Step, ::G4TouchableHistory)::Bool`. Consult the [G4Step](https://geant4.kek.jp/Reference/v11.1.1/classG4Step.html) reference manual to see what you can get from the G4Step. It returns true if a true hit is generated. 
 
+### Scoring meshes
+The user can also specify scoring meshes to obtain quantities on the defined grid. In Geant4 this is achieved using a set of UI commands. In this Julia interface this functionality has been encapsulated in a number of data structures. The function to create a scoring mesh is `G4JLScoringMesh` and receive as arguments the the type and dimensions of the mesh, the position, the rotation, the number of bins in each dimension, and the quantities to accumulate with eventually some filter conditions. See for example the scoring mesh from RE03:
+```
+sc1 = G4JLScoringMesh("boxMesh_1",
+                      BoxMesh(1m,1m,1m),
+                      bins = (30, 30, 30),
+                      quantities = [ energyDeposit("eDep")
+                                     nOfStep("nOfStepGamma", filters=[ParticleFilter("gammafilter", "gamma")])
+                                     nOfStep("nOfStepEMinus", filters=[ParticleFilter("eMinusFilter", "e-")])
+                                     nOfStep("nOfStepEPlus", filters=[ParticleFilter("ePlusFilter", "e+")])
+                                   ]
+                      )
+```
+The scoring mesh is added into the 'scorers` argument when constructing a `G4JLApplication`. After a run hs been executed, the user can obtain the quantity values (sum, sum2,entries) on the 3D grid just calling by accessing the quantity as an attribute of the scoring mesh. The returned 3D Julia array is shaped to the declared bins. 
+```julia-repl
+julia> beamOn(app,10000)
+julia> sum, sum2, entries = sc1.eDep
+julia> typeof(sum)
+Array{Float64, 3}
+
+julia> typeof(entries)
+Array{Int64, 3}
+
+julia> size(sum)
+(30, 30, 30)
+```
+
 ## Examples
 
 ### basic/B1 
