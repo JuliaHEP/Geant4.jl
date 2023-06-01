@@ -63,9 +63,44 @@ void G4JL_init(void) {
   sm-> SetExceptionHandler(new G4JLExceptionHandler());
 }
 
+void  G4JL_println(const char * msg) {
+  G4cout << msg << std::endl;
+}
+
 void G4JLActionInitialization::BuildForMaster() const { 
   if (master_build != nullptr) master_build(this);
 }
 void G4JLActionInitialization::Build() const {
   if (build != nullptr) build(this);
+}
+
+void G4JLWorkerInitialization::WorkerInitialize() const {
+  if (jl_get_pgcstack() == NULL) jl_adopt_thread();
+}
+void G4JLWorkerInitialization::WorkerStart() const {
+  jl_task_t *ct = jl_current_task;
+  jl_gc_safe_enter(ct->ptls);
+}
+void G4JLWorkerInitialization::WorkerRunStart() const {
+}
+void G4JLWorkerInitialization::WorkerRunEnd() const {
+  jl_task_t *ct = jl_current_task;
+  jl_gc_safe_enter(ct->ptls);
+}
+void G4JLWorkerInitialization::WorkerStop() const {
+}
+
+void G4JLDetectorConstruction::ConstructSDandField() { 
+  if (sdandf) sdandf(); 
+}
+
+void G4JLSensDet::Initialize(G4HCofThisEvent* hc) {
+  if (initialize) initialize(hc); 
+}
+void G4JLSensDet::EndOfEvent(G4HCofThisEvent* hc) {
+  if (endofevent) endofevent(hc); 
+}
+
+void G4JLDetectorConstruction::SetSensitiveDetector(const G4String& lv, G4JLSensDet* sd, G4bool m) {
+  G4VUserDetectorConstruction::SetSensitiveDetector(lv, sd, m);
 }

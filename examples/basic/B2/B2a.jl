@@ -40,9 +40,9 @@ function _processHits(data::B2aSDData, step::G4Step, ::G4TouchableHistory)::Bool
   edep <  0. && return false
   pos = step |> GetPostStepPoint |> GetPosition
   push!(data.trackerHits, TrackerHit(step |> GetTrack |> GetTrackID,
-                                    step |> GetPreStepPoint |> GetTouchable |> GetCopyNumber,
-                                    edep,
-                                    Point3{Float64}(x(pos),y(pos),z(pos))))
+                                     step |> GetPreStepPoint |> GetTouchable |> GetCopyNumber,
+                                     edep,
+                                     Point3{Float64}(x(pos),y(pos),z(pos))))
   return true
 end
 #---Create SD instance-----------------------------------------------------------------------------
@@ -53,10 +53,10 @@ chamber_SD = G4JLSensitiveDetector("Chamber_SD", B2aSDData();           # SD nam
 
 #---End Event Action-------------------------------------------------------------------------------
 function endeventaction(evt::G4Event, app::G4JLApplication)
-  hits = app.sdetectors["Chamber_LV+"].data.trackerHits
+  hits = getSDdata(app, "Chamber_SD").trackerHits
   eventID = evt |> GetEventID
   if eventID < 10 || eventID % 100 == 0
-    println("Event: $eventID with $(length(hits)) hits stored in this event")
+    G4JL_println("Event: $eventID with $(length(hits)) hits stored in this event")
   end
   return
 end
@@ -74,12 +74,15 @@ particlegun = G4JLGunGenerator(particle = "proton",
 #--------------------------------------------------------------------------------------------------
 app = G4JLApplication(;detector = B2aDetector(nChambers=5),          # detector with parameters
                        generator = particlegun,                      # primary particle generator
-                       runmanager_type = G4RunManager,               # what RunManager to instantiate
+                       nthreads = 4,                                 # # of threads (0 = no MT) 
                        physics_type = FTFP_BERT,                     # what physics list to instantiate
                        endeventaction_method = endeventaction,       # end event action
                        sdetectors = ["Chamber_LV+" => chamber_SD]    # mapping of LVs to SDs (+ means multiple LVs with same name)
-                      )             
+                      )
               
 #---Configure, Initialize and Run------------------------------------------------------------------                      
 configure(app)
 initialize(app)
+
+#ui`/run/verbose 2`
+beamOn(app,1000)

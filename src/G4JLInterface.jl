@@ -1,6 +1,6 @@
 #---Exports from this section----------------------------------------------------------------------
 export G4JLDetector, G4JLSimulationData, G4JLApplication, G4JLDetectorGDML, G4JLSDData, G4JLSensitiveDetector, 
-        configure, initialize, reinitialize, beamOn, getConstructor, getInitializer, G4JLGunGenerator, G4JLPrimaryGenerator, G4JLGeneratorData
+        configure, initialize, reinitialize, beamOn, getSDdata, getSIMdata, getConstructor, getInitializer, G4JLGunGenerator, G4JLPrimaryGenerator, G4JLGeneratorData
 
 #---Geometry usability functions-------------------------------------------------------------------
 G4PVPlacement(r::Union{Nothing, G4RotationMatrix}, d::G4ThreeVector, l::Union{Nothing,G4LogicalVolume}, s::String, 
@@ -68,7 +68,7 @@ mutable struct G4JLPrimaryGenerator{UD<:G4JLGeneratorData}
     const data::UD
     const init_method::Function    #  (::UD, ::G4JLApplication)::Nothing
     const gen_method::Function     #  (::CxxPtr{G4Event}, ::UD)::Nothing
-    base::Union{Nothing, G4JLGeneratorAction}
+    base::Vector{G4JLGeneratorAction}
 end
 """
     G4JLPrimaryGenerator(name::String, data::DATA; <keyword arguments>) where DATA<:G4JLGeneratorData
@@ -80,7 +80,7 @@ function G4JLPrimaryGenerator(name::String, data::T;
                               init_method=nothing,
                               generate_method=nothing) where T<:G4JLGeneratorData
     isnothing(generate_method) && error("primary particle generator method not defined")
-    G4JLPrimaryGenerator{T}(name, data, init_method, generate_method, nothing)   
+    G4JLPrimaryGenerator{T}(name, data, init_method, generate_method, G4JLGeneratorAction[])   
 end
 
 #---Implementation (user friendly) Particle Gun----------------------------------------------------
@@ -132,6 +132,14 @@ struct G4JLSensitiveDetector{UD<:G4JLSDData}
     base::G4JLSensDet
     data::UD
 end
+struct G4JLProtoSD{UD<:G4JLSDData}
+    name::String
+    data::UD
+    processhits::Union{Function, Nothing}
+    initialize::Union{Function, Nothing}
+    endofevent::Union{Function, Nothing}
+end
+
 """
     G4JLSensitiveDetector(name::String, data::DATA; <keyword arguments>) where DATA<:G4JLSDData
 
@@ -148,17 +156,23 @@ function G4JLSensitiveDetector(name::String, data::T;
                                 initialize_method=nothing,
                                 endofevent_method=nothing) where T<:G4JLSDData
     isnothing(processhits_method) && error("processHits method for ($T,G4Step,G4TouchableHistory) not defined")
-    ph =  @safe_cfunction($((s::CxxPtr{G4Step}, th::CxxPtr{G4TouchableHistory}) ->  CxxBool(processhits_method(data, s[], th[]))), CxxBool, (CxxPtr{G4Step},CxxPtr{G4TouchableHistory}))
+    G4JLProtoSD{T}(name, data, processhits_method, initialize_method, endofevent_method)
+end
+
+function G4JLSensitiveDetector(sd::G4JLProtoSD)
+    (;name, data, processhits, initialize, endofevent) = sd
+    tls_data = deepcopy(data)
+    ph =  @safe_cfunction($((s::CxxPtr{G4Step}, th::CxxPtr{G4TouchableHistory}) ->  CxxBool(processhits(tls_data, s[], th[]))), CxxBool, (CxxPtr{G4Step},CxxPtr{G4TouchableHistory}))
     base = G4JLSensDet(name, preserve(ph))
-    if !isnothing(initialize_method)
-        sf = @safe_cfunction($((hc::CxxPtr{G4HCofThisEvent}) ->  initialize_method(data, hc[])), Nothing, (CxxPtr{G4HCofThisEvent},))
+    if !isnothing(initialize)
+        sf = @safe_cfunction($((hc::CxxPtr{G4HCofThisEvent}) ->  initialize(tls_data, hc[])), Nothing, (CxxPtr{G4HCofThisEvent},))
         SetInitialize(base, preserve(sf))
     end
-    if !isnothing(endofevent_method)
-        sf = @safe_cfunction($((hc::CxxPtr{G4HCofThisEvent}) ->  endofevent_method(data, hc[])), Nothing, (CxxPtr{G4HCofThisEvent},))
+    if !isnothing(endofevent)
+        sf = @safe_cfunction($((hc::CxxPtr{G4HCofThisEvent}) ->  endofevent(tls_data, hc[])), Nothing, (CxxPtr{G4HCofThisEvent},))
         SetEndOfEvent(base, preserve(sf))
     end
-    G4JLSensitiveDetector{T}(base, data)
+    G4JLSensitiveDetector{typeof(data)}(base, tls_data)
 end
 
 struct G4JLNoData <: G4JLSimulationData
@@ -166,10 +180,11 @@ end
 
 #---Geant4 Application-----------------------------------------------------------------------------
 mutable struct G4JLApplication{DET<:G4JLDetector,DAT<:G4JLSimulationData} <: G4JLAbstrcatApp
-    const runmanager::G4RunManager
+    const runmanager::Any
     detector::DET
-    simdata::DAT
+    simdata::Vector{DAT}  # Each worker thread has its own data                            
     generator::G4JLPrimaryGenerator
+    const nthreads::Int32
     # Types 
     const runmanager_type::Type{<:G4RunManager}
     const builder_type::Type{<:G4VUserDetectorConstruction}
@@ -188,7 +203,8 @@ mutable struct G4JLApplication{DET<:G4JLDetector,DAT<:G4JLSimulationData} <: G4J
     const begineventaction_method::Union{Nothing,Function}
     const endeventaction_method::Union{Nothing,Function}
     # Sensitive Detectors
-    sdetectors::Dict{String,G4JLSensitiveDetector}
+    protoSDs::Dict{String,G4JLProtoSD}
+    sdetectors::Dict{String,Vector{G4JLSensitiveDetector}} # single and MT
     # Scoring Meshes
     scorers::Vector{G4JLScoringMesh}
     # Instances
@@ -203,6 +219,7 @@ Initialize a G4JLApplication with its associated tyopes and methods.
 - `detector::G4JLDetector`: detector description object
 - `simdata=G4JLNoData()`: simulation data object
 - `generator=G4JLParticleGun()`: primary particle generator
+- `nthreads=0`: number of Geant4 worker threads ( >0 implies MT)
 - `runmanager_type=G4RunManager`: run manager type
 - `builder_type=G4JLDetectorConstruction`: detector builder type (the default should be fine most cases)
 - `physics_type=FTFP_BERT`: physics list type
@@ -223,6 +240,7 @@ Initialize a G4JLApplication with its associated tyopes and methods.
 function G4JLApplication(;detector::G4JLDetector,
                 simdata=G4JLNoData(),
                 generator=NG4JLParticleGun(),
+                nthreads=0,
                 runmanager_type=G4RunManager,
                 builder_type=G4JLDetectorConstruction,
                 physics_type=FTFP_BERT,
@@ -240,11 +258,13 @@ function G4JLApplication(;detector::G4JLDetector,
                 sdetectors=[],
                 scorers=[],
                 )
-    G4JLApplication{typeof(detector), typeof(simdata)}( runmanager_type(), detector, simdata, generator, runmanager_type, builder_type, physics_type, 
+    runmanager_type = nthreads > 0 ? G4MTRunManager : runmanager_type # if nthreads > 0 force G4MTRunManager
+    G4JLApplication{typeof(detector), typeof(simdata)}( runmanager_type(), detector, [deepcopy(simdata) for i in 1:nthreads+1], generator, nthreads, 
+                                                        nthreads > 0 ? G4MTRunManager : G4RunManager, builder_type, physics_type, 
                                                         runaction_type, eventaction_type, trackaction_type, stepaction_type,
                                                         stepaction_method, pretrackaction_method, posttrackaction_method, 
                                                         beginrunaction_method, endrunaction_method, begineventaction_method, endeventaction_method,
-                                                        Dict(sdetectors), scorers, nothing, nothing)
+                                                        Dict(sdetectors), Dict{String,Vector{G4JLSensitiveDetector}}(), scorers, nothing, nothing)
 end
 
 """
@@ -252,11 +272,39 @@ end
 Configure the Geant4 application. It sets the declared user actions, event generator, and physcis list. 
 """
 function configure(app::G4JLApplication)
-    #---Detector construction------------------------------------------------------------------
     runmgr = app.runmanager
+    #---Set the number of threads and declare G4UserWorkerInitialization---------------------------
+    if app.nthreads > 0 
+        SetNumberOfThreads(runmgr, app.nthreads)
+        SetUserInitialization(runmgr, move!(G4JLWorkerInitialization()))
+    end
+    #---Prepare SentitiveDetectors-----------------------------------------------------------------
+    for (lv,sd) in app.protoSDs
+        app.sdetectors[sd.name] = Vector{G4JLSensitiveDetector}(undef, app.nthreads + 1)
+    end
+    #---Prepare Primary Generators-----------------------------------------------------------------
+    app.generator.base = Vector{G4JLGeneratorAction}(undef, app.nthreads + 1)
+    #---Detector construction----------------------------------------------------------------------
+    function sdandf(app::G4JLApplication)::Nothing  # called by the worker thread during init------
+        #---Add the Sensitive Detectors now that the geometry is constructed-----------------------
+        tid = G4Threading!G4GetThreadId()
+        for (lv,protosd) in app.protoSDs
+            sd = G4JLSensitiveDetector(protosd)
+            app.sdetectors[protosd.name][tid+2] = sd
+            if lv[end] == '+'
+                lv = lv[1:end-1]
+                multi = true
+            else
+                multi = false
+            end
+            SetSensitiveDetector(app.detbuilder, lv, CxxPtr(sd.base), multi)
+        end
+        nothing
+    end
     det    = app.detector
     sf1 = @safe_cfunction($(()->getConstructor(det)(det)), CxxPtr{G4VPhysicalVolume}, ())  # crate a safe c function
-    app.detbuilder = app.builder_type(preserve(sf1))
+    sf2 = @safe_cfunction($(()->sdandf(app)), Nothing, ())
+    app.detbuilder = app.builder_type(preserve(sf1), preserve(sf2))
     SetUserInitialization(runmgr, CxxPtr(app.detbuilder))
     #---Physics List---------------------------------------------------------------------------
     physics = app.physics_type()
@@ -310,13 +358,14 @@ function configure(app::G4JLApplication)
         if !isnothing(app.begineventaction_method) || !isnothing(app.endeventaction_method)
             SetUserAction(uai, move!(app.eventaction_type(preserve(e1), preserve(e2))))
         end
-        #---Primary particles generator------------------------------------------------------------
+        #---Primary particles generator---------(per thread)--------------------------------------
         gen = app.generator
+        tid = G4Threading!G4GetThreadId()
         g1 =  @safe_cfunction($((e::CxxPtr{G4Event}) ->  gen.gen_method(e, gen.data)), Nothing, (CxxPtr{G4Event},))
-        gen.base = G4JLGeneratorAction(preserve(g1))
+        gen.base[tid+2] = G4JLGeneratorAction(preserve(g1))
         init_method = gen.init_method
         !isnothing(init_method) && init_method(gen.data, app)
-        SetUserAction(uai, CxxPtr(gen.base))
+        SetUserAction(uai, CxxPtr(gen.base[tid+2]))
     end
     function master_build(uai::ConstCxxPtr{G4JLActionInitialization}, app::G4JLApplication)::Nothing
         #---Run Action---------------------------------------------------------------------------
@@ -351,16 +400,6 @@ the declared sensitive detectors.
 """
 function initialize(app::G4JLApplication)
     Initialize(app.runmanager)
-    #---Add the Sensitive Detectors now that the geometry is constructed-----------------------
-    for (lv,sd) in app.sdetectors
-        if lv[end] == '+'
-            lv = lv[1:end-1]
-            multi = true
-        else
-            multi = false
-        end
-        SetSensitiveDetector(app.detbuilder, lv, CxxPtr(sd.base), multi)
-    end
     #---Process scorers------------------------------------------------------------------------
     for sc in app.scorers
         uicmd = toUIstring(sc)
@@ -389,8 +428,30 @@ end
 Start a new run with `nevents` events.
 """
 function beamOn(app::G4JLApplication, nevents::Int)
+    app.nthreads > 0 && GC.enable(false)  # Disable GC in the run
     BeamOn(app.runmanager, nevents)
+    app.nthreads > 0 && GC.enable(true)
+    return
 end
+
+"""
+    getSDdata(app::G4JLApplication, name::String)
+Get the data associated to the Sentitive Detector with a given name taking into account the current worker thread ID 
+"""
+function getSDdata(app, name)
+    tid = G4Threading!G4GetThreadId()
+    app.sdetectors[name][tid+2].data
+end
+
+"""
+    getSIMdata(app::G4JLApplication)
+Get the Simulation Data taking into account the current worker thread ID 
+"""
+function getSIMdata(app)
+    tid = G4Threading!G4GetThreadId()
+    app.simdata[tid+2]
+end
+
 """
     GetWorldVolume()
 Get the world volume of the currently instantiated detector geometry.

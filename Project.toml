@@ -15,11 +15,11 @@ Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 Xerces_jll = "637d83c4-b86a-5d90-b82d-5cf0573a8cfc"
 
 [compat]
-CxxWrap = "0.13"
-GeometryBasics = "0.4"
-julia = "1.7"
-Geant4_julia_jll = "0.1.2"
 CSV = "0.10"
+CxxWrap = "0.13"
+Geant4_julia_jll = "0.1.2"
+GeometryBasics = "0.4"
+julia = "1.9"
 
 [extras]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"

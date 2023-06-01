@@ -3,6 +3,8 @@ export_jl_fname     = "jl/Geant4-export.jl"
 module_jl_fname     = "jl/Geant4-generated.jl"
 out_cpp_fname       = "cpp/jlGeant4.cxx"
 out_h_fname         = "cpp/jlGeant4.h"
+out_cxx_dir         = "cpp"
+out_jl_dir          = "jl"
 
 include_dirs        = [ "/usr/local/opt/llvm/include/c++/v1", 
                         "/usr/local/opt/llvm@13/lib/clang/13.0.1/include", 
@@ -16,6 +18,7 @@ input               = [ "Geant4Wrap.h",
                         "G4RunManager.hh",
                         "G4MTRunManager.hh",
                         "G4MTRunManagerKernel.hh",
+                        "G4UserWorkerInitialization.hh",
                         "G4UImanager.hh",
                         "G4VUserDetectorConstruction.hh",
                         "G4VUserActionInitialization.hh",
@@ -78,11 +81,13 @@ input               = [ "Geant4Wrap.h",
                         "G4Colour.hh",
                         #---Scoring---------------
                         "G4ScoringManager.hh",
+                        #---Threading-------------
+                        "G4Threading.hh",
                       ]
 
 extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh", "G4ParticleMessenger.hh", "G4IonTable.hh" ]
 vetoed_finalizer_classes = ["G4PVPlacement", "G4LogicalVolume", "G4PVReplica", "G4Material", "G4Isotope", "G4Element", "G4JLParticleGun", 
-                            "G4JLDetectorConstruction", "G4JLGeneratorAction", "G4JLSensDet"]
+                            "G4JLDetectorConstruction", "G4JLGeneratorAction", "G4JLRunAction", "G4JLSensDet", "G4JLWorkerInitialization"]
 export              = "all"
 veto_list           = "Geant4-veto.h"
 cxx-std             = "c++17"

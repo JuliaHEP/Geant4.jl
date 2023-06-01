@@ -15,6 +15,7 @@
 #include "G4SDManager.hh"
 #include "G4HCofThisEvent.hh"
 #include "G4TouchableHistory.hh"
+#include "G4UserWorkerInitialization.hh"
 #include "jlcxx/functions.hpp"
 
 #include <string>
@@ -43,8 +44,8 @@ class G4JLSensDet : public G4VSensitiveDetector {
       G4SDManager::GetSDMpointer()->AddNewDetector(this);   // Automatically register the SD to the manager
     }
     ~G4JLSensDet() = default;
-    virtual void Initialize(G4HCofThisEvent* hc) override {if (initialize) initialize(hc); }
-    virtual void EndOfEvent(G4HCofThisEvent* hc) override {if (endofevent) endofevent(hc); }
+    virtual void Initialize(G4HCofThisEvent* hc) override; 
+    virtual void EndOfEvent(G4HCofThisEvent* hc) override;
     virtual G4bool ProcessHits(G4Step* s, G4TouchableHistory* h) override {return processhits(s, h);}
     void SetInitialize(initend_f f) {initialize = f;}
     void SetEndOfEvent(initend_f f) {endofevent = f;}
@@ -56,16 +57,17 @@ class G4JLSensDet : public G4VSensitiveDetector {
 
 //---G4JLDetectorConstruction----------------------------------------------------------------------
 typedef  G4VPhysicalVolume* (*construct_f) ();
+typedef void (*sdandf_f)();
 class G4JLDetectorConstruction : public G4VUserDetectorConstruction { 
   public:
-    G4JLDetectorConstruction(construct_f f) : construct(f) {} 
+    G4JLDetectorConstruction(construct_f c, sdandf_f s = nullptr) : construct(c), sdandf(s) {} 
     ~G4JLDetectorConstruction() = default;
-    G4VPhysicalVolume* Construct() {return construct();}
-    void SetSensitiveDetector(const G4String& lv, G4JLSensDet* sd, G4bool m = false) {
-      G4VUserDetectorConstruction::SetSensitiveDetector(lv, sd, m);
-    }
+    virtual G4VPhysicalVolume* Construct() override {return construct();}
+    virtual void ConstructSDandField() override;
+    void SetSensitiveDetector(const G4String& lv, G4JLSensDet* sd, G4bool m = false);
   protected:
     construct_f construct;
+    sdandf_f sdandf;
 };
 
 //---G4JLActionInitialization----------------------------------------------------------------------
@@ -80,7 +82,7 @@ class G4JLActionInitialization : public G4VUserActionInitialization
     void BuildForMaster() const override;
     void Build() const override;
     // Make these public to be used from Julia
-    void SetUserAction(G4VUserPrimaryGeneratorAction* a) const {G4VUserActionInitialization::SetUserAction(a); }
+    void SetUserAction(G4VUserPrimaryGeneratorAction* a) const { G4VUserActionInitialization::SetUserAction(a); }
     void SetUserAction(G4UserRunAction* a) const {G4VUserActionInitialization::SetUserAction(a); }
     void SetUserAction(G4UserEventAction* a) const {G4VUserActionInitialization::SetUserAction(a); }
     void SetUserAction(G4UserStackingAction* a) const {G4VUserActionInitialization::SetUserAction(a); }
@@ -103,11 +105,23 @@ private:
   G4ParticleGun* gun;
 };
 
+//---G4JLWorkerInitialization-----------------------------------------------------------------------
+class G4JLWorkerInitialization : public G4UserWorkerInitialization {
+  public:
+    G4JLWorkerInitialization() = default;
+    virtual ~G4JLWorkerInitialization() = default;
+    virtual void WorkerInitialize() const override;
+    virtual void WorkerStart() const override;
+    virtual void WorkerRunStart() const override;
+    virtual void WorkerRunEnd() const override;
+    virtual void WorkerStop() const override;
+};
+
 //---G4JLGeneratorAction-----------------------------------------------------------------------------
 typedef  void (*generate_f) (G4Event*);
 class G4JLGeneratorAction : public G4VUserPrimaryGeneratorAction {
 public:
-  G4JLGeneratorAction(generate_f f) : generate(f) {}
+  G4JLGeneratorAction(generate_f f) : generate(f) { }
   ~G4JLGeneratorAction() = default;
   void GeneratePrimaries(G4Event* event) override { generate(event); }
 private:
@@ -171,5 +185,6 @@ inline G4String make_G4String(const char* s) {return G4String(s);}
 char* G4JL_getenv(const char* x);
 int   G4JL_setenv(const char* x, const char* v);
 void  G4JL_init(void);
+void  G4JL_println(const char *);
 
 #endif

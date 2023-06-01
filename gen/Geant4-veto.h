@@ -9,5 +9,7 @@ G4VUPLData::_theParticleIterator
 G4int G4UImanager::ApplyCommand(const G4String &)
 G4ThreadId G4MTRunManager::GetMasterTheadId()
 G4ThreadId G4MTRunManager::GetMasterThreadId()
+std::__thread_id
+_opaque_pthread_t
 /.*operator delete.*/
 /.*operator new.*/

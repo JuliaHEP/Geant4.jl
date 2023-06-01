@@ -31,7 +31,6 @@ G4TouchableHistoryHandle
 G4UIbridge
 G4UIcommandTree
 G4UIsession
-G4UserWorkerInitialization
 G4UserWorkerThreadInitialization
 G4VAuxiliaryTrackInformation
 G4VGraphicsScene

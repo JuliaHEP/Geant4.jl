@@ -37,10 +37,11 @@ sc1 = G4JLScoringMesh("boxMesh_1",
 #---Create the Application-------------------------------------------------------------------------
 app = G4JLApplication(;detector = RE03Detector(),                    # detector with parameters
                        generator = particlegun,                      # primary particle generator
-                       runmanager_type = G4RunManager,               # what RunManager to instantiate
+                       nthreads = 4,                                 # number of threads (MT)
                        physics_type = FTFP_BERT,                     # what physics list to instantiate
                        scorers = [sc1]                               # list of scorers 
                       )
+SetNumberOfThreads(app.runmanager,4)
 
 #---Configure, Initialize and Run------------------------------------------------------------------                      
 configure(app)
@@ -48,7 +49,11 @@ initialize(app)
 beamOn(app, 0)
 
 #---Do a run and get the scoring-------------------------------------------------------------------
-beamOn(app,10000)
+beamOn(app,1000)
+G4JL_println("done with run!!!")
 
 #---Get the results--------------------------------------------------------------------------------
 t, t2, n = sc1.eDep
+G4JL_println("Total EDep = $(sum(t))")
+
+
