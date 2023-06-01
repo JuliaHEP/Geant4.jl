@@ -1,12 +1,13 @@
 module Geant4
     using CxxWrap
     using Geant4_jll
+    using Libdl
 
     # Check whether the wrappers have been build locally otherwise use the binary package Geant4_julia_jll
     gendir = normpath(joinpath(@__DIR__, "../gen"))
     if isdir(joinpath(gendir, "build/lib"))
         include(joinpath(gendir, "jl/Geant4-export.jl"))
-        @wrapmodule(joinpath(gendir, "build/lib", "libGeant4Wrap"))
+        @wrapmodule(joinpath(gendir, "build/lib", "libGeant4Wrap.$(Libdl.dlext)"))
     else
         using Geant4_julia_jll
         include(Geant4_julia_jll.Geant4_exports)
@@ -31,6 +32,5 @@ module Geant4
     include("G4Utils.jl")
     include("G4Scoring.jl")
     include("G4JLInterface.jl")
-
 end
 

@@ -75,7 +75,9 @@ void G4JLActionInitialization::Build() const {
 }
 
 void G4JLWorkerInitialization::WorkerInitialize() const {
-  if (jl_get_pgcstack() == NULL) jl_adopt_thread();
+  #if JULIA_VERSION_MAJOR >= 1 && JULIA_VERSION_MINOR >= 9
+    if (jl_get_pgcstack() == NULL) jl_adopt_thread();
+  #endif
 }
 void G4JLWorkerInitialization::WorkerStart() const {
   jl_task_t *ct = jl_current_task;
