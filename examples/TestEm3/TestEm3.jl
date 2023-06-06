@@ -165,7 +165,7 @@ function beginrun(run::G4Run, app::G4JLApplication)::Nothing
 end
 #---End Run Action---------------------------------------------------------------------------------
 function endrun(run::G4Run, app::G4JLApplication)::Nothing
-    #---end run action is called for each workwer thread and the master onc
+    #---end run action is called for each workwer thread and the master one
     if G4Threading!G4GetThreadId() == -1   
         data = app.simdata[1]
         #---This is the master thread, so we need to add all the simuation results-----------------

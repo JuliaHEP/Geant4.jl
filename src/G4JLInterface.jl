@@ -185,6 +185,7 @@ mutable struct G4JLApplication{DET<:G4JLDetector,DAT<:G4JLSimulationData} <: G4J
     simdata::Vector{DAT}  # Each worker thread has its own data                            
     generator::G4JLPrimaryGenerator
     const nthreads::Int32
+    const verbose::Int32
     # Types 
     const runmanager_type::Type{<:G4RunManager}
     const builder_type::Type{<:G4VUserDetectorConstruction}
@@ -220,6 +221,7 @@ Initialize a G4JLApplication with its associated tyopes and methods.
 - `simdata=G4JLNoData()`: simulation data object
 - `generator=G4JLParticleGun()`: primary particle generator
 - `nthreads=0`: number of Geant4 worker threads ( >0 implies MT)
+- `verbose=0` : default verbority level (physics, ...)
 - `runmanager_type=G4RunManager`: run manager type
 - `builder_type=G4JLDetectorConstruction`: detector builder type (the default should be fine most cases)
 - `physics_type=FTFP_BERT`: physics list type
@@ -239,8 +241,9 @@ Initialize a G4JLApplication with its associated tyopes and methods.
 """
 function G4JLApplication(;detector::G4JLDetector,
                 simdata=G4JLNoData(),
-                generator=NG4JLParticleGun(),
+                generator=G4JLParticleGun(),
                 nthreads=0,
+                verbose=0,
                 runmanager_type=G4RunManager,
                 builder_type=G4JLDetectorConstruction,
                 physics_type=FTFP_BERT,
@@ -260,7 +263,7 @@ function G4JLApplication(;detector::G4JLDetector,
                 )
     runmanager_type = nthreads > 0 ? G4MTRunManager : runmanager_type # if nthreads > 0 force G4MTRunManager
     G4JLApplication{typeof(detector), typeof(simdata)}( runmanager_type(), detector, [deepcopy(simdata) for i in 1:nthreads+1], generator, nthreads, 
-                                                        nthreads > 0 ? G4MTRunManager : G4RunManager, builder_type, physics_type, 
+                                                        verbose, nthreads > 0 ? G4MTRunManager : G4RunManager, builder_type, physics_type, 
                                                         runaction_type, eventaction_type, trackaction_type, stepaction_type,
                                                         stepaction_method, pretrackaction_method, posttrackaction_method, 
                                                         beginrunaction_method, endrunaction_method, begineventaction_method, endeventaction_method,
@@ -307,8 +310,8 @@ function configure(app::G4JLApplication)
     app.detbuilder = app.builder_type(preserve(sf1), preserve(sf2))
     SetUserInitialization(runmgr, CxxPtr(app.detbuilder))
     #---Physics List---------------------------------------------------------------------------
-    physics = app.physics_type()
-    app.physics = physics
+    physics = app.physics_type(app.verbose)
+    app.physics = CxxRef(physics)
     SetUserInitialization(runmgr, move!(physics))
     #---Actions--------------------------------------------------------------------------------
     function build(uai::ConstCxxPtr{G4JLActionInitialization}, app::G4JLApplication)::Nothing

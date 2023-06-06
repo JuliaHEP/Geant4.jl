@@ -74,7 +74,7 @@ particlegun = G4JLGunGenerator(particle = "proton",
 #--------------------------------------------------------------------------------------------------
 app = G4JLApplication(;detector = B2aDetector(nChambers=5),          # detector with parameters
                        generator = particlegun,                      # primary particle generator
-                       nthreads = 4,                                 # # of threads (0 = no MT) 
+                       nthreads = 4,                                 # # of threads (0 = no MT)
                        physics_type = FTFP_BERT,                     # what physics list to instantiate
                        endeventaction_method = endeventaction,       # end event action
                        sdetectors = ["Chamber_LV+" => chamber_SD]    # mapping of LVs to SDs (+ means multiple LVs with same name)

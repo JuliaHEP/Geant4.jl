@@ -33,6 +33,17 @@ mutable struct TestEm3SimData <: G4JLSimulationData
 
     TestEm3SimData() = new()
 end
+#---add function-----------------------------------------------------------------------------------
+function add!(x::TestEm3SimData, y::TestEm3SimData)
+    x.fChargedStep += y.fChargedStep
+    x.fNeutralStep += y.fNeutralStep
+    x.fN_gamma += y.fN_gamma
+    x.fN_elec += y.fN_elec
+    x.fN_pos += y.fN_pos
+    x.fEdepEventHistos += y.fEdepEventHistos
+    x.fTrackLengthChHistos += y.fTrackLengthChHistos
+    x.fEdepHistos += y.fEdepHistos
+end
 
 #---Plot the Simulation data-----------------------------------------------------------------------
 function do_plot(data::TestEm3SimData)
@@ -51,22 +62,18 @@ function do_plot(data::TestEm3SimData)
 end
 
 #---Particle Gun initialization--------------------------------------------------------------------
-function gun_initialize(gen::G4JLParticleGun, det::G4JLDetectorGDML)
-  pg = GetGun(gen)
-  SetParticleByName(pg, "e-")
-  SetParticleEnergy(pg, 1GeV)
-  SetParticleMomentumDirection(pg, G4ThreeVector(1,0,0))
-  worldSizeX = det.fPhysicalWorld |> GetLogicalVolume |> GetSolid |> CxxRef{G4Box} |> GetXHalfLength
-  SetParticlePosition(pg, G4ThreeVector(-worldSizeX, 0 , 0))
-end
-Geant4.getInitializer(::G4JLParticleGun) = gun_initialize
+particlegun = G4JLGunGenerator(particle = "e-", 
+                               energy = 1GeV, 
+                               direction = G4ThreeVector(1,0,0), 
+                               position = G4ThreeVector(0,0,0))  # temporary position, will update once the detector is constructed
+
 
 #--------------------------------------------------------------------------------------------------
 #----Actions---------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------------
 #---Step action------------------------------------------------------------------------------------
 function stepaction(step::G4Step, app::G4JLApplication)::Nothing
-    data = app.simdata
+    data = getSIMdata(app)
     detector = app.detector
     prepoint = GetPreStepPoint(step)
     endPoint = GetPostStepPoint(step)
@@ -103,7 +110,7 @@ global function pretrackaction(track::G4Track, app::G4JLApplication)::Nothing
         G4Positron = FindParticle("e+")
         first = false
     end
-    data = app.simdata
+    data = getSIMdata(app)
     d = GetDefinition(track)
     if d === G4Gamma 
         data.fN_gamma += 1
@@ -121,18 +128,24 @@ function posttrackaction(track::G4Track, ::G4JLApplication)::Nothing
 end
 #---Begin Run Action-------------------------------------------------------------------------------
 function beginrun(run::G4Run, app::G4JLApplication)::Nothing
-    data = app.simdata
+    data = getSIMdata(app)
     fNbOfAbsor = 2
     fNbOfLayers = 50
     fAbsorThickness = [2.3mm, 5.7mm]
     fAbsorMaterial = ["G4_Pb", "G4_lAr"]
-    gun = GetGun(app.generator)
+    gun = app.generator.data.gun
     data.fParticle = GetParticleDefinition(gun)
     data.fEkin = GetParticleEnergy(gun)
+
+    # Good moment to set position
+    worldSizeX = app.detector.fPhysicalWorld |> GetLogicalVolume |> GetSolid |> CxxRef{G4Box} |> GetXHalfLength
+    SetParticlePosition(gun, G4ThreeVector(-worldSizeX, 0 , 0))
+
     data.fN_gamma = data.fN_elec = data.fN_pos = 0
     data.fChargedStep = data.fNeutralStep = 0
     # init arrays
-    #data.fEnergyDeposit = zeros(fNbOfAbsor, fNbOfLayers)
+    data.fEnergyDeposit = zeros(fNbOfAbsor)
+    data.fTrackLengthCh = zeros(fNbOfAbsor)
     data.fEdepHistos = [Hist1D(; bins=0:1:fNbOfLayers) for i in 1:fNbOfAbsor]
     data.fEdepEventHistos = [Hist1D(;bins=0:10:1000) for i in 1:fNbOfAbsor]
     data.fTrackLengthChHistos = [Hist1D(;bins=0:20:2000) for i in 1:fNbOfAbsor]
@@ -141,30 +154,38 @@ function beginrun(run::G4Run, app::G4JLApplication)::Nothing
 end
 #---End Run Action---------------------------------------------------------------------------------
 function endrun(run::G4Run, app::G4JLApplication)::Nothing
-    data = app.simdata
-    nEvt = GetNumberOfEvent(run)
-    norm = nEvt > 0 ? 1/nEvt : 1.
+    #---end run action is called for each workwer thread and the master one
+    if G4Threading!G4GetThreadId() == -1   
+        data = app.simdata[1]
+        #---This is the master thread, so we need to add all the simuation results-----------------
+        for d in app.simdata[2:end]
+            add!(data, d)
+        end
+        nEvt = GetNumberOfEvent(run)
+        norm = nEvt > 0 ? 1/nEvt : 1.
 
-    @printf "------------------------------------------------------------\n"
-    @printf " Beam particle %s E = %.2f GeV\n" String(GetParticleName(data.fParticle)) data.fEkin/GeV 
-    @printf " Mean number of gamma          %.2f\n" data.fN_gamma*norm 
-    @printf " Mean number of e-             %.2f\n" data.fN_elec*norm 
-    @printf " Mean number of e+             %.2f\n" data.fN_pos*norm 
-    @printf " Mean number of charged steps  %f\n"   data.fChargedStep*norm 
-    @printf " Mean number of neutral steps  %f\n"   data.fNeutralStep*norm 
-    @printf "------------------------------------------------------------"
+        @printf "------------------------------------------------------------\n"
+        @printf " Beam particle %s E = %.2f GeV\n" String(GetParticleName(data.fParticle)) data.fEkin/GeV 
+        @printf " Mean number of gamma          %.2f\n" data.fN_gamma*norm 
+        @printf " Mean number of e-             %.2f\n" data.fN_elec*norm 
+        @printf " Mean number of e+             %.2f\n" data.fN_pos*norm 
+        @printf " Mean number of charged steps  %f\n"   data.fChargedStep*norm 
+        @printf " Mean number of neutral steps  %f\n"   data.fNeutralStep*norm 
+        @printf "------------------------------------------------------------"
+    else
+        G4JL_println("end-run  for worker $(G4Threading!G4GetThreadId())") 
+    end
 end
 #---Begin Event Action-----------------------------------------------------------------------------
 function beginevent(evt::G4Event, app::G4JLApplication)
-    data = app.simdata
-    fNbOfAbsor = 2
-    data.fEnergyDeposit = zeros(fNbOfAbsor)
-    data.fTrackLengthCh = zeros(fNbOfAbsor)
+    data = getSIMdata(app)
+    fill!(data.fEnergyDeposit, 0.0)
+    fill!(data.fTrackLengthCh, 0.0)
     nothing
 end
 #---End Event Action-------------------------------------------------------------------------------
 function endevent(evt::G4Event, app::G4JLApplication)
-    data = app.simdata
+    data = getSIMdata(app)
     fNbOfAbsor = 2
     for i in 1:fNbOfAbsor
         push!(data.fEdepEventHistos[i], data.fEnergyDeposit[i])
@@ -176,9 +197,8 @@ end
 #---Create the Application-------------------------------------------------------------------------
 app = G4JLApplication(detector = G4JLDetectorGDML("$(@__DIR__)/TestEm3.gdml"),  # detector defined with a GDML file
                       simdata = TestEm3SimData(),                 # simulation data structure
-                      runmanager_type = G4RunManager,             # what RunManager to instantiate
+                      generator    = particlegun,                 # primary generator to instantiate
                       physics_type = FTFP_BERT,                   # what physics list to instantiate
-                      generator_type = G4JLParticleGun,           # what primary generator to instantiate
                       #----Actions--------------------------------
                       stepaction_method = stepaction,             # step action method
                       pretrackaction_method = pretrackaction,     # pre-tracking action
@@ -192,11 +212,10 @@ app = G4JLApplication(detector = G4JLDetectorGDML("$(@__DIR__)/TestEm3.gdml"),  
 #---Configure, Initialize and Run------------------------------------------------------------------                      
 configure(app)
 initialize(app)
-#ui = G4UImanager!GetUIpointer()
-#ApplyCommand(ui, "/tracking/verbose 1")
+
 beamOn(app, 1000)
 
 #---Generate the plots with the results------------------------------------------------------------
-do_plot(app.simdata)
+do_plot(app.simdata[1])
 
 

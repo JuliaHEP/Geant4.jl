@@ -8,6 +8,15 @@ function build()
     println("Building notebooks")
     for notebook in notebooks
         run(`jupyter nbconvert --execute --to=markdown --output-dir=$output_dir $notebook`)
+        #---Fix for the embedded figures-----------------------------------------------------------
+        mdfile = joinpath(output_dir, "$(splitext(basename(notebook))[1]).md")
+        original = read(mdfile, String)
+        modified = replace(original, 
+          "<?xml version=\"1.0\" encoding=\"utf-8\"?>" => "",
+          "<svg" => "```@raw html\n<svg",
+          "/svg>" => "/svg>\n```"
+        )
+        write(mdfile, modified)
     end
     return
 end
