@@ -11,9 +11,9 @@ G4Allocator<G4Event>
 G4Allocator<G4HCofThisEvent>
 G4Allocator<G4PrimaryParticle>
 G4Allocator<G4PrimaryVertex>
+G4ChordFinder
 G4DCtable
 G4DecayTable
-G4DisplacedSolid
 G4GDMLAuxMapType
 G4IsotopeTable
 G4IsotopeVector

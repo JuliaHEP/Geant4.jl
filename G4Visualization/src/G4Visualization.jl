@@ -71,10 +71,11 @@ module G4Visualization
         end
         g4vis = GetVisAttributes(lv)
         color = g4vis != C_NULL ? convert(Tuple{RGB, Float64}, GetColour(g4vis)) : (colors[level], GetDensity(GetMaterial(lv))/(12g/cm3))
+        visible = g4vis != C_NULL ? IsVisible(g4vis) : true
         if wireframe
-            wireframe!(s, m, linewidth=1 )
+            wireframe!(s, m, linewidth=1, visible=visible )
         else
-            mesh!(s, m, color=color, transparency=true )
+            mesh!(s, m, color=color, transparency=true, visible=visible )
         end
         # Go down to the daughters
         if level < maxlevel

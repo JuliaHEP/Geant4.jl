@@ -237,7 +237,7 @@ Initialize a G4JLApplication with its associated tyopes and methods.
 - `begineventaction_method=nothing`: begin event action method with signature `(::G4Event, ::G4JLApplication)::Nothing`
 - `endeventaction_method=nothing`: end end action method with signature `(::G4Event, ::G4JLApplication)::Nothing`
 - `sdetectors::Vector{}=[]`: vector of pairs `lv::String => sd::G4JLSensitiveDetector` to associate logical volumes to sensitive detector
-- `scorers::Vector{}=[]`: vector of `G4JLScoringMesh`s
+- `scorers::Vector{}=[]`: vector of [`G4JLScoringMesh`](@ref)s
 """
 function G4JLApplication(;detector::G4JLDetector,
                 simdata=G4JLNoData(),

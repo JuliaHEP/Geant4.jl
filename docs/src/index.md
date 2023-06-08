@@ -42,15 +42,17 @@ julia> mag(v)
 3.7416573867739413
 ```
 
-## G4 Julia interface
+## Genat4 Julia interface
 The main goal for defining a Geant4 application in the Julia interface is to create an instance of the [`G4JLApplication`](@ref) type, where all the needed elements for running a Geant4 application are declared, such as the detector geometry, the physics list, the primary particle generator, the type of run manager, the user actions, etc. These are the needed elements:
 - **detector**. An instance of a detector structure inheriting from the abstract type `G4JLDetector`, in which all the detector parameters are defined. The user should also provide a method specialization of `Geant4.getConstructor(::G4JLDetector)::Function` to return the Julia function that toolkit needs to call in order to construct the geometry and return the pointer of the 'world' physical volume. There is no default.
 - **simdata**. An instance of the simulation data structure that the program will need to collect during the simulation execution. This mutable structure needs to inherit from the abstract type `G4JLSimulationData` and is completely user defined with counters, data structures to collect the hits or doses, histograms, etc. The default is an instance of type `G4JLNoData`.
-- **nthreads**. Number of worker threads to be used. The default is 0, which means serial mode. Any number > 0 will use the MT functionality of Geant4, and therefore the user would need to pay attention to the user actions that are run concurrently to avoid data races (see [Julia doc on multi-threading](https://docs.julialang.org/en/v1/manual/multi-threading/#Data-race-freedom)) 
+- **nthreads**. Number of worker threads to be used. The default is 0, which means serial mode. Any number > 0 will use the MT functionality of Geant4, and therefore the user would need to pay attention to the user actions that are run concurrently to avoid data races (see [Julia doc on multi-threading](https://docs.julialang.org/en/v1/manual/multi-threading/#Data-race-freedom))
+- **verbose**. Verbosity level (for physics list). The default is 0.
 - **physics_type**. The physics list predefined type. Default is `FTFP_BERT`.
 - **generator_type**. The primary generator generator type. The default is `G4JLParticleGun`, which encapsulates a `G4ParticleGun`. The underlying `G4ParticleGun` can be obtained by calling `GetGun()`.
 - **user actions**. Julia methods defining the different possible user actions (e.g. stepping action, tracking action, run action, event action). The default is no action.
 - **sdetectors**. List of sensitive detectors. This is given as a `Vector` of pairs `lv::String => sd::G4JLSensitiveDetector` to associate logical volumes by name to sensitive detector instances (see next section).
+- **scorers**. List of scoring meshes defined with the function [`G4JLScoringMesh`](@ref).
 
 Once the `G4JLApplication` is instantiated (and implicitely an instance of the `G4RunManager` created), the user can control the application with the following commands:
 - `configure(::G4JLApplication)`. It associates the physics list, generator and user actions to the selected `G4RunManager` instance. 
@@ -101,7 +103,7 @@ The user can define sensitive detectors by defining a data structure and 3 callb
 - **processHits method**. User method that is called at simulation step that ends at the associated logical volume. The signature is `(::B2aSDData, ::G4Step, ::G4TouchableHistory)::Bool`. Consult the [G4Step](https://geant4.kek.jp/Reference/v11.1.1/classG4Step.html) reference manual to see what you can get from the G4Step. It returns true if a true hit is generated. 
 
 ### Scoring meshes
-The user can also specify scoring meshes to obtain quantities on the defined grid. In Geant4 this is achieved using a set of UI commands. In this Julia interface this functionality has been encapsulated in a number of data structures. The function to create a scoring mesh is `G4JLScoringMesh` and receive as arguments the the type and dimensions of the mesh, the position, the rotation, the number of bins in each dimension, and the quantities to accumulate with eventually some filter conditions. See for example the scoring mesh from RE03:
+The user can also specify scoring meshes to obtain quantities on the defined grid. In Geant4 this is achieved using a set of UI commands. In this Julia interface this functionality has been encapsulated in a number of data structures. The function to create a scoring mesh is [`G4JLScoringMesh`](@ref) and receive as arguments the the type and dimensions of the mesh, the position, the rotation, the number of bins in each dimension, and the quantities to accumulate with eventually some filter conditions. See for example the scoring mesh from RE03:
 ```
 sc1 = G4JLScoringMesh("boxMesh_1",
                       BoxMesh(1m,1m,1m),
@@ -113,7 +115,7 @@ sc1 = G4JLScoringMesh("boxMesh_1",
                                    ]
                       )
 ```
-The scoring mesh is added into the 'scorers` argument when constructing a `G4JLApplication`. After a run hs been executed, the user can obtain the quantity values (sum, sum2,entries) on the 3D grid just calling by accessing the quantity as an attribute of the scoring mesh. The returned 3D Julia array is shaped to the declared bins. 
+The scoring mesh is added into the 'scorers` argument when constructing a [`G4JLApplication`](@ref). After a run hs been executed, the user can obtain the quantity values (sum, sum2,entries) on the 3D grid just calling by accessing the quantity as an attribute of the scoring mesh. The returned 3D Julia array is shaped to the declared bins. 
 ```julia-repl
 julia> beamOn(app,10000)
 julia> sum, sum2, entries = sc1.eDep
@@ -145,7 +147,7 @@ To run it execute
 julia --project=. examples/basic/B2/B2a.jl
 ```
 ### extended/RE03
-This example makes use of the built-in scoring capability of Geant4 with a new Julia API interface creating an instance of `G4JLScoringMesh`, instead of using the native Geant4 UI. The user defines a scoring mesh, and quantities to be collect and gets the results after the run. 
+This example makes use of the built-in scoring capability of Geant4 with a new Julia API interface creating an instance of [`G4JLScoringMesh`](@ref), instead of using the native Geant4 UI. The user defines a scoring mesh, and quantities to be collect and gets the results after the run. 
 
 To run it execute
 ```
@@ -194,3 +196,15 @@ We have the possibility during the development of this package to re-generate lo
     Please note that compiling the single generated wrapper file takes very long. This is due to the current implementation of WrapIt that places all wrapped types in a single file. This may change in the future.
 
 Once the wrapper code is stabilized we move the generated code to the repository [Geant4\_cxxwrap](https://github.com/peremato/Geant4_cxxwrap) to regenerate the binary package `Geant4_julia_jll` using the `BinaryBuilder`.
+
+## Release Notes
+### 0.1.5
+- New features:
+    - Support for Multi-threading. New parameter in `G4JLApplication` to set the number of threads. Default is serial, `nthreads = 0`
+    - Added verbosity level with the argument `verbose` in [`G4JLApplication`](@ref)
+- Fixes:
+    - Fix continuous pre-compilation after moving to Julia 1.9
+    - Fix for embedded figures in notebooks
+### 0.1.4
+- Added support for scoring with `G4JLScoringMesh` function
+- Added generation of documentation including running the jupyter notebooks
