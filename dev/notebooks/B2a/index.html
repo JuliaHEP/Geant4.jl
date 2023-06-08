@@ -50,7 +50,7 @@ function endeventaction(evt::G4Event, app::G4JLApplication)
   end</code></pre><pre><code class="nohighlight hljs">endeventaction (generic function with 1 method)</code></pre><h4 id="Define-the-primary-particle-generator-(Particle-Gun)"><a class="docs-heading-anchor" href="#Define-the-primary-particle-generator-(Particle-Gun)">Define the primary particle generator (Particle Gun)</a><a id="Define-the-primary-particle-generator-(Particle-Gun)-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-primary-particle-generator-(Particle-Gun)" title="Permalink"></a></h4><pre><code class="language-julia hljs">particlegun = G4JLGunGenerator(particle = &quot;proton&quot;, 
                                energy = 3GeV, 
                                direction = G4ThreeVector(0,0,1), 
-                               position = G4ThreeVector(0,0,-2940.0))</code></pre><pre><code class="nohighlight hljs">G4JLGunGenerator(&quot;ParticleGun&quot;, Geant4.G4JLParticleGunData(nothing, &quot;proton&quot;, Geant4.CLHEP!Hep3VectorAllocated(Ptr{Nothing} @0x000000000211f7c0), Geant4.CLHEP!Hep3VectorAllocated(Ptr{Nothing} @0x00000000023d2000), 3000.0), Geant4.var&quot;#init#24&quot;(), Geant4.var&quot;#gen#25&quot;(), G4JLGeneratorAction[])</code></pre><h4 id="Instantiate-a-G4JLApplication-with-all-the-elements"><a class="docs-heading-anchor" href="#Instantiate-a-G4JLApplication-with-all-the-elements">Instantiate a <code>G4JLApplication</code> with all the elements</a><a id="Instantiate-a-G4JLApplication-with-all-the-elements-1"></a><a class="docs-heading-anchor-permalink" href="#Instantiate-a-G4JLApplication-with-all-the-elements" title="Permalink"></a></h4><p>The G4RunManager is created at this moment</p><pre><code class="language-julia hljs">#---Create the Application-------------------------------------------------------------------------
+                               position = G4ThreeVector(0,0,-2940.0))</code></pre><pre><code class="nohighlight hljs">G4JLGunGenerator(&quot;ParticleGun&quot;, Geant4.G4JLParticleGunData(nothing, &quot;proton&quot;, Geant4.CLHEP!Hep3VectorAllocated(Ptr{Nothing} @0x0000000002d41150), Geant4.CLHEP!Hep3VectorAllocated(Ptr{Nothing} @0x000000000381c810), 3000.0), Geant4.var&quot;#init#24&quot;(), Geant4.var&quot;#gen#25&quot;(), G4JLGeneratorAction[])</code></pre><h4 id="Instantiate-a-G4JLApplication-with-all-the-elements"><a class="docs-heading-anchor" href="#Instantiate-a-G4JLApplication-with-all-the-elements">Instantiate a <code>G4JLApplication</code> with all the elements</a><a id="Instantiate-a-G4JLApplication-with-all-the-elements-1"></a><a class="docs-heading-anchor-permalink" href="#Instantiate-a-G4JLApplication-with-all-the-elements" title="Permalink"></a></h4><p>The G4RunManager is created at this moment</p><pre><code class="language-julia hljs">#---Create the Application-------------------------------------------------------------------------
 app = G4JLApplication( detector = B2aDetector(nChambers=5),          # detector with parameters
                        generator = particlegun,                      # primary particle generator
                        nthreads = 4,                                 # number of threads (MT)
@@ -71,51 +71,99 @@ Checking overlaps for volume Chamber_PV:1 (G4Tubs) ... OK!
 Checking overlaps for volume Chamber_PV:2 (G4Tubs) ... OK! 
 Checking overlaps for volume Chamber_PV:3 (G4Tubs) ... OK! 
 Checking overlaps for volume Chamber_PV:4 (G4Tubs) ... OK! 
-Checking overlaps for volume Chamber_PV:5 (G4Tubs) ... OK!</code></pre><pre><code class="language-julia hljs">beamOn(app, 0)</code></pre><pre><code class="language-julia hljs">beamOn(app,10)</code></pre><pre><code class="nohighlight hljs">G4WT0 &gt; Event: 1 with 131 hits stored in this event
-G4WT2 &gt; Event: 2 with 70 hits stored in this event
-G4WT1 &gt; Event: 3 with 75 hits stored in this event
-G4WT2 &gt; Event: 5 with 77 hits stored in this event
-G4WT2 &gt; Event: 7 with 76 hits stored in this event
-G4WT2 &gt; Event: 8 with 75 hits stored in this event
-G4WT2 &gt; Event: 9 with 135 hits stored in this event
-G4WT3 &gt; Event: 0 with 105 hits stored in this event
-G4WT0 &gt; Event: 4 with 84 hits stored in this event
-G4WT1 &gt; Event: 6 with 319 hits stored in this event</code></pre><pre><code class="language-julia hljs">@time beamOn(app,1000)</code></pre><pre><code class="nohighlight hljs">G4WT3 &gt; Event: 0 with 57 hits stored in this event
-G4WT3 &gt; Event: 1 with 202 hits stored in this event
-G4WT3 &gt; Event: 2 with 55 hits stored in this event
-G4WT3 &gt; Event: 3 with 128 hits stored in this event
-G4WT3 &gt; Event: 4 with 15 hits stored in this event
-G4WT3 &gt; Event: 5 with 205 hits stored in this event
-G4WT3 &gt; Event: 6 with 224 hits stored in this event
-G4WT3 &gt; Event: 7 with 124 hits stored in this event
-G4WT3 &gt; Event: 8 with 213 hits stored in this event
-G4WT3 &gt; Event: 9 with 50 hits stored in this event
+Checking overlaps for volume Chamber_PV:5 (G4Tubs) ... OK!</code></pre><pre><code class="language-julia hljs">beamOn(app, 0)</code></pre><pre><code class="language-julia hljs">#---G4Visualization is not yet a registered module------------------------------------------
+try
+    using G4Visualization
+catch e
+    using Pkg
+    Pkg.develop(path = joinpath(dirname(pathof(Geant4)),&quot;../G4Visualization&quot;))
+    using G4Visualization
+end
+#---Using the CairoMakie backend (static)
+using CairoMakie
+
+world = GetWorldVolume()
+draw(world)</code></pre><pre><code class="nohighlight hljs">[32m[1m   Resolving[22m[39m package versions...
+[32m[1m   Installed[22m[39m RealDot ──────────── v0.1.0
+[32m[1m   Installed[22m[39m Hyperscript ──────── v0.0.4
+[32m[1m   Installed[22m[39m MsgPack ──────────── v1.2.0
+[32m[1m   Installed[22m[39m GLMakie ──────────── v0.8.5
+[32m[1m   Installed[22m[39m ModernGL ─────────── v1.1.7
+[32m[1m   Installed[22m[39m WGLMakie ─────────── v0.8.9
+[32m[1m   Installed[22m[39m Quaternions ──────── v0.7.4
+[32m[1m   Installed[22m[39m Rotations ────────── v1.5.1
+[32m[1m   Installed[22m[39m Deno_jll ─────────── v1.33.4+0
+[32m[1m   Installed[22m[39m ShaderAbstractions ─ v0.3.0
+[32m[1m   Installed[22m[39m GLFW ─────────────── v3.4.1
+[32m[1m   Installed[22m[39m MeshIO ───────────── v0.4.10
+[32m[1m   Installed[22m[39m WidgetsBase ──────── v0.1.4
+[32m[1m   Installed[22m[39m ThreadPools ──────── v2.1.1
+[32m[1m   Installed[22m[39m JSServe ──────────── v2.2.5
+[32m[1m    Updating[22m[39m `~/work/Geant4.jl/Geant4.jl/docs/Project.toml`
+  [90m[b48468f4] [39m[92m+ G4Visualization v0.1.0 `~/work/Geant4.jl/Geant4.jl/G4Visualization`[39m
+[32m[1m    Updating[22m[39m `~/work/Geant4.jl/Geant4.jl/docs/Manifest.toml`
+  [90m[b48468f4] [39m[92m+ G4Visualization v0.1.0 `~/work/Geant4.jl/Geant4.jl/G4Visualization`[39m
+  [90m[f7f18e0c] [39m[92m+ GLFW v3.4.1[39m
+  [90m[e9467ef8] [39m[92m+ GLMakie v0.8.5[39m
+  [90m[47d2ed2b] [39m[92m+ Hyperscript v0.0.4[39m
+  [90m[824d6782] [39m[92m+ JSServe v2.2.5[39m
+  [90m[7269a6da] [39m[92m+ MeshIO v0.4.10[39m
+  [90m[66fc600b] [39m[92m+ ModernGL v1.1.7[39m
+  [90m[99f44e22] [39m[92m+ MsgPack v1.2.0[39m
+  [90m[94ee1d12] [39m[92m+ Quaternions v0.7.4[39m
+  [90m[c1ae055f] [39m[92m+ RealDot v0.1.0[39m
+  [90m[6038ab10] [39m[92m+ Rotations v1.5.1[39m
+  [90m[65257c39] [39m[92m+ ShaderAbstractions v0.3.0[39m
+  [90m[b189fb0b] [39m[92m+ ThreadPools v2.1.1[39m
+  [90m[276b4fcb] [39m[92m+ WGLMakie v0.8.9[39m
+  [90m[eead4739] [39m[92m+ WidgetsBase v0.1.4[39m
+  [90m[04572ae6] [39m[92m+ Deno_jll v1.33.4+0[39m
+[32m[1m    Building[22m[39m ModernGL → `~/.julia/scratchspaces/44cfe95a-1eb2-52ea-b672-e2afdf69b78f/b76ea40b5c0f45790ae09492712dd326208c28b2/build.log`
+[36m[1m[ [22m[39m[36m[1mInfo: [22m[39mPrecompiling G4Visualization [b48468f4-0410-448b-8f39-7a15160176d0]</code></pre><p><img src="../B2a_files/B2a_20_1.png" alt="png"/></p><pre><code class="nohighlight hljs">CairoMakie.Screen{IMAGE}</code></pre><pre><code class="language-julia hljs">beamOn(app,10)</code></pre><pre><code class="nohighlight hljs">G4WT3 &gt; Event: 1 with 131 hits stored in this event
+G4WT3 &gt; Event: 4 with 84 hits stored in this event
+G4WT2 &gt; Event: 0 with 105 hits stored in this event
+G4WT3 &gt; Event: 5 with 77 hits stored in this event
+G4WT1 &gt; Event: 2 with 70 hits stored in this event
+G4WT1 &gt; Event: 8 with 75 hits stored in this event
+G4WT1 &gt; Event: 9 with 135 hits stored in this event
+G4WT0 &gt; Event: 3 with 75 hits stored in this event
+G4WT3 &gt; Event: 7 with 76 hits stored in this event
+G4WT2 &gt; Event: 6 with 319 hits stored in this event</code></pre><pre><code class="language-julia hljs">@time beamOn(app,1000)</code></pre><pre><code class="nohighlight hljs">G4WT0 &gt; Event: 0 with 57 hits stored in this event
+G4WT0 &gt; Event: 1 with 202 hits stored in this event
+G4WT0 &gt; Event: 2 with 55 hits stored in this event
+G4WT0 &gt; Event: 3 with 128 hits stored in this event
+G4WT0 &gt; Event: 4 with 15 hits stored in this event
+G4WT0 &gt; Event: 5 with 205 hits stored in this event
+G4WT0 &gt; Event: 6 with 224 hits stored in this event
+G4WT0 &gt; Event: 7 with 124 hits stored in this event
+G4WT0 &gt; Event: 8 with 213 hits stored in this event
+G4WT0 &gt; Event: 9 with 50 hits stored in this event
 G4WT3 &gt; Event: 100 with 93 hits stored in this event
-G4WT2 &gt; Event: 200 with 89 hits stored in this event
-G4WT3 &gt; Event: 300 with 113 hits stored in this event
+G4WT1 &gt; Event: 200 with 89 hits stored in this event
+G4WT0 &gt; Event: 300 with 113 hits stored in this event
 G4WT1 &gt; Event: 400 with 60 hits stored in this event
 G4WT3 &gt; Event: 500 with 71 hits stored in this event
-G4WT1 &gt; Event: 600 with 64 hits stored in this event
+G4WT2 &gt; Event: 600 with 64 hits stored in this event
 G4WT0 &gt; Event: 700 with 98 hits stored in this event
-G4WT3 &gt; Event: 800 with 167 hits stored in this event
-G4WT0 &gt; Event: 900 with 79 hits stored in this event
-  0.974335 seconds (533.33 k allocations: 12.674 MiB)</code></pre><pre><code class="language-julia hljs">SetParticleEnergy(particlegun, 500MeV)</code></pre><pre><code class="language-julia hljs">@time beamOn(app,1000)</code></pre><pre><code class="nohighlight hljs">G4WT0 &gt; Event: 0 with 139 hits stored in this event
-G4WT0 &gt; Event: 1 with 107 hits stored in this event
-G4WT0 &gt; Event: 2 with 160 hits stored in this event
-G4WT0 &gt; Event: 3 with 18 hits stored in this event
-G4WT0 &gt; Event: 4 with 359 hits stored in this event
-G4WT0 &gt; Event: 5 with 149 hits stored in this event
-G4WT0 &gt; Event: 6 with 193 hits stored in this event
-G4WT0 &gt; Event: 7 with 159 hits stored in this event
-G4WT0 &gt; Event: 8 with 179 hits stored in this event
-G4WT0 &gt; Event: 9 with 105 hits stored in this event
-G4WT1 &gt; Event: 100 with 300 hits stored in this event
+G4WT0 &gt; Event: 800 with 167 hits stored in this event
+G4WT2 &gt; Event: 900 with 79 hits stored in this event
+  1.080723 seconds (533.33 k allocations: 14.161 MiB)</code></pre><pre><code class="language-julia hljs">SetParticleEnergy(particlegun, 500MeV)</code></pre><pre><code class="language-julia hljs">@time beamOn(app,1000)</code></pre><pre><code class="nohighlight hljs">G4WT1 &gt; Event: 0 with 139 hits stored in this event
+G4WT1 &gt; Event: 1 with 107 hits stored in this event
+G4WT1 &gt; Event: 2 with 160 hits stored in this event
+G4WT1 &gt; Event: 3 with 18 hits stored in this event
+G4WT1 &gt; Event: 4 with 359 hits stored in this event
+G4WT1 &gt; Event: 5 with 149 hits stored in this event
+G4WT1 &gt; Event: 6 with 193 hits stored in this event
+G4WT1 &gt; Event: 7 with 159 hits stored in this event
+G4WT1 &gt; Event: 8 with 179 hits stored in this event
+G4WT1 &gt; Event: 9 with 105 hits stored in this event
+G4WT3 &gt; Event: 100 with 300 hits stored in this event
 G4WT1 &gt; Event: 200 with 188 hits stored in this event
-G4WT3 &gt; Event: 300 with 240 hits stored in this event
+G4WT1 &gt; Event: 300 with 240 hits stored in this event
 G4WT3 &gt; Event: 400 with 150 hits stored in this event
 G4WT1 &gt; Event: 500 with 245 hits stored in this event
-G4WT1 &gt; Event: 600 with 196 hits stored in this event
-G4WT0 &gt; Event: 700 with 190 hits stored in this event
+G4WT2 &gt; Event: 600 with 196 hits stored in this event
+G4WT2 &gt; Event: 700 with 190 hits stored in this event
 G4WT3 &gt; Event: 800 with 123 hits stored in this event
-G4WT2 &gt; Event: 900 with 188 hits stored in this event
-  0.622320 seconds (520.12 k allocations: 8.273 MiB)</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../B1/">« Example B1</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.24 on <span class="colophon-date" title="Tuesday 6 June 2023 09:57">Tuesday 6 June 2023</span>. Using Julia version 1.9.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+G4WT3 &gt; Event: 900 with 188 hits stored in this event
+  0.689993 seconds (520.12 k allocations: 7.941 MiB)</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../B1/">« Example B1</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.24 on <span class="colophon-date" title="Thursday 8 June 2023 12:59">Thursday 8 June 2023</span>. Using Julia version 1.9.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
