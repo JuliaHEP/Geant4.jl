@@ -1,7 +1,7 @@
 name = "Geant4"
 uuid = "559df036-b7a0-42fd-85df-7d5dd9d70f44"
 authors = ["Pere Mato <pere.mato@cern.ch>"]
-version = "0.1.4"
+version = "0.1.5"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
