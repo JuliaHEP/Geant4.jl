@@ -82,7 +82,13 @@ function constructB1Detector()::CxxPtr{G4VPhysicalVolume}
                   false,          # no boolean operation
                   0,              # copy number
                   checkOverlaps)  # overlaps checking
-  
+
+    # Visualization attributes              
+    SetVisAttributes(logicworld, G4VisAttributes!GetInvisible())
+    SetVisAttributes(logicEnv, G4VisAttributes!GetInvisible())
+    SetVisAttributes(logicShape1, G4VisAttributes(G4Colour(1.0, 1.0, 0.0)))
+    SetVisAttributes(logicShape2, G4VisAttributes(G4Colour(0.0, 0.0, 1.0)))
+                  
     return physWorld              # return a pointer to the G4PhysicalVolume
 end
   
