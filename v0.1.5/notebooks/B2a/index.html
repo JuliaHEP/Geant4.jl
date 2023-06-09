@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Example B2a · Geant4.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">APIs</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../TestEm3/">Example TestEm3</a></li><li><a class="tocitem" href="../WaterPhantom/">Example WaterPhantom</a></li><li><a class="tocitem" href="../B1/">Example B1</a></li><li class="is-active"><a class="tocitem" href>Example B2a</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>Example B2a</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Example B2a</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/notebooks/B2a.md#L" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Basic/B2a-Example"><a class="docs-heading-anchor" href="#Basic/B2a-Example">Basic/B2a Example</a><a id="Basic/B2a-Example-1"></a><a class="docs-heading-anchor-permalink" href="#Basic/B2a-Example" title="Permalink"></a></h1><p>It is equivalent to the B2a example in Geant4 but re-written with a new more Julia friendly interface. The core of the example is to create an instance of the type <code>G4JLApplication</code> with all the essential elements defined (detector and geometry, physics list, primary particles generator, actions, simulated data being accumulated, mapping of logical volumes to sensitive detectors, etc.) </p><h4 id="Import-the-Geant4-and-Geant4.SystemOfUnits-modules"><a class="docs-heading-anchor" href="#Import-the-Geant4-and-Geant4.SystemOfUnits-modules">Import the <code>Geant4</code> and <code>Geant4.SystemOfUnits</code> modules</a><a id="Import-the-Geant4-and-Geant4.SystemOfUnits-modules-1"></a><a class="docs-heading-anchor-permalink" href="#Import-the-Geant4-and-Geant4.SystemOfUnits-modules" title="Permalink"></a></h4><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits
+using Printf, GeometryBasics</code></pre><h4 id="Define-the-Detector-Parameters-and-Geometry"><a class="docs-heading-anchor" href="#Define-the-Detector-Parameters-and-Geometry">Define the Detector Parameters and Geometry</a><a id="Define-the-Detector-Parameters-and-Geometry-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Detector-Parameters-and-Geometry" title="Permalink"></a></h4><p>We include a file to define de structure <code>B2aDetector</code> and the construction method <code>B2aConstruct</code> to make the notebook more manageable</p><pre><code class="language-julia hljs">include(joinpath(@__DIR__, &quot;DetectorB2a.jl&quot;))</code></pre><h4 id="Define-TrackerHit-structure"><a class="docs-heading-anchor" href="#Define-TrackerHit-structure">Define TrackerHit structure</a><a id="Define-TrackerHit-structure-1"></a><a class="docs-heading-anchor-permalink" href="#Define-TrackerHit-structure" title="Permalink"></a></h4><pre><code class="language-julia hljs">struct TrackerHit
+    trackID::Int32
+    chamberNb::Int32
+    edep::Float64
+    pos::Point3{Float64}
+end
+function Base.show(io::IO, hit::TrackerHit)
+    (;trackID, chamberNb, edep, pos) = hit
+    @printf(io, &quot;\ntrackID: %3d chamberNb: %2d Edep: %.3f MeV Position: (%3f, %3f, %3f)&quot;, trackID, chamberNb, edep/MeV, pos...) 
+end</code></pre><h4 id="Define-Sensitive-Detector-for-the-chambers"><a class="docs-heading-anchor" href="#Define-Sensitive-Detector-for-the-chambers">Define Sensitive Detector for the chambers</a><a id="Define-Sensitive-Detector-for-the-chambers-1"></a><a class="docs-heading-anchor-permalink" href="#Define-Sensitive-Detector-for-the-chambers" title="Permalink"></a></h4><p>It implies to define a data structure where to accumulate the TrackerHits for each event, and the callback functions:</p><ul><li><code>intilialize</code> called at the beginning of each event</li><li><code>endOfEvent</code> called at the end of the event</li><li><code>processHit</code>  called for each hit (step ending in the associated logical volume) to be processed</li></ul><p>all of the callback functions get the declared data structure as first argument </p><pre><code class="language-julia hljs">#---SD collected data------------------------------------------------------------------------------
+struct B2aSDData &lt;: G4JLSDData
+    trackerHits::Vector{TrackerHit}
+    B2aSDData() = new([])
+end
+#---Initialize method------------------------------------------------------------------------------
+function _initialize(data::B2aSDData, ::G4HCofThisEvent)::Nothing
+    empty!(data.trackerHits)
+    return
+end
+#---End of Event method----------------------------------------------------------------------------
+function _endOfEvent(data::B2aSDData, ::G4HCofThisEvent)::Nothing
+    return
+end
+#---Process Hit method-----------------------------------------------------------------------------
+function _processHits(data::B2aSDData, step::G4Step, ::G4TouchableHistory)::Bool
+    edep = step |&gt; GetTotalEnergyDeposit
+    edep &lt;  0. &amp;&amp; return false
+    pos = step |&gt; GetPostStepPoint |&gt; GetPosition
+    push!(data.trackerHits, TrackerHit(step |&gt; GetTrack |&gt; GetTrackID,
+                                       step |&gt; GetPreStepPoint |&gt; GetTouchable |&gt; GetCopyNumber,
+                                       edep,
+                                       Point3{Float64}(x(pos),y(pos),z(pos))))
+    return true
+end</code></pre><pre><code class="nohighlight hljs">_processHits (generic function with 1 method)</code></pre><p>And create a specialized instance of <code>G4JLSensitiveDetector</code> </p><pre><code class="language-julia hljs">#---Create SD instance-----------------------------------------------------------------------------
+chamber_SD = G4JLSensitiveDetector(&quot;Chamber_SD&quot;, B2aSDData();           # SD name an associated data are mandatory
+                                    processhits_method=_processHits,    # process hist method (also mandatory)
+                                    initialize_method=_initialize,      # intialize method
+                                    endofevent_method=_endOfEvent);     # end of event method
+</code></pre><h4 id="Define-an-End-Event-Action"><a class="docs-heading-anchor" href="#Define-an-End-Event-Action">Define an End Event Action</a><a id="Define-an-End-Event-Action-1"></a><a class="docs-heading-anchor-permalink" href="#Define-an-End-Event-Action" title="Permalink"></a></h4><p>This is collect all results each event. Only printing at this time. </p><pre><code class="language-julia hljs">#---End Event Action-------------------------------------------------------------------------------
+function endeventaction(evt::G4Event, app::G4JLApplication)
+    hits = getSDdata(app, &quot;Chamber_SD&quot;).trackerHits
+    eventID = evt |&gt; GetEventID
+    if eventID &lt; 10 || eventID % 100 == 0
+      G4JL_println(&quot;Event: $eventID with $(length(hits)) hits stored in this event&quot;)
+    end
+    return
+  end</code></pre><pre><code class="nohighlight hljs">endeventaction (generic function with 1 method)</code></pre><h4 id="Define-the-primary-particle-generator-(Particle-Gun)"><a class="docs-heading-anchor" href="#Define-the-primary-particle-generator-(Particle-Gun)">Define the primary particle generator (Particle Gun)</a><a id="Define-the-primary-particle-generator-(Particle-Gun)-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-primary-particle-generator-(Particle-Gun)" title="Permalink"></a></h4><pre><code class="language-julia hljs">particlegun = G4JLGunGenerator(particle = &quot;proton&quot;, 
+                               energy = 3GeV, 
+                               direction = G4ThreeVector(0,0,1), 
+                               position = G4ThreeVector(0,0,-2940.0))</code></pre><pre><code class="nohighlight hljs">G4JLGunGenerator(&quot;ParticleGun&quot;, Geant4.G4JLParticleGunData(nothing, &quot;proton&quot;, Geant4.CLHEP!Hep3VectorAllocated(Ptr{Nothing} @0x00000000024d1fe0), Geant4.CLHEP!Hep3VectorAllocated(Ptr{Nothing} @0x00000000025951a0), 3000.0), Geant4.var&quot;#init#24&quot;(), Geant4.var&quot;#gen#25&quot;(), G4JLGeneratorAction[])</code></pre><h4 id="Instantiate-a-G4JLApplication-with-all-the-elements"><a class="docs-heading-anchor" href="#Instantiate-a-G4JLApplication-with-all-the-elements">Instantiate a <code>G4JLApplication</code> with all the elements</a><a id="Instantiate-a-G4JLApplication-with-all-the-elements-1"></a><a class="docs-heading-anchor-permalink" href="#Instantiate-a-G4JLApplication-with-all-the-elements" title="Permalink"></a></h4><p>The G4RunManager is created at this moment</p><pre><code class="language-julia hljs">#---Create the Application-------------------------------------------------------------------------
+app = G4JLApplication( detector = B2aDetector(nChambers=5),          # detector with parameters
+                       generator = particlegun,                      # primary particle generator
+                       nthreads = 4,                                 # number of threads (MT)
+                       physics_type = FTFP_BERT,                     # what physics list to instantiate
+                       endeventaction_method = endeventaction,       # end event action
+                       sdetectors = [&quot;Chamber_LV+&quot; =&gt; chamber_SD]    # mapping of LVs to SDs (+ means multiple LVs with same name)
+                      );             </code></pre><pre><code class="nohighlight hljs">**************************************************************
+ Geant4 version Name: geant4-11-01-patch-01 [MT]   (10-February-2023)
+  &lt;&lt; in Multi-threaded mode &gt;&gt; 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************</code></pre><h4 id="Final-steps"><a class="docs-heading-anchor" href="#Final-steps">Final steps</a><a id="Final-steps-1"></a><a class="docs-heading-anchor-permalink" href="#Final-steps" title="Permalink"></a></h4><p>Configure the application, initialize the run and fire the beam for 0 events to finalize all initializations</p><pre><code class="language-julia hljs">configure(app)</code></pre><pre><code class="language-julia hljs">initialize(app)</code></pre><pre><code class="nohighlight hljs">Checking overlaps for volume Target:0 (G4Tubs) ... OK! 
+Checking overlaps for volume Tracker:0 (G4Tubs) ... OK! 
+Checking overlaps for volume Chamber_PV:1 (G4Tubs) ... OK! 
+Checking overlaps for volume Chamber_PV:2 (G4Tubs) ... OK! 
+Checking overlaps for volume Chamber_PV:3 (G4Tubs) ... OK! 
+Checking overlaps for volume Chamber_PV:4 (G4Tubs) ... OK! 
+Checking overlaps for volume Chamber_PV:5 (G4Tubs) ... OK!</code></pre><pre><code class="language-julia hljs">beamOn(app, 0)</code></pre><pre><code class="language-julia hljs">#---G4Visualization is not yet a registered module------------------------------------------
+try
+    using G4Visualization
+catch e
+    using Pkg
+    Pkg.develop(path = joinpath(dirname(pathof(Geant4)),&quot;../G4Visualization&quot;))
+    using G4Visualization
+end
+#---Using the CairoMakie backend (static)
+using CairoMakie
+
+world = GetWorldVolume()
+draw(world)</code></pre><pre><code class="nohighlight hljs">[32m[1m   Resolving[22m[39m package versions...
+[32m[1m   Installed[22m[39m Hyperscript ──────── v0.0.4
+[32m[1m   Installed[22m[39m RealDot ──────────── v0.1.0
+[32m[1m   Installed[22m[39m MsgPack ──────────── v1.2.0
+[32m[1m   Installed[22m[39m GLMakie ──────────── v0.8.5
+[32m[1m   Installed[22m[39m ModernGL ─────────── v1.1.7
+[32m[1m   Installed[22m[39m WGLMakie ─────────── v0.8.9
+[32m[1m   Installed[22m[39m Deno_jll ─────────── v1.33.4+0
+[32m[1m   Installed[22m[39m Quaternions ──────── v0.7.4
+[32m[1m   Installed[22m[39m MeshIO ───────────── v0.4.10
+[32m[1m   Installed[22m[39m ShaderAbstractions ─ v0.3.0
+[32m[1m   Installed[22m[39m GLFW ─────────────── v3.4.1
+[32m[1m   Installed[22m[39m Rotations ────────── v1.5.1
+[32m[1m   Installed[22m[39m JSServe ──────────── v2.2.5
+[32m[1m   Installed[22m[39m WidgetsBase ──────── v0.1.4
+[32m[1m   Installed[22m[39m ThreadPools ──────── v2.1.1
+[32m[1m    Updating[22m[39m `~/work/Geant4.jl/Geant4.jl/docs/Project.toml`
+  [90m[b48468f4] [39m[92m+ G4Visualization v0.1.0 `~/work/Geant4.jl/Geant4.jl/G4Visualization`[39m
+[32m[1m    Updating[22m[39m `~/work/Geant4.jl/Geant4.jl/docs/Manifest.toml`
+  [90m[b48468f4] [39m[92m+ G4Visualization v0.1.0 `~/work/Geant4.jl/Geant4.jl/G4Visualization`[39m
+  [90m[f7f18e0c] [39m[92m+ GLFW v3.4.1[39m
+  [90m[e9467ef8] [39m[92m+ GLMakie v0.8.5[39m
+  [90m[47d2ed2b] [39m[92m+ Hyperscript v0.0.4[39m
+  [90m[824d6782] [39m[92m+ JSServe v2.2.5[39m
+  [90m[7269a6da] [39m[92m+ MeshIO v0.4.10[39m
+  [90m[66fc600b] [39m[92m+ ModernGL v1.1.7[39m
+  [90m[99f44e22] [39m[92m+ MsgPack v1.2.0[39m
+  [90m[94ee1d12] [39m[92m+ Quaternions v0.7.4[39m
+  [90m[c1ae055f] [39m[92m+ RealDot v0.1.0[39m
+  [90m[6038ab10] [39m[92m+ Rotations v1.5.1[39m
+  [90m[65257c39] [39m[92m+ ShaderAbstractions v0.3.0[39m
+  [90m[b189fb0b] [39m[92m+ ThreadPools v2.1.1[39m
+  [90m[276b4fcb] [39m[92m+ WGLMakie v0.8.9[39m
+  [90m[eead4739] [39m[92m+ WidgetsBase v0.1.4[39m
+  [90m[04572ae6] [39m[92m+ Deno_jll v1.33.4+0[39m
+[32m[1m    Building[22m[39m ModernGL → `~/.julia/scratchspaces/44cfe95a-1eb2-52ea-b672-e2afdf69b78f/b76ea40b5c0f45790ae09492712dd326208c28b2/build.log`
+[36m[1m[ [22m[39m[36m[1mInfo: [22m[39mPrecompiling G4Visualization [b48468f4-0410-448b-8f39-7a15160176d0]</code></pre><p><img src="../B2a_files/B2a_20_1.png" alt="png"/></p><pre><code class="nohighlight hljs">CairoMakie.Screen{IMAGE}</code></pre><pre><code class="language-julia hljs">beamOn(app,10)</code></pre><pre><code class="nohighlight hljs">G4WT3 &gt; Event: 0 with 105 hits stored in this event
+G4WT2 &gt; Event: 2 with 70 hits stored in this event
+G4WT3 &gt; Event: 4 with 84 hits stored in this event
+G4WT2 &gt; Event: 5 with 77 hits stored in this event
+G4WT2 &gt; Event: 7 with 76 hits stored in this event
+G4WT2 &gt; Event: 8 with 75 hits stored in this event
+G4WT2 &gt; Event: 9 with 135 hits stored in this event
+G4WT0 &gt; Event: 1 with 131 hits stored in this event
+G4WT1 &gt; Event: 3 with 75 hits stored in this event
+G4WT3 &gt; Event: 6 with 319 hits stored in this event</code></pre><pre><code class="language-julia hljs">@time beamOn(app,1000)</code></pre><pre><code class="nohighlight hljs">G4WT3 &gt; Event: 0 with 57 hits stored in this event
+G4WT3 &gt; Event: 1 with 202 hits stored in this event
+G4WT3 &gt; Event: 2 with 55 hits stored in this event
+G4WT3 &gt; Event: 3 with 128 hits stored in this event
+G4WT3 &gt; Event: 4 with 15 hits stored in this event
+G4WT3 &gt; Event: 5 with 205 hits stored in this event
+G4WT3 &gt; Event: 6 with 224 hits stored in this event
+G4WT3 &gt; Event: 7 with 124 hits stored in this event
+G4WT3 &gt; Event: 8 with 213 hits stored in this event
+G4WT3 &gt; Event: 9 with 50 hits stored in this event
+G4WT3 &gt; Event: 100 with 93 hits stored in this event
+G4WT2 &gt; Event: 200 with 89 hits stored in this event
+G4WT3 &gt; Event: 300 with 113 hits stored in this event
+G4WT1 &gt; Event: 400 with 60 hits stored in this event
+G4WT1 &gt; Event: 500 with 71 hits stored in this event
+G4WT2 &gt; Event: 600 with 64 hits stored in this event
+G4WT3 &gt; Event: 700 with 98 hits stored in this event
+G4WT3 &gt; Event: 800 with 167 hits stored in this event
+G4WT0 &gt; Event: 900 with 79 hits stored in this event
+  1.080463 seconds (533.33 k allocations: 14.004 MiB)</code></pre><pre><code class="language-julia hljs">SetParticleEnergy(particlegun, 500MeV)</code></pre><pre><code class="language-julia hljs">@time beamOn(app,1000)</code></pre><pre><code class="nohighlight hljs">G4WT1 &gt; Event: 0 with 139 hits stored in this event
+G4WT1 &gt; Event: 1 with 107 hits stored in this event
+G4WT1 &gt; Event: 2 with 160 hits stored in this event
+G4WT1 &gt; Event: 3 with 18 hits stored in this event
+G4WT1 &gt; Event: 4 with 359 hits stored in this event
+G4WT1 &gt; Event: 5 with 149 hits stored in this event
+G4WT1 &gt; Event: 6 with 193 hits stored in this event
+G4WT1 &gt; Event: 7 with 159 hits stored in this event
+G4WT1 &gt; Event: 8 with 179 hits stored in this event
+G4WT1 &gt; Event: 9 with 105 hits stored in this event
+G4WT2 &gt; Event: 100 with 300 hits stored in this event
+G4WT1 &gt; Event: 200 with 188 hits stored in this event
+G4WT1 &gt; Event: 300 with 240 hits stored in this event
+G4WT2 &gt; Event: 400 with 150 hits stored in this event
+G4WT0 &gt; Event: 500 with 245 hits stored in this event
+G4WT2 &gt; Event: 600 with 196 hits stored in this event
+G4WT2 &gt; Event: 700 with 190 hits stored in this event
+G4WT2 &gt; Event: 800 with 123 hits stored in this event
+G4WT0 &gt; Event: 900 with 188 hits stored in this event
+  0.689261 seconds (520.12 k allocations: 8.273 MiB)</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../B1/">« Example B1</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.24 on <span class="colophon-date" title="Friday 9 June 2023 06:59">Friday 9 June 2023</span>. Using Julia version 1.9.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
