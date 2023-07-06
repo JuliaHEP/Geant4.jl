@@ -5,6 +5,7 @@
 #include "G4ios.hh"
 #include "G4PVPlacement.hh"
 #include "G4ParticleTable.hh"
+#include "G4Polycone.hh"
 
 #include <stdexcept>
 
@@ -105,4 +106,10 @@ void G4JLSensDet::EndOfEvent(G4HCofThisEvent* hc) {
 
 void G4JLDetectorConstruction::SetSensitiveDetector(const G4String& lv, G4JLSensDet* sd, G4bool m) {
   G4VUserDetectorConstruction::SetSensitiveDetector(lv, sd, m);
+}
+
+G4PolyconeSideRZ& GetPolyCorner(const G4Polycone& pc, G4int index) {
+  static G4PolyconeSideRZ side;
+  side = pc.GetCorner(index);
+  return side;
 }

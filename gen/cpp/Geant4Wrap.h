@@ -179,6 +179,10 @@ class G4JLEventAction : public G4UserEventAction {
     eventaction_f endaction;
 };
 
+class G4PolyconeSideRZ;
+class G4Polycone;
+G4PolyconeSideRZ& GetPolyCorner(const G4Polycone&, G4int);
+
 void SetParticleByName(G4ParticleGun* gun, const char* pname);
 G4ParticleDefinition* FindParticle(const char* pname);
 inline G4String make_G4String(const char* s) {return G4String(s);}
@@ -186,5 +190,6 @@ char* G4JL_getenv(const char* x);
 int   G4JL_setenv(const char* x, const char* v);
 void  G4JL_init(void);
 void  G4JL_println(const char *);
+
 
 #endif

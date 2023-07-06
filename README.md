@@ -75,13 +75,7 @@ To run it execute `julia --project=examples/TestEm3 -i examples/TestEm3/TestEm3.
 Example in a notebook format similar to RE03 but with different primary particle generator (MedicalBeam) and using the scoring mechanism. Plots are produced after each run.
  
 ## Running the visualization examples
-The project includes additional functionality for visualization under the directory G4Visualization. This is done in a different directory to separate the dependencies. To run the examples do:
-- `julia --project=G4Visualization -i  G4Visualization/examples/B1vis.jl`
-  
-  Note the option `-i` to keep the interactive session open.
-
-
-
-
-
-
+The project includes additional functionality for visualization under the directory ext/G4Vis as an extension. The extension is activated if the following modules are included in the project ("Makie", "Colors", "StaticArrays", "Rotations", "LinearAlgebra"), which is the same if the project is set to `ext/G4Vis/examples`. To run the examples do:
+- `julia --project=ext/G4Vis/examples -i  ext/G4Vis/examples/B1vis.jl`
+   Note the option `-i` to keep the interactive session open.
+- The notebook `ext/G4Vis/examples/Solids.ipynb` have all the type of solids that can be defined with Geant4

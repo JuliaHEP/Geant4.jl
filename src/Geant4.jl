@@ -32,5 +32,11 @@ module Geant4
     include("G4Utils.jl")
     include("G4Scoring.jl")
     include("G4JLInterface.jl")
+
+    export draw, draw!, drawDistanceToOut
+    drawDistanceToOut() = "Not implemented"
+    draw() = "Not implemented"
+    draw!() = "Not implemented"
+
 end
 

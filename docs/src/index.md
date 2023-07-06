@@ -174,7 +174,7 @@ The Geant4.jl project includes additional functionality for visualization under 
 ### B1vis.jl
 This example uses the `GLMakie` backend (GL) of Makie. The use may change to other backends depending on his/her setup. To visualize the B1 detector do:
 ```
-julia --project=G4Visualization -i  G4Visualization/examples/B1vis.jl
+julia --project=ext/G4Vis/examples -i  ext/G4Vis/examples/B1vis.jl
 ```
 !!! note  
     Note the option `-i` to keep the interactive session open
@@ -182,7 +182,12 @@ julia --project=G4Visualization -i  G4Visualization/examples/B1vis.jl
 ### B2aVis.jl
 This example to visualize the detector and (a very simplistic) visualization of one event.
 ```
-julia --project=G4Visualization -i  G4Visualization/examples/B2avis.jl
+julia --project=ext/G4Vis/examples -i  ext/G4Vis/examples/B2avis.jl
+```
+### Solids.ipynb
+This notebook shows all the possible solids in Geant4
+```
+jupyter notebook ext/G4Vis/examples/Solids.ipynb
 ```
 
 ## Building the wrapper code
@@ -198,6 +203,11 @@ We have the possibility during the development of this package to re-generate lo
 Once the wrapper code is stabilized we move the generated code to the repository [Geant4\_cxxwrap](https://github.com/peremato/Geant4_cxxwrap) to regenerate the binary package `Geant4_julia_jll` using the `BinaryBuilder`.
 
 ## Release Notes
+### 0.1.6
+- New features:
+    - Restructured G4Vis as an extension of Geant4.jl. It is automatically loaded when all the required weak dependencies are satisfied (e.g. "Makie", "Colors", "StaticArrays", "Rotations", "LinearAlgebra")
+    - Added missing basic solids including the `BooleanSolid`
+    - Using the `IGLWrap_jll` binary wrapper to `libigl` C++ library to draw boolean solids.
 ### 0.1.5
 - New features:
     - Support for Multi-threading. New parameter in `G4JLApplication` to set the number of threads. Default is serial, `nthreads = 0`
