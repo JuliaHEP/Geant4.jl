@@ -1,6 +1,7 @@
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+WGLMakie = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 FHist = "68837c9b-b678-4cd5-9925-8a54edc8f695"
 GeometryBasics = "5c1252a2-5f33-56bf-86c9-59e7332b4326"
