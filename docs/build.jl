@@ -1,6 +1,7 @@
-examples_dir = joinpath(pkgdir(Geant4), "examples")
-notebooks = [joinpath(item[1],notebook) for item in walkdir(examples_dir) for notebook in item[3] 
-      if splitext(notebook)[2] == ".ipynb" && !contains(notebook, "checkpoint") ]
+examples_dir = examples_dir = joinpath.(pkgdir(Geant4), ("examples","ext/G4Vis/examples"))
+notebooks = [joinpath(item[1],notebook) for exdir in examples_dir for item in walkdir(exdir) for notebook in item[3] 
+             if splitext(notebook)[2] == ".ipynb" && !contains(notebook, "checkpoint") ]
+vis_examples_dir = joinpath(pkgdir(Geant4), "ext/G4Vis/examples")
 output_dir = joinpath(pkgdir(Geant4), "docs", "src", "notebooks")
 
 #---Run all Jupyter notebooks (`.ipynb` files) in `examples` and write outputs to MD files---------
