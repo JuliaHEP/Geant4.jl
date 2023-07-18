@@ -29,7 +29,7 @@ G4Vis = ["Makie", "Colors", "StaticArrays", "Rotations", "LinearAlgebra", "IGLWr
 CSV = "0.10"
 CxxWrap = "0.13"
 Geant4_julia_jll = "0.1.5"
-IGLWrap_jll = 2.4.0
+IGLWrap_jll = "2.4.0"
 GeometryBasics = "0.4"
 julia = "1.9"
 
