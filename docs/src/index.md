@@ -208,6 +208,7 @@ Once the wrapper code is stabilized we move the generated code to the repository
     - Restructured G4Vis as an extension of Geant4.jl. It is automatically loaded when all the required weak dependencies are satisfied (e.g. "Makie", "Colors", "StaticArrays", "Rotations", "LinearAlgebra")
     - Added missing basic solids including the `BooleanSolid`
     - Using the `IGLWrap_jll` binary wrapper to `libigl` C++ library to draw boolean solids.
+    - Added notebook `ext/G4Vis/Solids.ipynb` to exercise and draw all possible solids (some are still missing)
 ### 0.1.5
 - New features:
     - Support for Multi-threading. New parameter in `G4JLApplication` to set the number of threads. Default is serial, `nthreads = 0`
