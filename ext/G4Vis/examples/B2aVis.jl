@@ -1,6 +1,6 @@
 using Geant4
 using Geant4.SystemOfUnits
-using GLMakie, Rotations
+using GLMakie, Rotations, IGLWrap_jll  # to force loding G4Vis extension
 
 include(joinpath(@__DIR__, "../../../examples/basic/B2/B2a.jl"))
 
