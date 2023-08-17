@@ -13,14 +13,13 @@ G4PVReplica(s::String, l::G4LogicalVolume, m::G4LogicalVolume, a::EAxis, n::Int6
     G4PVReplica(s, CxxPtr(l), CxxPtr(m), a, n, t)
 
 function G4JLDetectorConstruction(f::Function)
-    sf = @safe_cfunction($f, CxxPtr{G4VPhysicalVolume}, ())  # crate a safe c function
-    G4JLDetectorConstruction(preserve(sf))
+    sf = make_callback(nothing, f, CxxPtr{G4VPhysicalVolume}, ()) |> closure
+    G4JLDetectorConstruction(sf...)
 end
 
 function G4JLActionInitialization(f::Function)
-    ff(self::ConstCxxPtr{G4JLActionInitialization}) = f(self[])
-    sf = @safe_cfunction($ff, Nothing, (ConstCxxPtr{G4JLActionInitialization},))  # crate a safe c function
-    G4JLActionInitialization(preserve(sf), preserve(sf))                          # call the construction                        
+    sf = make_callback(nothing, f, Nothing, (ConstCxxPtr{G4JLActionInitialization},)) |> closure
+    G4JLActionInitialization(sf..., sf...)                          # call the construction                        
 end
 
 #---Material friendly functions (keyword arguments)------------------------------------------------
@@ -100,8 +99,8 @@ function G4JLPrimaryGenerator{G4JLParticleGunData}(;particle="e-", energy=10., d
         SetParticleMomentumDirection(pg, data.direction)
         SetParticlePosition(pg, data.position)
     end
-    function gen( evt::CxxPtr{G4Event}, data::G4JLParticleGunData)::Nothing
-        GeneratePrimaryVertex(data.gun, evt)
+    function gen(evt::G4Event, data::G4JLParticleGunData)::Nothing
+        GeneratePrimaryVertex(data.gun, CxxPtr(evt))
     end
     G4JLPrimaryGenerator("ParticleGun", data; init_method=init, generate_method=gen)
 end
@@ -162,15 +161,15 @@ end
 function G4JLSensitiveDetector(sd::G4JLProtoSD)
     (;name, data, processhits, initialize, endofevent) = sd
     tls_data = deepcopy(data)
-    ph =  @safe_cfunction($((s::CxxPtr{G4Step}, th::CxxPtr{G4TouchableHistory}) ->  CxxBool(processhits(tls_data, s[], th[]))), CxxBool, (CxxPtr{G4Step},CxxPtr{G4TouchableHistory}))
-    base = G4JLSensDet(name, preserve(ph))
+    cb = make_callback(tls_data, processhits, CxxBool, (CxxPtr{G4Step}, CxxPtr{G4TouchableHistory})) |> closure
+    base = G4JLSensDet(name, cb...)
     if !isnothing(initialize)
-        sf = @safe_cfunction($((hc::CxxPtr{G4HCofThisEvent}) ->  initialize(tls_data, hc[])), Nothing, (CxxPtr{G4HCofThisEvent},))
-        SetInitialize(base, preserve(sf))
+        cb =  make_callback(tls_data, initialize, Nothing, (CxxPtr{G4HCofThisEvent},)) |> closure
+        SetInitialize(base, cb...)
     end
     if !isnothing(endofevent)
-        sf = @safe_cfunction($((hc::CxxPtr{G4HCofThisEvent}) ->  endofevent(tls_data, hc[])), Nothing, (CxxPtr{G4HCofThisEvent},))
-        SetEndOfEvent(base, preserve(sf))
+        cb =  make_callback(tls_data, endofevent, Nothing, (CxxPtr{G4HCofThisEvent},)) |> closure
+        SetEndOfEvent(base, cb...)
     end
     G4JLSensitiveDetector{typeof(data)}(base, tls_data)
 end
@@ -305,91 +304,91 @@ function configure(app::G4JLApplication)
         nothing
     end
     det    = app.detector
-    sf1 = @safe_cfunction($(()->getConstructor(det)(det)), CxxPtr{G4VPhysicalVolume}, ())  # crate a safe c function
-    sf2 = @safe_cfunction($(()->sdandf(app)), Nothing, ())
-    app.detbuilder = app.builder_type(preserve(sf1), preserve(sf2))
+    cb1 = make_callback(det, getConstructor(det), CxxPtr{G4VPhysicalVolume}, ()) |> closure
+    cb2 = make_callback(app, sdandf, Nothing, ()) |> closure
+    app.detbuilder = app.builder_type(cb1..., cb2...)
     SetUserInitialization(runmgr, CxxPtr(app.detbuilder))
     #---Physics List---------------------------------------------------------------------------
     physics = app.physics_type(app.verbose)
-    app.physics = CxxRef(physics)
+    app.physics = CxxPtr(physics)
     SetUserInitialization(runmgr, move!(physics))
     #---Actions--------------------------------------------------------------------------------
-    function build(uai::ConstCxxPtr{G4JLActionInitialization}, app::G4JLApplication)::Nothing
+    function build(uai::G4JLActionInitialization, app::G4JLApplication)::Nothing
         if !isnothing(app.stepaction_method)
-            sf2 = @safe_cfunction($((step::ConstCxxPtr{G4Step}) ->  app.stepaction_method(step[], app)), Nothing, (ConstCxxPtr{G4Step},)) 
-            SetUserAction(uai, move!(app.stepaction_type(preserve(sf2))))
+            cb = make_callback(app, app.stepaction_method, Nothing, (ConstCxxPtr{G4Step},))
+            SetUserAction(uai, move!(app.stepaction_type(closure(cb)...)))
         end
         #---Tracking Action---------------------------------------------------------------------------
         if !isnothing(app.pretrackaction_method)
-            t1 = @safe_cfunction($((track::ConstCxxPtr{G4Track}) ->  app.pretrackaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Track},))
+            t1 = make_callback(app, app.pretrackaction_method, Nothing, (ConstCxxPtr{G4Track},)) |> closure
         else
-            t1 = @safe_cfunction($((::ConstCxxPtr{G4Track}) -> nothing), Nothing, (ConstCxxPtr{G4Track},))
+            t1 = null_closure(Nothing, (ConstCxxPtr{G4Track},))
         end
         if !isnothing(app.posttrackaction_method)
-            t2 = @safe_cfunction($((track::ConstCxxPtr{G4Track}) ->  app.posttrackaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Track},))
+            t2 = make_callback(app, app.posttrackaction_method, Nothing, (ConstCxxPtr{G4Track},)) |> closure
         else
-            t2 = @safe_cfunction($((::ConstCxxPtr{G4Track}) -> nothing), Nothing, (ConstCxxPtr{G4Track},))
+            t2 = null_closure(Nothing, (ConstCxxPtr{G4Track},))
         end
         if !isnothing(app.pretrackaction_method) || !isnothing(app.posttrackaction_method)
-            SetUserAction(uai, move!(app.trackaction_type(preserve(t1), preserve(t2))))
+            SetUserAction(uai, move!(app.trackaction_type(t1..., t2...)))
         end
         #---Run Action---------------------------------------------------------------------------
         if !isnothing(app.beginrunaction_method)
-            r1 = @safe_cfunction($((track::ConstCxxPtr{G4Run}) ->  app.beginrunaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Run},))
+            r1 = make_callback(app, app.beginrunaction_method, Nothing, (ConstCxxPtr{G4Run},)) |> closure
         else
-            r1 = @safe_cfunction($((::ConstCxxPtr{G4Run}) -> nothing), Nothing, (ConstCxxPtr{G4Run},))
+            r1 = null_closure(Nothing, (ConstCxxPtr{G4Run},))
         end
         if !isnothing(app.endrunaction_method)
-            r2 = @safe_cfunction($((track::ConstCxxPtr{G4Run}) ->  app.endrunaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Run},))
+            r2 = make_callback(app, app.endrunaction_method, Nothing, (ConstCxxPtr{G4Run},)) |> closure
         else
-            r2 = @safe_cfunction($((::ConstCxxPtr{G4Run}) -> nothing), Nothing, (ConstCxxPtr{G4Run},))
+            r2 = null_closure(Nothing, (ConstCxxPtr{G4Run},))
         end
         if !isnothing(app.beginrunaction_method) || !isnothing(app.endrunaction_method)
-            SetUserAction(uai, move!(app.runaction_type(preserve(r1), preserve(r2))))
+            SetUserAction(uai, move!(app.runaction_type(r1..., r2...)))
         end
         #---Event Action---------------------------------------------------------------------------
         if !isnothing(app.begineventaction_method)
-            e1 = @safe_cfunction($((evt::ConstCxxPtr{G4Event}) ->  app.begineventaction_method(evt[], app)), Nothing, (ConstCxxPtr{G4Event},))
+            e1 = make_callback(app, app.begineventaction_method, Nothing, (ConstCxxPtr{G4Event},)) |> closure
         else
-            e1 = @safe_cfunction($((::ConstCxxPtr{G4Event}) -> nothing), Nothing, (ConstCxxPtr{G4Event},))
+            e1 = null_closure(Nothing, (ConstCxxPtr{G4Event},))
         end
         if !isnothing(app.endeventaction_method)
-            e2 = @safe_cfunction($((evt::ConstCxxPtr{G4Event}) ->  app.endeventaction_method(evt[], app)), Nothing, (ConstCxxPtr{G4Event},))
+            e2 = make_callback(app, app.endeventaction_method, Nothing, (ConstCxxPtr{G4Event},)) |> closure
         else
-            e2 = @safe_cfunction($((::ConstCxxPtr{G4Event}) -> nothing), Nothing, (ConstCxxPtr{G4Event},))
+            e2 = null_closure(Nothing, (ConstCxxPtr{G4Event},))
         end
         if !isnothing(app.begineventaction_method) || !isnothing(app.endeventaction_method)
-            SetUserAction(uai, move!(app.eventaction_type(preserve(e1), preserve(e2))))
+            SetUserAction(uai, move!(app.eventaction_type(e1..., e2...)))
         end
         #---Primary particles generator---------(per thread)--------------------------------------
         gen = app.generator
         tid = G4Threading!G4GetThreadId()
-        g1 =  @safe_cfunction($((e::CxxPtr{G4Event}) ->  gen.gen_method(e, gen.data)), Nothing, (CxxPtr{G4Event},))
-        gen.base[tid+2] = G4JLGeneratorAction(preserve(g1))
+        g1 =  make_callback(gen.data, gen.gen_method, Nothing, (CxxPtr{G4Event},)) |> closure
+        gen.base[tid+2] = G4JLGeneratorAction(g1...)
         init_method = gen.init_method
         !isnothing(init_method) && init_method(gen.data, app)
         SetUserAction(uai, CxxPtr(gen.base[tid+2]))
     end
-    function master_build(uai::ConstCxxPtr{G4JLActionInitialization}, app::G4JLApplication)::Nothing
+    function master_build(uai::G4JLActionInitialization, app::G4JLApplication)::Nothing
         #---Run Action---------------------------------------------------------------------------
         if !isnothing(app.beginrunaction_method)
-            r1 = @safe_cfunction($((track::ConstCxxPtr{G4Run}) ->  app.beginrunaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Run},))
+            r1 = make_callback(app, app.beginrunaction_method, Nothing, (ConstCxxPtr{G4Run},)) |> closure
         else
-            r1 = @safe_cfunction($((::ConstCxxPtr{G4Run}) -> nothing), Nothing, (ConstCxxPtr{G4Run},))
+            r1 = null_closure(Nothing, (ConstCxxPtr{G4Run},))
         end
         if !isnothing(app.endrunaction_method)
-            r2 = @safe_cfunction($((track::ConstCxxPtr{G4Run}) ->  app.endrunaction_method(track[], app)), Nothing, (ConstCxxPtr{G4Run},))
+            r2 = make_callback(app, app.endrunaction_method, Nothing, (ConstCxxPtr{G4Run},)) |> closure
         else
-            r2 = @safe_cfunction($((::ConstCxxPtr{G4Run}) -> nothing), Nothing, (ConstCxxPtr{G4Run},))
+            r2 = null_closure(Nothing, (ConstCxxPtr{G4Run},))
         end
         if !isnothing(app.beginrunaction_method) || !isnothing(app.endrunaction_method)
-            SetUserAction(uai, move!(app.runaction_type(preserve(r1), preserve(r2))))
+            SetUserAction(uai, move!(app.runaction_type(r1..., r2...)))
         end
     end
     #---User Actions Initialization------------------------------------------------------------
-    b1 =  @safe_cfunction($((ua::ConstCxxPtr{G4JLActionInitialization}) ->  build(ua, app)), Nothing, (ConstCxxPtr{G4JLActionInitialization},))
-    b2 =  @safe_cfunction($((ua::ConstCxxPtr{G4JLActionInitialization}) ->  master_build(ua, app)), Nothing, (ConstCxxPtr{G4JLActionInitialization},))
-    ai = G4JLActionInitialization(preserve(b1), preserve(b2))
+    cb1 = make_callback(app, build, Nothing, (ConstCxxPtr{G4JLActionInitialization},)) |> closure
+    cb2 = make_callback(app, master_build, Nothing, (ConstCxxPtr{G4JLActionInitialization},)) |> closure
+    ai = G4JLActionInitialization(cb1..., cb2...)
     SetUserInitialization(runmgr, move!(ai))
     #---Setup Scoring--------------------------------------------------------------------------
     if !isempty(app.scorers)
@@ -421,8 +420,8 @@ Re-initialize the Geant4 application with a new detector defintion.
 function reinitialize(app::G4JLApplication, det::G4JLDetector)
     app.detector = det
     runmgr = app.runmanager
-    sf1 = @safe_cfunction($(()->getConstructor(det)(det)), CxxPtr{G4VPhysicalVolume}, ())  # crate a safe c function
-    SetUserInitialization(runmgr, move!(app.builder_type(preserve(sf1))))
+    cb1 = make_callback(det, getConstructor(det), CxxPtr{G4VPhysicalVolume}, ()) |> closure
+    SetUserInitialization(runmgr, move!(app.builder_type(cb1...)))
     ReinitializeGeometry(runmgr)
     Initialize(runmgr)
 end

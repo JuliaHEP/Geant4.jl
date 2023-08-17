@@ -69,10 +69,10 @@ void  G4JL_println(const char * msg) {
 }
 
 void G4JLActionInitialization::BuildForMaster() const { 
-  if (master_build != nullptr) master_build(this);
+  if (master_build != nullptr) master_build(this, master_build_d);
 }
 void G4JLActionInitialization::Build() const {
-  if (build != nullptr) build(this);
+  if (build != nullptr) build(this, build_d);
 }
 
 void G4JLWorkerInitialization::WorkerInitialize() const {
@@ -93,15 +93,14 @@ void G4JLWorkerInitialization::WorkerRunEnd() const {
 void G4JLWorkerInitialization::WorkerStop() const {
 }
 
-void G4JLDetectorConstruction::ConstructSDandField() { 
-  if (sdandf) sdandf(); 
+G4bool G4JLSensDet::ProcessHits(G4Step* s, G4TouchableHistory* h) {
+  return processhits(s, h, processhits_d);
 }
-
 void G4JLSensDet::Initialize(G4HCofThisEvent* hc) {
-  if (initialize) initialize(hc); 
+  if (initialize) initialize(hc, initialize_d); 
 }
 void G4JLSensDet::EndOfEvent(G4HCofThisEvent* hc) {
-  if (endofevent) endofevent(hc); 
+  if (endofevent) endofevent(hc, endofevent_d); 
 }
 
 void G4JLDetectorConstruction::SetSensitiveDetector(const G4String& lv, G4JLSensDet* sd, G4bool m) {

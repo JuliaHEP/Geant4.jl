@@ -26,16 +26,16 @@ struct B2aSDData <: G4JLSDData
   B2aSDData() = new([])
 end
 #---Initialize method------------------------------------------------------------------------------
-function _initialize(data::B2aSDData, ::G4HCofThisEvent)::Nothing
+function _initialize(::G4HCofThisEvent, data::B2aSDData)::Nothing
   empty!(data.trackerHits)
   return
 end
 #---End of Event method----------------------------------------------------------------------------
-function _endOfEvent(data::B2aSDData, ::G4HCofThisEvent)::Nothing
+function _endOfEvent(::G4HCofThisEvent, data::B2aSDData)::Nothing
   return
 end
 #---Process Hit method-----------------------------------------------------------------------------
-function _processHits(data::B2aSDData, step::G4Step, ::G4TouchableHistory)::Bool
+function _processHits(step::G4Step, ::G4TouchableHistory, data::B2aSDData)::Bool
   edep = step |> GetTotalEnergyDeposit
   edep <  0. && return false
   pos = step |> GetPostStepPoint |> GetPosition
@@ -53,7 +53,7 @@ chamber_SD = G4JLSensitiveDetector("Chamber_SD", B2aSDData();           # SD nam
 
 #---End Event Action-------------------------------------------------------------------------------
 function endeventaction(evt::G4Event, app::G4JLApplication)
-  hits = [] # getSDdata(app, "Chamber_SD").trackerHits
+  hits = getSDdata(app, "Chamber_SD").trackerHits
   eventID = evt |> GetEventID
   if eventID < 10 || eventID % 1000 == 0
     G4JL_println("Event: $eventID with $(length(hits)) hits stored in this event")
@@ -77,13 +77,13 @@ app = G4JLApplication(;detector = B2aDetector(nChambers=5),          # detector 
                        nthreads = 0,                                 # # of threads (0 = no MT)
                        physics_type = FTFP_BERT,                     # what physics list to instantiate
                        endeventaction_method = endeventaction,       # end event action
-                       #sdetectors = ["Chamber_LV+" => chamber_SD]    # mapping of LVs to SDs (+ means multiple LVs with same name)
+                       sdetectors = ["Chamber_LV+" => chamber_SD]    # mapping of LVs to SDs (+ means multiple LVs with same name)
                       )
               
 #---Configure, Initialize and Run------------------------------------------------------------------                      
 configure(app)
 initialize(app)
 
-ui`/tracking/verbose 1`
-beamOn(app,1)
+#ui`/tracking/verbose 1`
+beamOn(app,100)
 

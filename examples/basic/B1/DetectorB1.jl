@@ -1,7 +1,7 @@
 #---Example B1Detector constructor function-------------------------------------------------------- 
 #   It should return a pointer to G4VPhysicalVolume (aka CxxPtr{G4VPhysicalVolume})
 #--------------------------------------------------------------------------------------------------
-function constructB1Detector()::CxxPtr{G4VPhysicalVolume}
+function constructB1Detector(::Nothing)::CxxPtr{G4VPhysicalVolume}
 
     nist = G4NistManager!Instance()
   

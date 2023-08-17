@@ -36,48 +36,60 @@ public:
 };
 
 //--G4JLSensDet------------------------------------------------------------------------------------
-typedef bool (*processhits_f) (G4Step*, G4TouchableHistory*);
-typedef void (*initend_f) (G4HCofThisEvent*);
+typedef bool (*processhits_f) (G4Step*, G4TouchableHistory*, void*);
+typedef void (*initend_f) (G4HCofThisEvent*, void*);
 class G4JLSensDet : public G4VSensitiveDetector {
   public:
-    G4JLSensDet(const G4String& name, processhits_f f) : G4VSensitiveDetector(name), processhits(f), initialize(nullptr), endofevent(nullptr) {
+    G4JLSensDet(const G4String& name, processhits_f f, void* d) : G4VSensitiveDetector(name), 
+    processhits_d(d), processhits(f), 
+    initialize_d(nullptr), initialize(nullptr), 
+    endofevent_d(nullptr), endofevent(nullptr) {
       G4SDManager::GetSDMpointer()->AddNewDetector(this);   // Automatically register the SD to the manager
     }
     ~G4JLSensDet() = default;
     virtual void Initialize(G4HCofThisEvent* hc) override; 
     virtual void EndOfEvent(G4HCofThisEvent* hc) override;
-    virtual G4bool ProcessHits(G4Step* s, G4TouchableHistory* h) override {return processhits(s, h);}
-    void SetInitialize(initend_f f) {initialize = f;}
-    void SetEndOfEvent(initend_f f) {endofevent = f;}
+    virtual G4bool ProcessHits(G4Step* s, G4TouchableHistory* h) override;
+    void SetInitialize(initend_f f, void* d) {initialize = f; initialize_d = d;}
+    void SetEndOfEvent(initend_f f, void* d) {endofevent = f; endofevent_d = d;}
   private:
+    void* processhits_d;
     processhits_f processhits;
+    void* initialize_d;
     initend_f initialize;
+    void* endofevent_d;
     initend_f endofevent;
 };
 
 //---G4JLDetectorConstruction----------------------------------------------------------------------
-typedef  G4VPhysicalVolume* (*construct_f) ();
-typedef void (*sdandf_f)();
+typedef  G4VPhysicalVolume* (*construct_f) (void*);
+typedef void (*sdandf_f)(void*);
 class G4JLDetectorConstruction : public G4VUserDetectorConstruction { 
   public:
-    G4JLDetectorConstruction(construct_f c, sdandf_f s = nullptr) : construct(c), sdandf(s) {} 
+    G4JLDetectorConstruction(construct_f c, void* d, sdandf_f s = nullptr, void* a = nullptr) : 
+      construct_d(d), construct(c), 
+      sdandf_d(a), sdandf(s) {} 
     ~G4JLDetectorConstruction() = default;
-    virtual G4VPhysicalVolume* Construct() override {return construct();}
-    virtual void ConstructSDandField() override;
+    virtual G4VPhysicalVolume* Construct() override {return construct(construct_d);}
+    virtual void ConstructSDandField() override { if (sdandf) sdandf(sdandf_d); }
     void SetSensitiveDetector(const G4String& lv, G4JLSensDet* sd, G4bool m = false);
   protected:
+    void* construct_d;
     construct_f construct;
+    void* sdandf_d;
     sdandf_f sdandf;
 };
 
 //---G4JLActionInitialization----------------------------------------------------------------------
 class G4JLActionInitialization;
-typedef  void (*build_f)(const G4JLActionInitialization*);
+typedef  void (*build_f)(const G4JLActionInitialization*, void*);
 class G4JLActionInitialization : public G4VUserActionInitialization
 {
   public:
-    G4JLActionInitialization(build_f f, build_f mf = nullptr) : build(f), master_build(mf) {}
-    G4JLActionInitialization() : build(nullptr), master_build(nullptr) {}
+    G4JLActionInitialization(build_f f, void* d, build_f mf = nullptr, void* md = nullptr) : 
+      build_d(d), build(f), 
+      master_build_d(md), master_build(mf) {}
+    G4JLActionInitialization() : build_d(nullptr), build(nullptr), master_build_d(nullptr), master_build(nullptr) {}
     ~G4JLActionInitialization() override = default;
     void BuildForMaster() const override;
     void Build() const override;
@@ -90,7 +102,9 @@ class G4JLActionInitialization : public G4VUserActionInitialization
     void SetUserAction(G4UserSteppingAction* a) const {G4VUserActionInitialization::SetUserAction(a); }
 
   protected:
+    void* build_d;
     build_f build;
+    void* master_build_d;
     build_f master_build;
 };
 
@@ -118,64 +132,78 @@ class G4JLWorkerInitialization : public G4UserWorkerInitialization {
 };
 
 //---G4JLGeneratorAction-----------------------------------------------------------------------------
-typedef  void (*generate_f) (G4Event*);
+typedef  void (*generate_f) (G4Event*, void*);
 class G4JLGeneratorAction : public G4VUserPrimaryGeneratorAction {
 public:
-  G4JLGeneratorAction(generate_f f) : generate(f) { }
+  G4JLGeneratorAction(generate_f f, void* d) : generate_d(d), generate(f) { }
   ~G4JLGeneratorAction() = default;
-  void GeneratePrimaries(G4Event* event) override { generate(event); }
+  void GeneratePrimaries(G4Event* event) override { generate(event, generate_d); }
 private:
+  void* generate_d;
   generate_f generate;
 };
 
-typedef  void (*stepaction_f) (const G4Step*);
+typedef  void (*stepaction_f) (const G4Step*, void*);
 //---G4JLSteppingAction-------------------------------------------------------------------------------
 class G4JLSteppingAction : public G4UserSteppingAction {
 public:
-  G4JLSteppingAction(stepaction_f f) : action(f) {}
+  G4JLSteppingAction(stepaction_f f, void* d) : stepaction_d(d), action(f) {}
   ~G4JLSteppingAction() = default;
-  virtual void UserSteppingAction(const G4Step* step) {action(step);}
+  virtual void UserSteppingAction(const G4Step* step) {action(step, stepaction_d);}
 private:
+  void* stepaction_d;
   stepaction_f action;
 };
 
 //---G4JLTrackingAction-------------------------------------------------------------------------------
-typedef  void (*trackaction_f) (const G4Track*);
+typedef  void (*trackaction_f) (const G4Track*, void*);
 class G4JLTrackingAction : public G4UserTrackingAction {
   public:  
-    G4JLTrackingAction(trackaction_f pre = nullptr, trackaction_f post = nullptr) : preaction(pre), postaction(post) {} 
+    G4JLTrackingAction(trackaction_f pre = nullptr, void* pre_d = nullptr,  trackaction_f post = nullptr, void* post_d = nullptr) : 
+      preaction_d(pre_d), preaction(pre), 
+      postaction_d(post_d), postaction(post) {} 
    ~G4JLTrackingAction() = default;
-    void PreUserTrackingAction(const G4Track* track) {if (preaction) preaction(track);}   
-    void PostUserTrackingAction(const G4Track* track) {if (postaction) postaction(track);}
+    void PreUserTrackingAction(const G4Track* track) {if (preaction) preaction(track, preaction_d);}   
+    void PostUserTrackingAction(const G4Track* track) {if (postaction) postaction(track, postaction_d);}
   private:
+    void* preaction_d;
     trackaction_f preaction;
+    void* postaction_d;
     trackaction_f postaction;
 };
 
 //---G4JLRunAction------------------------------------------------------------------------------------
 class G4Run;
-typedef  void (*runaction_f) (const G4Run*);
+typedef  void (*runaction_f) (const G4Run*, void*);
 class G4JLRunAction : public G4UserRunAction {
   public:
-    G4JLRunAction(runaction_f begin = nullptr, runaction_f end = nullptr) : beginaction(begin), endaction(end) {} 
+    G4JLRunAction(runaction_f begin = nullptr, void* begin_d = nullptr, runaction_f end = nullptr, void* end_d = nullptr) :
+    beginaction_d(begin_d), beginaction(begin), 
+    endaction_d(end_d), endaction(end) {} 
     ~G4JLRunAction() = default;
-    virtual void BeginOfRunAction(const G4Run* run) {if (beginaction) beginaction(run);}
-    virtual void   EndOfRunAction(const G4Run* run) {if (endaction) endaction(run);}
+    virtual void BeginOfRunAction(const G4Run* run) {if (beginaction) beginaction(run, beginaction_d);}
+    virtual void   EndOfRunAction(const G4Run* run) {if (endaction) endaction(run, endaction_d);}
   private:
+    void* beginaction_d;
     runaction_f beginaction;
+    void* endaction_d;
     runaction_f endaction;
 };
 
 //---G4JLEventAction------------------------------------------------------------------------------------
-typedef  void (*eventaction_f) (const G4Event*);
+typedef  void (*eventaction_f) (const G4Event*, void*);
 class G4JLEventAction : public G4UserEventAction {
   public:  
-    G4JLEventAction(eventaction_f begin = nullptr, eventaction_f end = nullptr) : beginaction(begin), endaction(end) {}  
+    G4JLEventAction(eventaction_f begin = nullptr, void* begin_d = nullptr, eventaction_f end = nullptr, void* end_d = nullptr) : 
+    beginaction_d(begin_d), beginaction(begin), 
+    endaction_d(end_d), endaction(end) {}  
    ~G4JLEventAction() = default;
-    virtual void BeginOfEventAction(const G4Event* evt) {if (beginaction) beginaction(evt);}
-    virtual void   EndOfEventAction(const G4Event* evt) {if (endaction) endaction(evt);}
-  private:  
+    virtual void BeginOfEventAction(const G4Event* evt) {if (beginaction) beginaction(evt, beginaction_d);}
+    virtual void   EndOfEventAction(const G4Event* evt) {if (endaction) endaction(evt, endaction_d);}
+  private:
+    void* beginaction_d;
     eventaction_f beginaction;
+    void* endaction_d;
     eventaction_f endaction;
 };
 

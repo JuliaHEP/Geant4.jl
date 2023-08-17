@@ -14,7 +14,7 @@ SetUserInitialization(runManager, move!(detdesc))
 SetUserInitialization(runManager, move!(physics))
 
 # User Actions-------------------------------------------------------------------------------------
-function buildApp(self::G4JLActionInitialization)
+function buildApp(self::G4JLActionInitialization, ::Nothing)
   # Create particle gun
   particle_gun = G4JLParticleGun()
   # Setup particle gun
