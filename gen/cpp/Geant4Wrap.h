@@ -208,8 +208,11 @@ class G4JLEventAction : public G4UserEventAction {
 };
 
 class G4PolyconeSideRZ;
+class G4PolyhedraSideRZ;
 class G4Polycone;
+class G4Polyhedra;
 G4PolyconeSideRZ& GetPolyCorner(const G4Polycone&, G4int);
+G4PolyhedraSideRZ& GetPolyCorner(const G4Polyhedra&, G4int);
 
 void SetParticleByName(G4ParticleGun* gun, const char* pname);
 G4ParticleDefinition* FindParticle(const char* pname);

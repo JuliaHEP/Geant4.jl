@@ -169,10 +169,10 @@ julia --project=examples/TestEm3 -i examples/TestEm3/TestEm3.jl
 ``` 
 
 ## Visualization examples
-The Geant4.jl project includes additional functionality for visualization under the directory G4Visualization. This is done in a different directory to separate the dependencies. 
+The Geant4.jl project includes additional functionality for visualization under the directory ext/G4Vis/examples. This is done in a different directory to separate the dependencies. 
 
 ### B1vis.jl
-This example uses the `GLMakie` backend (GL) of Makie. The use may change to other backends depending on his/her setup. To visualize the B1 detector do:
+This example uses the `GLMakie` backend (OpenGL) of Makie. The use may change to other backends depending on his/her setup. To visualize the B1 detector do:
 ```
 julia --project=ext/G4Vis/examples -i  ext/G4Vis/examples/B1vis.jl
 ```

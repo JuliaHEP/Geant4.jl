@@ -29,7 +29,7 @@ module G4Vis
     function GeometryBasics.Tesselation(s::G4VSolid, nvertices::NTuple{N,<:Integer}) where N
         return Tesselation{3,Float64,typeof(s),N}(s, Int.(nvertices))
     end
-    GeometryBasics.mesh(s::G4VSolid) = GeometryBasics.mesh(Tesselation(s, 48), facetype=QuadFace{Int})
+    GeometryBasics.mesh(s::G4VSolid) = GeometryBasics.mesh(Tesselation(s, 24), facetype=QuadFace{Int})
 
  
     colors = colormap("Grays", 6)
@@ -155,6 +155,7 @@ module G4Vis
    include("Torus.jl")
    include("Cones.jl")
    include("Sphere.jl")
+   include("PGon.jl")
 
    #---Boolean solids------------------------------------------------------------------------------
    include("Boolean.jl")

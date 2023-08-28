@@ -11,18 +11,18 @@ function GeometryBasics.coordinates(tub::G4Tubs, facets=36)
     issector ?  facets =  round(Int64, (facets/2π) * Δϕ) : nothing
     isodd(facets) ? facets = 2 * div(facets, 2) : nothing
     facets < 8 ? facets = 8 : nothing
-    nbf = Int(facets / 2)            # Number of faces
-    nbv = issector ? nbf + 1 : nbf   # Number of vertices
+    facets = Int(facets / 2)            # Number of faces
+    nbv = issector ? facets + 1 : facets   # Number of vertices
     nbc = ishollow ? nbv : 1         # Number of centers
     z = z
     range = 1:(2*nbv + 2*nbc)
     function inner(i)
         return if i <= 2*nbv
-            ϕ = ϕ₀ + (Δϕ * (((i + 1) ÷ 2) - 1)) / nbf
+            ϕ = ϕ₀ + (Δϕ * (((i + 1) ÷ 2) - 1)) / facets
             up = ifelse(isodd(i), z, -z)
             Point(rmax * cos(ϕ), rmax * sin(ϕ), up)
         elseif ishollow
-            ϕ = ϕ₀ + (Δϕ * (((i - 2 * nbv + 1) ÷ 2) - 1)) / nbf
+            ϕ = ϕ₀ + (Δϕ * (((i - 2 * nbv + 1) ÷ 2) - 1)) / facets
             up = ifelse(isodd(i), z, -z)
             Point(rmin * cos(ϕ), rmin * sin(ϕ), up)
         elseif i == length(range)
@@ -42,17 +42,17 @@ function GeometryBasics.faces(tub::G4Tubs, facets=36)
     issector ?  facets =  round(Int64, (facets/2π) * Δϕ) : nothing
     isodd(facets) ? facets = 2 * div(facets, 2) : nothing
     facets < 8 ? facets = 8 : nothing
-    nbf = Int(facets / 2)            # Number of faces
-    nbv = issector ? nbf + 1 : nbf   # Number of vertices
+    facets = Int(facets / 2)            # Number of faces
+    nbv = issector ? facets + 1 : facets   # Number of vertices
     nbc = ishollow ? nbv : 1         # Number of centers
     indexes = Vector{QuadFace{Int64}}()
-    for j in 1:nbf
+    for j in 1:facets
         a,b = 2j-1, 2j
-        c,d = !issector && j == nbf ? (1, 2) : (2j+1, 2j+2) 
+        c,d = !issector && j == facets ? (1, 2) : (2j+1, 2j+2) 
         push!(indexes, (a,b,d,c))
         if ishollow
             a′,b′ = 2j-1+2nbv, 2j+2nbv
-            c′,d′ = !issector && j == nbf ? (2nbv+1, 2nbv+2) : (2j+1+2nbv, 2j+2+2nbv)
+            c′,d′ = !issector && j == facets ? (2nbv+1, 2nbv+2) : (2j+1+2nbv, 2j+2+2nbv)
             # inner wall
             push!(indexes, (a′,b′,d′,c′))
             # top
@@ -85,17 +85,17 @@ function GeometryBasics.normals(tub::G4Tubs, facets=36)
     issector ?  facets =  round(Int64, (facets/2π) * Δϕ) : nothing
     isodd(facets) ? facets = 2 * div(facets, 2) : nothing
     facets < 8 ? facets = 8 : nothing
-    nbf = Int(facets / 2)            # Number of faces
-    nbv = issector ? nbf + 1 : nbf   # Number of vertices
+    facets = Int(facets / 2)            # Number of faces
+    nbv = issector ? facets + 1 : facets   # Number of vertices
     nbc = ishollow ? nbv : 1         # Number of centers
     range = 1:(2*nbv + 2*nbc)
     function inner(i)
         return if i <= 2*nbv
-            ϕ = ϕ₀ + (Δϕ * (((i + 1) ÷ 2) - 1)) / nbf
+            ϕ = ϕ₀ + (Δϕ * (((i + 1) ÷ 2) - 1)) / facets
             up = ifelse(isodd(i), 1/√2, -1/√2)
             Vector3(cos(ϕ)/√2, sin(ϕ)/√2, up)
         elseif ishollow
-            ϕ = ϕ₀ + (Δϕ * (((i + 1) ÷ 2) - 1)) / nbf
+            ϕ = ϕ₀ + (Δϕ * (((i + 1) ÷ 2) - 1)) / facets
             up = ifelse(isodd(i), 1/√2, -1/√2)
             Vector3(-cos(ϕ)/√2, -sin(ϕ)/√2, up)
         elseif i == length(range)
@@ -129,16 +129,16 @@ function GeometryBasics.coordinates(tub::G4CutTubs, facets=36)
     issector ?  facets =  round(Int64, (facets/2π) * Δϕ) : nothing
     isodd(facets) ? facets = 2 * div(facets, 2) : nothing
     facets < 8 ? facets = 8 : nothing
-    nbf = Int(facets / 2)            # Number of faces
-    nbv = issector ? nbf + 1 : nbf   # Number of vertices
+    facets = Int(facets / 2)            # Number of faces
+    nbv = issector ? facets + 1 : facets   # Number of vertices
     nbc = ishollow ? nbv : 1         # Number of centers
     range = 1:(2*nbv + 2*nbc)
     function inner(i)
         return if i <= 2*nbv
-            ϕ = ϕ₀ + (Δϕ * (((i + 1) ÷ 2) - 1)) / nbf
+            ϕ = ϕ₀ + (Δϕ * (((i + 1) ÷ 2) - 1)) / facets
             Point(rmax * cos(ϕ), rmax * sin(ϕ), zLimit(tub, z*(-1)^(i%2+1), rmax, ϕ))
         elseif ishollow
-            ϕ = ϕ₀ + (Δϕ * (((i - 2 * nbv + 1) ÷ 2) - 1)) / nbf
+            ϕ = ϕ₀ + (Δϕ * (((i - 2 * nbv + 1) ÷ 2) - 1)) / facets
             Point(rmin * cos(ϕ), rmin * sin(ϕ), zLimit(tub, z*(-1)^(i%2+1), rmin, ϕ))
         elseif i == length(range)
             Point(0., 0., -z)
@@ -156,4 +156,39 @@ function GeometryBasics.faces(tub::G4CutTubs, facets=36)
     ϕ₀    = GetStartPhiAngle(tub)
     Δϕ    = GetDeltaPhiAngle(tub)
     GeometryBasics.faces(G4Tubs("",rmin, rmax, z, ϕ₀, Δϕ ), facets)
+end
+
+#---G4EllipticalTube--------------------------------------------------------------------------------------
+function GeometryBasics.coordinates(tub::G4EllipticalTube, facets=36)
+    dx = GetDx(tub)
+    dy = GetDy(tub)
+    dz = GetDz(tub)
+    range = 1:(2*facets + 2)
+    function inner(i)
+        return if i <= 2*facets
+            ϕ = (2π * (((i + 1) ÷ 2) - 1)) / facets
+            up = ifelse(isodd(i), dz, -dz)
+            Point(dx * cos(ϕ), dy * sin(ϕ), up)
+        elseif i == length(range)
+            Point(0., 0., -dz)
+        elseif i == length(range) - 1
+            Point(0., 0., dz)
+        end
+    end
+    return (inner(i) for i in range)
+end
+    
+function GeometryBasics.faces(tub::G4EllipticalTube, facets=36)
+    indexes = Vector{QuadFace{Int64}}()
+    for j in 1:facets
+        a,b = 2j-1, 2j
+        c,d = j == facets ? (1, 2) : (2j+1, 2j+2) 
+        push!(indexes, (a,b,d,c))
+            a′,b′ = 2facets+1, 2facets+2
+            # top
+            push!(indexes, (a′,a, c, c))
+            # bottom
+            push!(indexes, (b′,d, b, b))
+    end
+    return indexes
 end

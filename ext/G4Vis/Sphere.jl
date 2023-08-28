@@ -65,3 +65,32 @@ function GeometryBasics.faces(sph::G4Sphere, nvertices=24)
     return faces
 end
 
+#---G4Ellipsoid------------------------------------------------------------------------------------
+function GeometryBasics.coordinates(ellip::G4Ellipsoid, nvertices=24)
+    dx = GetDx(ellip)
+    dy = GetDy(ellip)
+    dz = GetDz(ellip)
+    topz = GetZTopCut(ellip)
+    botz = GetZBottomCut(ellip)
+    ϕfacets = nvertices
+    θfacets = nvertices ÷ 2
+    θ = LinRange(acos(topz/dz), acos(botz/dz), θfacets)
+    ϕ = LinRange(0, 2π, ϕfacets)
+    inner(θ, ϕ) = Point(dx * cos(ϕ) * sin(θ), dy * sin(ϕ) * sin(θ), dz * cos(θ))
+    points = vec([inner(θ, ϕ) for θ in θ, ϕ in ϕ])
+    push!(points, Point(0,0,topz), Point(0,0,botz))
+    return points
+end
+
+function GeometryBasics.faces(::G4Ellipsoid, nvertices=24)
+    ϕfacets = nvertices
+    θfacets = nvertices ÷ 2
+    idx = LinearIndices((θfacets, ϕfacets))
+    quad(i, j) = QuadFace{Int}(idx[i, j], idx[i + 1, j], idx[i + 1, j + 1], idx[i, j + 1])
+    faces = vec([quad(i, j) for i in 1:(θfacets - 1), j in 1:(ϕfacets - 1)])
+    for j in 1:(ϕfacets - 1)
+        push!(faces, QuadFace{Int}(idx[1,j], length(idx)+1, length(idx)+1, idx[1,j+1]),
+                     QuadFace{Int}(idx[end,j], length(idx)+2, length(idx)+2, idx[end,j+1]))
+    end
+    return faces
+end
