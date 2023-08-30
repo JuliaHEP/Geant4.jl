@@ -1,6 +1,7 @@
 #---Exports from this section----------------------------------------------------------------------
 export G4JLDetector, G4JLSimulationData, G4JLApplication, G4JLDetectorGDML, G4JLSDData, G4JLSensitiveDetector, 
-        configure, initialize, reinitialize, beamOn, getSDdata, getSIMdata, getConstructor, getInitializer, G4JLGunGenerator, G4JLPrimaryGenerator, G4JLGeneratorData
+        configure, initialize, reinitialize, beamOn, getSDdata, getSIMdata, getConstructor, getInitializer, G4JLGunGenerator, 
+        G4JLPrimaryGenerator, G4JLGeneratorData, G4JLUniformMagField, G4JLMagneticField, G4JLFieldData
 
 #---Geometry usability functions-------------------------------------------------------------------
 G4PVPlacement(r::Union{Nothing, G4RotationMatrix}, d::G4ThreeVector, l::Union{Nothing,G4LogicalVolume}, s::String, 
@@ -39,6 +40,7 @@ abstract type  G4JLDetector end
 abstract type  G4JLSimulationData end
 abstract type  G4JLSDData end
 abstract type  G4JLGeneratorData end
+abstract type  G4JLFieldData end
 
 getConstructor(d::G4JLDetector) = error("You need to define the function Geant4.getConstructor($(typeof(d))) returning the actual contruct method")
 getInitializer(::G4VUserPrimaryGeneratorAction) = nothing
@@ -124,7 +126,40 @@ function SetParticlePosition(gen::G4JLGunGenerator, position::G4ThreeVector)
     SetParticlePosition(gen.data.gun, position)
 end
 
+#---Custom Magnetic Field--------------------------------------------------------------------------
+mutable struct G4JLMagneticField{UD<:G4JLFieldData}
+    const name::String
+    const data::UD
+    const getfield::Function    #  signature  (result::G4ThreeVector, position::G4ThreeVector, ::SD)
+    base::Vector{G4JLMagField}
+end
+"""
+    G4JLMagneticField(name::String, data::DATA; <keyword arguments>) where DATA<:G4JLGeneratorData
 
+Create a G4JLMagneticField with its name and associated DATA structure
+# Arguments
+"""
+function G4JLMagneticField(name::String, data::T;
+                           getfield_method=nothing) where T<:G4JLFieldData
+    isnothing(getfield_method) && error("get field method not defined")
+    G4JLMagneticField{T}(name, data, getfield_method, G4JLMagField[])   
+end
+
+#---Implementation (user friendly) Uniform Magnetic Field------------------------------------------
+mutable struct G4JLUniformMagFieldData <: G4JLFieldData
+    field::G4ThreeVector
+end
+
+function G4JLMagneticField{G4JLUniformMagFieldData}(field::G4ThreeVector)
+    data = G4JLUniformMagFieldData(field)
+    function getfield!(field::G4ThreeVector, pos::G4ThreeVector, data::G4JLUniformMagFieldData)::Nothing
+        assign(field, data.field)
+        return
+    end
+    G4JLMagneticField("UnifiormB", data; getfield_method=getfield!)
+end
+
+const G4JLUniformMagField = G4JLMagneticField{G4JLUniformMagFieldData}
 
 #---SentitiveDetectors-----------------------------------------------------------------------------
 struct G4JLSensitiveDetector{UD<:G4JLSDData}
@@ -183,6 +218,7 @@ mutable struct G4JLApplication{DET<:G4JLDetector,DAT<:G4JLSimulationData} <: G4J
     detector::DET
     simdata::Vector{DAT}  # Each worker thread has its own data                            
     generator::G4JLPrimaryGenerator
+    field::Union{Nothing, G4Field, G4JLMagneticField} 
     const nthreads::Int32
     const verbose::Int32
     # Types 
@@ -219,6 +255,7 @@ Initialize a G4JLApplication with its associated tyopes and methods.
 - `detector::G4JLDetector`: detector description object
 - `simdata=G4JLNoData()`: simulation data object
 - `generator=G4JLParticleGun()`: primary particle generator
+- `field=nothing`: magnetic field
 - `nthreads=0`: number of Geant4 worker threads ( >0 implies MT)
 - `verbose=0` : default verbority level (physics, ...)
 - `runmanager_type=G4RunManager`: run manager type
@@ -241,6 +278,7 @@ Initialize a G4JLApplication with its associated tyopes and methods.
 function G4JLApplication(;detector::G4JLDetector,
                 simdata=G4JLNoData(),
                 generator=G4JLParticleGun(),
+                field=nothing,
                 nthreads=0,
                 verbose=0,
                 runmanager_type=G4RunManager,
@@ -261,7 +299,8 @@ function G4JLApplication(;detector::G4JLDetector,
                 scorers=[],
                 )
     runmanager_type = nthreads > 0 ? G4MTRunManager : runmanager_type # if nthreads > 0 force G4MTRunManager
-    G4JLApplication{typeof(detector), typeof(simdata)}( runmanager_type(), detector, [deepcopy(simdata) for i in 1:nthreads+1], generator, nthreads, 
+    G4JLApplication{typeof(detector), typeof(simdata)}( runmanager_type(), detector, [deepcopy(simdata) for i in 1:nthreads+1], generator, 
+                                                        field, nthreads, 
                                                         verbose, nthreads > 0 ? G4MTRunManager : G4RunManager, builder_type, physics_type, 
                                                         runaction_type, eventaction_type, trackaction_type, stepaction_type,
                                                         stepaction_method, pretrackaction_method, posttrackaction_method, 
@@ -286,6 +325,10 @@ function configure(app::G4JLApplication)
     end
     #---Prepare Primary Generators-----------------------------------------------------------------
     app.generator.base = Vector{G4JLGeneratorAction}(undef, app.nthreads + 1)
+    #---Prepare Primary Generators-----------------------------------------------------------------
+    if app.field isa G4JLMagneticField
+        app.field.base = Vector{G4JLMagField}(undef, app.nthreads + 1)
+    end
     #---Detector construction----------------------------------------------------------------------
     function sdandf(app::G4JLApplication)::Nothing  # called by the worker thread during init------
         #---Add the Sensitive Detectors now that the geometry is constructed-----------------------
@@ -300,6 +343,19 @@ function configure(app::G4JLApplication)
                 multi = false
             end
             SetSensitiveDetector(app.detbuilder, lv, CxxPtr(sd.base), multi)
+        end
+        #---Add Magnetic field if needed-----------------------------------------------------------
+        fieldMgr = G4TransportationManager!GetTransportationManager() |> GetFieldManager
+        if app.field isa G4Field
+            B = Clone(app.field)
+            SetDetectorField(fieldMgr, B)
+            CreateChordFinder(fieldMgr, CxxPtr{G4MagneticField}(B))
+        elseif app.field isa G4JLMagneticField
+            sf = make_callback(app.field.data, app.field.getfield, Nothing, (CxxRef{G4ThreeVector}, ConstCxxRef{G4ThreeVector})) |> closure
+            B = G4JLMagField(sf...)
+            app.field.base[tid+2] = B
+            SetDetectorField(fieldMgr, CxxPtr(B))
+            CreateChordFinder(fieldMgr, CxxPtr(B))
         end
         nothing
     end

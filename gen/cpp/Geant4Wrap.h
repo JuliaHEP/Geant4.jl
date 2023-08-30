@@ -16,6 +16,7 @@
 #include "G4HCofThisEvent.hh"
 #include "G4TouchableHistory.hh"
 #include "G4UserWorkerInitialization.hh"
+#include "G4MagneticField.hh"
 #include "jlcxx/functions.hpp"
 
 #include <string>
@@ -141,6 +142,18 @@ public:
 private:
   void* generate_d;
   generate_f generate;
+};
+
+//---G4JLMagField-----------------------------------------------------------------------------
+typedef  void (*getfield_f) (G4ThreeVector&, const G4ThreeVector&, void*);
+class G4JLMagField : public G4MagneticField {
+public:
+  G4JLMagField(getfield_f f, void* d) : field_d(d), getfield(f) { }
+  ~G4JLMagField() = default;
+  void GetFieldValue( const G4double point[3], G4double* field) const override;
+private:
+  void* field_d;
+  getfield_f getfield;
 };
 
 typedef  void (*stepaction_f) (const G4Step*, void*);

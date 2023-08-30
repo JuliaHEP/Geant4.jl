@@ -163,10 +163,19 @@ jupyter notebook examples/WaterPhantom/WaterPhantom.ipynb
 ### TestEm3
 This example comes from *extended/electromagnetic/TestEm3* example. Since it requires additional packages such as `FHist` for histograms and `Plots` for their visualisation, it has its own Julia environment in the folder `examples/TestEm3`. It uses the Julia high-level interface with the instantiation of a `G4JLApplication` declaring all the elements of the application.
 
-To run it execute
+To run it, execute
 ```
 julia --project=examples/TestEm3 -i examples/TestEm3/TestEm3.jl
 ``` 
+
+### HBC30
+This example mimics the CERN 30cm liquid hydrogen bubble chamber. It demonstrates the use of a uniform magnetic field (`G4JLUniformMagField`). It is useful for displaying the detector and the produced particles.
+
+To run it, execute
+```
+julia --project=examples/HBC30 -i examples/HBC30/HBC30.jl
+``` 
+
 
 ## Visualization examples
 The Geant4.jl project includes additional functionality for visualization under the directory ext/G4Vis/examples. This is done in a different directory to separate the dependencies. 
@@ -203,6 +212,13 @@ We have the possibility during the development of this package to re-generate lo
 Once the wrapper code is stabilized we move the generated code to the repository [Geant4\_cxxwrap](https://github.com/peremato/Geant4_cxxwrap) to regenerate the binary package `Geant4_julia_jll` using the `BinaryBuilder`.
 
 ## Release Notes
+### 0.1.7
+- New features:
+    - Support for ARM64 (MacOS M1). Implemented workaround for `closures` in `@safe_cfunction`, which were for supported in this  platform. 
+    - Added support for magnetic field. Additional keyword argument in the `G4JLApplication`. Added example HBC30 for a simulation of a liquid hydrogen bubble chamber.
+    - Added drawing capabilities for `G4Polyhedra`, `G4EllipticalTube`, `G4Ellipsoid`
+- Fixes:
+    - Example 
 ### 0.1.6
 - New features:
     - Restructured G4Vis as an extension of Geant4.jl. It is automatically loaded when all the required weak dependencies are satisfied (e.g. "Makie", "Colors", "StaticArrays", "Rotations", "LinearAlgebra")

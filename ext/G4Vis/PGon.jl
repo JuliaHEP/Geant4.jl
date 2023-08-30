@@ -36,8 +36,6 @@ function GeometryBasics.coordinates(pgon::G4Polyhedra, facets=24)
     return points
 end
 
-cyc(x,n) = mod(x-1, n) + 1
-
 function GeometryBasics.faces(pgon::G4Polyhedra, facets=24)
     ϕ₀ = GetStartPhi(pgon)
     ϕₑ = GetEndPhi(pgon)

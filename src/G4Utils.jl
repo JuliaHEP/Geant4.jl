@@ -7,6 +7,7 @@ const G4RotationMatrix = CLHEP!HepRotation
 const G4ThreeVector = CLHEP!Hep3Vector
 const G4Transform3D = HepGeom!Transform3D
 
+Base.show(io::IO, p::G4ThreeVector) = print(io, "G4ThreeVector($(x(p)),$(y(p)),$(z(p)))")
 """
     move!(o)
 

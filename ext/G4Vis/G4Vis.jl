@@ -29,7 +29,7 @@ module G4Vis
     function GeometryBasics.Tesselation(s::G4VSolid, nvertices::NTuple{N,<:Integer}) where N
         return Tesselation{3,Float64,typeof(s),N}(s, Int.(nvertices))
     end
-    GeometryBasics.mesh(s::G4VSolid) = GeometryBasics.mesh(Tesselation(s, 24), facetype=QuadFace{Int})
+    GeometryBasics.mesh(s::G4VSolid) = GeometryBasics.mesh(Tesselation(s, 36), facetype=QuadFace{Int})
 
  
     colors = colormap("Grays", 6)
@@ -148,6 +148,8 @@ module G4Vis
         display(fig)
         return s
     end
+   #---Utility  functions--------------------------------------------------------------------------
+   cyc(x,n) = mod(x-1, n) + 1
 
    #---Basic solids--------------------------------------------------------------------------------
    include("Tubes.jl")

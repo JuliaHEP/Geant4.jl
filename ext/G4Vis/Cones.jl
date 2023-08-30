@@ -119,8 +119,6 @@ function GeometryBasics.coordinates(pcon::G4Polycone, facets=24)
     return points
 end
 
-cyc(x,n) = mod(x-1, n) + 1
-
 function GeometryBasics.faces(pcon::G4Polycone, facets=24)
     ϕ₀ = GetStartPhi(pcon)
     ϕₑ = GetEndPhi(pcon)
