@@ -10,7 +10,6 @@ include(joinpath(@__DIR__, "DetectorHBC30.jl"))
 
 hbc30 = HBC30()
 
-
 #---Define Simulation Data struct------------------------------------------------------------------
 struct Track
     particle::String
@@ -22,9 +21,11 @@ mutable struct HBC30SimData <: G4JLSimulationData
     #---Run data-----------------------------------------------------------------------------------
     fParticle::String
     fEkin::Float64
+    #---trigger/veto-------------------------------------------------------------------------------
+    veto::Bool
     #---tracks-------------------------------------------------------------------------------------
     tracks::Vector{Track}
-    HBC30SimData() = new("", 0.0, [])
+    HBC30SimData() = new("", 0.0, false, [])
 end
 
 #---Actions----------------------------------------------------------------------------------------
@@ -46,9 +47,21 @@ function pretrackaction(track::G4Track, app::G4JLApplication)::Nothing
     push!(tracks, Track(name, charge, energy, [Point3{Float64}(x(p),y(p),z(p))]))
     return
 end
+#---Tracking post-action---------------------------------------------------------------------------- 
+function posttrackaction(track::G4Track, app::G4JLApplication)::Nothing
+    data = getSIMdata(app)
+    id = track |> GetTrackID
+    energy = track |> GetKineticEnergy
+    if id == 1 && energy > 0.95 * data.fEkin # primary particle did not losse any energy
+        data.veto = true
+    end
+    return
+end
 #---Begin-event-action---------------------------------------------------------------------------- 
 function beginevent(::G4Event, app::G4JLApplication)::Nothing
-    empty!(getSIMdata(app).tracks)
+    data = getSIMdata(app)
+    data.veto = false
+    empty!(data.tracks)
     return
 end
 #---Begin Run Action-------------------------------------------------------------------------------
@@ -63,8 +76,8 @@ end
 #--------------------------------------------------------------------------------------------------
 #---Particle Gun initialization--------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------------
-particlegun = G4JLGunGenerator(particle = "proton", 
-                               energy = 10GeV, 
+particlegun = G4JLGunGenerator(particle = "pi+", 
+                               energy = 330MeV, 
                                direction = G4ThreeVector(0,-1,0), 
                                position = G4ThreeVector(0, hbc30.worldZHalfLength,0))
 
@@ -85,6 +98,7 @@ app = G4JLApplication(; detector = hbc30,                             # detector
                         stepaction_method = stepaction,               # step action method
                         begineventaction_method = beginevent,         # begin-event action (initialize per-event data)
                         pretrackaction_method = pretrackaction,       # pre-tracking action
+                        posttrackaction_method = posttrackaction,     # post-tracking action
                         beginrunaction_method = beginrun              # begin run action
                       )
               
@@ -92,25 +106,42 @@ app = G4JLApplication(; detector = hbc30,                             # detector
 configure(app)
 initialize(app)
 
-#---Draw function----------------------------------------------------------------------------------
-function drawevent(app)
+#---Draw functions---------------------------------------------------------------------------------
+function drawdetector(app)
     world = GetWorldVolume()
-    data = app.simdata[1]
     fig = Figure(resolution=(2048,2028))
     s = LScene(fig[1,1])
     Geant4.draw!(s, world)
+    display(fig)
+    return s
+end
+function drawevent(s, app)
+    data = app.simdata[1]
     for t in data.tracks
-        style = t.charge > 0. ? :solid : :dot
-        lines!(t.points, linestyle=style)
+        style = abs(t.charge) > 0. ? :solid : :dot
+        lines!(s, t.points, linestyle=style)
         if t.energy > data.fEkin/20
-            text!(t.points[end], text=t.particle)
+            text!(s, t.points[end], text=t.particle)
         end
     end
-    display(fig)
 end
+
+#---Very simplistic trigger to get interesting events to plot--------------------------------------
+function nexttrigger(app)
+    data = app.simdata[1]
+    beamOn(app,1)
+    n = 1
+    while data.veto
+        beamOn(app,1)
+        n += 1
+    end
+    println("Got a trigger after $n generated particles")
+end
+
 
 #---Run One event and display-----------------------------------------------------------------------
 #ui`/tracking/verbose 1`
-beamOn(app,1)
-drawevent(app)
 
+s = drawdetector(app)
+nexttrigger(app)
+drawevent(s, app)

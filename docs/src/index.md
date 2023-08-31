@@ -218,7 +218,7 @@ Once the wrapper code is stabilized we move the generated code to the repository
     - Added support for magnetic field. Additional keyword argument in the `G4JLApplication`. Added example HBC30 for a simulation of a liquid hydrogen bubble chamber.
     - Added drawing capabilities for `G4Polyhedra`, `G4EllipticalTube`, `G4Ellipsoid`
 - Fixes:
-    - Example 
+    - Fix example WaterPhantom to added to new callback closures
 ### 0.1.6
 - New features:
     - Restructured G4Vis as an extension of Geant4.jl. It is automatically loaded when all the required weak dependencies are satisfied (e.g. "Makie", "Colors", "StaticArrays", "Rotations", "LinearAlgebra")
