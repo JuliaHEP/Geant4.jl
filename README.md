@@ -73,6 +73,8 @@ This example comes from *extended/electromagnetic/TestEm3* example. Since it req
 To run it execute `julia --project=examples/TestEm3 -i examples/TestEm3/TestEm3.jl` 
 ### WaterPhantom
 Example in a notebook format similar to RE03 but with different primary particle generator (MedicalBeam) and using the scoring mechanism. Plots are produced after each run.
+### HBC30
+Example script and in a notebook format of a bubble chamber in which we display the particle tracks for an event that passes the trigger. 
  
 ## Running the visualization examples
 The project includes additional functionality for visualization under the directory ext/G4Vis as an extension. The extension is activated if the following modules are included in the project ("Makie", "Colors", "StaticArrays", "Rotations", "LinearAlgebra"), which is the same if the project is set to `ext/G4Vis/examples`. To run the examples do:
