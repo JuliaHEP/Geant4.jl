@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Example B2a · Geant4.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">APIs</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../HBC30/">Example HBC30</a></li><li><a class="tocitem" href="../TestEm3/">Example TestEm3</a></li><li><a class="tocitem" href="../WaterPhantom/">Example WaterPhantom</a></li><li><a class="tocitem" href="../B1/">Example B1</a></li><li class="is-active"><a class="tocitem" href>Example B2a</a></li><li><a class="tocitem" href="../B2aVis/">Example B2aVis</a></li><li><a class="tocitem" href="../Solids/">Example Solids</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>Example B2a</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Example B2a</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/notebooks/B2a.md#L" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Basic/B2a-Example"><a class="docs-heading-anchor" href="#Basic/B2a-Example">Basic/B2a Example</a><a id="Basic/B2a-Example-1"></a><a class="docs-heading-anchor-permalink" href="#Basic/B2a-Example" title="Permalink"></a></h1><p>It is equivalent to the B2a example in Geant4 but re-written with a new more Julia friendly interface. The core of the example is to create an instance of the type <code>G4JLApplication</code> with all the essential elements defined (detector and geometry, physics list, primary particles generator, actions, simulated data being accumulated, mapping of logical volumes to sensitive detectors, etc.) </p><h4 id="Import-the-Geant4-and-Geant4.SystemOfUnits-modules"><a class="docs-heading-anchor" href="#Import-the-Geant4-and-Geant4.SystemOfUnits-modules">Import the <code>Geant4</code> and <code>Geant4.SystemOfUnits</code> modules</a><a id="Import-the-Geant4-and-Geant4.SystemOfUnits-modules-1"></a><a class="docs-heading-anchor-permalink" href="#Import-the-Geant4-and-Geant4.SystemOfUnits-modules" title="Permalink"></a></h4><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits
+using Printf, GeometryBasics</code></pre><h4 id="Define-the-Detector-Parameters-and-Geometry"><a class="docs-heading-anchor" href="#Define-the-Detector-Parameters-and-Geometry">Define the Detector Parameters and Geometry</a><a id="Define-the-Detector-Parameters-and-Geometry-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Detector-Parameters-and-Geometry" title="Permalink"></a></h4><p>We include a file to define de structure <code>B2aDetector</code> and the construction method <code>B2aConstruct</code> to make the notebook more manageable</p><pre><code class="language-julia hljs">include(joinpath(@__DIR__, &quot;DetectorB2a.jl&quot;))</code></pre><h4 id="Define-TrackerHit-structure"><a class="docs-heading-anchor" href="#Define-TrackerHit-structure">Define TrackerHit structure</a><a id="Define-TrackerHit-structure-1"></a><a class="docs-heading-anchor-permalink" href="#Define-TrackerHit-structure" title="Permalink"></a></h4><pre><code class="language-julia hljs">struct TrackerHit
+    trackID::Int32
+    chamberNb::Int32
+    edep::Float64
+    pos::Point3{Float64}
+end
+function Base.show(io::IO, hit::TrackerHit)
+    (;trackID, chamberNb, edep, pos) = hit
+    @printf(io, &quot;\ntrackID: %3d chamberNb: %2d Edep: %.3f MeV Position: (%3f, %3f, %3f)&quot;, trackID, chamberNb, edep/MeV, pos...) 
+end</code></pre><h4 id="Define-Sensitive-Detector-for-the-chambers"><a class="docs-heading-anchor" href="#Define-Sensitive-Detector-for-the-chambers">Define Sensitive Detector for the chambers</a><a id="Define-Sensitive-Detector-for-the-chambers-1"></a><a class="docs-heading-anchor-permalink" href="#Define-Sensitive-Detector-for-the-chambers" title="Permalink"></a></h4><p>It implies to define a data structure where to accumulate the TrackerHits for each event, and the callback functions:</p><ul><li><code>intilialize</code> called at the beginning of each event</li><li><code>endOfEvent</code> called at the end of the event</li><li><code>processHit</code>  called for each hit (step ending in the associated logical volume) to be processed</li></ul><p>all of the callback functions get the declared data structure as first argument </p><pre><code class="language-julia hljs">#---SD collected data------------------------------------------------------------------------------
+struct B2aSDData &lt;: G4JLSDData
+    trackerHits::Vector{TrackerHit}
+    B2aSDData() = new([])
+end
+#---Initialize method------------------------------------------------------------------------------
+function _initialize(::G4HCofThisEvent, data::B2aSDData)::Nothing
+    empty!(data.trackerHits)
+    return
+end
+#---End of Event method----------------------------------------------------------------------------
+function _endOfEvent(::G4HCofThisEvent, data::B2aSDData)::Nothing
+    return
+end
+#---Process Hit method-----------------------------------------------------------------------------
+function _processHits(step::G4Step, ::G4TouchableHistory, data::B2aSDData)::Bool
+    edep = step |&gt; GetTotalEnergyDeposit
+    edep &lt;  0. &amp;&amp; return false
+    pos = step |&gt; GetPostStepPoint |&gt; GetPosition
+    push!(data.trackerHits, TrackerHit(step |&gt; GetTrack |&gt; GetTrackID,
+                                       step |&gt; GetPreStepPoint |&gt; GetTouchable |&gt; GetCopyNumber,
+                                       edep,
+                                       Point3{Float64}(x(pos),y(pos),z(pos))))
+    return true
+end</code></pre><pre><code class="nohighlight hljs">_processHits (generic function with 1 method)</code></pre><p>And create a specialized instance of <code>G4JLSensitiveDetector</code> </p><pre><code class="language-julia hljs">#---Create SD instance-----------------------------------------------------------------------------
+chamber_SD = G4JLSensitiveDetector(&quot;Chamber_SD&quot;, B2aSDData();           # SD name an associated data are mandatory
+                                    processhits_method=_processHits,    # process hist method (also mandatory)
+                                    initialize_method=_initialize,      # intialize method
+                                    endofevent_method=_endOfEvent);     # end of event method
+</code></pre><h4 id="Define-an-End-Event-Action"><a class="docs-heading-anchor" href="#Define-an-End-Event-Action">Define an End Event Action</a><a id="Define-an-End-Event-Action-1"></a><a class="docs-heading-anchor-permalink" href="#Define-an-End-Event-Action" title="Permalink"></a></h4><p>This is collect all results each event. Only printing at this time. </p><pre><code class="language-julia hljs">#---End Event Action-------------------------------------------------------------------------------
+function endeventaction(evt::G4Event, app::G4JLApplication)
+    hits = getSDdata(app, &quot;Chamber_SD&quot;).trackerHits
+    eventID = evt |&gt; GetEventID
+    if eventID &lt; 10 || eventID % 100 == 0
+      G4JL_println(&quot;Event: $eventID with $(length(hits)) hits stored in this event&quot;)
+    end
+    return
+  end</code></pre><pre><code class="nohighlight hljs">endeventaction (generic function with 1 method)</code></pre><h4 id="Define-the-primary-particle-generator-(Particle-Gun)"><a class="docs-heading-anchor" href="#Define-the-primary-particle-generator-(Particle-Gun)">Define the primary particle generator (Particle Gun)</a><a id="Define-the-primary-particle-generator-(Particle-Gun)-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-primary-particle-generator-(Particle-Gun)" title="Permalink"></a></h4><pre><code class="language-julia hljs">particlegun = G4JLGunGenerator(particle = &quot;proton&quot;, 
+                               energy = 3GeV, 
+                               direction = G4ThreeVector(0,0,1), 
+                               position = G4ThreeVector(0,0,-2940.0))</code></pre><pre><code class="nohighlight hljs">G4JLGunGenerator(&quot;ParticleGun&quot;, Geant4.G4JLParticleGunData(nothing, &quot;proton&quot;, G4ThreeVector(0.0,0.0,1.0), G4ThreeVector(0.0,0.0,-2940.0), 3000.0), Geant4.var&quot;#init#23&quot;(), Geant4.var&quot;#gen#24&quot;(), G4JLGeneratorAction[])</code></pre><h4 id="Instantiate-a-G4JLApplication-with-all-the-elements"><a class="docs-heading-anchor" href="#Instantiate-a-G4JLApplication-with-all-the-elements">Instantiate a <code>G4JLApplication</code> with all the elements</a><a id="Instantiate-a-G4JLApplication-with-all-the-elements-1"></a><a class="docs-heading-anchor-permalink" href="#Instantiate-a-G4JLApplication-with-all-the-elements" title="Permalink"></a></h4><p>The G4RunManager is created at this moment</p><pre><code class="language-julia hljs">#---Create the Application-------------------------------------------------------------------------
+app = G4JLApplication( detector = B2aDetector(nChambers=5),          # detector with parameters
+                       generator = particlegun,                      # primary particle generator
+                       nthreads = 4,                                 # number of threads (MT)
+                       physics_type = FTFP_BERT,                     # what physics list to instantiate
+                       endeventaction_method = endeventaction,       # end event action
+                       sdetectors = [&quot;Chamber_LV+&quot; =&gt; chamber_SD]    # mapping of LVs to SDs (+ means multiple LVs with same name)
+                      );             </code></pre><pre><code class="nohighlight hljs">**************************************************************
+ Geant4 version Name: geant4-11-01-patch-01 [MT]   (10-February-2023)
+  &lt;&lt; in Multi-threaded mode &gt;&gt; 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************</code></pre><h4 id="Final-steps"><a class="docs-heading-anchor" href="#Final-steps">Final steps</a><a id="Final-steps-1"></a><a class="docs-heading-anchor-permalink" href="#Final-steps" title="Permalink"></a></h4><p>Configure the application, initialize the run and fire the beam for 0 events to finalize all initializations</p><pre><code class="language-julia hljs">configure(app)</code></pre><pre><code class="language-julia hljs">initialize(app)</code></pre><pre><code class="nohighlight hljs">Checking overlaps for volume Target:0 (G4Tubs) ... OK! 
+Checking overlaps for volume Tracker:0 (G4Tubs) ... OK! 
+Checking overlaps for volume Chamber_PV:1 (G4Tubs) ... OK! 
+Checking overlaps for volume Chamber_PV:2 (G4Tubs) ... OK! 
+Checking overlaps for volume Chamber_PV:3 (G4Tubs) ... OK! 
+Checking overlaps for volume Chamber_PV:4 (G4Tubs) ... OK! 
+Checking overlaps for volume Chamber_PV:5 (G4Tubs) ... OK!</code></pre><pre><code class="language-julia hljs">beamOn(app, 0)</code></pre><pre><code class="language-julia hljs">#---Forcing the loading of G4Vis extension------------------------------------------
+using CairoMakie, Rotations, IGLWrap_jll  # to force loding G4Vis extension
+
+world = GetWorldVolume()
+draw(world)</code></pre><p><img src="../B2a_files/B2a_20_0.png" alt="png"/></p><pre><code class="nohighlight hljs">CairoMakie.Screen{IMAGE}</code></pre><pre><code class="language-julia hljs">beamOn(app,10)</code></pre><pre><code class="nohighlight hljs">G4WT1 &gt; Event: 3 with 75 hits stored in this event
+G4WT0 &gt; Event: 2 with 70 hits stored in this event
+G4WT1 &gt; Event: 4 with 84 hits stored in this event
+G4WT0 &gt; Event: 5 with 77 hits stored in this event
+G4WT0 &gt; Event: 7 with 76 hits stored in this event
+G4WT2 &gt; Event: 1 with 131 hits stored in this event
+G4WT0 &gt; Event: 8 with 75 hits stored in this event
+G4WT3 &gt; Event: 0 with 105 hits stored in this event
+G4WT2 &gt; Event: 9 with 135 hits stored in this event
+G4WT1 &gt; Event: 6 with 319 hits stored in this event</code></pre><pre><code class="language-julia hljs">@time beamOn(app,1000)</code></pre><pre><code class="nohighlight hljs">G4WT3 &gt; Event: 0 with 57 hits stored in this event
+G4WT3 &gt; Event: 1 with 202 hits stored in this event
+G4WT3 &gt; Event: 2 with 55 hits stored in this event
+G4WT3 &gt; Event: 3 with 128 hits stored in this event
+G4WT3 &gt; Event: 4 with 15 hits stored in this event
+G4WT3 &gt; Event: 5 with 205 hits stored in this event
+G4WT3 &gt; Event: 6 with 224 hits stored in this event
+G4WT3 &gt; Event: 7 with 124 hits stored in this event
+G4WT3 &gt; Event: 8 with 213 hits stored in this event
+G4WT3 &gt; Event: 9 with 50 hits stored in this event
+G4WT3 &gt; Event: 100 with 93 hits stored in this event
+G4WT0 &gt; Event: 200 with 89 hits stored in this event
+G4WT3 &gt; Event: 300 with 113 hits stored in this event
+G4WT2 &gt; Event: 400 with 60 hits stored in this event
+G4WT2 &gt; Event: 500 with 71 hits stored in this event
+G4WT0 &gt; Event: 600 with 64 hits stored in this event
+G4WT3 &gt; Event: 700 with 98 hits stored in this event
+G4WT3 &gt; Event: 800 with 167 hits stored in this event
+G4WT1 &gt; Event: 900 with 79 hits stored in this event
+  1.123903 seconds (847.90 k allocations: 18.961 MiB)</code></pre><pre><code class="language-julia hljs">SetParticleEnergy(particlegun, 500MeV)</code></pre><pre><code class="language-julia hljs">@time beamOn(app,10000)</code></pre><pre><code class="nohighlight hljs">G4WT0 &gt; Event: 0 with 139 hits stored in this event
+G4WT0 &gt; Event: 1 with 107 hits stored in this event
+G4WT0 &gt; Event: 2 with 160 hits stored in this event
+G4WT0 &gt; Event: 3 with 18 hits stored in this event
+G4WT3 &gt; Event: 100 with 300 hits stored in this event
+G4WT0 &gt; Event: 4 with 359 hits stored in this event
+G4WT0 &gt; Event: 5 with 149 hits stored in this event
+G4WT0 &gt; Event: 6 with 193 hits stored in this event
+G4WT0 &gt; Event: 7 with 159 hits stored in this event
+G4WT0 &gt; Event: 8 with 179 hits stored in this event
+G4WT0 &gt; Event: 9 with 105 hits stored in this event
+G4WT2 &gt; Event: 200 with 188 hits stored in this event
+G4WT2 &gt; Event: 300 with 240 hits stored in this event
+G4WT1 &gt; Event: 400 with 150 hits stored in this event
+G4WT0 &gt; Event: 500 with 245 hits stored in this event
+G4WT2 &gt; Event: 600 with 196 hits stored in this event
+G4WT0 &gt; Event: 700 with 190 hits stored in this event
+G4WT1 &gt; Event: 800 with 123 hits stored in this event
+G4WT3 &gt; Event: 900 with 188 hits stored in this event
+G4WT0 &gt; Event: 1000 with 112 hits stored in this event
+G4WT1 &gt; Event: 1100 with 130 hits stored in this event
+G4WT0 &gt; Event: 1200 with 4 hits stored in this event
+G4WT1 &gt; Event: 1300 with 255 hits stored in this event
+G4WT2 &gt; Event: 1400 with 159 hits stored in this event
+G4WT1 &gt; Event: 1500 with 145 hits stored in this event
+G4WT2 &gt; Event: 1600 with 144 hits stored in this event
+G4WT3 &gt; Event: 1700 with 150 hits stored in this event
+G4WT1 &gt; Event: 1800 with 189 hits stored in this event
+G4WT3 &gt; Event: 1900 with 115 hits stored in this event
+G4WT1 &gt; Event: 2000 with 220 hits stored in this event
+G4WT0 &gt; Event: 2100 with 164 hits stored in this event
+G4WT1 &gt; Event: 2200 with 95 hits stored in this event
+G4WT0 &gt; Event: 2300 with 167 hits stored in this event
+G4WT3 &gt; Event: 2400 with 179 hits stored in this event
+G4WT0 &gt; Event: 2500 with 251 hits stored in this event
+G4WT2 &gt; Event: 2600 with 192 hits stored in this event
+G4WT0 &gt; Event: 2700 with 155 hits stored in this event
+G4WT1 &gt; Event: 2800 with 5 hits stored in this event
+G4WT2 &gt; Event: 2900 with 12 hits stored in this event
+G4WT1 &gt; Event: 3000 with 182 hits stored in this event
+G4WT0 &gt; Event: 3100 with 255 hits stored in this event
+G4WT1 &gt; Event: 3200 with 161 hits stored in this event
+G4WT0 &gt; Event: 3300 with 136 hits stored in this event
+G4WT1 &gt; Event: 3400 with 154 hits stored in this event
+G4WT0 &gt; Event: 3500 with 237 hits stored in this event
+G4WT3 &gt; Event: 3600 with 167 hits stored in this event
+G4WT0 &gt; Event: 3700 with 136 hits stored in this event
+G4WT3 &gt; Event: 3800 with 187 hits stored in this event
+G4WT0 &gt; Event: 3900 with 232 hits stored in this event
+G4WT3 &gt; Event: 4000 with 230 hits stored in this event
+G4WT0 &gt; Event: 4100 with 178 hits stored in this event
+G4WT1 &gt; Event: 4200 with 144 hits stored in this event
+G4WT2 &gt; Event: 4300 with 142 hits stored in this event
+G4WT1 &gt; Event: 4400 with 125 hits stored in this event
+G4WT2 &gt; Event: 4500 with 174 hits stored in this event
+G4WT1 &gt; Event: 4600 with 213 hits stored in this event
+G4WT2 &gt; Event: 4700 with 210 hits stored in this event
+G4WT1 &gt; Event: 4800 with 121 hits stored in this event
+G4WT3 &gt; Event: 4900 with 130 hits stored in this event
+G4WT0 &gt; Event: 5000 with 220 hits stored in this event
+G4WT3 &gt; Event: 5100 with 145 hits stored in this event
+G4WT0 &gt; Event: 5200 with 180 hits stored in this event
+G4WT3 &gt; Event: 5300 with 148 hits stored in this event
+G4WT0 &gt; Event: 5400 with 107 hits stored in this event
+G4WT3 &gt; Event: 5500 with 168 hits stored in this event
+G4WT0 &gt; Event: 5600 with 147 hits stored in this event
+G4WT3 &gt; Event: 5700 with 181 hits stored in this event
+G4WT0 &gt; Event: 5800 with 290 hits stored in this event
+G4WT3 &gt; Event: 5900 with 173 hits stored in this event
+G4WT1 &gt; Event: 6000 with 4 hits stored in this event
+G4WT2 &gt; Event: 6100 with 13 hits stored in this event
+G4WT1 &gt; Event: 6200 with 138 hits stored in this event
+G4WT2 &gt; Event: 6300 with 143 hits stored in this event
+G4WT1 &gt; Event: 6400 with 247 hits stored in this event
+G4WT2 &gt; Event: 6500 with 152 hits stored in this event
+G4WT1 &gt; Event: 6600 with 144 hits stored in this event
+G4WT2 &gt; Event: 6700 with 160 hits stored in this event
+G4WT1 &gt; Event: 6800 with 4 hits stored in this event
+G4WT3 &gt; Event: 6900 with 115 hits stored in this event
+G4WT1 &gt; Event: 7000 with 186 hits stored in this event
+G4WT0 &gt; Event: 7100 with 249 hits stored in this event
+G4WT1 &gt; Event: 7200 with 177 hits stored in this event
+G4WT0 &gt; Event: 7300 with 170 hits stored in this event
+G4WT3 &gt; Event: 7400 with 270 hits stored in this event
+G4WT0 &gt; Event: 7500 with 4 hits stored in this event
+G4WT1 &gt; Event: 7600 with 164 hits stored in this event
+G4WT3 &gt; Event: 7700 with 191 hits stored in this event
+G4WT0 &gt; Event: 7800 with 116 hits stored in this event
+G4WT0 &gt; Event: 7900 with 181 hits stored in this event
+G4WT1 &gt; Event: 8000 with 4 hits stored in this event
+G4WT0 &gt; Event: 8100 with 149 hits stored in this event
+G4WT1 &gt; Event: 8200 with 259 hits stored in this event
+G4WT0 &gt; Event: 8300 with 3 hits stored in this event
+G4WT2 &gt; Event: 8400 with 114 hits stored in this event
+G4WT0 &gt; Event: 8500 with 165 hits stored in this event
+G4WT0 &gt; Event: 8600 with 105 hits stored in this event
+G4WT3 &gt; Event: 8700 with 136 hits stored in this event
+G4WT0 &gt; Event: 8800 with 309 hits stored in this event
+G4WT2 &gt; Event: 8900 with 364 hits stored in this event
+G4WT0 &gt; Event: 9000 with 123 hits stored in this event
+G4WT2 &gt; Event: 9100 with 238 hits stored in this event
+G4WT1 &gt; Event: 9200 with 170 hits stored in this event
+G4WT0 &gt; Event: 9300 with 0 hits stored in this event
+G4WT1 &gt; Event: 9400 with 165 hits stored in this event
+G4WT3 &gt; Event: 9500 with 190 hits stored in this event
+G4WT1 &gt; Event: 9600 with 209 hits stored in this event
+G4WT0 &gt; Event: 9700 with 101 hits stored in this event
+G4WT3 &gt; Event: 9800 with 166 hits stored in this event
+G4WT1 &gt; Event: 9900 with 126 hits stored in this event
+  7.159319 seconds (8.17 M allocations: 125.351 MiB)</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../B1/">« Example B1</a><a class="docs-footer-nextpage" href="../B2aVis/">Example B2aVis »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Thursday 31 August 2023 21:11">Thursday 31 August 2023</span>. Using Julia version 1.9.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
