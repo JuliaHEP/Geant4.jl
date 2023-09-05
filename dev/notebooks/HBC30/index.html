@@ -98,16 +98,19 @@ app = G4JLApplication(; detector = hbc30,                             # detector
                                  : NIM A 835 (2016), 186-225
                              WWW : http://geant4.org/
 **************************************************************</code></pre><h2 id="Draw-and-trigger-functions"><a class="docs-heading-anchor" href="#Draw-and-trigger-functions">Draw and trigger functions</a><a id="Draw-and-trigger-functions-1"></a><a class="docs-heading-anchor-permalink" href="#Draw-and-trigger-functions" title="Permalink"></a></h2><pre><code class="language-julia hljs">#---Draw functions---------------------------------------------------------------------------------
-function drawdetector!(s, app)
+function drawdetector(s, app)
     world = GetWorldVolume()
-    #fig = Figure(resolution=(1024,1024))
-    #s = LScene(fig[1,1])
     Geant4.draw!(s, world)
-    #display(fig)
-    return s
 end
-function drawevent!(s, app)
+
+function drawevent(s, app)
     data = app.simdata[1]
+    # clear previous plots from previous event
+    tobe = [p for p in plots(s) if p isa Lines || p isa Makie.Text]  # The event is made of lines and text 
+    for p in tobe
+        delete!(s,p)
+    end
+    # draw new event
     for t in data.tracks
         style = abs(t.charge) &gt; 0. ? :solid : :dot
         lines!(s, t.points, linestyle=style)
@@ -129,11 +132,21 @@ function nexttrigger(app)
     println(&quot;Got a trigger after $n generated particles&quot;)
 end</code></pre><pre><code class="nohighlight hljs">nexttrigger (generic function with 1 method)</code></pre><pre><code class="language-julia hljs">#---Configure, Initialize and Run------------------------------------------------------------------                      
 configure(app)
-initialize(app)</code></pre><pre><code class="language-julia hljs">fig = Figure(resolution=(1024,1024))
+initialize(app)</code></pre><pre><code class="language-julia hljs">#---Draw detector and first event that triggers
+fig = Figure(resolution=(2048,2028))
 s = LScene(fig[1,1])
 
-drawdetector!(s, app)
-nexttrigger(app)
-drawevent!(s, app)
+drawdetector(s, app)
+nexttrigger(app); drawevent(s, app)
 
-display(fig)</code></pre><pre><code class="nohighlight hljs">Got a trigger after 25 generated particles</code></pre><p><img src="../HBC30_files/HBC30_13_1.png" alt="png"/></p><pre><code class="nohighlight hljs">CairoMakie.Screen{IMAGE}</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../api/">« APIs</a><a class="docs-footer-nextpage" href="../TestEm3/">Example TestEm3 »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Thursday 31 August 2023 16:38">Thursday 31 August 2023</span>. Using Julia version 1.9.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+display(fig)</code></pre><pre><code class="nohighlight hljs">Got a trigger after 25 generated particles</code></pre><p><img src="../HBC30_files/HBC30_13_1.png" alt="png"/></p><pre><code class="nohighlight hljs">CairoMakie.Screen{IMAGE}</code></pre><pre><code class="language-julia hljs">#---Change the energy and type of particle and draw the next event
+SetParticleEnergy(particlegun, 1GeV)
+SetParticleByName(particlegun, &quot;e-&quot;)
+
+fig = Figure(resolution=(2048,2028))
+s = LScene(fig[1,1])
+
+drawdetector(s, app)
+nexttrigger(app); drawevent(s, app)
+
+display(fig)</code></pre><pre><code class="nohighlight hljs">Got a trigger after 9 generated particles</code></pre><p><img src="../HBC30_files/HBC30_14_1.png" alt="png"/></p><pre><code class="nohighlight hljs">CairoMakie.Screen{IMAGE}</code></pre><pre><code class="language-julia hljs"></code></pre><pre><code class="language-julia hljs"></code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../api/">« APIs</a><a class="docs-footer-nextpage" href="../TestEm3/">Example TestEm3 »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Tuesday 5 September 2023 16:54">Tuesday 5 September 2023</span>. Using Julia version 1.9.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
