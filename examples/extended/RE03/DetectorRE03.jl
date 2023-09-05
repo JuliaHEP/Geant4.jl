@@ -11,12 +11,12 @@ function construct(::RE03Detector)::CxxPtr{G4VPhysicalVolume}
 
     #---World--------------------------------------------------------------------------------------
     worldSolid = G4Box("World",2m, 2m, 2m)
-    worldLogical = G4LogicalVolume(move!(worldSolid),fAir,"World")
+    worldLogical = G4LogicalVolume(worldSolid,fAir,"World")
     worldPhys = G4PVPlacement(nothing, G4ThreeVector(), worldLogical, "World", nothing,false,0)
     
     #---Phantom------------------------------------------------------------------------------------
     phantomSolid = G4Box("Phantom", 1m, 1m, 1m)
-    phantomLogical = G4LogicalVolume(move!(phantomSolid), fWater, "Phantom");
+    phantomLogical = G4LogicalVolume(phantomSolid, fWater, "Phantom");
     phantomPhys = G4PVPlacement(nothing, G4ThreeVector(), phantomLogical, "Phantom", worldLogical, false, 0)
     
     #---Visualization attributes-------------------------------------------------------------------

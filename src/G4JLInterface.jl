@@ -23,6 +23,18 @@ function G4JLActionInitialization(f::Function)
     G4JLActionInitialization(sf..., sf...)                          # call the construction                        
 end
 
+function G4LogicalVolume(solid::G4VSolid, mat::CxxPtr{G4Material}, name::String,
+                         fldmgr=CxxPtr{G4FieldManager}(C_NULL), 
+                         sd=CxxPtr{G4VSensitiveDetector}(C_NULL), 
+                         ulimits=CxxPtr{G4UserLimits}(C_NULL), 
+                         opt=true)
+    G4LogicalVolume(move!(solid), mat, name, 
+                    fldmgr isa G4FieldManagerAllocated ? move!(fldmgr) : fldmgr,
+                    sd isa CxxPtr ? sd  : move!(sd),
+                    ulimits isa  G4UserLimitsAllocated ? move!(ulimits) : ulimits,  opt)
+end
+SetUserLimits(lv::G4LogicalVolume, l::G4UserLimitsAllocated) = SetUserLimits(lv, move!(l))     
+
 #---Material friendly functions (keyword arguments)------------------------------------------------
 using .SystemOfUnits:kelvin, atmosphere
 G4Material(name::String; z::Float64=0., a::Float64=0., density::Float64, ncomponents::Integer=0, 

@@ -19,11 +19,11 @@ function constructB1Detector(::Nothing)::CxxPtr{G4VPhysicalVolume}
     world_mat = FindOrBuildMaterial(nist, "G4_AIR")
   
     solidworld = G4Box("World", 0.5 * world_sizeXY, 0.5 * world_sizeXY, 0.5 * world_sizeZ)
-    logicworld = G4LogicalVolume(move!(solidworld), world_mat, "World")
+    logicworld = G4LogicalVolume(solidworld, world_mat, "World")
   
     physWorld = G4PVPlacement(nothing,          # no rotation
                               G4ThreeVector(),  # at (0,0,0)
-                              logicworld,       # its logical volume
+                              logicworld,       #q its logical volume
                               "World",          # its name
                               nothing,          # its mother volume
                               false,            # no boolean operation
@@ -32,7 +32,7 @@ function constructB1Detector(::Nothing)::CxxPtr{G4VPhysicalVolume}
   
     # Envelope
     solidEnv = G4Box("Envelope", 0.5 * env_sizeXY, 0.5 * env_sizeXY, 0.5 * env_sizeZ)
-    logicEnv = G4LogicalVolume(move!(solidEnv), env_mat, "Envelope")
+    logicEnv = G4LogicalVolume(solidEnv, env_mat, "Envelope")
   
     G4PVPlacement(nothing,           # no rotation
                   G4ThreeVector(),   # at (0,0,0)
@@ -55,7 +55,7 @@ function constructB1Detector(::Nothing)::CxxPtr{G4VPhysicalVolume}
     solidShape1 = G4Cons("Shape1", shape1_rmina, shape1_rmaxa, shape1_rminb, shape1_rmaxb,
                   shape1_hz, shape1_phimin, shape1_phimax)
     
-    logicShape1 = G4LogicalVolume(move!(solidShape1), shape1_mat, "Shape1")
+    logicShape1 = G4LogicalVolume(solidShape1, shape1_mat, "Shape1")
     G4PVPlacement(nothing,      # no rotation
                   pos1,         # at position
                   logicShape1,  # its logical volume
@@ -73,7 +73,7 @@ function constructB1Detector(::Nothing)::CxxPtr{G4VPhysicalVolume}
     shape2_dya = 10cm; shape2_dyb = 16cm
     shape2_dz  = 6cm
     solidShape2 = G4Trd("Shape2", 0.5 * shape2_dxa, 0.5 * shape2_dxb, 0.5 * shape2_dya, 0.5 * shape2_dyb, 0.5 * shape2_dz)
-    logicShape2 = G4LogicalVolume(move!(solidShape2), shape2_mat, "Shape2")
+    logicShape2 = G4LogicalVolume(solidShape2, shape2_mat, "Shape2")
     G4PVPlacement(nothing,        # no rotation
                   pos2,           # at position
                   logicShape2,    # its logical volume

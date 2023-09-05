@@ -1,7 +1,5 @@
-using Revise
 using Geant4
 using Geant4.SystemOfUnits
-using Printf, GeometryBasics
 using GLMakie, Rotations, IGLWrap_jll  # to force loding G4Vis extension
 
 import Geant4.SystemOfUnits:tesla
@@ -100,7 +98,7 @@ app = G4JLApplication(; detector = hbc30,                             # detector
                         pretrackaction_method = pretrackaction,       # pre-tracking action
                         posttrackaction_method = posttrackaction,     # post-tracking action
                         beginrunaction_method = beginrun              # begin run action
-                      )
+                      );
               
 #---Configure, Initialize and Run------------------------------------------------------------------                      
 configure(app)
@@ -115,8 +113,15 @@ function drawdetector(app)
     display(fig)
     return s
 end
+
 function drawevent(s, app)
     data = app.simdata[1]
+    # clear previous plots from previous event
+    tobe = [p for p in plots(s) if p isa Lines || p isa Makie.Text]  # The event is made of lines and text 
+    for p in tobe
+        delete!(s,p)
+    end
+    # draw new event
     for t in data.tracks
         style = abs(t.charge) > 0. ? :solid : :dot
         lines!(s, t.points, linestyle=style)
@@ -140,8 +145,9 @@ end
 
 
 #---Run One event and display-----------------------------------------------------------------------
-#ui`/tracking/verbose 1`
+# beamOn(app,1)
+# ui`/tracking/verbose 1`
 
 s = drawdetector(app)
-nexttrigger(app)
-drawevent(s, app)
+nexttrigger(app); drawevent(s, app)
+

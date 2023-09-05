@@ -32,20 +32,21 @@ function HBC30Construct(det::HBC30)::CxxPtr{G4VPhysicalVolume}
 
     #---Volumes------------------------------------------------------------------------------------
     worldS  = G4Box("world", det.worldZHalfLength, det.worldZHalfLength, det.worldZHalfLength)
-    worldLV = G4LogicalVolume(move!(worldS), m_air, "World")
+    worldLV = G4LogicalVolume(worldS, m_air, "World")
     worldPV = G4PVPlacement(nothing, G4ThreeVector(), worldLV, "World", nothing, false, 0, checkOverlaps)
 
     chamberS  = G4Tubs("chamber", 0, chamberDiameter/2, 7.5cm, 0, 2π)
-    chamberLV = G4LogicalVolume(move!(chamberS), m_lh2, "chamber")
+    chamberLV = G4LogicalVolume(chamberS, m_lh2, "chamber")
     G4PVPlacement(nothing, G4ThreeVector(), chamberLV, "chamber", worldLV, false, 0, checkOverlaps)
+    SetUserLimits(chamberLV, G4UserLimits(5mm))
 
     windowS  = G4Tubs("window", 0, chamberDiameter/2, 1.5cm, 0, 2π)
-    windowLV = G4LogicalVolume(move!(windowS), m_glass, "window")
+    windowLV = G4LogicalVolume(windowS, m_glass, "window")
     G4PVPlacement(nothing, G4ThreeVector(0, 0, 7.5cm+1.5cm), windowLV, "window1", worldLV, false, 0, checkOverlaps)
     G4PVPlacement(nothing, G4ThreeVector(0, 0, -7.5cm-1.5cm), windowLV, "window2", worldLV, false, 0, checkOverlaps)
 
     targetS = G4Tubs("target", 0, 1cm, targetLength/2, 0, 2π)
-    targetLV = G4LogicalVolume(move!(targetS), m_air, "target")
+    targetLV = G4LogicalVolume(targetS, m_air, "target")
     rot = G4RotationMatrix()
     rotateX(rot, π/2)
     G4PVPlacement(rot, G4ThreeVector(0, chamberDiameter/2+targetLength/2, 0), targetLV, "target", worldLV, false, 0, checkOverlaps)
