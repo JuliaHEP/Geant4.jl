@@ -30,7 +30,13 @@ end
 #---Step action------------------------------------------------------------------------------------
 function stepaction(step::G4Step, app::G4JLApplication)::Nothing
     tracks = getSIMdata(app).tracks
-    p = GetPosition(GetPostStepPoint(step))
+    p = step |> GetPostStepPoint |> GetPosition
+    auxpoints = step |> GetPointerToVectorOfAuxiliaryPoints
+    if auxpoints != C_NULL
+        for ap in auxpoints
+            push!(tracks[end].points, Point3{Float64}(x(ap),y(ap),z(ap)))
+        end
+    end
     push!(tracks[end].points, Point3{Float64}(x(p),y(p),z(p)))
     return
 end
@@ -50,8 +56,10 @@ function posttrackaction(track::G4Track, app::G4JLApplication)::Nothing
     data = getSIMdata(app)
     id = track |> GetTrackID
     energy = track |> GetKineticEnergy
-    if id == 1 && energy > 0.95 * data.fEkin # primary particle did not losse any energy
-        data.veto = true
+    if id == 1 && energy > 0.80 * data.fEkin # primary particle did not losse any energy
+        if track |> GetStep |> GetPostStepPoint |> GetPhysicalVolume == C_NULL  # Only if outside world
+            data.veto = true
+        end
     end
     return
 end
@@ -75,9 +83,9 @@ end
 #---Particle Gun initialization--------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------------
 particlegun = G4JLGunGenerator(particle = "pi+", 
-                               energy = 330MeV, 
+                               energy = 1GeV, 
                                direction = G4ThreeVector(0,-1,0), 
-                               position = G4ThreeVector(0, hbc30.worldZHalfLength,0))
+                               position = G4ThreeVector(0, hbc30.chamberDiameter/2,0))
 
 #--------------------------------------------------------------------------------------------------
 #---Magnetic Field initialization------------------------------------------------------------------
@@ -147,6 +155,8 @@ end
 #---Run One event and display-----------------------------------------------------------------------
 # beamOn(app,1)
 # ui`/tracking/verbose 1`
+
+ui`/tracking/storeTrajectory 2` # store auxiliary points to smooth trajectory
 
 s = drawdetector(app)
 nexttrigger(app); drawevent(s, app)

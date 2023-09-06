@@ -29,6 +29,7 @@ function HBC30Construct(det::HBC30)::CxxPtr{G4VPhysicalVolume}
     m_lh2    = FindOrBuildMaterial(nist, "LH₂")
     m_glass  = FindOrBuildMaterial(nist, "G4_GLASS_PLATE")
     m_target = FindOrBuildMaterial(nist, "G4_W")
+    m_lAr    = FindOrBuildMaterial(nist, "G4_lAr")
 
     #---Volumes------------------------------------------------------------------------------------
     worldS  = G4Box("world", det.worldZHalfLength, det.worldZHalfLength, det.worldZHalfLength)
