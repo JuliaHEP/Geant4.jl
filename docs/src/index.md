@@ -42,9 +42,14 @@ julia> mag(v)
 3.7416573867739413
 ```
 
-## Genat4 Julia interface
-The main goal for defining a Geant4 application in the Julia interface is to create an instance of the [`G4JLApplication`](@ref) type, where all the needed elements for running a Geant4 application are declared, such as the detector geometry, the physics list, the primary particle generator, the type of run manager, the user actions, etc. These are the needed elements:
+## Geant4 Julia interface
+The main goal for defining a Geant4 application in the Julia interface is to create an instance of the [`G4JLApplication`](@ref) type, where all the needed elements for running a Geant4 application are declared, such as the detector geometry, the physics list, the primary particle generator, the type of run manager, the user actions, etc. 
+
+![Figure](./assets/interfaces.png)
+
+These are the needed elements:
 - **detector**. An instance of a detector structure inheriting from the abstract type `G4JLDetector`, in which all the detector parameters are defined. The user should also provide a method specialization of `Geant4.getConstructor(::G4JLDetector)::Function` to return the Julia function that toolkit needs to call in order to construct the geometry and return the pointer of the 'world' physical volume. There is no default.
+- **field**. An instance of the magnetic field class. The ` G4JLUniformMagField(...)` function provides a uniform magnetic field. See later how to define a custom one.
 - **simdata**. An instance of the simulation data structure that the program will need to collect during the simulation execution. This mutable structure needs to inherit from the abstract type `G4JLSimulationData` and is completely user defined with counters, data structures to collect the hits or doses, histograms, etc. The default is an instance of type `G4JLNoData`.
 - **nthreads**. Number of worker threads to be used. The default is 0, which means serial mode. Any number > 0 will use the MT functionality of Geant4, and therefore the user would need to pay attention to the user actions that are run concurrently to avoid data races (see [Julia doc on multi-threading](https://docs.julialang.org/en/v1/manual/multi-threading/#Data-race-freedom))
 - **verbose**. Verbosity level (for physics list). The default is 0.
@@ -54,7 +59,7 @@ The main goal for defining a Geant4 application in the Julia interface is to cre
 - **sdetectors**. List of sensitive detectors. This is given as a `Vector` of pairs `lv::String => sd::G4JLSensitiveDetector` to associate logical volumes by name to sensitive detector instances (see next section).
 - **scorers**. List of scoring meshes defined with the function [`G4JLScoringMesh`](@ref).
 
-Once the `G4JLApplication` is instantiated (and implicitely an instance of the `G4RunManager` created), the user can control the application with the following commands:
+Once the `G4JLApplication` is instantiated (and implicitly an instance of the `G4RunManager` created), the user can control the application with the following commands:
 - `configure(::G4JLApplication)`. It associates the physics list, generator and user actions to the selected `G4RunManager` instance. 
 - `initialize(::G4JLApplication)`. It basically calls the `Initialize()` method of the run manager and associate the declared sensitive detectors.
 - `reinitialize(::G4JLApplication, ::G4JLDetector)`. It re-defines the declared detector geometry with a new instance of `G4JLDetector`. 
@@ -84,18 +89,20 @@ G4PVPlacement(nothing,              # no rotation
     0,                              # copy number
     checkOverlaps)                  # checking overlaps
 ```
+### Magnetic field
+The user can define either an uniform magnetic field or a custom one. To define an custom one, define first a user structure for the parameters that inherits from the abstract type `G4JLFieldData`. Then, define a function with the signature `(result::G4ThreeVector, position::G4ThreeVector, ::FieldData)::Nothing`. And finally, with all this instantiate the magnetic field with `G4JLMagneticField(<name>, <data>; getfield_method=<function>)`.  
 ### User Actions
 User actions are native Julia functions that are callbacks of the Geant4 toolkit. They are declared in the constructor of `G4JLApplication`, so they do not need to be associated to a specific function name. All user actions receive a reference to the `G4JLApplication` from which the user can obtain details of the actual application, such as the current detector, the physics, the generator, or the running simulation data. The following are the currently defined possible user actions:
 - **stepping action**. Called on each simulation step. The signature is `(::G4Step, ::G4JLApplication)::Nothing`. Consult the [G4Step](https://geant4.kek.jp/Reference/v11.1.1/classG4Step.html) reference manual to see what you can get from it. 
 - **pre-tracking action**. Called at the creation of a new participle being tracked. The signature is `(::G4Track, ::G4JLApplication)::Nothing`. Consult the [G4Step](https://geant4.kek.jp/Reference/v11.1.1/classG4Track.html) reference manual to see what you can get from it.
 - **post-tracking action**. Called at the end of the particle being tracked. The signature is `(::G4Track, ::G4JLApplication)::Nothing`. Consult the [G4Track](https://geant4.kek.jp/Reference/v11.1.1/classG4Track.html) reference manual to see what you can get from it.
-- **begin-event action**. Called at the begining of each event. The signature is `(::G4Event, ::G4JLApplication)::Nothing`. Consult the [G4Event](https://geant4.kek.jp/Reference/v11.1.1/classG4Event.html) reference manual to see what you can get from it.
+- **begin-event action**. Called at the beginning of each event. The signature is `(::G4Event, ::G4JLApplication)::Nothing`. Consult the [G4Event](https://geant4.kek.jp/Reference/v11.1.1/classG4Event.html) reference manual to see what you can get from it.
 - **end-event action**. Called at the end of each event. The signature is `(::G4Event, ::G4JLApplication)::Nothing`. Consult the [G4Event](https://geant4.kek.jp/Reference/v11.1.1/classG4Event.html) reference manual to see what you can get from it.
-- **begin-run action**. Called at the begining of a run. The signature is `(::G4Run, ::G4JLApplication)::Nothing`. Consult the [G4Run](https://geant4.kek.jp/Reference/v11.1.1/classG4Run.html) reference manual to see what you can get from it.
+- **begin-run action**. Called at the beginning of a run. The signature is `(::G4Run, ::G4JLApplication)::Nothing`. Consult the [G4Run](https://geant4.kek.jp/Reference/v11.1.1/classG4Run.html) reference manual to see what you can get from it.
 - **end-run action**. Called at the end of a run. The signature is `(::G4Run, ::G4JLApplication)::Nothing`. Consult the [G4Run](https://geant4.kek.jp/Reference/v11.1.1/classG4Run.html) reference manual to see what you can get from it.
 
 ### Sensitive Detectors
-The user can define sensitive detectors by defining a data structure and 3 callback functions, which will initialise, fill and dispose the defined data structure. Later, the instantiated sensitive detector would be associated to one or more logical volumes of the detector setup. Instantiating a `G4JLSensitiveDetector` will require the following arguments:
+The user can define sensitive detectors by defining a data structure and 3 callback functions, which will initialize, fill and dispose the defined data structure. Later, the instantiated sensitive detector would be associated to one or more logical volumes of the detector setup. Instantiating a `G4JLSensitiveDetector` will require the following arguments:
 - **name**. A string to identify the sensitive detector. No default.
 - **sd data**. A instance of a user defined `G4JLSDData` mutable data structure that will passed to each callback invocation.
 - **initialize method**. User method that is called at the beginning of each event. The signature is `(::B2aSDData, ::G4HCofThisEvent)::Nothing`.
@@ -132,11 +139,11 @@ julia> size(sum)
 ## Examples
 
 ### basic/B1 
-This is most basic example. For this example we have kept the interface closer to the native C++ interface. The only difference with respect the C++, is that that we need to instantiate a `G4JLDetectorConstruction` with the Julia function that will be callback to construct the detector geometry as argument. This is becauase we cannot inherit from Julia the C++ class `G4VUserDetectorConstruction`, which is the way foreseen in the native Geant4 toolkit to provide the specific user detector geometry. Similarly, for the user actions and primary particle generator we need to instantiate a `G4JLActionInitialization`. The interaction with the application is done with the `G4UImanager`. 
+This is most basic example. For this example we have kept the interface closer to the native C++ interface. The only difference with respect the C++, is that that we need to instantiate a `G4JLDetectorConstruction` with the Julia function that will be callback to construct the detector geometry as argument. This is because we cannot inherit from Julia the C++ class `G4VUserDetectorConstruction`, which is the way foreseen in the native Geant4 toolkit to provide the specific user detector geometry. Similarly, for the user actions and primary particle generator we need to instantiate a `G4JLActionInitialization`. The interaction with the application is done with the `G4UImanager`. 
 
 To run it execute
 ```
-julia --project=. examples/basic/B1/B1.j
+julia --project=examples examples/basic/B1/B1.j
 ```
 or execute the notebook `examples/basic/B1/B1.ipynb`
 ### basic/B2a
@@ -144,14 +151,14 @@ This example fills a vector of `TrackerHit` that is stored in the `B2aSDData` si
 
 To run it execute
 ```
-julia --project=. examples/basic/B2/B2a.jl
+julia --project=examples examples/basic/B2/B2a.jl
 ```
 ### extended/RE03
 This example makes use of the built-in scoring capability of Geant4 with a new Julia API interface creating an instance of [`G4JLScoringMesh`](@ref), instead of using the native Geant4 UI. The user defines a scoring mesh, and quantities to be collect and gets the results after the run. 
 
 To run it execute
 ```
-julia --project=. examples/extended/RE03/RE03.jl
+julia --project=examples examples/extended/RE03/RE03.jl
 ```
 ### WaterPhantom
 This example is similar to RE03 but it defines a custom primary particle generator (`MedicalBeam`) instead of using the predefined particle gun generator (`G4JLGunGenerator`). It is a notebook and produces plots after each run.   
@@ -161,21 +168,12 @@ jupyter notebook examples/WaterPhantom/WaterPhantom.ipynb
 ```
 
 ### TestEm3
-This example comes from *extended/electromagnetic/TestEm3* example. Since it requires additional packages such as `FHist` for histograms and `Plots` for their visualisation, it has its own Julia environment in the folder `examples/TestEm3`. It uses the Julia high-level interface with the instantiation of a `G4JLApplication` declaring all the elements of the application.
+This example comes from *extended/electromagnetic/TestEm3* example. Since it requires additional packages such as `FHist` for histograms and `Plots` for their visualization, it has its own Julia environment in the folder `examples/TestEm3`. It uses the Julia high-level interface with the instantiation of a `G4JLApplication` declaring all the elements of the application.
 
 To run it, execute
 ```
-julia --project=examples/TestEm3 -i examples/TestEm3/TestEm3.jl
+julia --project=examples -i examples/TestEm3/TestEm3.jl
 ``` 
-
-### HBC30
-This example mimics the CERN 30cm liquid hydrogen bubble chamber. It demonstrates the use of a uniform magnetic field (`G4JLUniformMagField`). It is useful for displaying the detector and the produced particles.
-
-To run it, execute
-```
-julia --project=examples/HBC30 -i examples/HBC30/HBC30.jl
-``` 
-
 
 ## Visualization examples
 The Geant4.jl project includes additional functionality for visualization under the directory ext/G4Vis/examples. This is done in a different directory to separate the dependencies. 
@@ -190,14 +188,22 @@ julia --project=ext/G4Vis/examples -i  ext/G4Vis/examples/B1vis.jl
 
 ### B2aVis.jl
 This example to visualize the detector and (a very simplistic) visualization of one event.
-```
+``` 
 julia --project=ext/G4Vis/examples -i  ext/G4Vis/examples/B2avis.jl
 ```
 ### Solids.ipynb
-This notebook shows all the possible solids in Geant4
+This notebook shows all the possible solids in Geant4. This is work in progress and some solids do not have graphical representation yet.
 ```
 jupyter notebook ext/G4Vis/examples/Solids.ipynb
 ```
+
+### HBC30
+This example mimics the CERN 30cm liquid hydrogen bubble chamber. It demonstrates the use of a uniform magnetic field (`G4JLUniformMagField`). It is useful for displaying the detector and the produced particles.
+
+To run it, execute
+```
+julia --project=ext/G4Vis/examples -i ext/G4Vis/examples/HBC30/HBC30.jl
+``` 
 
 ## Building the wrapper code
 We use the Geant4 native binary libraries and data from the binary package [Geant4\_jll](https://github.com/JuliaBinaryWrappers/Geant4_jll.jl), which has been produced with the `BinaryBuilder` [recipe](https://github.com/JuliaPackaging/Yggdrasil/tree/master/G/Geant4). The wrapper library is downloaded from the binary package [Geant4\_julia\_jll](https://github.com/JuliaBinaryWrappers/Geant4_julia_jll.jl).
@@ -212,6 +218,12 @@ We have the possibility during the development of this package to re-generate lo
 Once the wrapper code is stabilized we move the generated code to the repository [Geant4\_cxxwrap](https://github.com/peremato/Geant4_cxxwrap) to regenerate the binary package `Geant4_julia_jll` using the `BinaryBuilder`.
 
 ## Release Notes
+### 0.1.8
+- New features:
+    - Added all example scripts as tests, so that the CI will systematically execute them.
+- Fixes:
+    - Fixed broken [visualization] examples
+    - Improve HBC30 example to visualize trajectories in a more smooth manner. Move it under `ext/G4Vis/examples`
 ### 0.1.7
 - New features:
     - Support for ARM64 (MacOS M1). Implemented workaround for `closures` in `@safe_cfunction`, which were for supported in this  platform. 

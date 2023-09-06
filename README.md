@@ -55,27 +55,28 @@ julia> mag(v)
 ```
 
 ## Running the tests
-To run the tests execute `julia --project . test/runtests.jl`
+To run the tests execute `julia --project=. test/runtests.jl`
 
 ## Running the examples
-For the time being there are only three examples: 
+For the time being there are only some basic examples plus some more to illustrate some of the features 
 ### basic/B1
 This is most basic example using a more Geant4 native interface.  
-To run it execute `julia --project=. examples/basic/B1/B1.j` or execute the notebook `B1.ipynb`
+To run it, execute `julia --project=examples examples/basic/B1/B1.j` or execute the notebook `B1.ipynb`
 ### basic/B2a
 Basic example using a sensitive detector to collect 'hits'.  
-To run it execute `julia --project=. examples/basic/B2/B2a.jl`
+To run it, execute `julia --project=examples examples/basic/B2/B2a.jl`
 ### extended/RE03
 Example using the Geant4 built-in scoring mechanism.   
-To run it execute `julia --project=. examples/basic/B2/B2a.jl`
+To run it, execute `julia --project=examples examples/basic/B2/B2a.jl`
 ### TestEm3
 This example comes from *extended/electromagnetic/TestEm3* example. Since it requires additional packages such as FHist and Plots it has its own Julia environment in the folder `examples/TestEm3`. It is based on user actions.  
-To run it execute `julia --project=examples/TestEm3 -i examples/TestEm3/TestEm3.jl` 
+To run it, execute `julia --project=examples -i examples/TestEm3/TestEm3.jl` 
 ### WaterPhantom
 Example in a notebook format similar to RE03 but with different primary particle generator (MedicalBeam) and using the scoring mechanism. Plots are produced after each run.
 ### HBC30
 Example script and in a notebook format of a bubble chamber in which we display the particle tracks for an event that passes the trigger. 
- 
+To run it, execute `julia --project=ext/G4Vis/examples ext/G4Vis/examples/HBC30/HBC30.jl`` 
+
 ## Running the visualization examples
 The project includes additional functionality for visualization under the directory ext/G4Vis as an extension. The extension is activated if the following modules are included in the project ("Makie", "Colors", "StaticArrays", "Rotations", "LinearAlgebra"), which is the same if the project is set to `ext/G4Vis/examples`. To run the examples do:
 - `julia --project=ext/G4Vis/examples -i  ext/G4Vis/examples/B1vis.jl`
