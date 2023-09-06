@@ -12,6 +12,9 @@ end
     cd(dirname(dirname(pathof(Geant4))))
 
     # Basic examples
+    run(`julia -E "LOAD_PATH"`)
+    run(`julia -E "Base.load_path()"`)
+
     instantiate("examples")
     @test run(`julia --project=examples examples/basic/B2/B2a.jl`, devnull, devnull).exitcode  == 0
     @test run(`julia --project=examples examples/basic/B1/B1.jl`, devnull, devnull).exitcode  == 0
