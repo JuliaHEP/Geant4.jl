@@ -1,5 +1,8 @@
 
 @testset "G4Examples" begin
+    #---change the working directory
+    cd(dirname(dirname(pathof(Geant4))))
+
     @test run(`julia --project=. examples/basic/B2/B2a.jl`, devnull, devnull).exitcode  == 0
     @test run(`julia --project=. examples/basic/B1/B1.jl`, devnull, devnull).exitcode  == 0
     @test run(`julia --project=. examples/extended/RE03/RE03.jl`, devnull, devnull).exitcode  == 0
