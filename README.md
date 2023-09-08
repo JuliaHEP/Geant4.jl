@@ -5,16 +5,15 @@
 [![Build Status](https://github.com/JuliaHEP/Geant4.jl/workflows/CI/badge.svg)](https://github.com/JuliaHEP/Geant4.jl/actions)
 [![Codecov](https://codecov.io/gh/JuliaHEP/Geant4.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaHEP/Geant4.jl)
 
-Julia bindings for the [Geant4](https://geant4.web.cern.ch) particle transportation toolkit. It is using [CxxWrap.jl](https://github.com/JuliaInterop/CxxWrap.jl) package to wrap C++ types and functions to Julia. Since the Geant4 toolkit is rather large and complex, writing the wrapper code by hand is not really an option. For this we use the package [WrapIt](https://github.com/grasph/wrapit) that automates the generation of the wrapper code making use of the clang library.
+Julia bindings for the [Geant4](https://geant4.web.cern.ch) particle transportation toolkit. It is using [CxxWrap.jl](https://github.com/JuliaInterop/CxxWrap.jl) package to wrap C++ types and functions to Julia. Since the Geant4 toolkit is rather large and complex, writing the wrapper code by hand is not really an option. For this, we use the package [WrapIt](https://github.com/grasph/wrapit) that automates the generation of the wrapper code making use of the clang library.
 
-## Building the wrapper code
-We use the Geant4 libraries and data from the binary package [Geant4_jll](https://github.com/JuliaBinaryWrappers/Geant4_jll.jl), which has been produced with the `BinaryBuilder` [recipe](https://github.com/JuliaPackaging/Yggdrasil/tree/master/G/Geant4). The wrapper library is downloaded from the binary package [Geant4_julia_jll](https://github.com/JuliaBinaryWrappers/Geant4_julia_jll.jl).    
+## Installation
+The Geant4.jl package does no require any special installation. Stable releases are registered into the Julia general registry, and therefore can be deployed with the standard `Pkg` Julia package manager.
 
-In order to re-generate locally new C++ wrapper code we need to have `wrapit` installed, which itself requires `libclang` to be installed. If the executable is not found (not in the PATH), we can use the wrapper code that is already pre-generated and distributed with this package.
-- what C++ classes get wrapped is controlled by the file `gen/Geant4.wit`. See the documentation of WrapIt for the details. 
-- run the `gen/build.jl` script generate the wrapper code (if wrapit found) and build the wrapper library.
+To use and play with the examples on this package, the user can clone this repository and setup a complete Julia environment with:
 
-Once the wrapper code is stabilized we can move the generated code to the repository [Geant4_cxxwrap](https://github.com/peremato/Geant4_cxxwrap) to regenerate the binary package `Geant using the `BinaryBuilder`.
+- `git clone https://github.com/JuliaHEP/Geant4.jl.git`
+- `julia --project=Geant4.jl/examples -e 'import Pkg; Pkg.instantiate()'`
 
 ## Getting started
 Import the `Geant4` module. All the wrapped Geant4 classes are exported since they are prefixed by `G4` minimizing the chances of a name clash with other Julia symbols. 
@@ -53,6 +52,14 @@ Geant4.CLHEP!Hep3VectorAllocated(Ptr{Nothing} @0x00007f9fcaf2a710)
 julia> mag(v)
 3.7416573867739413
 ```
+The Geant4 system of units is in separate sub-module. You can import it with
+```
+using using Geant4.SystemOfUnits
+```
+Only some basic [units](https://github.com/JuliaHEP/Geant4.jl/blob/32f2f0bf9b556ce4cc7a171b1336916da1d648c9/src/SystemOfUnits.jl#L231) are always exported. If you need additional ones, you can do for example:
+```
+import Geant4.SystemOfUnits:tesla, candela
+```
 
 ## Running the tests
 To run the tests execute `julia --project=. test/runtests.jl`
@@ -82,3 +89,12 @@ The project includes additional functionality for visualization under the direct
 - `julia --project=ext/G4Vis/examples -i  ext/G4Vis/examples/B1vis.jl`
    Note the option `-i` to keep the interactive session open.
 - The notebook `ext/G4Vis/examples/Solids.ipynb` have all the type of solids that can be defined with Geant4
+
+## Building the wrapper code
+We use the Geant4 libraries and data from the binary package [Geant4_jll](https://github.com/JuliaBinaryWrappers/Geant4_jll.jl), which has been produced with the `BinaryBuilder` [recipe](https://github.com/JuliaPackaging/Yggdrasil/tree/master/G/Geant4). The wrapper library is downloaded from the binary package [Geant4_julia_jll](https://github.com/JuliaBinaryWrappers/Geant4_julia_jll.jl).    
+
+In order to re-generate locally new C++ wrapper code we need to have `wrapit` installed, which itself requires `libclang` to be installed. If the executable is not found (not in the PATH), we can use the wrapper code that is already pre-generated and distributed with this package.
+- what C++ classes get wrapped is controlled by the file `gen/Geant4.wit`. See the documentation of WrapIt for the details. 
+- run the `gen/build.jl` script generate the wrapper code (if wrapit found) and build the wrapper library.
+
+Once the wrapper code is stabilized we can move the generated code to the repository [Geant4_cxxwrap](https://github.com/peremato/Geant4_cxxwrap) to regenerate the binary package `Geant using the `BinaryBuilder`.
