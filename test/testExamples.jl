@@ -18,10 +18,12 @@ end
     @test run(`julia --project=examples examples/extended/RE03/RE03.jl`, devnull, devnull).exitcode  == 0
     @test run(`julia --project=examples examples/TestEm3/TestEm3.jl`, devnull, devnull).exitcode  == 0
 
-    # Visualization
-    instantiate("ext/G4Vis/examples")
-    @test run(`julia --project=ext/G4Vis/examples ext/G4Vis/examples/HBC30/HBC30.jl`, devnull, devnull).exitcode == 0
-    @test run(`julia --project=ext/G4Vis/examples ext/G4Vis/examples/B1vis.jl`, devnull, devnull).exitcode == 0
-    @test run(`julia --project=ext/G4Vis/examples ext/G4Vis/examples/B2aVis.jl`, devnull, devnull).exitcode == 0
-    @test run(`julia --project=ext/G4Vis/examples ext/G4Vis/examples/TestEm3Vis.jl`, devnull, devnull).exitcode == 0
+    if VERSION > v"1.9"   # The module extension mechanism only works from 1.9
+        # Visualization
+        instantiate("ext/G4Vis/examples")
+        @test run(`julia --project=ext/G4Vis/examples ext/G4Vis/examples/HBC30/HBC30.jl`, devnull, devnull).exitcode == 0
+        @test run(`julia --project=ext/G4Vis/examples ext/G4Vis/examples/B1vis.jl`, devnull, devnull).exitcode == 0
+        @test run(`julia --project=ext/G4Vis/examples ext/G4Vis/examples/B2aVis.jl`, devnull, devnull).exitcode == 0
+        @test run(`julia --project=ext/G4Vis/examples ext/G4Vis/examples/TestEm3Vis.jl`, devnull, devnull).exitcode == 0
+    end
 end

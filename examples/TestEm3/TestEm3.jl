@@ -210,7 +210,7 @@ end
 app = G4JLApplication(detector = TestEm3Detector(),               # detector with parameters
                       simdata = TestEm3SimData(),                 # simulation data structure
                       generator = particlegun,                    # primary particle generator 
-                      #nthreads = 4,
+                      nthreads = VERSION > v"1.9" ? 4 : 0,        # number of threads (MT)
                       physics_type = FTFP_BERT,                   # what physics list to instantiate
                       #----Actions--------------------------------
                       stepaction_method = stepaction,             # step action method

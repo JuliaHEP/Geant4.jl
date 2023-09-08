@@ -37,7 +37,7 @@ sc1 = G4JLScoringMesh("boxMesh_1",
 #---Create the Application-------------------------------------------------------------------------
 app = G4JLApplication(;detector = RE03Detector(),                    # detector with parameters
                        generator = particlegun,                      # primary particle generator
-                       nthreads = 4,                                 # number of threads (MT)
+                       nthreads = VERSION > v"1.9" ? 4 : 0,          # number of threads (MT)
                        physics_type = FTFP_BERT,                     # what physics list to instantiate
                        scorers = [sc1]                               # list of scorers 
                       )
