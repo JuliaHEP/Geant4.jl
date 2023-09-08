@@ -79,10 +79,16 @@ function GeometryBasics.mesh(s::G4DisplacedSolid)
 end
 
 function Geant4.draw(solid::G4BooleanSolid; wireframe::Bool=false, kwargs...)
-    m = GeometryBasics.mesh(solid)
-    if wireframe
-        Makie.wireframe(m; linewidth=1, kwargs...)
+    #---Needs library libigl for drawing booleans and this is not available in all platforms
+    if  isdefined(IGLWrap_jll, :libiglwrap)
+        m = GeometryBasics.mesh(solid)
+        if wireframe
+            Makie.wireframe(m; linewidth=1, kwargs...)
+        else
+            Makie.mesh(m; kwargs...)
+        end
     else
-        Makie.mesh(m; kwargs...)
+        println("IGLWrap_jll is not available for currrent platform $(Sys.MACHINE) and is needed for drawing boolean solids")
+        return
     end
 end
