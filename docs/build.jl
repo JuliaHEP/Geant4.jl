@@ -1,6 +1,6 @@
 examples_dir = examples_dir = joinpath.(pkgdir(Geant4), ("examples","ext/G4Vis/examples"))
 notebooks = [joinpath(item[1],notebook) for exdir in examples_dir for item in walkdir(exdir) for notebook in item[3] 
-             if splitext(notebook)[2] == ".ipynb" && !contains(notebook, "checkpoint") ]
+             if splitext(notebook)[2] == ".ipynb" && !Base.contains(notebook, "checkpoint") ]
 vis_examples_dir = joinpath(pkgdir(Geant4), "ext/G4Vis/examples")
 output_dir = joinpath(pkgdir(Geant4), "docs", "src", "notebooks")
 
