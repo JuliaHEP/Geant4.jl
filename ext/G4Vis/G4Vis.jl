@@ -84,7 +84,7 @@ module G4Vis
     function draw!(s::LScene, lv::G4LogicalVolume, t::Transformation3D{Float64}, level::Int64, wireframe::Bool, maxlevel::Int64)
         vsolid = GetSolid(lv)
         tsolid = GetEntityType(vsolid)
-        shape =  getproperty(Main,Symbol(tsolid))
+        shape =  getproperty(Geant4,Symbol(tsolid))
         solid = CxxRef{shape}(vsolid)
         m = GeometryBasics.mesh(solid[])
         if ! isone(t)

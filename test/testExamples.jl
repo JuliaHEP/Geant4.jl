@@ -17,6 +17,7 @@ end
     @test run(`julia --project=examples examples/basic/B1/B1.jl`, devnull, devnull).exitcode  == 0
     @test run(`julia --project=examples examples/extended/RE03/RE03.jl`, devnull, devnull).exitcode  == 0
     @test run(`julia --project=examples examples/TestEm3/TestEm3.jl`, devnull, devnull).exitcode  == 0
+    @test run(`julia --project=examples examples/Scintillation/Scintillation.jl`, devnull, devnull).exitcode  == 0
 
     if VERSION > v"1.9"   # The module extension mechanism only works from 1.9
         # Visualization

@@ -50,7 +50,8 @@ function HBC30Construct(det::HBC30)::CxxPtr{G4VPhysicalVolume}
     targetLV = G4LogicalVolume(targetS, m_air, "target")
     rot = G4RotationMatrix()
     rotateX(rot, π/2)
-    G4PVPlacement(rot, G4ThreeVector(0, chamberDiameter/2+targetLength/2, 0), targetLV, "target", worldLV, false, 0, checkOverlaps)
+    trans = G4Transform3D(rot,G4ThreeVector(0, chamberDiameter/2+targetLength/2, 0))
+    G4PVPlacement(trans, targetLV, "target", worldLV, false, 0, checkOverlaps)
 
     # Visualization attributes
     boxVisAtt = G4VisAttributes(G4Colour(1.0, 1.0, 1.0, 0.0))

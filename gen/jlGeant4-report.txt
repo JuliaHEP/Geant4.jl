@@ -18,6 +18,8 @@ G4GDMLAuxMapType
 G4IsotopeTable
 G4IsotopeVector
 G4LVManager
+G4LogicalBorderSurfaceTable
+G4LogicalSkinSurfaceTable
 G4MTRunManager::masterWorlds_t
 G4MTcoutDestination
 G4PVManager
@@ -50,16 +52,20 @@ const HepGeom::Normal3D<double>
 const HepGeom::Point3D<double>
 const HepGeom::Vector3D<double>
 std::istream
+std::istringstream
 std::map<G4Material *,double,std::less<G4Material *>,std::allocator<std::pair<G4Material *const,double>>>
 std::map<G4String,G4AttDef,std::less<G4String>,std::allocator<std::pair<const G4String,G4AttDef>>>
 std::map<G4String,G4Colour,std::less<G4String>,std::allocator<std::pair<const G4String,G4Colour>>>
+std::map<G4String,std::vector<G4LogicalVolume *,std::allocator<G4LogicalVolume *>>,std::less<G4String>,std::allocator<std::pair<const G4String,std::vector<G4LogicalVolume *,std::allocator<G4LogicalVolume *>>>>>
 std::map<int,G4VAuxiliaryTrackInformation *,std::less<int>,std::allocator<std::pair<const int,G4VAuxiliaryTrackInformation *>>>
 std::ostream
+std::string
 std::vector<G4AttValue,std::allocator<G4AttValue>>
 std::vector<G4Navigator *>::iterator
 std::vector<G4VPhysicalVolume *>::iterator
 std::vector<const G4Event *,std::allocator<const G4Event *>>
 std::vector<const G4Track *,std::allocator<const G4Track *>>
+std::vector<std::pair<double,bool>,std::allocator<std::pair<double,bool>>>
 
 Class(es) from vetoed_finalizer_classes configuration parameter that were not found:
 -------------------------------------------------------------------------------------

@@ -38,10 +38,16 @@ input               = [ "Geant4Wrap.h",
                         "G4TransportationManager.hh",
                         "G4Navigator.hh",
                         "G4GDMLParser.hh",
+                        "G4LogicalVolumeStore.hh",
                         #---Materials------------
                         "G4Material.hh",
                         "G4Element.hh",
                         "G4Isotope.hh",
+                        "G4MaterialPropertiesTable.hh",
+                        "G4OpticalParameters.hh",
+                        "G4OpticalSurface.hh",
+                        "G4LogicalBorderSurface.hh",
+                        "G4LogicalSkinSurface.hh",
                         #---Physics--------------
                         "G4VUserPhysicsList.hh",
                         "G4VModularPhysicsList.hh",
@@ -52,6 +58,13 @@ input               = [ "Geant4Wrap.h",
                         "G4ParticleDefinition.hh",
                         "G4PrimaryParticle.hh",
                         "G4PrimaryVertex.hh",
+                        "G4VProcess.hh",
+                        "G4ProcessType.hh",
+                        "G4EmStandardPhysics_option4.hh",
+                        "G4OpticalPhysics.hh",
+                        "G4OpBoundaryProcess.hh",
+                        "G4ProcessManager.hh",
+                        "G4ProcessVector.hh",
                         #---Action---------------
                         "G4UserSteppingAction.hh",
                         "G4Step.hh",
@@ -101,6 +114,9 @@ input               = [ "Geant4Wrap.h",
                         "G4IntersectionSolid.hh",
                         "G4MultiUnion.hh",
                         "G4DisplacedSolid.hh",
+                        #---Random----------------
+                        "CLHEP/Random/Random.h",
+                        "CLHEP/Random/RandomEngine.h",
                         #---Magnetic Field--------
                         "G4MagneticField.hh",
                         "G4FieldManager.hh",
@@ -116,7 +132,8 @@ input               = [ "Geant4Wrap.h",
 
 extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh", "G4ParticleMessenger.hh", "G4IonTable.hh" ]
 vetoed_finalizer_classes = ["G4PVPlacement", "G4LogicalVolume", "G4PVReplica", "G4Material", "G4Isotope", "G4Element", "G4JLParticleGun", 
-                            "G4JLDetectorConstruction", "G4JLGeneratorAction", "G4JLRunAction", "G4JLSensDet", "G4JLWorkerInitialization"]
+                            "G4JLDetectorConstruction", "G4JLGeneratorAction", "G4JLRunAction", "G4JLSensDet", "G4JLWorkerInitialization",
+                            "G4LogicalSkinSurface", "G4LogicalBorderSurface", "G4OpticalSurface"]
 export              = "all"
 veto_list           = "Geant4-veto.h"
 cxx-std             = "c++17"

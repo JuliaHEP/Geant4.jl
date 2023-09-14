@@ -15,4 +15,11 @@ _opaque_pthread_t
 /.*operator new.*/
 G4double G4MultiUnion::DistanceToOutVoxelsCore(const G4ThreeVector &, const G4ThreeVector &, G4ThreeVector *, G4bool &, std::vector<G4int> &)
 EInside G4MultiUnion::InsideIterator(const G4ThreeVector &)
-
+void G4OpticalParameters::SetScintEnhancedTimeConstants(G4bool)
+G4bool G4OpticalParameters::GetScintEnhancedTimeConstants()
+G4String G4OpticalProcessName(G4int)
+void G4MaterialPropertiesTable::AddConstProperty(const char *, G4double, G4bool)
+G4MaterialPropertyVector * G4MaterialPropertiesTable::AddProperty(const char *, G4double *, G4double *, G4int, G4bool, G4bool)
+G4MaterialPropertyVector * G4MaterialPropertiesTable::GetProperty(const char *)
+size_t G4ProcessVector::length()
+size_t G4ProcessVector::size()

@@ -19,7 +19,7 @@ module Geant4
         #---Call Wrapper init--------------------------------------------------
         G4JL_init()
         #---Setup [data] environment-------------------------------------------
-        GEANT4_DATA_DIR = get(ENV, "GEANT4_DATA_DIR", Geant4_jll.data_dir)
+        GEANT4_DATA_DIR = Base.get(ENV, "GEANT4_DATA_DIR", Geant4_jll.data_dir)
         for line in readlines(joinpath(Geant4_jll.artifact_dir, "bin/geant4.sh"))
             m = match(r"export[ ]+(G4.*)=.*/(.*)$", line)
             if !isnothing(m)
@@ -29,6 +29,8 @@ module Geant4
     end
 
     include("SystemOfUnits.jl")
+    include("PhysicalConstants.jl")
+    
     include("G4Utils.jl")
     include("G4Scoring.jl")
     include("G4CallBacks.jl")

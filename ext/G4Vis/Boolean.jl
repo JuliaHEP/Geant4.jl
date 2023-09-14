@@ -53,7 +53,7 @@ end
 
 function GeometryBasics.mesh(psolid::CxxPtr{G4VSolid})
     tsolid = GetEntityType(psolid)
-    shape =  getproperty(Main,Symbol(tsolid))
+    shape =  getproperty(Geant4, Symbol(tsolid))
     solid = CxxRef{shape}(psolid)
     GeometryBasics.mesh(solid[])
 end

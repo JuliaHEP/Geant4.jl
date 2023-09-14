@@ -1,12 +1,14 @@
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+FHist = "68837c9b-b678-4cd5-9925-8a54edc8f695"
 GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
 Geant4 = "559df036-b7a0-42fd-85df-7d5dd9d70f44"
 GeometryBasics = "5c1252a2-5f33-56bf-86c9-59e7332b4326"
 IGLWrap_jll = "283677c1-8365-580c-84e5-ef4b5d190868"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 Rotations = "6038ab10-8711-5258-84ad-4b1120ba62dc"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 WGLMakie = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"
-Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
-

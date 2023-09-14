@@ -10,6 +10,11 @@ G4PVPlacement(r::Union{Nothing, G4RotationMatrix}, d::G4ThreeVector, l::Union{No
                   isnothing(l) ? CxxPtr{G4LogicalVolume}(C_NULL) : CxxPtr(l), s, 
                   isnothing(p) ? CxxPtr{G4LogicalVolume}(C_NULL) : CxxPtr(p), b1, n, b2)
 
+G4PVPlacement(t::G4Transform3D, l::Union{Nothing,G4LogicalVolume}, s::String, 
+              p::Union{Nothing, G4LogicalVolume}, b1::Bool, n::Int, b2::Bool=false) = 
+    G4PVPlacement(t, isnothing(l) ? CxxPtr{G4LogicalVolume}(C_NULL) : CxxPtr(l), s, 
+                  isnothing(p) ? CxxPtr{G4LogicalVolume}(C_NULL) : CxxPtr(p), b1, n, b2)
+
 G4PVReplica(s::String, l::G4LogicalVolume, m::G4LogicalVolume, a::EAxis, n::Int64, t::Float64) = 
     G4PVReplica(s, CxxPtr(l), CxxPtr(m), a, n, t)
 
@@ -527,3 +532,8 @@ end
 Get the world volume of the currently instantiated detector geometry.
 """
 GetWorldVolume() = GetWorldVolume(GetNavigatorForTracking(G4TransportationManager!GetTransportationManager()))[]
+"""
+    GetVolume(name::String)
+Get the  the G4LogicalVolume with this name.
+"""
+GetVolume(name::String) = GetVolume(G4LogicalVolumeStore!GetInstance(), name)

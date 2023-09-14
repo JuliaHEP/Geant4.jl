@@ -209,7 +209,7 @@ julia --project=ext/G4Vis/examples -i ext/G4Vis/examples/HBC30/HBC30.jl
 We use the Geant4 native binary libraries and data from the binary package [Geant4\_jll](https://github.com/JuliaBinaryWrappers/Geant4_jll.jl), which has been produced with the `BinaryBuilder` [recipe](https://github.com/JuliaPackaging/Yggdrasil/tree/master/G/Geant4). The wrapper library is downloaded from the binary package [Geant4\_julia\_jll](https://github.com/JuliaBinaryWrappers/Geant4_julia_jll.jl).
 
 We have the possibility during the development of this package to re-generate locally new C++ wrapper code. For this we need to have `wrapit` installed, which itself requires `libclang` to be installed. If the executable is not found (not in the PATH), we can use the wrapper code that is already pre-generated and distributed with this package.
-- what C++ classes get wrapped is controlled by the file `gen/Geant4.wit`. See the documentation of WrapIt for the details. 
+- what C++ classes get wrapped is controlled by the file `gen/Geant4.wit.in`. See the documentation of WrapIt for the details. 
 - run the `gen/build.jl` script generate the wrapper code (if wrapit found) and build the wrapper library.
 
 !!! note
@@ -221,9 +221,13 @@ Once the wrapper code is stabilized we move the generated code to the repository
 ### 0.1.8
 - New features:
     - Added all example scripts as tests, so that the CI will systematically execute them.
+    - Added new wrapped classes: G4LogicalVolumeStore, G4MaterialPropertiesTable, G4OpticalParameters, G4OpticalSurface, G4LogicalBorderSurface, G4LogicalSkinSurface, G4VProcess, G4ProcessType, G4Random, G4EmStandardPhysics_option4, G4OpticalPhysics, G4OpBoundaryProcess, G4ProcessManager, G4ProcessVector
+    - Added `Geant4.PhysicalConstants` sub-module
+    - Added testRandom to the test suite
+    - Added `Scintillation` example with scintillating crystals and optical photons
 - Fixes:
     - Fixed broken [visualization] examples
-    - Improve HBC30 example to visualize trajectories in a more smooth manner. Move it under `ext/G4Vis/examples`
+    - Improve HBC30 example to visualize trajectories in a more smooth manner. Moved it under `ext/G4Vis/examples`
 ### 0.1.7
 - New features:
     - Support for ARM64 (MacOS M1). Implemented workaround for `closures` in `@safe_cfunction`, which were for supported in this  platform. 
