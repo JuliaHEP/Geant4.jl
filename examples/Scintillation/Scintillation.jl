@@ -68,7 +68,7 @@ include(joinpath(@__DIR__, "UserActions.jl"))
 app = G4JLApplication(; detector = crysdet,                           # detector with parameters
                         simdata = ScintSimData(),                     # simulation data structure
                         generator = particlegun,                      # primary particle generator
-                        nthreads = 4,                                 # # of threads (0 = no MT)
+                        nthreads = 0,                                 # # of threads (0 = no MT)
                         physics_type = ScintPhysicsList,              # what physics list to instantiate
                         stepaction_method = stepping,                 # step action method
                         begineventaction_method = beginevent,         # begin-event action (initialize per-event data)

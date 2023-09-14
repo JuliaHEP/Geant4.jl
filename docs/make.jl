@@ -9,7 +9,7 @@ T = ["Example $(splitext(basename(f))[1])" => f for f in md_files]
 makedocs(;
     modules=[Geant4],
     format = Documenter.HTML(
-        prettyurls = get(ENV, "CI", nothing) == "true",
+        prettyurls = Base.get(ENV, "CI", nothing) == "true",
     ),
     pages=[
         "Introduction" => "index.md",
