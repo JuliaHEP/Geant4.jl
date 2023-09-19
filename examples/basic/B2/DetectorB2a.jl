@@ -53,7 +53,7 @@ function B2aConstruct(det::B2aDetector)::CxxPtr{G4VPhysicalVolume}
         checkOverlaps)                  # checking overlaps
 
     positionTarget = G4ThreeVector(0,0,-(targetLength+trackerSize))
-    targetS = G4Tubs("target", 0, targetRadius, targetLength/2, 0, 360deg)
+    targetS = G4Tubs("target", 0, targetRadius, targetLength, 0, 360deg)
     targetLV = G4LogicalVolume(targetS, m_target, "Target")
     G4PVPlacement(nothing,              # no rotation
         positionTarget,                 # at (x,y,z)
