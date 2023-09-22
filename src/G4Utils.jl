@@ -9,12 +9,14 @@ const G4RotationMatrix = CLHEP!HepRotation
 const G4ThreeVector = CLHEP!Hep3Vector
 const G4Transform3D = HepGeom!Transform3D
 const G4Random = CLHEP!HepRandom
-const G4RandFlat = CLHEP!RandFlat
-const G4RandBit = CLHEP!RandBit
-const G4RandGamma = CLHEP!RandGamma
-const G4RandGauss = CLHEP!RandGaussQ
-const G4RandExponential = CLHEP!RandExponential
-const G4RandGeneral = CLHEP!RandGeneral
+if isdefined(Geant4,:CLHEP!RandFlat)  # make it compatible with previous version  of wrappers
+    const G4RandFlat = CLHEP!RandFlat
+    const G4RandBit = CLHEP!RandBit
+    const G4RandGamma = CLHEP!RandGamma
+    const G4RandGauss = CLHEP!RandGaussQ
+    const G4RandExponential = CLHEP!RandExponential
+    const G4RandGeneral = CLHEP!RandGeneral
+end
 const G4Random!getTheSeed = CLHEP!HepRandom!getTheSeed
 const G4Random!setTheSeed = CLHEP!HepRandom!setTheSeed
 const G4Random!getTheEngine = CLHEP!HepRandom!getTheEngine
