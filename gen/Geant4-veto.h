@@ -23,3 +23,5 @@ G4MaterialPropertyVector * G4MaterialPropertiesTable::AddProperty(const char *, 
 G4MaterialPropertyVector * G4MaterialPropertiesTable::GetProperty(const char *)
 size_t G4ProcessVector::length()
 size_t G4ProcessVector::size()
+void CLHEP::RandPoissonQ::shootArray(CLHEP::HepRandomEngine *, const int, long *, double)
+

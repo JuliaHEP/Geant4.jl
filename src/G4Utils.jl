@@ -1,6 +1,7 @@
 #---Exports from this section----------------------------------------------------------------------
 export G4ThreeVector, G4RotationMatrix, G4Transform3D
 export G4Random, G4Random!getTheSeed, G4Random!setTheSeed, G4Random!getTheEngine, G4Random!setTheEngine
+export G4RandFlat, G4RandBit, G4RandGamma, G4RandGauss, G4RandExponential, G4RandGeneral
 export CxxPtr, ConstCxxPtr, CxxRef, ConstCxxRef, move!, preserve, @ui_cmd, StdVector
 
 #---Useful Geant4 Typedefs-------------------------------------------------------------------------
@@ -8,6 +9,12 @@ const G4RotationMatrix = CLHEP!HepRotation
 const G4ThreeVector = CLHEP!Hep3Vector
 const G4Transform3D = HepGeom!Transform3D
 const G4Random = CLHEP!HepRandom
+const G4RandFlat = CLHEP!RandFlat
+const G4RandBit = CLHEP!RandBit
+const G4RandGamma = CLHEP!RandGamma
+const G4RandGauss = CLHEP!RandGaussQ
+const G4RandExponential = CLHEP!RandExponential
+const G4RandGeneral = CLHEP!RandGeneral
 const G4Random!getTheSeed = CLHEP!HepRandom!getTheSeed
 const G4Random!setTheSeed = CLHEP!HepRandom!setTheSeed
 const G4Random!getTheEngine = CLHEP!HepRandom!getTheEngine

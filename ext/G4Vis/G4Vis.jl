@@ -32,7 +32,7 @@ module G4Vis
     GeometryBasics.mesh(s::G4VSolid) = GeometryBasics.mesh(Tesselation(s, 36), facetype=QuadFace{Int})
 
  
-    colors = colormap("Grays", 6)
+    colors = colormap("Grays", 8)
 
     function Geant4.draw(pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
         lv = GetLogicalVolume(pv)
@@ -82,24 +82,27 @@ module G4Vis
     const UnitOnAxis = [( 1,0,0), (0,1,0), (0,0,1)]
 
     function draw!(s::LScene, lv::G4LogicalVolume, t::Transformation3D{Float64}, level::Int64, wireframe::Bool, maxlevel::Int64)
+        println(lv |> GetName |> String, " level = ", level)
         vsolid = GetSolid(lv)
         tsolid = GetEntityType(vsolid)
         shape =  getproperty(Geant4,Symbol(tsolid))
         solid = CxxRef{shape}(vsolid)
         m = GeometryBasics.mesh(solid[])
-        if ! isone(t)
-            points = GeometryBasics.coordinates(m)
-            faces  = GeometryBasics.faces(m)
-            map!(c -> c * t, points, points)
-            m = GeometryBasics.Mesh(meta(points; normals=normals(points, faces)), faces)
-        end
-        g4vis = GetVisAttributes(lv)
-        color = g4vis != C_NULL ? convert(Tuple{RGB, Float64}, GetColour(g4vis)) : (colors[level], GetDensity(GetMaterial(lv))/(12g/cm3))
-        visible = g4vis != C_NULL ? IsVisible(g4vis) : true
-        if wireframe
-            wireframe!(s, m, linewidth=1, visible=visible )
-        else
-            mesh!(s, m, color=color, transparency=true, visible=visible )
+        if ! isempty(m)
+            if ! isone(t)
+                points = GeometryBasics.coordinates(m)
+                faces  = GeometryBasics.faces(m)
+                map!(c -> c * t, points, points)
+                m = GeometryBasics.Mesh(meta(points; normals=normals(points, faces)), faces)
+            end
+            g4vis = GetVisAttributes(lv)
+            color = g4vis != C_NULL ? convert(Tuple{RGB, Float64}, GetColour(g4vis)) : (colors[level], GetDensity(GetMaterial(lv))/(12g/cm3))
+            visible = g4vis != C_NULL ? IsVisible(g4vis) : true
+            if wireframe
+                wireframe!(s, m, linewidth=1, visible=visible )
+            else
+                mesh!(s, m, color=color, transparency=true, visible=visible )
+            end
         end
         # Go down to the daughters
         if level < maxlevel

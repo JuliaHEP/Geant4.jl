@@ -76,7 +76,7 @@ function G4JLDetectorGDML(gdmlfile::String; check_overlap::Bool=false)
     parser = G4GDMLParser()
     !isfile(gdmlfile) && error("GDML File $gdmlfile does not exists")
     SetOverlapCheck(parser, check_overlap)
-    Read(parser, gdmlfile)
+    Read(parser, gdmlfile, false)
     G4JLDetectorGDML(GetWorldVolume(parser))
 end
 

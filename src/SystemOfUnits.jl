@@ -228,7 +228,7 @@ module SystemOfUnits
   const perMillion  = 0.000001
 
 #---Export only the 'symbols'
-export nm, μm, mm, cm, cm3, L, dL, cL, mL, m, km, rad, mrad, er, deg, ns, s, ms, μs, ps, kg, g, mg
+export nm, μm, mm, cm, cm2, cm3, L, dL, cL, mL, m, km, rad, mrad, er, deg, ns, s, ms, μs, ps, kg, g, mg
 export MeV, GeV, keV, eV
 export mole, joule, eplus, henry, atmosphere, kelvin, pascal, tesla
 
