@@ -17,6 +17,7 @@
 #include "G4TouchableHistory.hh"
 #include "G4UserWorkerInitialization.hh"
 #include "G4MagneticField.hh"
+#include "G4LogicalVolumeStore.hh"
 #include "jlcxx/functions.hpp"
 
 #include <string>
@@ -219,6 +220,9 @@ class G4JLEventAction : public G4UserEventAction {
     void* endaction_d;
     eventaction_f endaction;
 };
+
+inline size_t size(const G4LogicalVolumeStore* st) { return st->size();}
+inline G4LogicalVolume* GetVolume(const G4LogicalVolumeStore* st, size_t indx) { return st->at(indx);}
 
 class G4PolyconeSideRZ;
 class G4PolyhedraSideRZ;

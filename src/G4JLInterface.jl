@@ -68,16 +68,23 @@ struct G4JLDetectorGDML <: G4JLDetector
 end
 getConstructor(::G4JLDetectorGDML) = (det::G4JLDetectorGDML) -> det.fPhysicalWorld
 """
-    G4JLDetectorGDML(gdmlfile::String; check_overlap::Bool)
+    G4JLDetectorGDML(gdmlfile::String; check_overlap::Bool, validate_schema::Bool, init_method::Union{Function,Nothing})
 
 Initialize a G4JLDetector from a GDML file. The GDML file is parsed at this moment.
 """
-function G4JLDetectorGDML(gdmlfile::String; check_overlap::Bool=false)
+function G4JLDetectorGDML(gdmlfile::String; 
+                          check_overlap::Bool=false, 
+                          validate_schema::Bool=true, 
+                          init_method::Union{Function,Nothing}=nothing)
     parser = G4GDMLParser()
     !isfile(gdmlfile) && error("GDML File $gdmlfile does not exists")
     SetOverlapCheck(parser, check_overlap)
-    Read(parser, gdmlfile, false)
-    G4JLDetectorGDML(GetWorldVolume(parser))
+    Read(parser, gdmlfile, validate_schema)
+    world = GetWorldVolume(parser)
+    if !isnothing(init_method)
+        init_method(world)
+    end
+    G4JLDetectorGDML(world)
 end
 
 #---Primary Particle Generator----------------------------------------------------------------------

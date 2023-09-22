@@ -65,3 +65,13 @@ function Base.iterate(iter::G4ProcessVector, i::Int)
     i >= Geant4.entries(iter) && return nothing
     return (iter[i], i)
 end
+#---Iteration G4LogicalVolumeStore
+function Base.iterate(iter::CxxPtr{G4LogicalVolumeStore})
+    Geant4.size(iter) == 0 && return nothing
+    return (GetVolume(iter, 0), 0)
+end
+function Base.iterate(iter::CxxPtr{G4LogicalVolumeStore}, i::Int)
+    i = i + 1
+    i >= Geant4.size(iter) && return nothing
+    return (GetVolume(iter, i), i)
+end
