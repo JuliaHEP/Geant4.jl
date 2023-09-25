@@ -88,6 +88,7 @@ module G4Vis
         shape =  getproperty(Geant4,Symbol(tsolid))
         solid = CxxRef{shape}(vsolid)
         m = GeometryBasics.mesh(solid[])
+        g4vis = GetVisAttributes(lv)
         if ! isempty(m)
             if ! isone(t)
                 points = GeometryBasics.coordinates(m)
@@ -95,35 +96,34 @@ module G4Vis
                 map!(c -> c * t, points, points)
                 m = GeometryBasics.Mesh(meta(points; normals=normals(points, faces)), faces)
             end
-            g4vis = GetVisAttributes(lv)
             color = g4vis != C_NULL ? convert(Tuple{RGB, Float64}, GetColour(g4vis)) : (colors[level], GetDensity(GetMaterial(lv))/(12g/cm3))
             visible = g4vis != C_NULL ? IsVisible(g4vis) : true
             if wireframe
-                wireframe!(s, m, linewidth=1, visible=visible )
+                wireframe!(s, m, linewidth=1, visible=visible)
             else
                 mesh!(s, m, color=color, transparency=true, visible=visible )
             end
         end
-        # Go down to the daughters
-        if level < maxlevel
-            for idx in 1:GetNoDaughters(lv)
-                daughter = GetDaughter(lv, idx-1)
-                if IsReplicated(daughter)
-                    volume = GetLogicalVolume(daughter)
-                    axis, nReplicas, width = GetReplicaParameters(daughter)
-                    unitV = G4ThreeVector(UnitOnAxis[axis+1]...)
-                    for i in 1:nReplicas
-                        g4t = unitV * (-width*(nReplicas-1)*0.5 + (i-1)*width)
-                        transformation = Transformation3D{Float64}(one(RotMatrix3{Float64}), convert(Vector3{Float64}, g4t))
-                        draw!(s, volume[], transformation * t, level+1, wireframe, maxlevel)
-                    end
-                else    
-                    g4t = GetTranslation(daughter)
-                    g4r = GetRotation(daughter)
-                    transformation = Transformation3D{Float64}(convert(RotMatrix3{Float64}, g4r), convert(Vector3{Float64}, g4t))
-                    volume = GetLogicalVolume(daughter)
+        # Go down to the daughters (eventually)
+        level >= maxlevel && return
+        g4vis != C_NULL &&  IsDaughtersInvisible(g4vis) && return
+        for idx in 1:GetNoDaughters(lv)
+            daughter = GetDaughter(lv, idx-1)
+            if IsReplicated(daughter)
+                volume = GetLogicalVolume(daughter)
+                axis, nReplicas, width = GetReplicaParameters(daughter)
+                unitV = G4ThreeVector(UnitOnAxis[axis+1]...)
+                for i in 1:nReplicas
+                    g4t = unitV * (-width*(nReplicas-1)*0.5 + (i-1)*width)
+                    transformation = Transformation3D{Float64}(one(RotMatrix3{Float64}), convert(Vector3{Float64}, g4t))
                     draw!(s, volume[], transformation * t, level+1, wireframe, maxlevel)
                 end
+            else    
+                g4t = GetTranslation(daughter)
+                g4r = GetRotation(daughter)
+                transformation = Transformation3D{Float64}(convert(RotMatrix3{Float64}, g4r), convert(Vector3{Float64}, g4t))
+                volume = GetLogicalVolume(daughter)
+                draw!(s, volume[], transformation * t, level+1, wireframe, maxlevel)
             end
         end
     end

@@ -19,8 +19,8 @@ end
 
 @inline vpointer(c::Vector{Point3{Float64}}) = convert(Ptr{Cdouble}, pointer(c))
 @inline fpointer(f::Vector{TriangleFace{Int32}}) = convert(Ptr{Cint}, pointer(f))
-@inline ncoors(c::Vector{Point3{Float64}}) = size(c, 1) |> Int32
-@inline nfaces(f::Vector{TriangleFace{Int32}}) = size(f, 1) |> Int32
+@inline ncoors(c::Vector{Point3{Float64}}) = Base.size(c, 1) |> Int32
+@inline nfaces(f::Vector{TriangleFace{Int32}}) = Base.size(f, 1) |> Int32
 
 
 function boolean(op, m1::GeometryBasics.Mesh, m2::GeometryBasics.Mesh, t::Transformation3D{Float64}=one(Transformation3D{Float64}))
