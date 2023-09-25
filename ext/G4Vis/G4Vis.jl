@@ -82,7 +82,6 @@ module G4Vis
     const UnitOnAxis = [( 1,0,0), (0,1,0), (0,0,1)]
 
     function draw!(s::LScene, lv::G4LogicalVolume, t::Transformation3D{Float64}, level::Int64, wireframe::Bool, maxlevel::Int64)
-        println(lv |> GetName |> String, " level = ", level)
         vsolid = GetSolid(lv)
         tsolid = GetEntityType(vsolid)
         shape =  getproperty(Geant4,Symbol(tsolid))
