@@ -510,9 +510,15 @@ end
 Start a new run with `nevents` events.
 """
 function beamOn(app::G4JLApplication, nevents::Int)
-    app.nthreads > 0 && GC.enable(false)  # Disable GC in the run
-    BeamOn(app.runmanager, nevents)
-    app.nthreads > 0 && GC.enable(true)
+    if app.nthreads > 0
+        # before starting the run (creation of worker threads) we need to enter GC safe state not 
+        # to block any garbage collection.  
+        state = ccall(:jl_gc_safe_enter,Cint,())
+        BeamOn(app.runmanager, nevents)
+        ccall(:jl_gc_safe_leave,Cint,(Cint,), state)
+    else
+        BeamOn(app.runmanager, nevents)
+    end
     return
 end
 
