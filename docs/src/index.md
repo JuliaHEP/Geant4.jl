@@ -139,6 +139,7 @@ User actions are native Julia functions that are callbacks of the Geant4 toolkit
     physics::G4VUserPhysicsList # Physics List
     generator::G4JLPrimaryGenerator # Primary particle generator
     field::Union{G4Field, G4JLMagneticField} # Magnetic field instance
+    evtdisplay::G4JLDisplay     # Event display instance
     nthreads::Int32             # number of worker threads
     verbose::Int32              # verbosity level for physics lists
     sdetectors::Dict{String,Vector{G4JLSensitiveDetector}} # dictionary of sensitive detectors
@@ -216,6 +217,18 @@ Array{Int64, 3}
 
 julia> size(sum)
 (30, 30, 30)
+```
+### Detector and Event Display
+For visualization applications, the user can create an instance of `G4JLEventDisplay([settings file])` and give it to the constructor of `G4JLApplication` in the `evtdisplay` attribute. The constructor accepts a visualization settings file that will overwrite the default settings in the file [Geant4.jl/ext/G4Vis/settings.jl](https://github.com/JuliaHEP/Geant4.jl/blob/master/ext/G4Vis/settings.jl). The format of the settings is Julia `NamedTuple`. Here is an example:
+```julia
+(
+    display = (
+        show_axis = false,
+    ),
+    trajectories = (
+        color = :yellow,
+    ),
+)
 ```
 
 ## Examples
@@ -314,6 +327,12 @@ We have the possibility during the development of this package to re-generate lo
 Once the wrapper code is stabilized we move the generated code to the repository [Geant4\_cxxwrap](https://github.com/peremato/Geant4_cxxwrap) to regenerate the binary package `Geant4_julia_jll` using the `BinaryBuilder`.
 
 ## Release Notes
+### 0.1.10
+- New features
+    - Provide an EventDisplay as a building block of the application. New `evtdisplay` argument in the constructor. 
+    - Added new wrapped classes to support event displays: G4EventManager, G4TrajectoryContainer, G4VTrajectory, G4VTrajectoryPoint, G4StateManager, G4VStateDependent G4ApplicationState
+### 0.1.9
+- Changes needed for running ATLTileCalTB example 
 ### 0.1.8
 - New features:
     - Added all example scripts as tests, so that the CI will systematically execute them.

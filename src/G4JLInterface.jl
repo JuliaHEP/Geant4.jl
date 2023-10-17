@@ -1,7 +1,7 @@
 #---Exports from this section----------------------------------------------------------------------
 export G4JLDetector, G4JLSimulationData, G4JLApplication, G4JLDetectorGDML, G4JLSDData, G4JLSensitiveDetector, 
         configure, initialize, reinitialize, beamOn, getSDdata, getSIMdata, getConstructor, getInitializer, G4JLGunGenerator, 
-        G4JLPrimaryGenerator, G4JLGeneratorData, G4JLUniformMagField, G4JLMagneticField, G4JLFieldData
+        G4JLPrimaryGenerator, G4JLGeneratorData, G4JLUniformMagField, G4JLMagneticField, G4JLFieldData, G4JLDisplay
 
 #---Geometry usability functions-------------------------------------------------------------------
 G4PVPlacement(r::Union{Nothing, G4RotationMatrix}, d::G4ThreeVector, l::Union{Nothing,G4LogicalVolume}, s::String, 
@@ -58,6 +58,7 @@ abstract type  G4JLSimulationData end
 abstract type  G4JLSDData end
 abstract type  G4JLGeneratorData end
 abstract type  G4JLFieldData end
+abstract type  G4JLDisplay end
 
 getConstructor(d::G4JLDetector) = error("You need to define the function Geant4.getConstructor($(typeof(d))) returning the actual contruct method")
 getInitializer(::G4VUserPrimaryGeneratorAction) = nothing
@@ -242,7 +243,8 @@ mutable struct G4JLApplication{DET<:G4JLDetector,DAT<:G4JLSimulationData} <: G4J
     detector::DET
     simdata::Vector{DAT}  # Each worker thread has its own data                            
     generator::G4JLPrimaryGenerator
-    field::Union{Nothing, G4Field, G4JLMagneticField} 
+    field::Union{Nothing, G4Field, G4JLMagneticField}
+    evtdisplay::Union{Nothing, G4JLDisplay}
     const nthreads::Int32
     const verbose::Int32
     # Types 
@@ -262,6 +264,7 @@ mutable struct G4JLApplication{DET<:G4JLDetector,DAT<:G4JLSimulationData} <: G4J
     const endrunaction_method::Union{Nothing,Function}
     const begineventaction_method::Union{Nothing,Function}
     const endeventaction_method::Union{Nothing,Function}
+    const statechange_method::Union{Nothing, Function}
     # Sensitive Detectors
     protoSDs::Dict{String,G4JLProtoSD}
     sdetectors::Dict{String,Vector{G4JLSensitiveDetector}} # single and MT
@@ -280,6 +283,7 @@ Initialize a G4JLApplication with its associated tyopes and methods.
 - `simdata=G4JLNoData()`: simulation data object
 - `generator=G4JLParticleGun()`: primary particle generator
 - `field=nothing`: magnetic field
+- `evtdisplay=nothing`: event display (visualization)
 - `nthreads=0`: number of Geant4 worker threads ( >0 implies MT)
 - `verbose=0` : default verbority level (physics, ...)
 - `runmanager_type=G4RunManager`: run manager type
@@ -295,7 +299,8 @@ Initialize a G4JLApplication with its associated tyopes and methods.
 - `beginrunaction_method=nothing`: begin run action method with signature `(::G4Run, ::G4JLApplication)::Nothing`
 - `endrunaction_method=nothing`: end run action method with signature `(::G4Run, ::G4JLApplication)::Nothing`
 - `begineventaction_method=nothing`: begin event action method with signature `(::G4Event, ::G4JLApplication)::Nothing`
-- `endeventaction_method=nothing`: end end action method with signature `(::G4Event, ::G4JLApplication)::Nothing`
+- `endeventaction_method=nothing`: end event action method with signature `(::G4Event, ::G4JLApplication)::Nothing`
+- `statechange_method=nothing`: state change notifycation method with  signature `(from::G4ApplicationState, to::G4ApplicationState, ::G4JLApplication)::Bool`
 - `sdetectors::Vector{}=[]`: vector of pairs `lv::String => sd::G4JLSensitiveDetector` to associate logical volumes to sensitive detector
 - `scorers::Vector{}=[]`: vector of [`G4JLScoringMesh`](@ref)s
 """
@@ -303,6 +308,7 @@ function G4JLApplication(;detector::G4JLDetector,
                 simdata=G4JLNoData(),
                 generator=G4JLParticleGun(),
                 field=nothing,
+                evtdisplay=nothing,
                 nthreads=0,
                 verbose=0,
                 runmanager_type=G4RunManager,
@@ -319,17 +325,41 @@ function G4JLApplication(;detector::G4JLDetector,
                 endrunaction_method=nothing,
                 begineventaction_method=nothing,
                 endeventaction_method=nothing,
+                statechange_method=nothing,
                 sdetectors=[],
                 scorers=[],
                 )
-    runmanager_type = nthreads > 0 ? G4MTRunManager : runmanager_type # if nthreads > 0 force G4MTRunManager
-    G4JLApplication{typeof(detector), typeof(simdata)}( runmanager_type(), detector, [deepcopy(simdata) for i in 1:nthreads+1], generator, 
-                                                        field, nthreads, 
-                                                        verbose, nthreads > 0 ? G4MTRunManager : G4RunManager, builder_type, physics_type, 
-                                                        runaction_type, eventaction_type, trackaction_type, stepaction_type,
-                                                        stepaction_method, pretrackaction_method, posttrackaction_method, 
-                                                        beginrunaction_method, endrunaction_method, begineventaction_method, endeventaction_method,
-                                                        Dict(sdetectors), Dict{String,Vector{G4JLSensitiveDetector}}(), scorers, nothing, nothing)
+    # if nthreads > 0 force G4MTRunManager
+    runmanager_type = nthreads > 0 ? G4MTRunManager : runmanager_type
+    # check whether the RunMamager is already constructed
+    runmgr = G4RunManager!GetRunManager()
+    if runmgr == C_NULL
+        runmgr = runmanager_type()
+    else
+        statemgr = G4StateManager!GetStateManager()
+        SetNewState(statemgr, G4State_PreInit)
+    end
+    # instantiate G4JLApplication
+    this = G4JLApplication{typeof(detector), typeof(simdata)}(
+                           runmgr, detector, [deepcopy(simdata) for i in 1:nthreads+1], generator, 
+                           field, evtdisplay, nthreads, 
+                           verbose, nthreads > 0 ? G4MTRunManager : G4RunManager, builder_type, physics_type, 
+                           runaction_type, eventaction_type, trackaction_type, stepaction_type,
+                           stepaction_method, pretrackaction_method, posttrackaction_method, 
+                           beginrunaction_method, endrunaction_method, begineventaction_method, 
+                           endeventaction_method, statechange_method,
+                           Dict(sdetectors), Dict{String,Vector{G4JLSensitiveDetector}}(), 
+                           scorers, nothing, nothing)
+    # register state change dependent
+    if !isnothing(statechange_method)
+        sf = make_callback(this, statechange_method, CxxBool, (G4ApplicationState, G4ApplicationState)) |> closure
+        G4JLStateDependent(sf...)
+    end
+    if !isnothing(evtdisplay)
+        sf = make_callback(this, evtdisplay.stateChange, CxxBool, (G4ApplicationState, G4ApplicationState)) |> closure
+        G4JLStateDependent(sf...)
+    end
+    return this
 end
 
 """
@@ -492,6 +522,10 @@ function initialize(app::G4JLApplication)
         ApplyCommand(uimgr, "/score/close")
         ApplyCommand(uimgr, "/score/list")
     end
+    #---Initialize Event Display---------------------------------------------------------------
+    if ! isnothing(app.evtdisplay)
+        app.evtdisplay.initDisplay(app.evtdisplay)
+    end
 end
 """
     reinitialize(app::G4JLApplication, det::G4JLDetector)
@@ -504,20 +538,31 @@ function reinitialize(app::G4JLApplication, det::G4JLDetector)
     SetUserInitialization(runmgr, move!(app.builder_type(cb1...)))
     ReinitializeGeometry(runmgr)
     Initialize(runmgr)
+    #---Initialize Event Display---------------------------------------------------------------
+    if ! isnothing(app.evtdisplay)
+        app.evtdisplay.initDisplay(app.evtdisplay)
+    end
 end
 """
     beamOn(app::G4JLApplication, nevents::Int)
 Start a new run with `nevents` events.
 """
 function beamOn(app::G4JLApplication, nevents::Int)
-    if app.nthreads > 0
-        # before starting the run (creation of worker threads) we need to enter GC safe state not 
-        # to block any garbage collection.  
-        state = ccall(:jl_gc_safe_enter,Cint,())
-        BeamOn(app.runmanager, nevents)
-        ccall(:jl_gc_safe_leave,Cint,(Cint,), state)
-    else
-        BeamOn(app.runmanager, nevents)
+    statemgr = G4StateManager!GetStateManager()
+    in_state = GetCurrentState(statemgr)[]
+    try 
+        if app.nthreads > 0
+            # before starting the run (creation of worker threads) we need to enter GC safe state not 
+            # to block any garbage collection.  
+            state = ccall(:jl_gc_safe_enter,Cint,())
+            BeamOn(app.runmanager, nevents)
+            ccall(:jl_gc_safe_leave,Cint,(Cint,), state)
+        else
+            BeamOn(app.runmanager, nevents)
+        end
+    catch 
+        SetNewState(statemgr, in_state)
+        rethrow()
     end
     return
 end

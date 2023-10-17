@@ -75,3 +75,13 @@ function Base.iterate(iter::CxxPtr{G4LogicalVolumeStore}, i::Int)
     i >= Geant4.size(iter) && return nothing
     return (GetVolume(iter, i), i)
 end
+#---Iteration G4TrajectoryContainer
+function Base.iterate(iter::G4TrajectoryContainer)
+    Geant4.size(iter) == 0 && return nothing
+    return (iter[0], 0)
+end
+function Base.iterate(iter::G4TrajectoryContainer, i::Int)
+    i = i + 1
+    i >= Geant4.size(iter) && return nothing
+    return (iter[i], i)
+end

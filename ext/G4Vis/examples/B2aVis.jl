@@ -2,35 +2,44 @@ using Geant4
 using Geant4.SystemOfUnits
 using GLMakie, Rotations, IGLWrap_jll  # to force loding G4Vis extension
 
-include(joinpath(@__DIR__, "../../../examples/basic/B2/B2a.jl"))
+include(joinpath(@__DIR__, "../../../examples/basic/B2/DetectorB2a.jl"))
 
-function drawHits(app)
-    sddata = getSDdata(app, "Chamber_SD")                   # Get the hits from sensitive detector data
-    # Separate the hists into 'tracks' made of points
-    tracks = Vector{Point3}[]
-    trackid = 0
-    for h in sddata.trackerHits
-        if h.trackID != trackid  # new track!
-            push!(tracks, Point3[])
-            trackid = h.trackID
-        end
-        push!(tracks[end], h.pos)
-    end
-    # Plot each 'track' as aline 
-    for track in tracks
-        lines!(track)
-    end
-end
+#--------------------------------------------------------------------------------------------------
+#---Particle Gun initialization--------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+particlegun = G4JLGunGenerator(particle = "proton", 
+                               energy = 3GeV, 
+                               direction = G4ThreeVector(0,0,1), 
+                               position = G4ThreeVector(0,0,-2940.0))
+#--------------------------------------------------------------------------------------------------
+#---Event Display----------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+display = G4JLEventDisplay(joinpath(@__DIR__, "VisSettings.jl"))
+#--------------------------------------------------------------------------------------------------
+#---Create the Application-------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+app = G4JLApplication(;detector = B2aDetector(nChambers=5),          # detector with parameters
+                       generator = particlegun,                      # primary particle generator
+                       physics_type = FTFP_BERT,                     # what physics list to instantiate
+                       evtdisplay =  display,                        # detector and event visualization
+                      )
+wait_for_key(prompt) = (print(stdout, prompt); read(stdin, 1); nothing)
 
-#---Draw the detector------------------------------------------------------------------------------
-world = GetWorldVolume()
-draw(world)
+#---Configure, Initialize and Run------------------------------------------------------------------                      
+configure(app)
+initialize(app)
 
-#---Draw the TrackerHits---------------------------------------------------------------------------
-for i in 1:10
-    beamOn(app, 1)
-    drawHits(app)
-end
+beamOn(app,1)
+wait_for_key("press any key to continue")
 
+beamOn(app,1)
+wait_for_key("press any key to continue")
 
+reinitialize(app,  B2aDetector(nChambers=8))
+wait_for_key("press any key to continue")
 
+beamOn(app,1)
+wait_for_key("press any key to continue")
+
+beamOn(app,1)
+wait_for_key("press any key to continue")

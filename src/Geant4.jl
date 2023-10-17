@@ -37,10 +37,11 @@ module Geant4
     include("G4JLInterface.jl")
 
     #---G4Vis--------------------------------------------------------------------------------------
-    export draw, draw!, drawDistanceToOut
+    export draw, draw!, drawDistanceToOut, G4JLEventDisplay
     drawDistanceToOut() = "Not implemented"
     draw() = "Not implemented"
     draw!() = "Not implemented"
+    G4JLEventDisplay(::Int64) = "Not implemented"
 
 end
 

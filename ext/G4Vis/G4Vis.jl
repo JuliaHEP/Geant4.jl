@@ -62,7 +62,7 @@ module G4Vis
         end
     end
 
-    function Geant4.draw!(s::LScene, pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
+    function Geant4.draw!(s, pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
         lv = GetLogicalVolume(pv)
         draw!(s, lv[], one(Transformation3D{Float64}), 1, wireframe, maxlevel)
     end
@@ -81,7 +81,7 @@ module G4Vis
 
     const UnitOnAxis = [( 1,0,0), (0,1,0), (0,0,1)]
 
-    function draw!(s::LScene, lv::G4LogicalVolume, t::Transformation3D{Float64}, level::Int64, wireframe::Bool, maxlevel::Int64)
+    function Geant4.draw!(s, lv::G4LogicalVolume, t::Transformation3D{Float64}, level::Int64, wireframe::Bool, maxlevel::Int64)
         vsolid = GetSolid(lv)
         tsolid = GetEntityType(vsolid)
         shape =  getproperty(Geant4,Symbol(tsolid))
@@ -163,6 +163,9 @@ module G4Vis
 
    #---Boolean solids------------------------------------------------------------------------------
    include("Boolean.jl")
+
+   #---Event Display-------------------------------------------------------------------------------
+   include("G4Display.jl")
 
 end # module G4Visualization
 

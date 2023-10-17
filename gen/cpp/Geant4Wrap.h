@@ -18,6 +18,7 @@
 #include "G4UserWorkerInitialization.hh"
 #include "G4MagneticField.hh"
 #include "G4LogicalVolumeStore.hh"
+#include "G4VStateDependent.hh"
 #include "jlcxx/functions.hpp"
 
 #include <string>
@@ -219,6 +220,17 @@ class G4JLEventAction : public G4UserEventAction {
     eventaction_f beginaction;
     void* endaction_d;
     eventaction_f endaction;
+};
+
+//---G4JLStateDependent------------------------------------------------------------------------------------
+typedef G4bool (*notify_f) (G4ApplicationState, G4ApplicationState, void*);
+class G4JLStateDependent : public G4VStateDependent {
+  public:
+    G4JLStateDependent(notify_f notify, void* data) : notify_d(data), notify(notify) {}
+    G4bool Notify(G4ApplicationState to) override;
+  private:
+    void* notify_d;
+    notify_f notify;
 };
 
 inline size_t size(const G4LogicalVolumeStore* st) { return st->size();}

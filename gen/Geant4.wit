@@ -138,6 +138,15 @@ input               = [ "Geant4Wrap.h",
                         "G4ScoringManager.hh",
                         #---Threading-------------
                         "G4Threading.hh",
+                        #---Managers--------------
+                        "G4EventManager.hh",
+                        "G4TrajectoryContainer.hh",
+                        "G4VTrajectory.hh",
+                        "G4VTrajectoryPoint.hh",
+                        #---ApplicationState------
+                        "G4StateManager.hh",
+                        "G4VStateDependent.hh",
+                        "G4ApplicationState.hh",
                       ]
 
 extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh", "G4ParticleMessenger.hh", "G4IonTable.hh" ]

@@ -127,3 +127,8 @@ void G4JLMagField::GetFieldValue( const G4double point[3], G4double* field) cons
   field[1] = vfield.y();
   field[2] = vfield.z();
 }
+
+G4bool G4JLStateDependent::Notify(G4ApplicationState to) {
+  auto from = G4StateManager::GetStateManager()->GetPreviousState();
+  return notify(from, to, notify_d);
+}
