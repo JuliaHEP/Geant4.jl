@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Example B1 · Geant4.jl</title><meta name="title" content="Example B1 · Geant4.jl"/><meta property="og:title" content="Example B1 · Geant4.jl"/><meta property="twitter:title" content="Example B1 · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">APIs</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../TestEm3/">Example TestEm3</a></li><li><a class="tocitem" href="../WaterPhantom/">Example WaterPhantom</a></li><li class="is-active"><a class="tocitem" href>Example B1</a></li><li><a class="tocitem" href="../B2a/">Example B2a</a></li><li><a class="tocitem" href="../B2aVis/">Example B2aVis</a></li><li><a class="tocitem" href="../Solids/">Example Solids</a></li><li><a class="tocitem" href="../HBC30/">Example HBC30</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>Example B1</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Example B1</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/notebooks/B1.md#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Basic/B1-Example"><a class="docs-heading-anchor" href="#Basic/B1-Example">Basic/B1 Example</a><a id="Basic/B1-Example-1"></a><a class="docs-heading-anchor-permalink" href="#Basic/B1-Example" title="Permalink"></a></h1><p>Import the <code>Geant4</code> and <code>Geant4.SystemOfUnits</code> modules</p><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits</code></pre><pre><code class="nohighlight hljs">WARNING: using Geant4.get in module Main conflicts with an existing identifier.</code></pre><h3 id="Define-the-function-that-will-construct-the-detector-geometry."><a class="docs-heading-anchor" href="#Define-the-function-that-will-construct-the-detector-geometry.">Define the function that will construct the detector geometry.</a><a id="Define-the-function-that-will-construct-the-detector-geometry.-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-function-that-will-construct-the-detector-geometry." title="Permalink"></a></h3><p>The setup consists of a an envelope of box shape containing two volumes: a spherical cone and a trapezoid.</p><p>In this example we use  some common materials materials for medical applications. The envelope is made of water and the two inner volumes are made from tissue and bone materials. The materials are created with the help of the G4NistManager class, which allows to build a material from the NIST database using their names. All available materials can be found in the Geant4 User&#39;s Guide for Application Developers, Appendix 10: Geant4 Materials Database.</p><pre><code class="language-julia hljs">include(&quot;DetectorB1.jl&quot;)
+
+detdesc = G4JLDetectorConstruction(constructB1Detector)
+physics = QBBC()
+#SetVerboseLevel(physics, 1)</code></pre><pre><code class="nohighlight hljs">&lt;&lt;&lt; Reference Physics List QBBC 
+
+
+
+
+
+Geant4.QBBCAllocated(Ptr{Nothing} @0x0000000001fc46d0)</code></pre><h3 id="User-Actions"><a class="docs-heading-anchor" href="#User-Actions">User Actions</a><a id="User-Actions-1"></a><a class="docs-heading-anchor-permalink" href="#User-Actions" title="Permalink"></a></h3><pre><code class="language-julia hljs"># User Actions
+function buildApp(self::G4JLActionInitialization, ::Nothing)
+    # Create particle gun
+    particle_gun = G4JLParticleGun()  
+    # Setup particle gun
+    pg = GetGun(particle_gun)
+    SetParticleByName(pg, &quot;e-&quot;)
+    SetParticleEnergy(pg, 100MeV)
+    SetParticleMomentumDirection(pg, G4ThreeVector(0,0,1))
+    SetParticlePosition(pg, G4ThreeVector(0,0,-16cm))
+    # Register and relinquish ownership
+    SetUserAction(self, move!(particle_gun))
+  end
+  app = G4JLActionInitialization(buildApp)</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLActionInitializationAllocated(Ptr{Nothing} @0x000000000111f510)</code></pre><h3 id="Instantiate-RunManager-and-initialize"><a class="docs-heading-anchor" href="#Instantiate-RunManager-and-initialize">Instantiate RunManager and initialize</a><a id="Instantiate-RunManager-and-initialize-1"></a><a class="docs-heading-anchor-permalink" href="#Instantiate-RunManager-and-initialize" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Construct the default run manager and set initializers
+runManager = G4RunManager()
+
+# Register User initialization objects and relinquish ownership
+SetUserInitialization(runManager, move!(detdesc))
+SetUserInitialization(runManager, move!(physics))
+SetUserInitialization(runManager, move!(app))
+
+# Get the pointer to the User Interface manager
+UImanager = G4UImanager!GetUIpointer();</code></pre><pre><code class="nohighlight hljs">**************************************************************
+ Geant4 version Name: geant4-11-01-patch-01 [MT]   (10-February-2023)
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************</code></pre><h3 id="Execute-the-commands-to-initialize-and-run-few-events"><a class="docs-heading-anchor" href="#Execute-the-commands-to-initialize-and-run-few-events">Execute the commands to initialize and run few events</a><a id="Execute-the-commands-to-initialize-and-run-few-events-1"></a><a class="docs-heading-anchor-permalink" href="#Execute-the-commands-to-initialize-and-run-few-events" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Initialize kernel
+ApplyCommand(UImanager, &quot;/run/initialize&quot;)
+
+# Change verbosity
+#ApplyCommand(UImanager, &quot;/control/verbose 2&quot;)
+#ApplyCommand(UImanager, &quot;/run/verbose 2&quot;)
+#ApplyCommand(UImanager, &quot;/event/verbose 0&quot;)
+ApplyCommand(UImanager, &quot;/tracking/verbose 1&quot;)
+
+# gamma 6 MeV to the direction (0.,0.,1.)
+ApplyCommand(UImanager, &quot;/gun/particle gamma&quot;)
+ApplyCommand(UImanager, &quot;/gun/energy 6 MeV&quot;)
+
+# go
+ApplyCommand(UImanager, &quot;/run/beamOn 1&quot;)</code></pre><pre><code class="nohighlight hljs">Checking overlaps for volume Envelope:0 (G4Box) ... OK! 
+Checking overlaps for volume Shape1:0 (G4Cons) ... OK! 
+Checking overlaps for volume Shape2:0 (G4Trd) ... OK! 
+### HadronInelasticQBBC Construct Process:
+    Emin(FTFP)= 3 GeV; Emax(FTFP)= 100000 GeV
+    Emin(BERT)= 1 GeV; Emax(BERT)= 6 GeV; Emax(BERTpions)= 12 GeV;
+    Emin(BIC) = 0 GeV; Emax(BIC)= 1.5 GeV.
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                1
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      100 TeV
+Number of bins per decade of a table               7
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         1 keV
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Urban
+Use built-in Birks satuaration                     0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 0
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           1
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 100 TeV in 61 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  100 TeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 100 TeV in 56 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+       Klein-Nishina : Emin=    0 eV  Emax=  100 TeV
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 100 TeV, 18 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+     BetheHeitlerLPM : Emin=    0 eV  Emax=  100 TeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 150 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 150 keV to 100 TeV in 62 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  100 TeV  CullenGenerator
+
+msc:  for e-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  100 MeV Nbins=42 100 eV  - 100 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+        WentzelVIUni : Emin=  100 MeV Emax=  100 TeV Nbins=42 100 MeV - 100 TeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e-  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  100 TeV
+
+eBrem:  for e-  XStype:4  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      LPM flag: 1 for E &gt; 1 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    0 eV  Emax=    1 GeV  ModifiedTsai
+            eBremLPM : Emin=    1 GeV Emax=  100 TeV  ModifiedTsai
+
+CoulombScat:  for e- XStype:1 SubType=1 BuildTable=1
+      Lambda table from 100 MeV to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=  100 MeV Emax=  100 TeV
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  100 MeV Nbins=42 100 eV  - 100 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+        WentzelVIUni : Emin=  100 MeV Emax=  100 TeV Nbins=42 100 MeV - 100 TeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  100 TeV
+
+eBrem:  for e+  XStype:4  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      LPM flag: 1 for E &gt; 1 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    0 eV  Emax=    1 GeV  ModifiedTsai
+            eBremLPM : Emin=    1 GeV Emax=  100 TeV  ModifiedTsai
+
+annihil:  for e+ XStype:2 SubType=5 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            eplus2gg : Emin=    0 eV  Emax=  100 TeV
+
+CoulombScat:  for e+ XStype:1 SubType=1 BuildTable=1
+      Lambda table from 100 MeV to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=  100 MeV Emax=  100 TeV
+
+msc:  for proton  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for proton  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=    2 MeV
+          BetheBloch : Emin=    2 MeV Emax=  100 TeV
+
+hBrems:  for proton  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for proton  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Sampling table 17x1001; from 7.50618 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for proton XStype:1 SubType=1 BuildTable=1
+      Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for GenericIon  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+ionIoni:  for GenericIon  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.02
+      Stopping Power data for 17 ion/material pairs
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            BraggIon : Emin=    0 eV  Emax=    2 MeV
+          BetheBloch : Emin=    2 MeV Emax=  100 TeV
+
+msc:  for alpha  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+ionIoni:  for alpha  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.02
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            BraggIon : Emin=    0 eV  Emax=7.9452 MeV
+          BetheBloch : Emin=7.9452 MeV Emax=  100 TeV
+
+msc:  for anti_proton  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for anti_proton  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO : Emin=    0 eV  Emax=    2 MeV
+          BetheBloch : Emin=    2 MeV Emax=  100 TeV
+
+hBrems:  for anti_proton  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for anti_proton  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Sampling table 17x1001; from 7.50618 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for anti_proton XStype:1 SubType=1 BuildTable=1
+      Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for kaon+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for kaon+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=1.05231 MeV
+          BetheBloch : Emin=1.05231 MeV Emax=  100 TeV
+
+hBrems:  for kaon+  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for kaon+  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Sampling table 18x1001; from 3.94942 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for kaon+ XStype:1 SubType=1 BuildTable=1
+      Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for kaon-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for kaon-  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO : Emin=    0 eV  Emax=1.05231 MeV
+          BetheBloch : Emin=1.05231 MeV Emax=  100 TeV
+
+hBrems:  for kaon-  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for kaon-  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Sampling table 18x1001; from 3.94942 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for kaon- XStype:1 SubType=1 BuildTable=1
+      Used Lambda table of kaon+
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for mu+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+muIoni:  for mu+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=  200 keV
+        MuBetheBloch : Emin=  200 keV Emax=  100 TeV
+
+muBrems:  for mu+  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+              MuBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+muPairProd:  for mu+  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Sampling table 21x1001; from 0.85 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+          muPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for mu+ XStype:1 SubType=1 BuildTable=1
+      Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for mu-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+muIoni:  for mu-  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO : Emin=    0 eV  Emax=  200 keV
+        MuBetheBloch : Emin=  200 keV Emax=  100 TeV
+
+muBrems:  for mu-  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+              MuBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+muPairProd:  for mu-  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Sampling table 21x1001; from 0.85 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+          muPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for mu- XStype:1 SubType=1 BuildTable=1
+      Used Lambda table of mu+
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for pi+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for pi+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=297.505 keV
+          BetheBloch : Emin=297.505 keV Emax=  100 TeV
+
+hBrems:  for pi+  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for pi+  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Sampling table 20x1001; from 1.11656 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for pi+ XStype:1 SubType=1 BuildTable=1
+      Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+msc:  for pi-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  100 TeV Nbins=84 100 eV  - 100 TeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=1 Llim=1 mm
+
+hIoni:  for pi-  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO : Emin=    0 eV  Emax=297.505 keV
+          BetheBloch : Emin=297.505 keV Emax=  100 TeV
+
+hBrems:  for pi-  XStype:1  SubType=3
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+hPairProd:  for pi-  XStype:1  SubType=4
+      dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Sampling table 20x1001; from 1.11656 GeV to 100 TeV 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+           hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
+
+CoulombScat:  for pi- XStype:1 SubType=1 BuildTable=1
+      Used Lambda table of pi+
+      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
+
+====================================================================
+                  HADRONIC PROCESSES SUMMARY (verbose level 1)
+
+---------------------------------------------------
+                           Hadronic Processes for B-
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: B-Inelastic
+        Model:                      FTFP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for D-
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: D-Inelastic
+        Model:                      FTFP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for GenericIon
+
+  Process: ionInelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---&gt; 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---&gt; 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: ionElastic
+        Model:          NNDiffuseElastic: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for He3
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: He3Inelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---&gt; 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---&gt; 100 TeV/n
+     Cr_sctns:     G4ParticleInelasticXS: 0 eV  ---&gt; 25.6 PeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for alpha
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: alphaInelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---&gt; 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---&gt; 100 TeV/n
+     Cr_sctns:     G4ParticleInelasticXS: 0 eV  ---&gt; 25.6 PeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for anti_He3
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---&gt; 100.1 MeV/n
+        Model:              AntiAElastic: 100 MeV/n ---&gt; 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: anti_He3Inelastic
+        Model:                      FTFP: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: hFritiofCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for anti_alpha
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---&gt; 100.1 MeV/n
+        Model:              AntiAElastic: 100 MeV/n ---&gt; 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: anti_alphaInelastic
+        Model:                      FTFP: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: hFritiofCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for anti_deuteron
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---&gt; 100.1 MeV/n
+        Model:              AntiAElastic: 100 MeV/n ---&gt; 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: anti_deuteronInelastic
+        Model:                      FTFP: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: hFritiofCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for anti_hypertriton
+
+  Process: hFritiofCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for anti_lambda
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: anti_lambdaInelastic
+        Model:                      FTFP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: hFritiofCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for anti_neutron
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100.1 MeV
+        Model:              AntiAElastic: 100 MeV ---&gt; 100 TeV
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: anti_neutronInelastic
+        Model:                      FTFP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: hFritiofCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for anti_proton
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100.1 MeV
+        Model:              AntiAElastic: 100 MeV ---&gt; 100 TeV
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: anti_protonInelastic
+        Model:                      FTFP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: hFritiofCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for anti_triton
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---&gt; 100.1 MeV/n
+        Model:              AntiAElastic: 100 MeV/n ---&gt; 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: anti_tritonInelastic
+        Model:                      FTFP: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: hFritiofCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for deuteron
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: dInelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---&gt; 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---&gt; 100 TeV/n
+     Cr_sctns:     G4ParticleInelasticXS: 0 eV  ---&gt; 25.6 PeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for e+
+
+  Process: positronNuclear
+        Model:   G4ElectroVDNuclearModel: 0 eV  ---&gt; 1 PeV
+     Cr_sctns:          ElectroNuclearXS: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for e-
+
+  Process: electronNuclear
+        Model:   G4ElectroVDNuclearModel: 0 eV  ---&gt; 1 PeV
+     Cr_sctns:          ElectroNuclearXS: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for gamma
+
+  Process: photonNuclear
+        Model:               GammaNPreco: 0 eV  ---&gt; 200 MeV
+        Model:            BertiniCascade: 199 MeV ---&gt; 6 GeV
+        Model:           TheoFSGenerator: 3 GeV ---&gt; 100 TeV
+     Cr_sctns:            GammaNuclearXS: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for kaon+
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: kaon+Inelastic
+        Model:                      FTFP: 3 GeV ---&gt; 100 TeV
+        Model:            BertiniCascade: 0 eV  ---&gt; 6 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for kaon-
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: kaon-Inelastic
+        Model:                      FTFP: 3 GeV ---&gt; 100 TeV
+        Model:            BertiniCascade: 0 eV  ---&gt; 6 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: hBertiniCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for lambda
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: lambdaInelastic
+        Model:                      FTFP: 3 GeV ---&gt; 100 TeV
+        Model:            BertiniCascade: 0 eV  ---&gt; 6 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for mu+
+
+  Process: muonNuclear
+        Model:      G4MuonVDNuclearModel: 0 eV  ---&gt; 1 PeV
+     Cr_sctns:     KokoulinMuonNuclearXS: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for mu-
+
+  Process: muonNuclear
+        Model:      G4MuonVDNuclearModel: 0 eV  ---&gt; 1 PeV
+     Cr_sctns:     KokoulinMuonNuclearXS: 0 eV  ---&gt; 100 TeV
+
+
+  Process: muMinusCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for neutron
+
+  Process: hadElastic
+        Model:             hElasticCHIPS: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:        G4NeutronElasticXS: 0 eV  ---&gt; 100 TeV
+
+
+  Process: neutronInelastic
+        Model:                      FTFP: 3 GeV ---&gt; 100 TeV
+        Model:            BertiniCascade: 1 GeV ---&gt; 6 GeV
+        Model:            Binary Cascade: 0 eV  ---&gt; 1.5 GeV
+     Cr_sctns:      G4NeutronInelasticXS: 0 eV  ---&gt; 100 TeV
+
+
+  Process: nCapture
+        Model:               nRadCapture: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:        G4NeutronCaptureXS: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for pi+
+
+  Process: hadElastic
+        Model:           hElasticGlauber: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: pi+Inelastic
+        Model:                      FTFP: 3 GeV ---&gt; 100 TeV
+        Model:            BertiniCascade: 1 GeV ---&gt; 12 GeV
+        Model:            Binary Cascade: 0 eV  ---&gt; 1.5 GeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for pi-
+
+  Process: hadElastic
+        Model:           hElasticGlauber: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: pi-Inelastic
+        Model:                      FTFP: 3 GeV ---&gt; 100 TeV
+        Model:            BertiniCascade: 1 GeV ---&gt; 12 GeV
+        Model:            Binary Cascade: 0 eV  ---&gt; 1.5 GeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: hBertiniCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for proton
+
+  Process: hadElastic
+        Model:             hElasticCHIPS: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: protonInelastic
+        Model:                      FTFP: 3 GeV ---&gt; 100 TeV
+        Model:            BertiniCascade: 1 GeV ---&gt; 6 GeV
+        Model:            Binary Cascade: 0 eV  ---&gt; 1.5 GeV
+     Cr_sctns:     G4ParticleInelasticXS: 0 eV  ---&gt; 100 TeV
+
+
+---------------------------------------------------
+                           Hadronic Processes for sigma-
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: sigma-Inelastic
+        Model:                      FTFP: 3 GeV ---&gt; 100 TeV
+        Model:            BertiniCascade: 0 eV  ---&gt; 6 GeV
+     Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
+
+
+  Process: hBertiniCaptureAtRest
+
+---------------------------------------------------
+                           Hadronic Processes for triton
+
+  Process: hadElastic
+        Model:              hElasticLHEP: 0 eV /n ---&gt; 100 TeV/n
+     Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
+
+
+  Process: tInelastic
+        Model:  Binary Light Ion Cascade: 0 eV /n ---&gt; 6 GeV/n
+        Model:                      FTFP: 3 GeV/n ---&gt; 100 TeV/n
+     Cr_sctns:     G4ParticleInelasticXS: 0 eV  ---&gt; 25.6 PeV
+
+
+================================================================
+=======================================================================
+======       Pre-compound/De-excitation Physics Parameters     ========
+=======================================================================
+Type of pre-compound inverse x-section              3
+Pre-compound model active                           1
+Pre-compound excitation low energy                  100 keV
+Pre-compound excitation high energy                 30 MeV
+Type of de-excitation inverse x-section             3
+Type of de-excitation factory                       Evaporation+GEM
+Number of de-excitation channels                    68
+Min excitation energy                               10 eV 
+Min energy per nucleon for multifragmentation       200 GeV
+Limit excitation energy for Fermi BreakUp           20 MeV
+Level density (1/MeV)                               0.075
+Use simple level density model                      1
+Use discrete excitation energy of the residual      1
+Time limit for long lived isomeres                  1 ns 
+Isomer production flag                              1
+Internal e- conversion flag                         1
+Store e- internal conversion data                   0
+Correlated gamma emission flag                      0
+Max 2J for sampling of angular correlations         10
+=======================================================================
+
+*********************************************************************************************************
+* G4Track Information:   Particle = gamma,   Track ID = 1,   Parent ID = 0
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0        0        0     -160         6        0        0         0       World initStep
+    1        0        0     -150         6        0       10        10    Envelope Transportation
+    2        0        0     -100         6        0       50        60      Shape1 Transportation
+    3        0        0      -40         6        0       60       120    Envelope Transportation
+    4        0        0       40         6        0       80       200      Shape2 Transportation
+    5        0        0      100         6        0       60       260    Envelope Transportation
+    6        0        0      120         0        0     19.7       280    Envelope conv
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e+,   Track ID = 3,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0        0        0      120      2.63        0        0         0    Envelope initStep
+    1    0.287   -0.054      124      1.97    0.658     4.38      4.38    Envelope eIoni
+    2     1.97    -1.02      126      1.25    0.722     3.57      7.96    Envelope eIoni
+    3     3.98   -0.525      125     0.846    0.403     2.66      10.6    Envelope eIoni
+    4     5.52   -0.303      125      0.47    0.376     2.11      12.7    Envelope eIoni
+    5     5.97    0.428      125         0     0.47     1.43      14.1    Envelope eIoni
+    6     5.97    0.428      125         0        0        0      14.1    Envelope annihil
+
+*********************************************************************************************************
+* G4Track Information:   Particle = gamma,   Track ID = 5,   Parent ID = 3
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0     5.97    0.428      125     0.511        0        0         0    Envelope initStep
+    1     14.3     14.5      115     0.216        0     19.1      19.1    Envelope compt
+    2    -43.5     14.3      107     0.179        0     58.3      77.4    Envelope compt
+    3    -51.7   0.0612      100     0.179        0     17.9      95.3      Shape2 Transportation
+    4    -56.9    -8.91     95.5     0.126        0     11.3       107      Shape2 compt
+    5    -53.4    -11.5      100     0.126        0     6.22       113    Envelope Transportation
+    6    -14.3    -40.4      150     0.126        0     69.8       183       World Transportation
+    7     9.19    -57.8      180     0.126        0     41.9       224  OutOfWorld Transportation
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 8,   Parent ID = 5
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -56.9    -8.91     95.5    0.0535        0        0         0      Shape2 initStep
+    1    -56.9    -8.91     95.5         0   0.0535   0.0285    0.0285      Shape2 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 7,   Parent ID = 5
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -43.5     14.3      107    0.0371        0        0         0    Envelope initStep
+    1    -43.5     14.3      107         0   0.0371   0.0257    0.0257    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 6,   Parent ID = 5
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0     14.3     14.5      115     0.295        0        0         0    Envelope initStep
+    1     14.6     14.8      115         0    0.295    0.825     0.825    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = gamma,   Track ID = 4,   Parent ID = 3
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0     5.97    0.428      125     0.511        0        0         0    Envelope initStep
+    1    -3.03    -14.9      136     0.436        0     20.7      20.7    Envelope compt
+    2    -94.3    -74.8      150     0.436        0      110       131       World Transportation
+    3     -120    -91.7      154     0.436        0       31       162  OutOfWorld Transportation
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 9,   Parent ID = 4
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -3.03    -14.9      136     0.075        0        0         0    Envelope initStep
+    1    -3.01    -14.9      136         0    0.075   0.0881    0.0881    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 2,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0        0        0      120      2.35        0        0         0    Envelope initStep
+    1    -3.18    0.599      121      1.77    0.577     4.01      4.01    Envelope eIoni
+    2    -5.35    0.371      123       1.2    0.569      3.3      7.31    Envelope eIoni
+    3    -6.68      1.1      125     0.761    0.441     2.58      9.89    Envelope eIoni
+    4    -7.97     1.59      125     0.187    0.574     1.97      11.9    Envelope eIoni
+    5    -8.11     1.58      125         0    0.187    0.407      12.3    Envelope eIoni
+
+
+
+
+
+0</code></pre><pre><code class="language-julia hljs">ApplyCommand(UImanager, &quot;/gun/particle e+&quot;)
+ApplyCommand(UImanager, &quot;/gun/energy 60 MeV&quot;)
+ApplyCommand(UImanager, &quot;/run/beamOn 1&quot;)</code></pre><pre><code class="nohighlight hljs">*********************************************************************************************************
+* G4Track Information:   Particle = e+,   Track ID = 1,   Parent ID = 0
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0        0        0     -160        60        0        0         0       World initStep
+    1        0        0     -150        60  0.00326       10        10    Envelope Transportation
+    2   -0.866    -1.73     -102      50.5     8.25     48.2      58.2    Envelope eIoni
+    3   -0.831    -1.86     -100      49.7    0.273      1.8        60    Envelope eIoni
+    4   -0.616    -2.21    -93.3      48.5     1.18      6.8      66.8      Shape1 Transportation
+    5   -0.549    -2.34    -92.1      47.5    0.229     1.29      68.1      Shape1 eIoni
+    6   -0.529    -2.41    -91.5      46.9    0.207    0.576      68.7      Shape1 eBrem
+    7   -0.415    -3.24    -83.6      44.3     1.43     7.97      76.7      Shape1 eIoni
+    8   -0.935    -4.07      -76      42.4     1.25     7.65      84.3      Shape1 eBrem
+    9    -1.17    -4.37      -73      41.7    0.499     3.05      87.4      Shape1 eBrem
+   10    -2.24    -5.32    -59.6      38.4     2.58     13.5       101      Shape1 eIoni
+   11     -2.4    -5.39      -57      37.4     0.44     2.62       103      Shape1 eIoni
+   12    -2.43    -5.39    -56.7      36.7   0.0385    0.268       104      Shape1 eBrem
+   13    -2.68    -5.53    -50.4      28.3     1.22     6.27       110      Shape1 eIoni
+   14    -3.42    -5.38      -40      26.2     2.14     10.5       121    Envelope Transportation
+   15    -8.83    -3.86    -8.49        20     6.21     32.2       153    Envelope eIoni
+   16    -11.4    0.343     7.71      16.5     2.66       17       170    Envelope eIoni
+   17    -9.31     2.43     28.2        13     3.49     20.9       191    Envelope eIoni
+   18    -9.24     2.43     28.5      12.5   0.0417    0.318       191    Envelope eIoni
+   19    -7.78     2.83     32.9      11.3     0.83     4.67       196    Envelope eIoni
+   20    -6.84     3.74     35.9      6.72    0.528     3.24       199    Envelope eBrem
+   21    -5.82     5.09       40      6.05    0.668     4.51       203      Shape2 Transportation
+   22    -4.74     5.78     45.2      4.63     1.42     5.55       209      Shape2 eIoni
+   23    -4.14     5.82     46.4      4.22    0.396     1.27       210      Shape2 eBrem
+   24    -3.03     7.08     50.1      3.03     1.19     4.28       214      Shape2 eIoni
+   25    -2.01     7.78     52.9      2.01     1.03     3.43       218      Shape2 eIoni
+   26    -1.81     8.35       54     0.394     0.29     1.35       219      Shape2 eIoni
+   27    -1.57     8.43     54.2         0    0.394    0.723       220      Shape2 eIoni
+   28    -1.57     8.43     54.2         0        0        0       220      Shape2 annihil
+
+*********************************************************************************************************
+* G4Track Information:   Particle = gamma,   Track ID = 20,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -1.57     8.43     54.2     0.511        0        0         0      Shape2 initStep
+    1     20.7    -4.93       40     0.511        0     29.6      29.6    Envelope Transportation
+    2     94.9    -49.6    -7.47     0.242        0     98.8       128    Envelope compt
+    3     73.2     -100     20.3     0.242        0     61.5       190       World Transportation
+    4     64.6     -120     31.3     0.242        0     24.4       214  OutOfWorld Transportation
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 21,   Parent ID = 20
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0     94.9    -49.6    -7.47     0.269        0        0         0    Envelope initStep
+    1     95.2    -49.6     -7.7         0    0.269    0.718     0.718    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = gamma,   Track ID = 19,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -1.57     8.43     54.2     0.511        0        0         0      Shape2 initStep
+    1    -3.96     9.87     55.7     0.456        0     3.18      3.18      Shape2 compt
+    2    -31.4     56.4     72.8     0.456        0     56.6      59.8    Envelope Transportation
+    3    -57.2      100     88.7     0.456        0     53.1       113       World Transportation
+    4      -69      120       96     0.456        0     24.4       137  OutOfWorld Transportation
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 22,   Parent ID = 19
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -3.96     9.87     55.7    0.0547        0        0         0      Shape2 initStep
+    1    -3.97     9.86     55.7         0   0.0547   0.0296    0.0296      Shape2 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 18,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -1.81     8.35       54      1.32        0        0         0      Shape2 initStep
+    1    -2.31     8.66     55.1     0.606    0.701     1.64      1.64      Shape2 eBrem
+    2    -2.47     9.09     55.6    0.0752    0.531     1.27      2.91      Shape2 eIoni
+    3    -2.49     9.11     55.6         0   0.0752   0.0514      2.96      Shape2 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = gamma,   Track ID = 23,   Parent ID = 18
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -2.31     8.66     55.1    0.0146        0        0         0      Shape2 initStep
+    1    -2.61     8.72     55.1         0  0.00404    0.302     0.302      Shape2 phot
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 24,   Parent ID = 23
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -2.61     8.72     55.1    0.0105        0        0         0      Shape2 initStep
+    1    -2.61     8.72     55.1         0   0.0105  0.00164   0.00164      Shape2 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = gamma,   Track ID = 17,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -4.14     5.82     46.4     0.017        0        0         0      Shape2 initStep
+    1     -3.8     5.81     47.2         0  0.00404    0.954     0.954      Shape2 phot
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 25,   Parent ID = 17
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0     -3.8     5.81     47.2     0.013        0        0         0      Shape2 initStep
+    1     -3.8     5.81     47.2         0    0.013  0.00236   0.00236      Shape2 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = gamma,   Track ID = 16,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -6.84     3.74     35.9      4.01        0        0         0    Envelope initStep
+    1    -5.45     4.83       40      4.01        0     4.46      4.46      Shape2 Transportation
+    2     14.8     20.7      100      4.01        0     65.3      69.7    Envelope Transportation
+    3     31.7     33.9      150      4.01        0     54.4       124       World Transportation
+    4     41.8     41.8      180      4.01        0     32.6       157  OutOfWorld Transportation
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 15,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -7.78     2.83     32.9      0.44        0        0         0    Envelope initStep
+    1     -7.3     3.45     33.1   0.00503    0.435     1.36      1.36    Envelope eIoni
+    2     -7.3     3.45     33.1         0  0.00503 0.000778      1.36    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 14,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -9.24     2.43     28.5     0.475        0        0         0    Envelope initStep
+    1    -9.58     1.89     29.1     0.199    0.276     1.45      1.45    Envelope eIoni
+    2    -9.52     1.66     29.2         0    0.199     0.45       1.9    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 13,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -11.4    0.343     7.71     0.763        0        0         0    Envelope initStep
+    1    -12.1     1.42     8.44    0.0667    0.696     1.97      1.97    Envelope eIoni
+    2    -12.1     1.46     8.44         0   0.0667    0.072      2.05    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 12,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -2.68    -5.53    -50.4      7.21        0        0         0      Shape1 initStep
+    1    -2.41    -6.11    -48.4      4.53    0.378     2.16      2.16      Shape1 eIoni
+    2    0.864    -7.02    -43.5       3.5     1.03     6.07      8.23      Shape1 eIoni
+    3     3.58    -7.84      -40       2.6    0.899     4.77        13    Envelope Transportation
+    4     5.02    -8.02    -36.1      1.87    0.726     4.31      17.3    Envelope eIoni
+    5     5.63    -9.92    -33.6      1.02    0.856     3.42      20.7    Envelope eIoni
+    6     5.88    -11.4    -32.4     0.618    0.397     2.33      23.1    Envelope eIoni
+    7     6.44    -12.1    -31.7     0.287    0.331     1.74      24.8    Envelope eIoni
+    8     6.03    -12.1    -31.6         0    0.287    0.791      25.6    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 26,   Parent ID = 12
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -2.41    -6.11    -48.4       2.3        0        0         0      Shape1 initStep
+    1    -2.42    -6.55    -47.9       2.2   0.0976    0.699     0.699      Shape1 eBrem
+    2    -3.37    -8.71    -45.4       1.6    0.604     3.56      4.26      Shape1 eIoni
+    3    -3.21      -11      -44      1.13     0.47     2.89      7.14      Shape1 eIoni
+    4    -2.88    -12.7      -43     0.692    0.436     2.34      9.48      Shape1 eIoni
+    5    -2.01    -13.7    -42.9     0.304    0.388     1.76      11.2      Shape1 eIoni
+    6    -1.58    -13.7      -43         0    0.304    0.757        12      Shape1 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = gamma,   Track ID = 27,   Parent ID = 26
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -2.42    -6.55    -47.9     0.003        0        0         0      Shape1 initStep
+    1    -2.41    -6.56    -47.8         0 0.000288   0.0105    0.0105      Shape1 phot
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 28,   Parent ID = 27
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -2.41    -6.56    -47.8   0.00271        0        0         0      Shape1 initStep
+    1    -2.41    -6.56    -47.8         0  0.00271 0.000233  0.000233      Shape1 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = gamma,   Track ID = 11,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -2.43    -5.39    -56.7     0.653        0        0         0      Shape1 initStep
+    1    -2.71    -4.96      -40     0.653        0     16.7      16.7    Envelope Transportation
+    2    -3.17    -4.25    -12.8     0.564        0     27.2      43.9    Envelope compt
+    3    -4.68     26.6       40     0.564        0     61.2       105      Shape2 Transportation
+    4     -6.4     61.5      100     0.564        0     69.5       175    Envelope Transportation
+    5    -6.42     61.8      100     0.189        0    0.461       175    Envelope compt
+    6    -6.78     61.3      100     0.189        0    0.689       176      Shape2 Transportation
+    7    -10.7     56.7     95.7     0.133        0     7.42       183      Shape2 compt
+    8       60     39.1     68.2     0.133        0     77.9       261    Envelope Transportation
+    9       80     34.2     60.4     0.133        0       22       283    Envelope compt
+   10      100     26.8     51.3     0.133        0     23.1       306       World Transportation
+   11      120     19.5     42.3     0.133        0     23.1       329  OutOfWorld Transportation
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 32,   Parent ID = 11
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0       80     34.2     60.4  0.000198        0        0         0    Envelope initStep
+    1       80     34.2     60.4         0 0.000198 8.34e-06  8.34e-06    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 31,   Parent ID = 11
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -10.7     56.7     95.7    0.0557        0        0         0      Shape2 initStep
+    1    -10.7     56.7     95.7         0   0.0557   0.0306    0.0306      Shape2 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 30,   Parent ID = 11
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -6.42     61.8      100     0.376        0        0         0    Envelope initStep
+    1    -6.36     61.9      101     0.294   0.0814    0.209     0.209    Envelope msc
+    2     -6.2       62      101     0.157    0.138    0.348     0.557    Envelope msc
+    3    -6.13     62.1      101         0    0.157    0.305     0.862    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 29,   Parent ID = 11
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -3.17    -4.25    -12.8    0.0889        0        0         0    Envelope initStep
+    1    -3.17     -4.3    -12.8         0   0.0889    0.118     0.118    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 10,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0     -2.4    -5.39      -57     0.506        0        0         0      Shape1 initStep
+    1    -1.69    -5.53    -56.4    0.0733    0.432     1.41      1.41      Shape1 eIoni
+    2    -1.68    -5.56    -56.4         0   0.0733   0.0738      1.49      Shape1 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 9,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -2.24    -5.32    -59.6     0.758        0        0         0      Shape1 initStep
+    1    -1.53    -6.12    -58.7     0.428    0.331     1.86      1.86      Shape1 eIoni
+    2    -1.87    -6.28      -58     0.086    0.342     1.21      3.07      Shape1 eIoni
+    3    -1.92     -6.3      -58         0    0.086   0.0972      3.17      Shape1 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = gamma,   Track ID = 8,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -1.17    -4.37      -73     0.179        0        0         0      Shape1 initStep
+    1    -4.33    -8.13      -40     0.179        0     33.3      33.3    Envelope Transportation
+    2      -12    -17.2       40     0.179        0     80.9       114      Shape2 Transportation
+    3    -17.1    -23.2     92.6     0.157        0     53.2       167      Shape2 compt
+    4    -16.9      -23     92.9     0.139        0    0.359       168      Shape2 compt
+    5    -19.2      -18     94.6    0.0921        0     5.81       174      Shape2 compt
+    6       60    -74.6     75.7    0.0921        0     99.2       273    Envelope Transportation
+    7     95.5     -100     67.2    0.0921        0     44.4       317       World Transportation
+    8      120     -118     61.3    0.0921        0     30.7       348  OutOfWorld Transportation
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 35,   Parent ID = 8
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -19.2      -18     94.6    0.0467        0        0         0      Shape2 initStep
+    1    -19.2      -18     94.6         0   0.0467   0.0225    0.0225      Shape2 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 34,   Parent ID = 8
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -16.9      -23     92.9    0.0177        0        0         0      Shape2 initStep
+    1    -16.9      -23     92.9         0   0.0177   0.0041    0.0041      Shape2 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 33,   Parent ID = 8
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -17.1    -23.2     92.6    0.0227        0        0         0      Shape2 initStep
+    1    -17.1    -23.2     92.6         0   0.0227  0.00631   0.00631      Shape2 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = gamma,   Track ID = 7,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0   -0.935    -4.07      -76     0.689        0        0         0      Shape1 initStep
+    1    -3.37    -8.26      -40     0.689        0     36.3      36.3    Envelope Transportation
+    2    -6.19    -13.1     1.62     0.226        0       42      78.3    Envelope compt
+    3    -40.4    -5.94    -21.8     0.128        0     42.1       120    Envelope compt
+    4     24.9    -11.5      -33     0.125        0     66.5       187    Envelope compt
+    5     48.1    -23.4    -46.9    0.0932        0     29.6       216    Envelope compt
+    6     61.9     14.3    -12.7     0.078        0     52.8       269    Envelope compt
+    7     57.7       11    -8.16    0.0743        0     7.02       276    Envelope compt
+    8     52.5       15     27.2    0.0705        0       36       312    Envelope compt
+    9     54.8       13     30.7      0.07        0      4.6       317    Envelope compt
+   10     68.2     9.74     51.2    0.0697        0     24.7       342    Envelope compt
+   11     97.5     2.21     77.8    0.0664        0     40.3       382    Envelope compt
+   12     97.8    -53.5      150    0.0664        0     91.2       473       World Transportation
+   13       98    -76.7      180    0.0664        0     37.9       511  OutOfWorld Transportation
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 45,   Parent ID = 7
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0     97.5     2.21     77.8   0.00327        0        0         0    Envelope initStep
+    1     97.5     2.21     77.8         0  0.00327 0.000375  0.000375    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 44,   Parent ID = 7
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0     68.2     9.74     51.2  0.000314        0        0         0    Envelope initStep
+    1     68.2     9.74     51.2         0 0.000314 1.31e-05  1.31e-05    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 43,   Parent ID = 7
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0     54.8       13     30.7  0.000481        0        0         0    Envelope initStep
+    1     54.8       13     30.7         0 0.000481 2.16e-05  2.16e-05    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 42,   Parent ID = 7
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0     52.5       15     27.2   0.00379        0        0         0    Envelope initStep
+    1     52.5       15     27.2         0  0.00379 0.000482  0.000482    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 41,   Parent ID = 7
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0     57.7       11    -8.16   0.00372        0        0         0    Envelope initStep
+    1     57.7       11    -8.16         0  0.00372 0.000466  0.000466    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 40,   Parent ID = 7
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0     61.9     14.3    -12.7    0.0152        0        0         0    Envelope initStep
+    1     61.9     14.3    -12.7         0   0.0152  0.00536   0.00536    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 39,   Parent ID = 7
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0     48.1    -23.4    -46.9    0.0316        0        0         0    Envelope initStep
+    1     48.1    -23.4    -46.9         0   0.0316   0.0194    0.0194    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 38,   Parent ID = 7
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0     24.9    -11.5      -33   0.00365        0        0         0    Envelope initStep
+    1     24.9    -11.5      -33         0  0.00365 0.000452  0.000452    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 37,   Parent ID = 7
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -40.4    -5.94    -21.8    0.0978        0        0         0    Envelope initStep
+    1    -40.5    -5.93    -21.8         0   0.0978    0.139     0.139    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 36,   Parent ID = 7
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    -6.19    -13.1     1.62     0.462        0        0         0    Envelope initStep
+    1    -6.05    -13.2     2.46      0.12    0.343     1.42      1.42    Envelope eIoni
+    2    -5.99    -13.2     2.54         0     0.12    0.195      1.61    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 6,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0   -0.415    -3.24    -83.6      1.15        0        0         0      Shape1 initStep
+    1     -1.3    -2.73    -82.9       0.9    0.251     1.25      1.25      Shape1 msc
+    2    -1.91    -2.17    -81.7     0.626    0.274      1.6      2.85      Shape1 msc
+    3    -1.94    -1.58    -80.7     0.289    0.338     1.65       4.5      Shape1 eIoni
+    4    -2.09    -1.26    -80.9         0    0.289    0.701       5.2      Shape1 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = gamma,   Track ID = 5,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0   -0.529    -2.41    -91.5     0.331        0        0         0      Shape1 initStep
+    1    0.046    -5.68    -66.1     0.302        0     25.6      25.6      Shape1 compt
+    2     13.7    -5.67    -44.3     0.239        0     25.8      51.4      Shape1 compt
+    3     28.3    -6.33    -43.9     0.239        0     14.6        66    Envelope Transportation
+    4      100    -9.57    -42.1     0.239        0     71.7       138       World Transportation
+    5      120    -10.5    -41.6     0.239        0       20       158  OutOfWorld Transportation
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 47,   Parent ID = 5
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0     13.7    -5.67    -44.3    0.0631        0        0         0      Shape1 initStep
+    1     13.7    -5.67    -44.3         0   0.0631    0.057     0.057      Shape1 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 46,   Parent ID = 5
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0    0.046    -5.68    -66.1     0.029        0        0         0      Shape1 initStep
+    1    0.039    -5.68    -66.1         0    0.029   0.0145    0.0145      Shape1 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 4,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0   -0.549    -2.34    -92.1     0.785        0        0         0      Shape1 initStep
+    1   -0.385    -2.19    -91.9     0.734   0.0515    0.311     0.311      Shape1 msc
+    2   -0.291       -2    -91.6      0.67   0.0637    0.346     0.657      Shape1 msc
+    3     -0.4    -1.61    -91.2      0.57   0.0996    0.546       1.2      Shape1 msc
+    4   -0.441     -1.3    -90.7     0.405    0.166    0.706      1.91      Shape1 msc
+    5   -0.516   -0.864    -90.1      0.11    0.295     1.14      3.05      Shape1 eIoni
+    6   -0.494   -0.846    -90.1         0     0.11    0.148       3.2      Shape1 eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 3,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0   -0.831    -1.86     -100     0.563        0        0         0    Envelope initStep
+    1    -1.32     -2.6    -99.5     0.279    0.284     1.64      1.64    Envelope eIoni
+    2    -1.53     -2.3    -99.4         0    0.279    0.758      2.39    Envelope eIoni
+
+*********************************************************************************************************
+* G4Track Information:   Particle = e-,   Track ID = 2,   Parent ID = 1
+*********************************************************************************************************
+
+Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolume ProcName
+    0   -0.866    -1.73     -102      1.26        0        0         0    Envelope initStep
+    1    -1.27   -0.767     -101      1.05    0.217     1.33      1.33    Envelope msc
+    2    -1.21    0.299     -100     0.818    0.228     1.33      2.67    Envelope msc
+    3    -1.58    0.845     -100     0.658     0.16    0.912      3.58      Shape1 Transportation
+    4    -1.68    0.976    -99.9     0.605   0.0525    0.193      3.77      Shape1 msc
+    5    -1.76     1.11    -99.8      0.57   0.0354    0.212      3.98      Shape1 msc
+    6    -1.88     1.23    -99.7     0.498   0.0723    0.203      4.19      Shape1 msc
+    7    -2.07     1.31    -99.5     0.456   0.0414    0.241      4.43      Shape1 msc
+    8    -2.22     1.35    -99.4     0.413   0.0431    0.245      4.67      Shape1 msc
+    9    -2.42     1.59    -99.1     0.278    0.135    0.416      5.09      Shape1 msc
+   10    -2.66     1.83      -99         0    0.278    0.661      5.75      Shape1 eIoni
+
+
+
+
+
+0</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../WaterPhantom/">« Example WaterPhantom</a><a class="docs-footer-nextpage" href="../B2a/">Example B2a »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="auto">Automatic (OS)</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.1.1 on <span class="colophon-date" title="Tuesday 17 October 2023 20:06">Tuesday 17 October 2023</span>. Using Julia version 1.9.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
