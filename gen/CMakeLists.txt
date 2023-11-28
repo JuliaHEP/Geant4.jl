@@ -24,7 +24,7 @@ if(WRAPIT_EXECUTABLE)
   configure_file(${SOURCE_DIR}/Geant4.wit.in ${SOURCE_DIR}/Geant4.wit @ONLY)
   add_custom_command(OUTPUT ${SOURCE_DIR}/cpp/jlGeant4.cxx
     COMMAND mkdir -p ${SOURCE_DIR}/jl
-    COMMAND ${WRAPIT_EXECUTABLE} --force -v 5 ${SOURCE_DIR}/Geant4.wit
+    COMMAND ${WRAPIT_EXECUTABLE} --force -v 1 ${SOURCE_DIR}/Geant4.wit
     WORKING_DIRECTORY ${SOURCE_DIR}
     DEPENDS ${SOURCE_DIR}/Geant4.wit ${SOURCE_DIR}/Geant4-veto.h  ${SOURCE_DIR}/cpp/Geant4Wrap.h)
 else()
@@ -35,6 +35,7 @@ file(GLOB GEN_SOURCES CONFIGURE_DEPENDS  ${SOURCE_DIR}/cpp/Jl*.cxx)
 add_library(Geant4Wrap SHARED ${SOURCE_DIR}/cpp/Geant4Wrap.cxx ${SOURCE_DIR}/cpp/jlGeant4.cxx ${GEN_SOURCES})
 
 #target_compile_definitions(Geant4Wrap PUBLIC VERBOSE_IMPORT)
+list(REMOVE_ITEM Geant4_LIBRARIES Geant4::G4ToolsSG)  # dependencies to system OpenGL
 target_include_directories(Geant4Wrap PRIVATE ${SOURCE_DIR})
 target_link_libraries(Geant4Wrap JlCxx::cxxwrap_julia JlCxx::cxxwrap_julia_stl ${Geant4_LIBRARIES})
 
