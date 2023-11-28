@@ -25,3 +25,18 @@ size_t G4ProcessVector::length()
 size_t G4ProcessVector::size()
 void CLHEP::RandPoissonQ::shootArray(CLHEP::HepRandomEngine *, const int, long *, double)
 
+G4VMPLData::physicsVector
+CLHEP::HepXHat
+CLHEP::HepYHat
+CLHEP::HepZHat
+CLHEP::HepRotation::IDENTITY
+HepGeom::Transform3D::Identity
+CLHEP::HepLorentzRotation::IDENTITY
+std::istream
+std::ostream
+std::basic_istream
+std::basic_ostream
+std::__wrap_iter
+# G4ReferenceCountedHandle
+
+

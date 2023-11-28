@@ -5,22 +5,22 @@ export G4RandFlat, G4RandBit, G4RandGamma, G4RandGauss, G4RandExponential, G4Ran
 export CxxPtr, ConstCxxPtr, CxxRef, ConstCxxRef, move!, preserve, @ui_cmd, StdVector
 
 #---Useful Geant4 Typedefs-------------------------------------------------------------------------
-const G4RotationMatrix = CLHEP!HepRotation
-const G4ThreeVector = CLHEP!Hep3Vector
-const G4Transform3D = HepGeom!Transform3D
-const G4Random = CLHEP!HepRandom
-if isdefined(Geant4,:CLHEP!RandFlat)  # make it compatible with previous version  of wrappers
-    const G4RandFlat = CLHEP!RandFlat
-    const G4RandBit = CLHEP!RandBit
-    const G4RandGamma = CLHEP!RandGamma
-    const G4RandGauss = CLHEP!RandGaussQ
-    const G4RandExponential = CLHEP!RandExponential
-    const G4RandGeneral = CLHEP!RandGeneral
-end
-const G4Random!getTheSeed = CLHEP!HepRandom!getTheSeed
-const G4Random!setTheSeed = CLHEP!HepRandom!setTheSeed
-const G4Random!getTheEngine = CLHEP!HepRandom!getTheEngine
-const G4Random!setTheEngine = CLHEP!HepRandom!setTheEngine
+typedef(t, n) = isdefined(Geant4, t) && eval(:(const $n = $t))
+
+typedef(:CLHEP!HepRotation, :G4RotationMatrix)
+typedef(:CLHEP!Hep3Vector, :G4ThreeVector)
+typedef(:CLHEP!HepRandom, :G4Random)
+typedef(:HepGeom!Transform3D, :G4Transform3D)
+typedef(:CLHEP!RandFlat, :G4RandFlat)
+typedef(:CLHEP!RandBit, :G4RandBit)
+typedef(:CLHEP!RandGamma, :G4RandGamma)
+typedef(:CLHEP!RandGaussQ, :G4RandGaussQ)
+typedef(:CLHEP!RandExponential, :G4RandExponential)
+typedef(:CLHEP!RandGeneral, :G4RandGeneral)
+typedef(:CLHEP!HepRandom!getTheSeed, :G4Random!getTheSeed)
+typedef(:CLHEP!HepRandom!setTheSeed, :G4Random!setTheSeed)
+typedef(:CLHEP!HepRandom!getTheEngine, :G4Random!getTheEngine)
+typedef(:CLHEP!HepRandom!setTheEngine, :G4Random!setTheEngine)
  
 Base.show(io::IO, p::G4ThreeVector) = print(io, "G4ThreeVector($(x(p)),$(y(p)),$(z(p)))")
 """

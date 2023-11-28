@@ -7,10 +7,6 @@ The auto_veto parameter is set to true, generation of the wrappers that would ha
 
 
 CLHEP::HepEulerAngles::EA
-G4Allocator<G4Event>
-G4Allocator<G4HCofThisEvent>
-G4Allocator<G4PrimaryParticle>
-G4Allocator<G4PrimaryVertex>
 G4ChordFinder
 G4DCtable
 G4DecayTable
@@ -47,6 +43,7 @@ G4VUserPrimaryVertexInformation
 G4VisExtent
 G4VoxelLimits
 G4WorkerThread
+TrajectoryVector
 __void__
 const HepGeom::Normal3D<double>
 const HepGeom::Point3D<double>

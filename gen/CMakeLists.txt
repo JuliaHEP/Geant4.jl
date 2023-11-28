@@ -24,14 +24,14 @@ if(WRAPIT_EXECUTABLE)
   configure_file(${SOURCE_DIR}/Geant4.wit.in ${SOURCE_DIR}/Geant4.wit @ONLY)
   add_custom_command(OUTPUT ${SOURCE_DIR}/cpp/jlGeant4.cxx
     COMMAND mkdir -p ${SOURCE_DIR}/jl
-    COMMAND ${WRAPIT_EXECUTABLE} --force -v 1 ${SOURCE_DIR}/Geant4.wit
+    COMMAND ${WRAPIT_EXECUTABLE} --force -v 5 ${SOURCE_DIR}/Geant4.wit
     WORKING_DIRECTORY ${SOURCE_DIR}
     DEPENDS ${SOURCE_DIR}/Geant4.wit ${SOURCE_DIR}/Geant4-veto.h  ${SOURCE_DIR}/cpp/Geant4Wrap.h)
 else()
   message(STATUS "The executable wrapit was not found. Building wrapper using the generated jlGeant4.cxx/h files from the sources.")
 endif()
 
-file(GLOB GEN_SOURCES CONFIGURE_DEPENDS  ${SOURCE_DIR}/cpp/jl_*.cxx)
+file(GLOB GEN_SOURCES CONFIGURE_DEPENDS  ${SOURCE_DIR}/cpp/Jl*.cxx)
 add_library(Geant4Wrap SHARED ${SOURCE_DIR}/cpp/Geant4Wrap.cxx ${SOURCE_DIR}/cpp/jlGeant4.cxx ${GEN_SOURCES})
 
 #target_compile_definitions(Geant4Wrap PUBLIC VERBOSE_IMPORT)

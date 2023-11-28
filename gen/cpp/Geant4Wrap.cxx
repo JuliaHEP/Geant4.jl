@@ -10,7 +10,7 @@
 
 #include <stdexcept>
 
-// --------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 G4bool G4JLExceptionHandler::Notify(const char* originOfException,
                                     const char* exceptionCode,
                                     G4ExceptionSeverity severity,
@@ -132,3 +132,10 @@ G4bool G4JLStateDependent::Notify(G4ApplicationState to) {
   auto from = G4StateManager::GetStateManager()->GetPreviousState();
   return notify(from, to, notify_d);
 }
+
+
+//-------------------------------------------------------------------------------------------------
+// Explicit template instantiations
+//-------------------------------------------------------------------------------------------------
+//template class G4ReferenceCountedHandle<G4VTouchable>;
+//template class std::vector<G4Element*>;
