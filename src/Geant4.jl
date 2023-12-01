@@ -7,11 +7,11 @@ module Geant4
     gendir = normpath(joinpath(@__DIR__, "../gen"))
     if isdir(joinpath(gendir, "build/lib"))
         include(joinpath(gendir, "jl/Geant4-export.jl"))
-        @wrapmodule(joinpath(gendir, "build/lib", "libGeant4Wrap.$(Libdl.dlext)"))
+        @wrapmodule(()->joinpath(gendir, "build/lib", "libGeant4Wrap.$(Libdl.dlext)"))
     else
         using Geant4_julia_jll
         include(Geant4_julia_jll.Geant4_exports)
-        @wrapmodule(Geant4_julia_jll.libGeant4Wrap)
+        @wrapmodule(()->Geant4_julia_jll.libGeant4Wrap)
     end
 
     function __init__()

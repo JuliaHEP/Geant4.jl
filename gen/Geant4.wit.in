@@ -6,9 +6,9 @@ out_h_fname         = "cpp/jlGeant4.h"
 out_cxx_dir         = "cpp"
 out_jl_dir          = "jl"
 
-include_dirs        = [ "/usr/local/opt/llvm/include/c++/v1", 
-                        "/usr/local/opt/llvm@13/lib/clang/13.0.1/include", 
-                        "./cpp", 
+clang_opts          = ["-v"]
+
+include_dirs        = [ "./cpp", 
                         "@Geant4_INCLUDE_DIRS@",
                         "@XercesC_INCLUDE_DIR@",
                         "@Julia_INCLUDE_DIRS@",  
