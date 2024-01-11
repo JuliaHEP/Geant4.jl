@@ -5,7 +5,7 @@ std::istream
 CLHEP::HepLorentzRotation CLHEP::operator*(const CLHEP::HepRotationX &, const CLHEP::HepLorentzRotation &)
 CLHEP::HepLorentzRotation CLHEP::operator*(const CLHEP::HepRotationY &, const CLHEP::HepLorentzRotation &)
 CLHEP::HepLorentzRotation CLHEP::operator*(const CLHEP::HepRotationZ &, const CLHEP::HepLorentzRotation &)
-G4VUPLData::_theParticleIterator
+G4VUPLData
 G4int G4UImanager::ApplyCommand(const G4String &)
 G4ThreadId G4MTRunManager::GetMasterTheadId()
 G4ThreadId G4MTRunManager::GetMasterThreadId()
@@ -37,6 +37,5 @@ void CLHEP::RandPoissonQ::shootArray(CLHEP::HepRandomEngine *, const int, long *
 std::basic_istream
 std::basic_ostream
 std::__wrap_iter
-G4ReferenceCountedHandle
-
+std::basic_istringstream
 

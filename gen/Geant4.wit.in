@@ -6,10 +6,7 @@ out_h_fname         = "jlGeant4.h"
 out_cxx_dir         = "cpp"
 out_jl_dir          = "jl"
 
-clang_opts          = [ "-v",
-                        "-isystem", "/opt/homebrew/opt/llvm@13/include/c++/v1", 
-                        "-isystem", "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include",
-                        "-isystem", "/opt/homebrew/opt/llvm@13/lib/clang/13.0.1/include"]
+clang_opts          = [ "-v" ]
 
 include_dirs        = [ "./cpp", 
                         "@Geant4_INCLUDE_DIRS@",
@@ -57,7 +54,6 @@ input               = [ "Geant4Wrap.h",
                         "QGS_BIC.hh",
                         "QBBC.hh",
                         "FTFP_BERT.hh",
-                        "G4UserPhysicsListMessenger.hh",
                         "G4ParticleDefinition.hh",
                         "G4PrimaryParticle.hh",
                         "G4PrimaryVertex.hh",
@@ -150,8 +146,9 @@ input               = [ "Geant4Wrap.h",
                         "G4StateManager.hh",
                         "G4VStateDependent.hh",
                         "G4ApplicationState.hh",
-                        #---Miscellaneous---------
-                #        "G4ReferenceCountedHandle.hh", 
+                        #---Miscellaneous---------(needed for new version of wrapit)
+                        "G4AttValue.hh",
+                        "G4ReferenceCountedHandle.hh", 
                       ]
 
 extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh", "G4ParticleMessenger.hh", "G4IonTable.hh" ]
