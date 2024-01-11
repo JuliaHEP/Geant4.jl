@@ -21,6 +21,7 @@ xerces_prefix = Xerces_jll.artifact_dir
            #-DXercesC_LIBRARY_RELEASE=$(Xerces_jll.libxerces)
 
 run(`cmake -DCMAKE_BUILD_TYPE=Release
+           -DCMAKE_CXX_STANDARD=std++17
            -DEXPAT_INCLUDE_DIR=$(Expat_jll.artifact_dir)/include
            -DEXPAT_LIBRARY=$(Expat_jll.libexpat)
            -DXercesC_INCLUDE_DIR=$(Xerces_jll.artifact_dir)/include

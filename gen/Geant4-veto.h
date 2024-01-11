@@ -1,11 +1,15 @@
 std::char_traits
 std::allocator
-ostream
-istream
+std::basic_istream
+std::basic_ostream
+std::basic_istringstream
+std::basic_ostringstream
+std::__wrap_iter
+std::map
 CLHEP::HepLorentzRotation CLHEP::operator*(const CLHEP::HepRotationX &, const CLHEP::HepLorentzRotation &)
 CLHEP::HepLorentzRotation CLHEP::operator*(const CLHEP::HepRotationY &, const CLHEP::HepLorentzRotation &)
 CLHEP::HepLorentzRotation CLHEP::operator*(const CLHEP::HepRotationZ &, const CLHEP::HepLorentzRotation &)
-G4VUPLData::_theParticleIterator
+G4VUPLData
 G4int G4UImanager::ApplyCommand(const G4String &)
 G4ThreadId G4MTRunManager::GetMasterTheadId()
 G4ThreadId G4MTRunManager::GetMasterThreadId()
@@ -24,4 +28,3 @@ G4MaterialPropertyVector * G4MaterialPropertiesTable::GetProperty(const char *)
 size_t G4ProcessVector::length()
 size_t G4ProcessVector::size()
 void CLHEP::RandPoissonQ::shootArray(CLHEP::HepRandomEngine *, const int, long *, double)
-

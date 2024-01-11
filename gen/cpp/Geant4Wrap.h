@@ -21,6 +21,7 @@
 #include "G4VStateDependent.hh"
 #include "jlcxx/functions.hpp"
 
+#include <cstddef>
 #include <string>
 
 #ifndef VECCORE_ENABLE_VC
@@ -251,5 +252,7 @@ int   G4JL_setenv(const char* x, const char* v);
 void  G4JL_init(void);
 void  G4JL_println(const char *);
 
+//---Template instantiations-----------------------------------------------------------------------
+template class std::pair<G4double,G4bool>;
 
 #endif

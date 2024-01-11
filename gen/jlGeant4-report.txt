@@ -1,3 +1,4 @@
+Dependency cycles:  ok. No dependency cycle.
 Undefined types
 ---------------
 
@@ -6,41 +7,31 @@ The definition of the following types where not found. Use the extra_headers con
 The auto_veto parameter is set to true, generation of the wrappers that would have needed theses types were skipped.
 
 
-CLHEP::HepEulerAngles::EA
 G4Allocator<G4Event>
 G4Allocator<G4HCofThisEvent>
 G4Allocator<G4PrimaryParticle>
 G4Allocator<G4PrimaryVertex>
+G4Allocator<G4TrajectoryContainer>
 G4ChordFinder
 G4DCtable
 G4DecayTable
-G4GDMLAuxMapType
-G4IsotopeTable
-G4IsotopeVector
-G4LVManager
-G4LogicalBorderSurfaceTable
-G4LogicalSkinSurfaceTable
-G4MTRunManager::masterWorlds_t
+G4GeomSplitter<G4LVData>
+G4GeomSplitter<G4PVData>
+G4GeomSplitter<G4ReplicaData>
 G4MTcoutDestination
-G4PVManager
-G4PVRManager
-G4ParticleTable::G4PTblDicIterator
 G4Polyline
 G4PropagatorInField
-G4SeedsQueue
-G4TouchableHandle
-G4TouchableHistoryHandle
 G4UIbridge
 G4UIcommandTree
 G4UIsession
+G4UserPhysicsListMessenger
 G4UserWorkerThreadInitialization
 G4VAuxiliaryTrackInformation
 G4VGraphicsScene
-G4VMPLData::G4PhysConstVectorData
-G4VMPLManager
 G4VScoreColorMap
 G4VTrackingManager
-G4VUPLManager
+G4VUPLSplitter<G4VMPLData>
+G4VUPLSplitter<G4VUPLData>
 G4VUserParallelWorld
 G4VUserPrimaryParticleInformation
 G4VUserPrimaryVertexInformation
@@ -48,24 +39,22 @@ G4VisExtent
 G4VoxelLimits
 G4WorkerThread
 __void__
-const HepGeom::Normal3D<double>
-const HepGeom::Point3D<double>
-const HepGeom::Vector3D<double>
-std::istream
-std::istringstream
+_opaque_pthread_t
+std::__thread_id
+std::__wrap_iter<G4Navigator **>
+std::__wrap_iter<G4VPhysicalVolume **>
+std::basic_istream
+std::basic_istringstream
+std::basic_ostream
+std::map<G4LogicalVolume *,std::vector<G4GDMLAuxStructType,std::allocator<G4GDMLAuxStructType>>,std::less<G4LogicalVolume *>,std::allocator<std::pair<G4LogicalVolume *const,std::vector<G4GDMLAuxStructType,std::allocator<G4GDMLAuxStructType>>>>>
 std::map<G4Material *,double,std::less<G4Material *>,std::allocator<std::pair<G4Material *const,double>>>
 std::map<G4String,G4AttDef,std::less<G4String>,std::allocator<std::pair<const G4String,G4AttDef>>>
 std::map<G4String,G4Colour,std::less<G4String>,std::allocator<std::pair<const G4String,G4Colour>>>
 std::map<G4String,std::vector<G4LogicalVolume *,std::allocator<G4LogicalVolume *>>,std::less<G4String>,std::allocator<std::pair<const G4String,std::vector<G4LogicalVolume *,std::allocator<G4LogicalVolume *>>>>>
 std::map<int,G4VAuxiliaryTrackInformation *,std::less<int>,std::allocator<std::pair<const int,G4VAuxiliaryTrackInformation *>>>
-std::ostream
-std::string
-std::vector<G4AttValue,std::allocator<G4AttValue>>
-std::vector<G4Navigator *>::iterator
-std::vector<G4VPhysicalVolume *>::iterator
-std::vector<const G4Event *,std::allocator<const G4Event *>>
-std::vector<const G4Track *,std::allocator<const G4Track *>>
-std::vector<std::pair<double,bool>,std::allocator<std::pair<double,bool>>>
+std::map<int,G4VPhysicalVolume *,std::less<int>,std::allocator<std::pair<const int,G4VPhysicalVolume *>>>
+std::map<std::pair<const G4VPhysicalVolume *,const G4VPhysicalVolume *>,G4LogicalBorderSurface *,std::less<std::pair<const G4VPhysicalVolume *,const G4VPhysicalVolume *>>,std::allocator<std::pair<const std::pair<const G4VPhysicalVolume *,const G4VPhysicalVolume *>,G4LogicalBorderSurface *>>>
+std::queue<long,std::deque<long,std::allocator<long>>>
 
 Class(es) from vetoed_finalizer_classes configuration parameter that were not found:
 -------------------------------------------------------------------------------------

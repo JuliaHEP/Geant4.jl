@@ -1,8 +1,8 @@
 module_name         = "Geant4"
-export_jl_fname     = "jl/Geant4-export.jl"
-module_jl_fname     = "jl/Geant4-generated.jl"
-out_cpp_fname       = "cpp/jlGeant4.cxx"
-out_h_fname         = "cpp/jlGeant4.h"
+export_jl_fname     = "Geant4-export.jl"
+module_jl_fname     = "Geant4-generated.jl"
+out_cpp_fname       = "jlGeant4.cxx"
+out_h_fname         = "jlGeant4.h"
 out_cxx_dir         = "cpp"
 out_jl_dir          = "jl"
 
@@ -54,7 +54,6 @@ input               = [ "Geant4Wrap.h",
                         "QGS_BIC.hh",
                         "QBBC.hh",
                         "FTFP_BERT.hh",
-                        "G4UserPhysicsListMessenger.hh",
                         "G4ParticleDefinition.hh",
                         "G4PrimaryParticle.hh",
                         "G4PrimaryVertex.hh",
@@ -149,7 +148,7 @@ input               = [ "Geant4Wrap.h",
                         "G4ApplicationState.hh",
                       ]
 
-extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh", "G4ParticleMessenger.hh", "G4IonTable.hh" ]
+extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh", "G4ParticleMessenger.hh", "G4IonTable.hh", "G4AttValue.hh", "cstddef"  ]
 vetoed_finalizer_classes = ["G4PVPlacement", "G4LogicalVolume", "G4PVReplica", "G4Material", "G4Isotope", "G4Element", "G4JLParticleGun", 
                             "G4JLDetectorConstruction", "G4JLGeneratorAction", "G4JLRunAction", "G4JLSensDet", "G4JLWorkerInitialization",
                             "G4LogicalSkinSurface", "G4LogicalBorderSurface", "G4OpticalSurface"]
