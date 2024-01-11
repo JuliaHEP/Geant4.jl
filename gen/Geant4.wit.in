@@ -146,12 +146,9 @@ input               = [ "Geant4Wrap.h",
                         "G4StateManager.hh",
                         "G4VStateDependent.hh",
                         "G4ApplicationState.hh",
-                        #---Miscellaneous---------(needed for new version of wrapit)
-                        "G4AttValue.hh",
-                        "G4ReferenceCountedHandle.hh", 
                       ]
 
-extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh", "G4ParticleMessenger.hh", "G4IonTable.hh" ]
+extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh", "G4ParticleMessenger.hh", "G4IonTable.hh", "G4AttValue.hh", "cstddef"  ]
 vetoed_finalizer_classes = ["G4PVPlacement", "G4LogicalVolume", "G4PVReplica", "G4Material", "G4Isotope", "G4Element", "G4JLParticleGun", 
                             "G4JLDetectorConstruction", "G4JLGeneratorAction", "G4JLRunAction", "G4JLSensDet", "G4JLWorkerInitialization",
                             "G4LogicalSkinSurface", "G4LogicalBorderSurface", "G4OpticalSurface"]

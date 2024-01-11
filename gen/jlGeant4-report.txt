@@ -1,3 +1,4 @@
+Dependency cycles:  ok. No dependency cycle.
 Undefined types
 ---------------
 
@@ -6,6 +7,11 @@ The definition of the following types where not found. Use the extra_headers con
 The auto_veto parameter is set to true, generation of the wrappers that would have needed theses types were skipped.
 
 
+G4Allocator<G4Event>
+G4Allocator<G4HCofThisEvent>
+G4Allocator<G4PrimaryParticle>
+G4Allocator<G4PrimaryVertex>
+G4Allocator<G4TrajectoryContainer>
 G4ChordFinder
 G4DCtable
 G4DecayTable
@@ -15,7 +21,6 @@ G4GeomSplitter<G4ReplicaData>
 G4MTcoutDestination
 G4Polyline
 G4PropagatorInField
-G4ReferenceCountedHandle<X>
 G4UIbridge
 G4UIcommandTree
 G4UIsession
@@ -34,9 +39,18 @@ G4VisExtent
 G4VoxelLimits
 G4WorkerThread
 __void__
-const G4ReferenceCountedHandle<X>
+_opaque_pthread_t
+std::__thread_id
+std::__wrap_iter<G4Navigator **>
+std::__wrap_iter<G4VPhysicalVolume **>
+std::basic_istream
+std::basic_istringstream
+std::basic_ostream
+std::map<G4LogicalVolume *,std::vector<G4GDMLAuxStructType,std::allocator<G4GDMLAuxStructType>>,std::less<G4LogicalVolume *>,std::allocator<std::pair<G4LogicalVolume *const,std::vector<G4GDMLAuxStructType,std::allocator<G4GDMLAuxStructType>>>>>
+std::map<G4Material *,double,std::less<G4Material *>,std::allocator<std::pair<G4Material *const,double>>>
 std::map<G4String,G4AttDef,std::less<G4String>,std::allocator<std::pair<const G4String,G4AttDef>>>
 std::map<G4String,G4Colour,std::less<G4String>,std::allocator<std::pair<const G4String,G4Colour>>>
+std::map<G4String,std::vector<G4LogicalVolume *,std::allocator<G4LogicalVolume *>>,std::less<G4String>,std::allocator<std::pair<const G4String,std::vector<G4LogicalVolume *,std::allocator<G4LogicalVolume *>>>>>
 std::map<int,G4VAuxiliaryTrackInformation *,std::less<int>,std::allocator<std::pair<const int,G4VAuxiliaryTrackInformation *>>>
 std::map<int,G4VPhysicalVolume *,std::less<int>,std::allocator<std::pair<const int,G4VPhysicalVolume *>>>
 std::map<std::pair<const G4VPhysicalVolume *,const G4VPhysicalVolume *>,G4LogicalBorderSurface *,std::less<std::pair<const G4VPhysicalVolume *,const G4VPhysicalVolume *>>,std::allocator<std::pair<const std::pair<const G4VPhysicalVolume *,const G4VPhysicalVolume *>,G4LogicalBorderSurface *>>>

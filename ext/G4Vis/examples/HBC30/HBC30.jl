@@ -115,7 +115,7 @@ initialize(app)
 #---Draw functions---------------------------------------------------------------------------------
 function drawdetector(app)
     world = GetWorldVolume()
-    fig = Figure(resolution=(2048,2028))
+    fig = Figure(size=(2048,2028))
     s = LScene(fig[1,1])
     Geant4.draw!(s, world)
     display(fig)
@@ -132,7 +132,7 @@ function drawevent(s, app)
     # draw new event
     for t in data.tracks
         style = abs(t.charge) > 0. ? :solid : :dot
-        lines!(s, t.points, linestyle=style)
+        lines!(s, t.points, color=:black, linestyle=style)
         if t.energy > data.fEkin/20
             text!(s, t.points[end], text=t.particle)
         end
