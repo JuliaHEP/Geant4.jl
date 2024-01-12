@@ -1,6 +1,6 @@
 #---Exports from this section----------------------------------------------------------------------
 export G4JLDetector, G4JLSimulationData, G4JLApplication, G4JLDetectorGDML, G4JLSDData, G4JLSensitiveDetector, 
-        configure, initialize, reinitialize, beamOn, getSDdata, getSIMdata, getConstructor, getInitializer, G4JLGunGenerator, 
+        configure, initialize, reinitialize, beamOn, getSDdata, getSIMdata, getConstructor, getInitializer, G4JLGunGenerator, G4JLGeneralParticleSource,
         G4JLPrimaryGenerator, G4JLGeneratorData, G4JLUniformMagField, G4JLMagneticField, G4JLFieldData, G4JLDisplay
 
 #---Geometry usability functions-------------------------------------------------------------------
@@ -150,6 +150,30 @@ function SetParticlePosition(gen::G4JLGunGenerator, position::G4ThreeVector)
     gen.data.direction=position
     SetParticlePosition(gen.data.gun, position)
 end
+
+#---Implementation (user friendly) General Particle Source-----------------------------------------
+mutable struct G4JLGPSData <: G4JLGeneratorData
+    gps::Union{Nothing, CxxPtr{G4GeneralParticleSource}}
+    particle::String
+    direction::G4ThreeVector
+    position::G4ThreeVector
+    energy::Float64
+end
+function G4JLPrimaryGenerator{G4JLGPSData}(;particle="e-", energy=10., direction=G4ThreeVector(), position=G4ThreeVector())
+    data = G4JLGPSData(nothing, particle, direction, position, energy)
+    function init(data::G4JLGPSData, ::Any)
+        gps = data.gps = move!(G4GeneralParticleSource())
+        SetParticleDefinition(gps, data.particle |> FindParticle)
+        SetMonoEnergy(gps |> GetCurrentSource |> GetEneDist, data.energy)
+        SetParticleMomentumDirection(gps |> GetCurrentSource |> GetAngDist, data.direction)
+        SetCentreCoords(gps |> GetCurrentSource |> GetPosDist, data.position)
+    end
+    function gen(evt::G4Event, data::G4JLGPSData)::Nothing
+        GeneratePrimaryVertex(data.gps, CxxPtr(evt))
+    end
+    G4JLPrimaryGenerator("GPS", data; init_method=init, generate_method=gen)
+end
+const G4JLGeneralParticleSource = G4JLPrimaryGenerator{G4JLGPSData}
 
 #---Custom Magnetic Field--------------------------------------------------------------------------
 mutable struct G4JLMagneticField{UD<:G4JLFieldData}
