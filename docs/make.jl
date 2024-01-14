@@ -10,7 +10,7 @@ makedocs(;
     modules=[Geant4],
     format = Documenter.HTML(
         prettyurls = Base.get(ENV, "CI", nothing) == "true",
-        size_threshold = 8000000
+        size_threshold = 8000000,
         size_threshold_warn = 4000000
     ),
     pages=[
