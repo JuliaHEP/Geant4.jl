@@ -10,7 +10,7 @@ physics = QBBC()
 
 
 
-Geant4.QBBCAllocated(Ptr{Nothing} @0x00000000035e5a00)</code></pre><h3 id="User-Actions"><a class="docs-heading-anchor" href="#User-Actions">User Actions</a><a id="User-Actions-1"></a><a class="docs-heading-anchor-permalink" href="#User-Actions" title="Permalink"></a></h3><pre><code class="language-julia hljs"># User Actions
+Geant4.QBBCAllocated(Ptr{Nothing} @0x0000000001ac0f10)</code></pre><h3 id="User-Actions"><a class="docs-heading-anchor" href="#User-Actions">User Actions</a><a id="User-Actions-1"></a><a class="docs-heading-anchor-permalink" href="#User-Actions" title="Permalink"></a></h3><pre><code class="language-julia hljs"># User Actions
 function buildApp(self::G4JLActionInitialization, ::Nothing)
     # Create particle gun
     particle_gun = G4JLParticleGun()  
@@ -23,7 +23,7 @@ function buildApp(self::G4JLActionInitialization, ::Nothing)
     # Register and relinquish ownership
     SetUserAction(self, move!(particle_gun))
   end
-  app = G4JLActionInitialization(buildApp)</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLActionInitializationAllocated(Ptr{Nothing} @0x0000000003b4d180)</code></pre><h3 id="Instantiate-RunManager-and-initialize"><a class="docs-heading-anchor" href="#Instantiate-RunManager-and-initialize">Instantiate RunManager and initialize</a><a id="Instantiate-RunManager-and-initialize-1"></a><a class="docs-heading-anchor-permalink" href="#Instantiate-RunManager-and-initialize" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Construct the default run manager and set initializers
+  app = G4JLActionInitialization(buildApp)</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLActionInitializationAllocated(Ptr{Nothing} @0x0000000002545550)</code></pre><h3 id="Instantiate-RunManager-and-initialize"><a class="docs-heading-anchor" href="#Instantiate-RunManager-and-initialize">Instantiate RunManager and initialize</a><a id="Instantiate-RunManager-and-initialize-1"></a><a class="docs-heading-anchor-permalink" href="#Instantiate-RunManager-and-initialize" title="Permalink"></a></h3><pre><code class="language-julia hljs"># Construct the default run manager and set initializers
 runManager = G4RunManager()
 
 # Register User initialization objects and relinquish ownership
@@ -33,7 +33,7 @@ SetUserInitialization(runManager, move!(app))
 
 # Get the pointer to the User Interface manager
 UImanager = G4UImanager!GetUIpointer();</code></pre><pre><code class="nohighlight hljs">**************************************************************
- Geant4 version Name: geant4-11-01-patch-01 [MT]   (10-February-2023)
+ Geant4 version Name: geant4-11-02 [MT]   (8-December-2023)
                        Copyright : Geant4 Collaboration
                       References : NIM A 506 (2003), 250-303
                                  : IEEE-TNS 53 (2006), 270-278
@@ -177,7 +177,7 @@ eBrem:  for e-  XStype:4  SubType=3
 
 CoulombScat:  for e- XStype:1 SubType=1 BuildTable=1
       Lambda table from 100 MeV to 100 TeV, 7 bins/decade, spline: 0
-      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ThetaMin(p) &lt; Theta(degree) &lt; 180, pLimit(GeV^1)= 0.139531
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
   eCoulombScattering : Emin=  100 MeV Emax=  100 TeV
 
@@ -209,7 +209,7 @@ annihil:  for e+ XStype:2 SubType=5 BuildTable=0
 
 CoulombScat:  for e+ XStype:1 SubType=1 BuildTable=1
       Lambda table from 100 MeV to 100 TeV, 7 bins/decade, spline: 0
-      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ThetaMin(p) &lt; Theta(degree) &lt; 180, pLimit(GeV^1)= 0.139531
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
   eCoulombScattering : Emin=  100 MeV Emax=  100 TeV
 
@@ -228,20 +228,20 @@ hIoni:  for proton  XStype:3  SubType=2
 
 hBrems:  for proton  XStype:1  SubType=3
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
-      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
                hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
 
 hPairProd:  for proton  XStype:1  SubType=4
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
-      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       Sampling table 17x1001; from 7.50618 GeV to 100 TeV 
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
            hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
 
 CoulombScat:  for proton XStype:1 SubType=1 BuildTable=1
       Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
-      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ThetaMin(p) &lt; Theta(degree) &lt; 180, pLimit(GeV^1)= 0.139531
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
   eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
 
@@ -254,7 +254,6 @@ ionIoni:  for GenericIon  XStype:3  SubType=2
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
       Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       StepFunction=(0.2, 0.1 mm), integ: 3, fluct: 1, linLossLim= 0.02
-      Stopping Power data for 17 ion/material pairs
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
             BraggIon : Emin=    0 eV  Emax=    2 MeV
           BetheBloch : Emin=    2 MeV Emax=  100 TeV
@@ -287,20 +286,20 @@ hIoni:  for anti_proton  XStype:3  SubType=2
 
 hBrems:  for anti_proton  XStype:1  SubType=3
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
-      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
                hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
 
 hPairProd:  for anti_proton  XStype:1  SubType=4
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
-      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       Sampling table 17x1001; from 7.50618 GeV to 100 TeV 
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
            hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
 
 CoulombScat:  for anti_proton XStype:1 SubType=1 BuildTable=1
       Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
-      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ThetaMin(p) &lt; Theta(degree) &lt; 180, pLimit(GeV^1)= 0.139531
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
   eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
 
@@ -319,20 +318,20 @@ hIoni:  for kaon+  XStype:3  SubType=2
 
 hBrems:  for kaon+  XStype:1  SubType=3
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
-      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
                hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
 
 hPairProd:  for kaon+  XStype:1  SubType=4
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
-      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       Sampling table 18x1001; from 3.94942 GeV to 100 TeV 
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
            hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
 
 CoulombScat:  for kaon+ XStype:1 SubType=1 BuildTable=1
       Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
-      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ThetaMin(p) &lt; Theta(degree) &lt; 180, pLimit(GeV^1)= 0.139531
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
   eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
 
@@ -351,20 +350,20 @@ hIoni:  for kaon-  XStype:3  SubType=2
 
 hBrems:  for kaon-  XStype:1  SubType=3
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
-      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
                hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
 
 hPairProd:  for kaon-  XStype:1  SubType=4
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
-      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       Sampling table 18x1001; from 3.94942 GeV to 100 TeV 
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
            hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
 
 CoulombScat:  for kaon- XStype:1 SubType=1 BuildTable=1
       Used Lambda table of kaon+
-      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ThetaMin(p) &lt; Theta(degree) &lt; 180, pLimit(GeV^1)= 0.139531
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
   eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
 
@@ -383,20 +382,20 @@ muIoni:  for mu+  XStype:3  SubType=2
 
 muBrems:  for mu+  XStype:1  SubType=3
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
-      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
               MuBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
 
 muPairProd:  for mu+  XStype:1  SubType=4
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
-      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       Sampling table 21x1001; from 0.85 GeV to 100 TeV 
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
           muPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
 
 CoulombScat:  for mu+ XStype:1 SubType=1 BuildTable=1
       Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
-      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ThetaMin(p) &lt; Theta(degree) &lt; 180, pLimit(GeV^1)= 0.139531
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
   eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
 
@@ -415,20 +414,20 @@ muIoni:  for mu-  XStype:3  SubType=2
 
 muBrems:  for mu-  XStype:1  SubType=3
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
-      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
               MuBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
 
 muPairProd:  for mu-  XStype:1  SubType=4
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
-      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       Sampling table 21x1001; from 0.85 GeV to 100 TeV 
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
           muPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
 
 CoulombScat:  for mu- XStype:1 SubType=1 BuildTable=1
       Used Lambda table of mu+
-      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ThetaMin(p) &lt; Theta(degree) &lt; 180, pLimit(GeV^1)= 0.139531
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
   eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
 
@@ -447,20 +446,20 @@ hIoni:  for pi+  XStype:3  SubType=2
 
 hBrems:  for pi+  XStype:1  SubType=3
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
-      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
                hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
 
 hPairProd:  for pi+  XStype:1  SubType=4
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
-      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       Sampling table 20x1001; from 1.11656 GeV to 100 TeV 
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
            hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
 
 CoulombScat:  for pi+ XStype:1 SubType=1 BuildTable=1
       Lambda table from threshold  to 100 TeV, 7 bins/decade, spline: 0
-      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ThetaMin(p) &lt; Theta(degree) &lt; 180, pLimit(GeV^1)= 0.139531
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
   eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
 
@@ -479,417 +478,284 @@ hIoni:  for pi-  XStype:3  SubType=2
 
 hBrems:  for pi-  XStype:1  SubType=3
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
-      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
                hBrem : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
 
 hPairProd:  for pi-  XStype:1  SubType=4
       dE/dx and range tables from 100 eV  to 100 TeV in 84 bins
-      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 0
+      Lambda tables from threshold to 100 TeV, 7 bins/decade, spline: 1
       Sampling table 20x1001; from 1.11656 GeV to 100 TeV 
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
            hPairProd : Emin=    0 eV  Emax=  100 TeV  ModifiedMephi
 
 CoulombScat:  for pi- XStype:1 SubType=1 BuildTable=1
       Used Lambda table of pi+
-      ThetaMin(p) &lt; Theta(degree) &lt; 180; pLimit(GeV^1)= 0.139531
+      ThetaMin(p) &lt; Theta(degree) &lt; 180, pLimit(GeV^1)= 0.139531
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
   eCoulombScattering : Emin=    0 eV  Emax=  100 TeV
 
 ====================================================================
                   HADRONIC PROCESSES SUMMARY (verbose level 1)
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for B-
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
      Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
-
-
   Process: B-Inelastic
         Model:                      FTFP: 0 eV  ---&gt; 100 TeV
      Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
-
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for D-
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
      Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
-
-
   Process: D-Inelastic
         Model:                      FTFP: 0 eV  ---&gt; 100 TeV
      Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
-
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for GenericIon
-
   Process: ionInelastic
         Model:  Binary Light Ion Cascade: 0 eV /n ---&gt; 6 GeV/n
         Model:                      FTFP: 3 GeV/n ---&gt; 100 TeV/n
      Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: ionElastic
         Model:          NNDiffuseElastic: 0 eV /n ---&gt; 100 TeV/n
      Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
-
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for He3
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV /n ---&gt; 100 TeV/n
      Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: He3Inelastic
         Model:  Binary Light Ion Cascade: 0 eV /n ---&gt; 6 GeV/n
         Model:                      FTFP: 3 GeV/n ---&gt; 100 TeV/n
      Cr_sctns:     G4ParticleInelasticXS: 0 eV  ---&gt; 25.6 PeV
-
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for alpha
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV /n ---&gt; 100 TeV/n
      Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: alphaInelastic
         Model:  Binary Light Ion Cascade: 0 eV /n ---&gt; 6 GeV/n
         Model:                      FTFP: 3 GeV/n ---&gt; 100 TeV/n
      Cr_sctns:     G4ParticleInelasticXS: 0 eV  ---&gt; 25.6 PeV
-
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for anti_He3
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV /n ---&gt; 100.1 MeV/n
         Model:              AntiAElastic: 100 MeV/n ---&gt; 100 TeV/n
      Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: anti_He3Inelastic
         Model:                      FTFP: 0 eV /n ---&gt; 100 TeV/n
      Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: hFritiofCaptureAtRest
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for anti_alpha
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV /n ---&gt; 100.1 MeV/n
         Model:              AntiAElastic: 100 MeV/n ---&gt; 100 TeV/n
      Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: anti_alphaInelastic
         Model:                      FTFP: 0 eV /n ---&gt; 100 TeV/n
      Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: hFritiofCaptureAtRest
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for anti_deuteron
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV /n ---&gt; 100.1 MeV/n
         Model:              AntiAElastic: 100 MeV/n ---&gt; 100 TeV/n
      Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: anti_deuteronInelastic
         Model:                      FTFP: 0 eV /n ---&gt; 100 TeV/n
      Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: hFritiofCaptureAtRest
-
----------------------------------------------------
+-------------------------------------------------------------------------
                            Hadronic Processes for anti_hypertriton
-
   Process: hFritiofCaptureAtRest
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for anti_lambda
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
      Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
-
-
   Process: anti_lambdaInelastic
         Model:                      FTFP: 0 eV  ---&gt; 100 TeV
      Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
-
-
   Process: hFritiofCaptureAtRest
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for anti_neutron
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV  ---&gt; 100.1 MeV
         Model:              AntiAElastic: 100 MeV ---&gt; 100 TeV
      Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: anti_neutronInelastic
         Model:                      FTFP: 0 eV  ---&gt; 100 TeV
      Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: hFritiofCaptureAtRest
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for anti_proton
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV  ---&gt; 100.1 MeV
         Model:              AntiAElastic: 100 MeV ---&gt; 100 TeV
      Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: anti_protonInelastic
         Model:                      FTFP: 0 eV  ---&gt; 100 TeV
      Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: hFritiofCaptureAtRest
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for anti_triton
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV /n ---&gt; 100.1 MeV/n
         Model:              AntiAElastic: 100 MeV/n ---&gt; 100 TeV/n
      Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: anti_tritonInelastic
         Model:                      FTFP: 0 eV /n ---&gt; 100 TeV/n
      Cr_sctns:              AntiAGlauber: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: hFritiofCaptureAtRest
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for deuteron
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV /n ---&gt; 100 TeV/n
      Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: dInelastic
         Model:  Binary Light Ion Cascade: 0 eV /n ---&gt; 6 GeV/n
         Model:                      FTFP: 3 GeV/n ---&gt; 100 TeV/n
-     Cr_sctns:     G4ParticleInelasticXS: 0 eV  ---&gt; 25.6 PeV
-
-
----------------------------------------------------
+     Cr_sctns:     G4ParticleInelasticXS: 0 eV  ---&gt; 100 TeV
+-----------------------------------------------------------------------
                            Hadronic Processes for e+
-
   Process: positronNuclear
         Model:   G4ElectroVDNuclearModel: 0 eV  ---&gt; 1 PeV
      Cr_sctns:          ElectroNuclearXS: 0 eV  ---&gt; 100 TeV
-
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for e-
-
   Process: electronNuclear
         Model:   G4ElectroVDNuclearModel: 0 eV  ---&gt; 1 PeV
      Cr_sctns:          ElectroNuclearXS: 0 eV  ---&gt; 100 TeV
-
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for gamma
-
   Process: photonNuclear
         Model:               GammaNPreco: 0 eV  ---&gt; 200 MeV
         Model:            BertiniCascade: 199 MeV ---&gt; 6 GeV
         Model:           TheoFSGenerator: 3 GeV ---&gt; 100 TeV
      Cr_sctns:            GammaNuclearXS: 0 eV  ---&gt; 100 TeV
-
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for kaon+
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
      Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
-
-
   Process: kaon+Inelastic
         Model:                      FTFP: 3 GeV ---&gt; 100 TeV
         Model:            BertiniCascade: 0 eV  ---&gt; 6 GeV
      Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
-
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for kaon-
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
      Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
-
-
   Process: kaon-Inelastic
         Model:                      FTFP: 3 GeV ---&gt; 100 TeV
         Model:            BertiniCascade: 0 eV  ---&gt; 6 GeV
      Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
-
-
   Process: hBertiniCaptureAtRest
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for lambda
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
      Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
-
-
   Process: lambdaInelastic
         Model:                      FTFP: 3 GeV ---&gt; 100 TeV
         Model:            BertiniCascade: 0 eV  ---&gt; 6 GeV
      Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
-
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for mu+
-
   Process: muonNuclear
         Model:      G4MuonVDNuclearModel: 0 eV  ---&gt; 1 PeV
      Cr_sctns:     KokoulinMuonNuclearXS: 0 eV  ---&gt; 100 TeV
-
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for mu-
-
   Process: muonNuclear
         Model:      G4MuonVDNuclearModel: 0 eV  ---&gt; 1 PeV
      Cr_sctns:     KokoulinMuonNuclearXS: 0 eV  ---&gt; 100 TeV
-
-
   Process: muMinusCaptureAtRest
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for neutron
-
   Process: hadElastic
         Model:             hElasticCHIPS: 0 eV  ---&gt; 100 TeV
      Cr_sctns:        G4NeutronElasticXS: 0 eV  ---&gt; 100 TeV
-
-
   Process: neutronInelastic
         Model:                      FTFP: 3 GeV ---&gt; 100 TeV
         Model:            BertiniCascade: 1 GeV ---&gt; 6 GeV
         Model:            Binary Cascade: 0 eV  ---&gt; 1.5 GeV
      Cr_sctns:      G4NeutronInelasticXS: 0 eV  ---&gt; 100 TeV
-
-
   Process: nCapture
         Model:               nRadCapture: 0 eV  ---&gt; 100 TeV
      Cr_sctns:        G4NeutronCaptureXS: 0 eV  ---&gt; 100 TeV
-
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for pi+
-
   Process: hadElastic
         Model:           hElasticGlauber: 0 eV  ---&gt; 100 TeV
      Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---&gt; 100 TeV
-
-
   Process: pi+Inelastic
         Model:                      FTFP: 3 GeV ---&gt; 100 TeV
         Model:            BertiniCascade: 1 GeV ---&gt; 12 GeV
         Model:            Binary Cascade: 0 eV  ---&gt; 1.5 GeV
      Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---&gt; 100 TeV
-
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for pi-
-
   Process: hadElastic
         Model:           hElasticGlauber: 0 eV  ---&gt; 100 TeV
      Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---&gt; 100 TeV
-
-
   Process: pi-Inelastic
         Model:                      FTFP: 3 GeV ---&gt; 100 TeV
         Model:            BertiniCascade: 1 GeV ---&gt; 12 GeV
         Model:            Binary Cascade: 0 eV  ---&gt; 1.5 GeV
      Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---&gt; 100 TeV
-
-
   Process: hBertiniCaptureAtRest
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for proton
-
   Process: hadElastic
         Model:             hElasticCHIPS: 0 eV  ---&gt; 100 TeV
      Cr_sctns:  BarashenkovGlauberGribov: 0 eV  ---&gt; 100 TeV
-
-
   Process: protonInelastic
         Model:                      FTFP: 3 GeV ---&gt; 100 TeV
         Model:            BertiniCascade: 1 GeV ---&gt; 6 GeV
         Model:            Binary Cascade: 0 eV  ---&gt; 1.5 GeV
      Cr_sctns:     G4ParticleInelasticXS: 0 eV  ---&gt; 100 TeV
-
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for sigma-
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV  ---&gt; 100 TeV
      Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
-
-
   Process: sigma-Inelastic
         Model:                      FTFP: 3 GeV ---&gt; 100 TeV
         Model:            BertiniCascade: 0 eV  ---&gt; 6 GeV
      Cr_sctns:            Glauber-Gribov: 0 eV  ---&gt; 100 TeV
-
-
   Process: hBertiniCaptureAtRest
-
----------------------------------------------------
+-----------------------------------------------------------------------
                            Hadronic Processes for triton
-
   Process: hadElastic
         Model:              hElasticLHEP: 0 eV /n ---&gt; 100 TeV/n
      Cr_sctns:  Glauber-Gribov Nucl-nucl: 0 eV  ---&gt; 25.6 PeV
-
-
   Process: tInelastic
         Model:  Binary Light Ion Cascade: 0 eV /n ---&gt; 6 GeV/n
         Model:                      FTFP: 3 GeV/n ---&gt; 100 TeV/n
      Cr_sctns:     G4ParticleInelasticXS: 0 eV  ---&gt; 25.6 PeV
-
-
-================================================================
 =======================================================================
-======       Pre-compound/De-excitation Physics Parameters     ========
+======       Geant4 Native Pre-compound Model Parameters       ========
 =======================================================================
 Type of pre-compound inverse x-section              3
 Pre-compound model active                           1
 Pre-compound excitation low energy                  100 keV
 Pre-compound excitation high energy                 30 MeV
+Angular generator for pre-compound model            1
+Use NeverGoBack option for pre-compound model       0
+Use SoftCutOff option for pre-compound model        0
+Use CEM transitions for pre-compound model          1
+Use GNASH transitions for pre-compound model        0
+Use HETC submodel for pre-compound model            0
+=======================================================================
+======       Nuclear De-excitation Module Parameters           ========
+=======================================================================
 Type of de-excitation inverse x-section             3
 Type of de-excitation factory                       Evaporation+GEM
 Number of de-excitation channels                    68
@@ -1497,4 +1363,4 @@ Step#    X(mm)    Y(mm)    Z(mm) KinE(MeV)  dE(MeV) StepLeng TrackLeng  NextVolu
 
 
 
-0</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../WaterPhantom/">« Example WaterPhantom</a><a class="docs-footer-nextpage" href="../B2a/">Example B2a »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="auto">Automatic (OS)</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.2.0 on <span class="colophon-date" title="Friday 1 December 2023 17:12">Friday 1 December 2023</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+0</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../WaterPhantom/">« Example WaterPhantom</a><a class="docs-footer-nextpage" href="../B2a/">Example B2a »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="auto">Automatic (OS)</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.2.1 on <span class="colophon-date" title="Sunday 14 January 2024 20:12">Sunday 14 January 2024</span>. Using Julia version 1.10.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
