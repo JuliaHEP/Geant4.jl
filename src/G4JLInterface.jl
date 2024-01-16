@@ -1,7 +1,7 @@
 #---Exports from this section----------------------------------------------------------------------
 export G4JLDetector, G4JLSimulationData, G4JLApplication, G4JLDetectorGDML, G4JLSDData, G4JLSensitiveDetector, 
-        configure, initialize, reinitialize, beamOn, getSDdata, getSIMdata, getConstructor, getInitializer, G4JLGunGenerator, G4JLGeneralParticleSource,
-        G4JLPrimaryGenerator, G4JLGeneratorData, G4JLUniformMagField, G4JLMagneticField, G4JLFieldData, G4JLDisplay
+        configure, initialize, reinitialize, beamOn, getSDdata, getSIMdata, getConstructor, getInitializer, 
+        G4JLUniformMagField, G4JLMagneticField, G4JLFieldData, G4JLDisplay
 
 #---Geometry usability functions-------------------------------------------------------------------
 G4PVPlacement(r::Union{Nothing, G4RotationMatrix}, d::G4ThreeVector, l::Union{Nothing,G4LogicalVolume}, s::String, 
@@ -56,7 +56,6 @@ abstract type  G4JLAbstrcatApp end
 abstract type  G4JLDetector end
 abstract type  G4JLSimulationData end
 abstract type  G4JLSDData end
-abstract type  G4JLGeneratorData end
 abstract type  G4JLFieldData end
 abstract type  G4JLDisplay end
 
@@ -87,93 +86,6 @@ function G4JLDetectorGDML(gdmlfile::String;
     end
     G4JLDetectorGDML(world)
 end
-
-#---Primary Particle Generator----------------------------------------------------------------------
-mutable struct G4JLPrimaryGenerator{UD<:G4JLGeneratorData}
-    const name::String
-    const data::UD
-    const init_method::Function    #  (::UD, ::G4JLApplication)::Nothing
-    const gen_method::Function     #  (::CxxPtr{G4Event}, ::UD)::Nothing
-    base::Vector{G4JLGeneratorAction}
-end
-"""
-    G4JLPrimaryGenerator(name::String, data::DATA; <keyword arguments>) where DATA<:G4JLGeneratorData
-
-Creatre a G4JLPrimaryGenerator with its name and associated DATA structure
-# Arguments
-"""
-function G4JLPrimaryGenerator(name::String, data::T;
-                              init_method=nothing,
-                              generate_method=nothing) where T<:G4JLGeneratorData
-    isnothing(generate_method) && error("primary particle generator method not defined")
-    G4JLPrimaryGenerator{T}(name, data, init_method, generate_method, G4JLGeneratorAction[])   
-end
-
-#---Implementation (user friendly) Particle Gun----------------------------------------------------
-mutable struct G4JLParticleGunData <: G4JLGeneratorData
-    gun::Union{Nothing, CxxPtr{G4ParticleGun}}
-    particle::String
-    direction::G4ThreeVector
-    position::G4ThreeVector
-    energy::Float64
-end
-function G4JLPrimaryGenerator{G4JLParticleGunData}(;particle="e-", energy=10., direction=G4ThreeVector(), position=G4ThreeVector())
-    data = G4JLParticleGunData(nothing, particle, direction, position, energy)
-    function init(data::G4JLParticleGunData, ::Any)
-        pg = data.gun = move!(G4ParticleGun())
-        SetParticleByName(pg, data.particle)
-        SetParticleEnergy(pg, data.energy)
-        SetParticleMomentumDirection(pg, data.direction)
-        SetParticlePosition(pg, data.position)
-    end
-    function gen(evt::G4Event, data::G4JLParticleGunData)::Nothing
-        GeneratePrimaryVertex(data.gun, CxxPtr(evt))
-    end
-    G4JLPrimaryGenerator("ParticleGun", data; init_method=init, generate_method=gen)
-end
-
-const G4JLGunGenerator = G4JLPrimaryGenerator{G4JLParticleGunData}
-
-function SetParticleByName(gen::G4JLGunGenerator, particle::String)
-    gen.data.particle=particle
-    SetParticleByName(gen.data.gun, particle)
-end
-function SetParticleEnergy(gen::G4JLGunGenerator, energy::Float64)
-    gen.data.energy=energy
-    SetParticleEnergy(gen.data.gun, energy)
-end
-function SetParticleMomentumDirection(gen::G4JLGunGenerator, direction::G4ThreeVector)
-    gen.data.direction=direction
-    SetParticleMomentumDirection(gen.data.gun, direction)
-end
-function SetParticlePosition(gen::G4JLGunGenerator, position::G4ThreeVector)
-    gen.data.direction=position
-    SetParticlePosition(gen.data.gun, position)
-end
-
-#---Implementation (user friendly) General Particle Source-----------------------------------------
-mutable struct G4JLGPSData <: G4JLGeneratorData
-    gps::Union{Nothing, CxxPtr{G4GeneralParticleSource}}
-    particle::String
-    direction::G4ThreeVector
-    position::G4ThreeVector
-    energy::Float64
-end
-function G4JLPrimaryGenerator{G4JLGPSData}(;particle="e-", energy=10., direction=G4ThreeVector(), position=G4ThreeVector())
-    data = G4JLGPSData(nothing, particle, direction, position, energy)
-    function init(data::G4JLGPSData, ::Any)
-        gps = data.gps = move!(G4GeneralParticleSource())
-        SetParticleDefinition(gps, data.particle |> FindParticle)
-        SetMonoEnergy(gps |> GetCurrentSource |> GetEneDist, data.energy)
-        SetParticleMomentumDirection(gps |> GetCurrentSource |> GetAngDist, data.direction)
-        SetCentreCoords(gps |> GetCurrentSource |> GetPosDist, data.position)
-    end
-    function gen(evt::G4Event, data::G4JLGPSData)::Nothing
-        GeneratePrimaryVertex(data.gps, CxxPtr(evt))
-    end
-    G4JLPrimaryGenerator("GPS", data; init_method=init, generate_method=gen)
-end
-const G4JLGeneralParticleSource = G4JLPrimaryGenerator{G4JLGPSData}
 
 #---Custom Magnetic Field--------------------------------------------------------------------------
 mutable struct G4JLMagneticField{UD<:G4JLFieldData}
