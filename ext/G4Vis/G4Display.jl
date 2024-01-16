@@ -44,7 +44,7 @@ function initDisplay(evtdisp::G4JLEventDisplay)
         ui`/tracking/storeTrajectory 1`
         # create the scene
         set_theme!(backgroundcolor = settings.display.backgroundcolor)
-        fig = Figure(resolution= settings.display.resolution)
+        fig = Figure(size=settings.display.resolution)
         sc = LScene(fig[1,1], show_axis=settings.display.show_axis)
         display(fig)
         evtdisp.lscene = sc

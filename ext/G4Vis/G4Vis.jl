@@ -36,30 +36,31 @@ module G4Vis
 
     function Geant4.draw(pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
         lv = GetLogicalVolume(pv)
-        fig = Figure(resolution=(1280, 720))
+        fig = Figure(size=(1280, 720))
         s = LScene(fig[1,1])
         draw!(s, lv[], one(Transformation3D{Float64}), 1, wireframe, maxlevel)
-        display(fig)
+        display("image/png", fig)
     end
 
     function Geant4.draw(lv::G4LogicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
-        fig = Figure(resolution=(1280, 720))
+        fig = Figure(size=(1280, 720))
         s = LScene(fig[1,1])
         draw!(s, lv, one(Transformation3D{Float64}), 1, wireframe, maxlevel)
-        display(fig)
+        display("image/png", fig)
     end
 
     function Geant4.draw(solid::G4VSolid; wireframe::Bool=false, kwargs...)
         if wireframe
             m = GeometryBasics.mesh(solid)
-            Makie.wireframe(m; linewidth=1, kwargs...)
+            img = Makie.wireframe(m; linewidth=1, kwargs...)
         else
             points = GeometryBasics.coordinates(solid)
             faces  = GeometryBasics.faces(solid)
             #normals = GeometryBasics.normals(solid)
             m = GeometryBasics.normal_mesh(points, faces)
-            Makie.mesh(m; kwargs...)
+            img = Makie.mesh(m; kwargs...)
         end
+        display("image/png", img)
     end
 
     function Geant4.draw!(s, pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
@@ -147,7 +148,7 @@ module G4Vis
         s = LScene(fig[1, 1])
         scatter!(s, result, color=:black, markersize=1)
         #scatter!(s, [lo, hi], color=:blue, markersize=10)
-        display(fig)
+        display("image/png", fig)
         return s
     end
    #---Utility  functions--------------------------------------------------------------------------
