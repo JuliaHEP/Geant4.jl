@@ -39,14 +39,14 @@ module G4Vis
         fig = Figure(size=(1280, 720))
         s = LScene(fig[1,1])
         draw!(s, lv[], one(Transformation3D{Float64}), 1, wireframe, maxlevel)
-        display("image/png", fig)
+        return fig
     end
 
     function Geant4.draw(lv::G4LogicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
         fig = Figure(size=(1280, 720))
         s = LScene(fig[1,1])
         draw!(s, lv, one(Transformation3D{Float64}), 1, wireframe, maxlevel)
-        display("image/png", fig)
+        return fig
     end
 
     function Geant4.draw(solid::G4VSolid; wireframe::Bool=false, kwargs...)
@@ -60,7 +60,7 @@ module G4Vis
             m = GeometryBasics.normal_mesh(points, faces)
             img = Makie.mesh(m; kwargs...)
         end
-        display("image/png", img)
+        #display("image/png", img)
     end
 
     function Geant4.draw!(s, pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
@@ -148,8 +148,7 @@ module G4Vis
         s = LScene(fig[1, 1])
         scatter!(s, result, color=:black, markersize=1)
         #scatter!(s, [lo, hi], color=:blue, markersize=10)
-        display("image/png", fig)
-        return s
+        return fig
     end
    #---Utility  functions--------------------------------------------------------------------------
    cyc(x,n) = mod(x-1, n) + 1

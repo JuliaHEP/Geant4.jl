@@ -8,5 +8,5 @@ det = TestEm3Detector()
 TestEm3Construct(det)
 
 world = det.fPhysiWorld
-draw(world[])
-
+img = draw(world[])
+display(img)
