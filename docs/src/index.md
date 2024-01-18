@@ -157,7 +157,39 @@ The user can define either a custom primary particle generator or use one of the
                             direction = G4ThreeVector(0,0,1), 
                             position = G4ThreeVector(0,0,0))
   ```
+- **Custom Generator**. It is fairly simple to write a custom generator. It is needed to define a structure for the parameters to configure the genearator and a two functions to initialize and generate the primary particles called for each event. Here is an example:
+  ```julia
+  # define the data structure with the generator parameters
+  mutable struct PlaneSourceData <: G4JLGeneratorData
+    particleName::String
+   particlePtr::CxxPtr{G4ParticleDefinition}
+   energy::Float64 
+    halfx::Float64
+    halfy::Float64
+    position::G4ThreeVector
+    direction::G4ThreeVector
+  end
 
+  # define the constructor with the default parameters
+  function PlaneSource(;particle="gamma", energy=0.07MeV, halfx=7cm, halfy=7cm, 
+                                        position=G4ThreeVector(0,0,-14.9cm), direction=G4ThreeVector(0,0,1))
+    data = PlaneSourceData(particle, CxxPtr{G4ParticleDefinition}(C_NULL), energy, halfx, halfy, position, direction)
+    function init(data:: PlaneSourceData, app::G4JLApplication)
+        data.particlePtr = FindParticle(data.particleName)
+    end
+    function generate( evt::G4Event, data:: PlaneSourceData)::Nothing
+        mass = data.particlePtr |> GetPDGMass
+        momentum = √((mass + data.energy)^2 - mass^2)
+        pvec = momentum * data.direction
+        pos = data.position + G4ThreeVector( data.halfx * (rand() - 0.5),  data.halfy * (rand() - 0.5), 0)
+        primary = G4PrimaryParticle(data.particlePtr, pvec |> x, pvec |> y, pvec |> z )
+        vertex = G4PrimaryVertex(pos, 0ns)
+        SetPrimary(vertex, move!(primary))    # note that we give up ownership of the objects just created
+        AddPrimaryVertex(evt, move!(vertex))  # note that we give up ownership of the objects just created
+    end
+    G4JLPrimaryGenerator("PlaneSource", data; init_method=init, generate_method=generate)
+  end
+  ```  
 ### User Actions
 User actions are native Julia functions that are callbacks of the Geant4 toolkit. They are declared in the constructor of `G4JLApplication`, so they do not need to be associated to a specific function name. All user actions receive a reference to the `G4JLApplication` from which the user can obtain details of the actual application, such as the current detector, the physics, the generator, or the running simulation data. There are the available attributes of the application instance:
 ```julia
@@ -355,12 +387,12 @@ We have the possibility during the development of this package to re-generate lo
 Once the wrapper code is stabilized we move the generated code to the repository [Geant4\_cxxwrap](https://github.com/peremato/Geant4_cxxwrap) to regenerate the binary package `Geant4_julia_jll` using the `BinaryBuilder`.
 
 ## Release Notes
-### 0.1.11 (in preparation)
+### 0.1.11
 - Migrated to Julia 1.10
 - Using the latest version of WrapIt to generate the CxxWrap wrappers
 - New features
     - Added `G4JLGeneralParticleSource`, which makes use of the Geant4 `G4GeneralParticleSource` class for generation of primary particles for simulations. See documentation.
-    - Added a new extension module `G4Hist` that defines convenient types (H1D and H2D) for histograms on top of FHist.jl. See documentation. 
+    - Added a new extension module `G4Hist` that defines convenient histogram types (H1D and H2D) on top of FHist.jl. See documentation. 
 ### 0.1.10
 - New features
     - Provide an EventDisplay as a building block of the application. New `evtdisplay` argument in the constructor. 
