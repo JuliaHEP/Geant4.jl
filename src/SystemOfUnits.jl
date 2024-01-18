@@ -12,6 +12,8 @@
 
 module SystemOfUnits
 
+  const nounit = 1.
+  
   # Length [L]
   const millimeter  = 1.                        
   const millimeter2 = millimeter*millimeter

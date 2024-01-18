@@ -44,5 +44,9 @@ module Geant4
     draw!() = "Not implemented"
     G4JLEventDisplay(::Int64) = "Not implemented"
 
+    #---G4Hist-------------------------------------------------------------------------------------
+    export H1D, H2D
+    H1D() = "Not implemented"  # Constructors
+    H2D() = "Not implemented"  # Constructors
 end
 

@@ -47,14 +47,14 @@ function GeometryBasics.faces(sph::G4Sphere, nvertices=24)
         for q in vec([quad(i,j) .+ nf for i in 1:(θfacets - 1), j in 1:(ϕfacets - 1)])
             push!(faces, q)
         end
-        if Δϕ < 2π || Δθ < π
+        if π - Δϕ > 0 || π - Δθ > 0
             bidx =  [idx[1,1:end-1];idx[1:end-1,end];idx[end,end:-1:2];idx[end:-1:1,1]]
             for i in 1:2(ϕfacets + θfacets)-4
                 push!(faces, QuadFace{Int}(bidx[i], bidx[i+1], bidx[i+1]+nf, bidx[i]+nf)) 
             end
         end
     else
-        if Δϕ < 2π || Δθ < π
+        if 2π - Δϕ > 0 || π - Δθ > 0
             bidx =  [idx[1,1:end-1];idx[1:end-1,end];idx[end,end:-1:2];idx[end:-1:1,1]]
             for i in 1:2(ϕfacets + θfacets)-4
                 push!(faces, QuadFace{Int}(bidx[i], bidx[i+1], nf+1, nf+1)) 

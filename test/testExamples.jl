@@ -26,5 +26,6 @@ end
         @test run(`julia --project=ext/G4Vis/examples ext/G4Vis/examples/B1vis.jl`, devnull, devnull).exitcode == 0
         @test run(`julia --project=ext/G4Vis/examples ext/G4Vis/examples/B2aVis.jl`, devnull, devnull).exitcode == 0
         @test run(`julia --project=ext/G4Vis/examples ext/G4Vis/examples/TestEm3Vis.jl`, devnull, devnull).exitcode == 0
+        @test run(`julia --project=examples/extended/GPS/GPS.jl`, devnull, devnull).exitcode == 0
     end
 end

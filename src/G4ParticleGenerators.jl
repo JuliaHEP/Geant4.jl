@@ -79,88 +79,175 @@ mutable struct G4JLGPSData <: G4JLGeneratorData
     flatsampling::Bool
 end
 
-function G4JLPrimaryGenerator{G4JLGPSData}(;sources=[], multiplevertex=false, flatsampling=false)
-    data = G4JLGPSData(nothing, sources, multiplevertex, flatsampling)
-    function init(data::G4JLGPSData, ::Any)
-        gps = data.gps = move!(G4GeneralParticleSource())
-        for (idx, source) in enumerate(data.sources)
-            if idx != 1
-                AddaSource(gps, 1.)
-            end
-            current = gps |> GetCurrentSource
-            #---First level (:intensity, :position, :particle, :direction, :energy)
-            for attr in fieldnames(typeof(source))
-                if attr == :intensity
-                    SetCurrentSourceIntensity(gps, source.intensity)
-                elseif attr == :position
-                    pos = current |> GetPosDist
-                    SetPosDisType(pos, "Point")    
-                    SetCentreCoords(pos, source.position)
-                elseif attr == :direction
-                    ang = current |> GetAngDist
-                    SetAngDistType(ang, "planar")    
-                    SetParticleMomentumDirection(ang, source.direction)
-                elseif attr == :energy
-                    ene = current |> GetEneDist
-                    SetMonoEnergy(ene, source.energy)
-                elseif attr == :particle
-                    SetParticleDefinition(current, source.particle |> FindParticle)
-                elseif attr == :pos
-                    pos = current |> GetPosDist
-                    for sattr in fieldnames(typeof(source.pos))
-                        if sattr == :type
-                            SetPosDisType(pos, source.pos.type)
-                        elseif sattr == :shape
-                            SetPosDisShape(pos, source.pos.shape)
-                        elseif sattr == :centre
-                            SetCentreCoords(pos, source.pos.centre)
-                        elseif sattr == :rot1
-                            SetPosRot1(pos, source.pos.rot1)
-                        elseif sattr == :rot2
-                            SetPosRot2(pos, source.pos.rot2)
-                        elseif sattr == :halfx
-                            SetHalfX(pos, source.pos.halfx)
-                        elseif sattr == :halfy
-                            SetHalfY(pos, source.pos.halfy)
-                        elseif sattr == :halfz
-                            SetHalfZ(pos, source.pos.halfz)
-                        elseif sattr == :radius
-                            SetRadius(pos, source.pos.radius)
-                        elseif sattr == :inner_radius
-                            SetRadius0(pos, source.pos.inner_radius)
-                        elseif sattr == :sigma_r
-                            SetBeamSigmaInR(pos, source.pos.sigma_r)
-                        elseif sattr == :sigma_x
-                            SetBeamSigmaInX(pos, source.pos.sigma_x)
-                        elseif sattr == :sigma_y
-                            SetBeamSigmaInY(pos, source.pos.sigma_y)
-                        elseif sattr == :paralp
-                            SetParAlpha(pos, source.pos.paralp)
-                        elseif sattr == :parthe
-                            SetParTheta(pos, source.pos.parthe)
-                        elseif sattr == :parphi
-                            SetParPhi(pos, source.pos.parphi)
-                        elseif sattr == :confine
-                            ConfineSourceToVolume(pos, source.pos.confine)
-                        else
-                            error("$sattr is not an attribute of particle position distribution")
-                        end
-                    end
-                elseif attr == :ang
-                elseif attr == :ene
-                else
-                    error("$attr is not an attribute of single particle source")
-                end
-            end
-        end
+function G4JLPrimaryGenerator{G4JLGPSData}(;kwargs...)
+    if haskey(kwargs, :sources)
+        data = G4JLGPSData(nothing, kwargs.sources, 
+                                    haskey(kwargs,:multiplevertex) ? kwargs.multiplevertex : false,
+                                    haskey(kwargs,:flatsampling) ? kwargs.flatsampling : false)
+    else
+        data = G4JLGPSData(nothing, [NamedTuple(kwargs)], false, false)
     end
     function gen(evt::G4Event, data::G4JLGPSData)::Nothing
         GeneratePrimaryVertex(data.gps, CxxPtr(evt))
     end
-    G4JLPrimaryGenerator("GPS", data; init_method=init, generate_method=gen)
+    G4JLPrimaryGenerator("GPS", data; init_method=initGPS, generate_method=gen)
+end
+const G4JLGeneralParticleSource = G4JLPrimaryGenerator{G4JLGPSData}
+
+function initGPS(data::G4JLGPSData, ::Any)
+    gps = data.gps = move!(G4GeneralParticleSource())
+    for (idx, source) in enumerate(data.sources)
+        if idx != 1
+            AddaSource(gps, 1.)
+        end
+        current = gps |> GetCurrentSource
+        #---First level (:intensity, :position, :particle, :direction, :energy)
+        for attr in fieldnames(typeof(source))
+            if attr == :intensity
+                SetCurrentSourceIntensity(gps, source.intensity)
+            elseif attr == :position
+                pos = current |> GetPosDist
+                SetPosDisType(pos, "Point")    
+                SetCentreCoords(pos, source.position)
+            elseif attr == :direction
+                ang = current |> GetAngDist
+                SetAngDistType(ang, "planar")    
+                SetParticleMomentumDirection(ang, source.direction)
+            elseif attr == :energy
+                ene = current |> GetEneDist
+                SetMonoEnergy(ene, source.energy)
+            elseif attr == :particle
+                SetParticleDefinition(current, source.particle |> FindParticle)
+            elseif attr == :pos
+                pos = current |> GetPosDist
+                for sattr in fieldnames(typeof(source.pos))
+                    if sattr == :type
+                        SetPosDisType(pos, source.pos.type)
+                    elseif sattr == :shape
+                        SetPosDisShape(pos, source.pos.shape)
+                    elseif sattr == :centre
+                        SetCentreCoords(pos, source.pos.centre)
+                    elseif sattr == :rot1
+                        SetPosRot1(pos, source.pos.rot1)
+                    elseif sattr == :rot2
+                        SetPosRot2(pos, source.pos.rot2)
+                    elseif sattr == :halfx
+                        SetHalfX(pos, source.pos.halfx)
+                    elseif sattr == :halfy
+                        SetHalfY(pos, source.pos.halfy)
+                    elseif sattr == :halfz
+                        SetHalfZ(pos, source.pos.halfz)
+                    elseif sattr == :radius
+                        SetRadius(pos, source.pos.radius)
+                    elseif sattr == :inner_radius
+                        SetRadius0(pos, source.pos.inner_radius)
+                    elseif sattr == :sigma_r
+                        SetBeamSigmaInR(pos, source.pos.sigma_r)
+                    elseif sattr == :sigma_x
+                        SetBeamSigmaInX(pos, source.pos.sigma_x)
+                    elseif sattr == :sigma_y
+                        SetBeamSigmaInY(pos, source.pos.sigma_y)
+                    elseif sattr == :paralp
+                        SetParAlpha(pos, source.pos.paralp)
+                    elseif sattr == :parthe
+                        SetParTheta(pos, source.pos.parthe)
+                    elseif sattr == :parphi
+                        SetParPhi(pos, source.pos.parphi)
+                    elseif sattr == :confine
+                        ConfineSourceToVolume(pos, source.pos.confine)
+                    else
+                        error("$sattr is not an attribute of particle position distribution")
+                    end
+                end
+            elseif attr == :ang
+                ang = current |> GetAngDist
+                for sattr in fieldnames(typeof(source.ang))
+                    if sattr == :type
+                        SetAngDistType(ang, source.ang.type)
+                    elseif sattr == :rot1
+                        DefineAngRefAxes(ang, "angref1", source.ang.rot1)
+                    elseif sattr == :rot2
+                        DefineAngRefAxes(ang, "angref2", source.ang.rot2)
+                    elseif sattr == :mintheta
+                        SetMinTheta(ang, source.ang.mintheta)
+                    elseif sattr == :maxtheta
+                        SetMaxTheta(ang, source.ang.maxtheta)
+                    elseif sattr == :minphi
+                        SetMinPhi(ang, source.ang.minphi)
+                    elseif sattr == :maxphi
+                        SetMaxPhi(ang, source.ang.maxphi)
+                    elseif sattr == :sigma_r
+                        SetBeamSigmaInAngR(ang, source.ang.sigma_r)
+                    elseif sattr == :sigma_x
+                        SetBeamSigmaInAngX(ang, source.ang.sigma_x)
+                    elseif sattr == :sigma_y
+                        SetBeamSigmaInAngY(ang, source.ang.sigma_y)
+                    elseif sattr == :focuspoint
+                        SetFocusPoint(ang, source.ang.focuspoint)
+                    elseif sattr == :user_coor
+                        SetUseUserAngAxis(ang, source.ang.user_coor)
+                    elseif sattr == :surfnorm
+                        SetUserWRTSurface(ang, source.ang.surfnorm)
+                    else
+                        error("$sattr is not an attribute of particle angular distribution")
+                    end
+                end
+            elseif attr == :ene
+                ene = current |> GetEneDist
+                for sattr in fieldnames(typeof(source.ene))
+                    if sattr == :type
+                        SetEnergyDisType(ene, source.ene.type)
+                    elseif sattr == :min
+                        SetEmin(ene, source.ene.min)
+                    elseif sattr == :max
+                        SetEmax(ene, source.ene.max)
+                    elseif sattr == :mono
+                        SetMonoEnergy(ene, source.ene.mono)
+                    elseif sattr == :sigma
+                        SetBeamSigmaInE(ene, source.ene.sigma)
+                    elseif sattr == :alpha
+                        SetAlpha(ene, source.ene.alpha)
+                    elseif sattr == :temp
+                        SetTemp(ene, source.ene.temp)
+                    elseif sattr == :ezero
+                        SetEzero(ene, source.ene.ezero)
+                    elseif sattr == :gradient
+                        SetGradient(ene, source.ene.gradient)
+                    elseif sattr == :intercept
+                        SetInterCept(ene, source.ene.intercept)
+                    elseif sattr == :biasAlpha
+                        SetBiasAlpha(ene, source.ene.biasAlpha)
+                    elseif sattr == :calculate
+                        Calculate(ene)
+                    elseif sattr == :emspec
+                        InputEnergySpectra(ene, source.ene.emspec)
+                    elseif sattr == :diffspec
+                        InputDifferentialSpectra(ene, source.ene.diffspec)
+                    elseif sattr == :applyEneWeight
+                        ApplyEnergyWeight(ene, source.ene.applyEneWeight)
+                    else
+                        error("$sattr is not an attribute of particle energy distribution")
+                    end
+                end
+            else
+                error("$attr is not an attribute of single particle source")
+            end
+        end
+    end
 end
 
-const G4JLGeneralParticleSource = G4JLPrimaryGenerator{G4JLGPSData}
+function reinitialize(gen::G4JLGeneralParticleSource; kwargs...)
+    isnothing(gen.data.gps) && error("GeneralParticleSource has not been instantiated")
+    data = gen.data
+    if haskey(kwargs, :sources)
+        data.sources = kwargs[:sources]
+        haskey(kwargs,:multiplevertex) &&  (data.multiplevertex = kwargs[:multiplevertex])
+        haskey(kwargs,:flatsampling) && (data.flatsampling = kwargs[:flatsampling])
+    else
+        data.sources = [ NamedTuple(kwargs) ]
+    end
+    initGPS(data, nothing)
+end
 
 #=
 /gps/pos

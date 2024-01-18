@@ -129,6 +129,34 @@ The user can define either an uniform magnetic field or a custom one. To define 
   ```
     G4JLMagneticField(<name>, <data>; getfield_method=<function>)
   ```
+### Primary Particle Generator
+The user can define either a custom primary particle generator or use one of the two defined ones:
+- **G4JLGunGenerator**. Uses the `G4ParticleGun` class of Geant4 that generates a single particle type with a fix kinetic energy, position and direction.
+  ```julia
+  G4JLGunGenerator(particle = "proton", 
+                   energy = 3GeV, 
+                   direction = G4ThreeVector(0,0,1), 
+                   position = G4ThreeVector(0,0,-2940.0))
+  ```
+- **G4JLGeneralParticleSource**. Uses the `G4GeneralParticleSource` class of Geant4 to generate one of more sources of primary particles with predefined distributions for energy, position and direction. An example can be:
+  ```julia
+  src1 = (particle="e+", intensity=0.5,
+          ene=(type="Exp", min=2MeV, max=10MeV, ezero=2.),
+          pos=(type="Plane", shape="Circle", centre=G4ThreeVector(1cm,2cm,0cm), radius=3cm),
+          ang=(type="cos", mintheta=0deg, maxtheta=180deg))
+  src2 = (particle="gamma", intensity=0.5,
+          ene=(type="Brem", min=2MeV, max=10MeV, temp=2e12),
+          pos=(type="Plane", shape="Ellipse", centre=G4ThreeVector(3cm,1cm,0cm), halfx=1cm, halfy=2cm),
+          ang=(type="iso", mintheta=0deg, maxtheta=180deg))
+  gps = G4JLGeneralParticleSource(sources = [ src1, src 2 ])
+  ```
+  the standard particle gun parameters works as well:
+  ```julia
+  G4JLGeneralParticleSource(particle = "proton", 
+                            energy = 3GeV, 
+                            direction = G4ThreeVector(0,0,1), 
+                            position = G4ThreeVector(0,0,0))
+  ```
 
 ### User Actions
 User actions are native Julia functions that are callbacks of the Geant4 toolkit. They are declared in the constructor of `G4JLApplication`, so they do not need to be associated to a specific function name. All user actions receive a reference to the `G4JLApplication` from which the user can obtain details of the actual application, such as the current detector, the physics, the generator, or the running simulation data. There are the available attributes of the application instance:
@@ -327,6 +355,12 @@ We have the possibility during the development of this package to re-generate lo
 Once the wrapper code is stabilized we move the generated code to the repository [Geant4\_cxxwrap](https://github.com/peremato/Geant4_cxxwrap) to regenerate the binary package `Geant4_julia_jll` using the `BinaryBuilder`.
 
 ## Release Notes
+### 0.1.11 (in preparation)
+- Migrated to Julia 1.10
+- Using the latest version of WrapIt to generate the CxxWrap wrappers
+- New features
+    - Added `G4JLGeneralParticleSource`, which makes use of the Geant4 `G4GeneralParticleSource` class for generation of primary particles for simulations. See documentation.
+    - Added a new extension module `G4Hist` that defines convenient types (H1D and H2D) for histograms on top of FHist.jl. See documentation. 
 ### 0.1.10
 - New features
     - Provide an EventDisplay as a building block of the application. New `evtdisplay` argument in the constructor. 
