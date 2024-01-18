@@ -1,10 +1,9 @@
+using Parameters
 using Geant4
 using Geant4.PhysicalConstants
 using Geant4.SystemOfUnits
 using Geant4.SystemOfUnits: deg
 using FHist
-using Parameters
-get = Base.get
 using Plots
 
 #---Choose the Makie backend
