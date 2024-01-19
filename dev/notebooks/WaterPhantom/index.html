@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Example WaterPhantom · Geant4.jl</title><meta name="title" content="Example WaterPhantom · Geant4.jl"/><meta property="og:title" content="Example WaterPhantom · Geant4.jl"/><meta property="twitter:title" content="Example WaterPhantom · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">APIs</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../HBC30/">Example HBC30</a></li><li class="is-active"><a class="tocitem" href>Example WaterPhantom</a><ul class="internal"><li><a class="tocitem" href="#Detector-description"><span>Detector description</span></a></li><li><a class="tocitem" href="#Define-the-primary-particle-generator"><span>Define the primary particle generator</span></a></li><li><a class="tocitem" href="#Setup-the-scoring-with-the-the-scoring-interface"><span>Setup the scoring with the the scoring interface</span></a></li><li><a class="tocitem" href="#Instantiate-the-Geant4-Application"><span>Instantiate the Geant4 Application</span></a></li><li><a class="tocitem" href="#Configure,-initiliaze-and-run"><span>Configure, initiliaze and run</span></a></li><li><a class="tocitem" href="#Define-plotting-functions"><span>Define plotting functions</span></a></li><li><a class="tocitem" href="#Electron-20-Mev"><span>Electron 20 Mev</span></a></li><li><a class="tocitem" href="#Proton-200-MeV"><span>Proton 200 MeV</span></a></li><li><a class="tocitem" href="#Csub12/sub-ion-3-GeV"><span>C&lt;sub&gt;12&lt;/sub&gt; ion 3 GeV</span></a></li></ul></li><li><a class="tocitem" href="../B1/">Example B1</a></li><li><a class="tocitem" href="../B2a/">Example B2a</a></li><li><a class="tocitem" href="../GPS/">Example GPS</a></li><li><a class="tocitem" href="../Solids/">Example Solids</a></li><li><a class="tocitem" href="../TestEm3/">Example TestEm3</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>Example WaterPhantom</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Example WaterPhantom</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/notebooks/WaterPhantom.md#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Water-Phantom-Simulation-with-Scoring"><a class="docs-heading-anchor" href="#Water-Phantom-Simulation-with-Scoring">Water Phantom Simulation with Scoring</a><a id="Water-Phantom-Simulation-with-Scoring-1"></a><a class="docs-heading-anchor-permalink" href="#Water-Phantom-Simulation-with-Scoring" title="Permalink"></a></h1><p>Example originated from the example in Geant4Py. It is using a very simple phantom model (a box of water) and exercises the scoring interface.</p><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits
+using Plots</code></pre><pre><code class="nohighlight hljs">WARNING: using Geant4.get in module Main conflicts with an existing identifier.</code></pre><h2 id="Detector-description"><a class="docs-heading-anchor" href="#Detector-description">Detector description</a><a id="Detector-description-1"></a><a class="docs-heading-anchor-permalink" href="#Detector-description" title="Permalink"></a></h2><p>The main parameters are stored in the <code>RE03Detector</code> struct with some default values. </p><pre><code class="language-julia hljs">mutable struct RE03Detector &lt;: G4JLDetector
+    const worldXY::Float64
+    const worldZ::Float64
+    const phantomXY::Float64
+    const phantomZ::Float64
+    RE03Detector(;worldXY=100cm, worldZ=300cm, phantomXY=30.5cm, phantomZ=30cm) = new(worldXY, worldZ, phantomXY, phantomZ)
+end
+
+function construct(det::RE03Detector)::CxxPtr{G4VPhysicalVolume}
+    #---Materials----------------------------------------------------------------------------------
+    nist = G4NistManager!Instance()
+    fAir = FindOrBuildMaterial(nist, &quot;G4_AIR&quot;)
+    fWater = FindOrBuildMaterial(nist, &quot;G4_WATER&quot;)
+
+    #---World--------------------------------------------------------------------------------------
+    worldSolid = G4Box(&quot;World&quot;,det.worldXY/2, det.worldXY/2, det.worldZ/2)
+    worldLogical = G4LogicalVolume(worldSolid,fAir,&quot;World&quot;)
+    worldPhys = G4PVPlacement(nothing, G4ThreeVector(), worldLogical, &quot;World&quot;, nothing,false,0)
+    
+    #---Phantom------------------------------------------------------------------------------------
+    phantomSolid = G4Box(&quot;Phantom&quot;, det.phantomXY/2, det.phantomXY/2, det.phantomZ/2)
+    phantomLogical = G4LogicalVolume(phantomSolid, fWater, &quot;Phantom&quot;);
+    phantomPhys = G4PVPlacement(nothing, G4ThreeVector(), phantomLogical, &quot;Phantom&quot;, worldLogical, false, 0)
+    
+    #---Visualization attributes-------------------------------------------------------------------
+    SetVisAttributes(worldLogical, G4VisAttributes!GetInvisible())
+    simpleBoxVisAtt = G4VisAttributes(G4Colour(1.0, 1.0, 1.0))
+    SetVisibility(simpleBoxVisAtt, true)
+    SetVisAttributes(phantomLogical, simpleBoxVisAtt)
+
+    return worldPhys
+end
+
+Geant4.getConstructor(::RE03Detector)::Function = construct</code></pre><h2 id="Define-the-primary-particle-generator"><a class="docs-heading-anchor" href="#Define-the-primary-particle-generator">Define the primary particle generator</a><a id="Define-the-primary-particle-generator-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-primary-particle-generator" title="Permalink"></a></h2><p>We define the <code>MedicalBeam</code> particle generator. This is similar to the particle gun but with direction of the particles randomly distributed within some aperture cone. It consists of</p><ul><li><code>MedicalBeamData</code> data structure with the parameters of the beam</li><li>An <code>init</code> function that will be called at initialization time.</li><li>An <code>generate</code> function hat is called at each event and create the primary particle and primary vertex.</li><li>A set of setter functions (<code>SetParticleByName</code>, <code>SetParticleEnergy</code>) to change parameters at run time</li></ul><p>The function to construct the generator is <code>MedicalBeam(...)</code>.</p><pre><code class="language-julia hljs">mutable struct MedicalBeamData &lt;: G4JLGeneratorData
+  particleName::String
+  particlePtr::CxxPtr{G4ParticleDefinition}
+  energy::Float64 
+  ssd::Float64
+  fieldXY::Float64
+  surfaceZ::Float64
+end
+
+function generateBeamDir(ssd::Float64, fxy::Float64)
+  dr = √2/2*fxy
+  R = √(ssd^2 + dr^2)
+  cos0 = ssd/R
+  xymax = fxy/ssd/2
+  dx = dy = dz = 0.
+  while true
+    dz = rand()*(1-cos0)+ cos0
+    dsin = √(1-dz^2)
+    dphi = rand()*2π
+    dx = dsin * cos(dphi)
+    dy = dsin * sin(dphi)
+    if abs(dx) &lt; xymax*dz &amp;&amp; abs(dy) &lt; xymax*dz 
+      break
+    end
+  end
+  G4ThreeVector(dx, dy, dz)
+end
+
+function MedicalBeam(;particle=&quot;e-&quot;, energy=10MeV, ssd=100cm, fieldXY=10cm)
+  data = MedicalBeamData(particle, CxxPtr{G4ParticleDefinition}(C_NULL), energy, ssd, fieldXY, 0.)
+  function init(data::MedicalBeamData, app::G4JLApplication)
+    data.particlePtr = FindParticle(data.particleName)
+    data.surfaceZ = -app.detector.phantomZ/2
+  end
+  function generate( evt::G4Event, data::MedicalBeamData)::Nothing
+    mass = data.particlePtr |&gt; GetPDGMass
+    momemtum = √((mass + data.energy)^2 - mass^2)
+    pvec = momemtum * generateBeamDir(data.ssd, data.fieldXY);
+    primary = G4PrimaryParticle(data.particlePtr, pvec |&gt; x, pvec |&gt; y, pvec |&gt; z )
+    vertex = G4PrimaryVertex(G4ThreeVector(0, 0, data.surfaceZ - data.ssd), 0ns)
+    SetPrimary(vertex, move!(primary))    # note that we give up ownership of the objects just created
+    AddPrimaryVertex(evt, move!(vertex))  # note that we give up ownership of the objects just created
+  end
+  G4JLPrimaryGenerator(&quot;MedicalBeam&quot;, data; init_method=init, generate_method=generate)
+end
+function SetParticleByName(gen::G4JLPrimaryGenerator{MedicalBeamData}, particle::String)
+  gen.data.particleName = particle
+  gen.data.particlePtr = FindParticle(particle)
+  return
+end
+function SetParticleEnergy(gen::G4JLPrimaryGenerator{MedicalBeamData}, energy::Float64) 
+  gen.data.energy = energy
+  return
+end</code></pre><pre><code class="nohighlight hljs">SetParticleEnergy (generic function with 1 method)</code></pre><h2 id="Setup-the-scoring-with-the-the-scoring-interface"><a class="docs-heading-anchor" href="#Setup-the-scoring-with-the-the-scoring-interface">Setup the scoring with the the scoring interface</a><a id="Setup-the-scoring-with-the-the-scoring-interface-1"></a><a class="docs-heading-anchor-permalink" href="#Setup-the-scoring-with-the-the-scoring-interface" title="Permalink"></a></h2><p>Create a box shaped mesh and define the number of bins. The quantity to be monitor is <code>dose</code>. Later accessing the attribute <code>dose</code> on the scoring mesh will return a tuple with the sum of dose, sum square and number of entries for each mesh cell.  </p><pre><code class="language-julia hljs">sc1 = G4JLScoringMesh(&quot;boxMesh_1&quot;,
+                      BoxMesh(15.25cm, 15.25cm, 15cm),
+                      bins = (61, 61, 150),
+                      quantities = [ doseDeposit(&quot;dose&quot;) ]
+                      );</code></pre><h2 id="Instantiate-the-Geant4-Application"><a class="docs-heading-anchor" href="#Instantiate-the-Geant4-Application">Instantiate the Geant4 Application</a><a id="Instantiate-the-Geant4-Application-1"></a><a class="docs-heading-anchor-permalink" href="#Instantiate-the-Geant4-Application" title="Permalink"></a></h2><pre><code class="language-julia hljs">app = G4JLApplication(;detector = RE03Detector(),                    # detector with parameters
+                       generator = MedicalBeam(),                    # promary partcile generator
+                       nthreads = 8,                                 # define the number of threads
+                       physics_type = FTFP_BERT,                     # what physics list to instantiate
+                       scorers = [sc1]                               # list of scorers 
+                      );</code></pre><pre><code class="nohighlight hljs">**************************************************************
+ Geant4 version Name: geant4-11-02 [MT]   (8-December-2023)
+  &lt;&lt; in Multi-threaded mode &gt;&gt; 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************</code></pre><h2 id="Configure,-initiliaze-and-run"><a class="docs-heading-anchor" href="#Configure,-initiliaze-and-run">Configure, initiliaze and run</a><a id="Configure,-initiliaze-and-run-1"></a><a class="docs-heading-anchor-permalink" href="#Configure,-initiliaze-and-run" title="Permalink"></a></h2><pre><code class="language-julia hljs">configure(app)
+initialize(app)
+beamOn(app, 0)</code></pre><pre><code class="nohighlight hljs">--- G4CoupledTransportation is used 
+.... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4ScoringManager has 1 scoring meshes.
+G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+ Size (x, y, z): (15.25, 15.25, 15) [cm]
+ # of segments: (61, 61, 150)
+ displacement: (0, 0, 0) [cm]
+ registered primitve scorers : 
+   0  dose
+G4WT5 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT1 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT0 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT5 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT5 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT5 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
+G4WT5 &gt;  # of segments: (61, 61, 150)
+G4WT1 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT7 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT0 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT1 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT4 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT1 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
+G4WT0 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT1 &gt;  # of segments: (61, 61, 150)
+G4WT0 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
+G4WT1 &gt;  displacement: (0, 0, 0) [cm]
+G4WT0 &gt;  # of segments: (61, 61, 150)
+G4WT1 &gt;  registered primitve scorers : 
+G4WT5 &gt;  displacement: (0, 0, 0) [cm]
+G4WT0 &gt;  displacement: (0, 0, 0) [cm]
+G4WT0 &gt;  registered primitve scorers : 
+G4WT5 &gt;  registered primitve scorers : 
+G4WT4 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT5 &gt;    0  dose
+G4WT4 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT4 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
+G4WT4 &gt;  # of segments: (61, 61, 150)
+G4WT7 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT4 &gt;  displacement: (0, 0, 0) [cm]
+G4WT7 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT4 &gt;  registered primitve scorers : 
+G4WT4 &gt;    0  dose
+G4WT7 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
+G4WT7 &gt;  # of segments: (61, 61, 150)
+G4WT7 &gt;  displacement: (0, 0, 0) [cm]
+G4WT7 &gt;  registered primitve scorers : 
+G4WT7 &gt;    0  dose
+G4WT3 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT3 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT3 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT3 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
+G4WT3 &gt;  # of segments: (61, 61, 150)
+G4WT3 &gt;  displacement: (0, 0, 0) [cm]
+G4WT3 &gt;  registered primitve scorers : 
+G4WT3 &gt;    0  dose
+G4WT1 &gt;    0  dose
+G4WT0 &gt;    0  dose
+G4WT2 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT2 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT2 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT2 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
+G4WT2 &gt;  # of segments: (61, 61, 150)
+G4WT2 &gt;  displacement: (0, 0, 0) [cm]
+G4WT2 &gt;  registered primitve scorers : 
+G4WT2 &gt;    0  dose
+G4WT6 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT6 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT6 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT6 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
+G4WT6 &gt;  # of segments: (61, 61, 150)
+G4WT6 &gt;  displacement: (0, 0, 0) [cm]
+G4WT6 &gt;  registered primitve scorers : 
+G4WT6 &gt;    0  dose</code></pre><h3 id="Visualize-the-Detector-Setup"><a class="docs-heading-anchor" href="#Visualize-the-Detector-Setup">Visualize the Detector Setup</a><a id="Visualize-the-Detector-Setup-1"></a><a class="docs-heading-anchor-permalink" href="#Visualize-the-Detector-Setup" title="Permalink"></a></h3><h2 id="Define-plotting-functions"><a class="docs-heading-anchor" href="#Define-plotting-functions">Define plotting functions</a><a id="Define-plotting-functions-1"></a><a class="docs-heading-anchor-permalink" href="#Define-plotting-functions" title="Permalink"></a></h2><pre><code class="language-julia hljs">function do_plots(sc)
+      dose, dose2, nentry = sc.dose
+      xaxisvalues = range(0., sc.mesh.dx*2/cm, sc.bins[1])
+      zaxisvalues = range(0., sc.mesh.dz*2/cm, sc.bins[3])
+      cbin = round(Int, (sc.bins[1]+1)/2)
+      fig = plot( layout=(2,1), size=(800,800),
+                  heatmap(zaxisvalues, xaxisvalues, dose[cbin,:,:], title=&quot;Dose (XZ)&quot;, color=:thermal, xlabel=&quot;Z (cm)&quot;, ylabel=&quot;X (cm)&quot;), 
+                  plot(zaxisvalues, dose[cbin,cbin,:], title=&quot;Depth Dose (center)&quot;, xlabel=&quot;Z (cm)&quot;, label=&quot;dose&quot;)
+      )
+      display(&quot;image/png&quot;, fig)
+end</code></pre><pre><code class="nohighlight hljs">do_plots (generic function with 1 method)</code></pre><h2 id="Electron-20-Mev"><a class="docs-heading-anchor" href="#Electron-20-Mev">Electron 20 Mev</a><a id="Electron-20-Mev-1"></a><a class="docs-heading-anchor-permalink" href="#Electron-20-Mev" title="Permalink"></a></h2><pre><code class="language-julia hljs">SetParticleByName(app.generator, &quot;e-&quot;)
+SetParticleEnergy(app.generator, 20MeV)
+
+beamOn(app, 100000)
+do_plots(sc1)</code></pre><p><img src="../WaterPhantom_files/WaterPhantom_16_0.png" alt="png"/></p><h2 id="Proton-200-MeV"><a class="docs-heading-anchor" href="#Proton-200-MeV">Proton 200 MeV</a><a id="Proton-200-MeV-1"></a><a class="docs-heading-anchor-permalink" href="#Proton-200-MeV" title="Permalink"></a></h2><pre><code class="language-julia hljs">SetParticleByName(app.generator, &quot;proton&quot;)
+SetParticleEnergy(app.generator, 200MeV)
+
+beamOn(app, 100000)
+do_plots(sc1)</code></pre><p><img src="../WaterPhantom_files/WaterPhantom_18_0.png" alt="png"/></p><h2 id="Csub12/sub-ion-3-GeV"><a class="docs-heading-anchor" href="#Csub12/sub-ion-3-GeV">C&lt;sub&gt;12&lt;/sub&gt; ion 3 GeV</a><a id="Csub12/sub-ion-3-GeV-1"></a><a class="docs-heading-anchor-permalink" href="#Csub12/sub-ion-3-GeV" title="Permalink"></a></h2><pre><code class="language-julia hljs">SetParticleByName(app.generator, &quot;C12&quot;)
+SetParticleEnergy(app.generator, 3GeV)
+
+beamOn(app, 100000)
+do_plots(sc1)</code></pre><pre><code class="nohighlight hljs">G4WT5 &gt; 
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : HAD_FANCY3DNUCLEUS_001
+      issued by : G4Fancy3DNucleus::ChooseFermiMomenta(): difficulty finding proton momentum, set it to (0,0,0)
+Nucleus Z A 6 12
+proton with eMax=938.168
+
+*** This is just a warning message. ***
+-------- WWWW -------- G4Exception-END --------- WWWW -------</code></pre><p><img src="../WaterPhantom_files/WaterPhantom_20_1.png" alt="png"/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../HBC30/">« Example HBC30</a><a class="docs-footer-nextpage" href="../B1/">Example B1 »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="auto">Automatic (OS)</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.2.1 on <span class="colophon-date" title="Friday 19 January 2024 17:23">Friday 19 January 2024</span>. Using Julia version 1.10.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
