@@ -5,12 +5,16 @@ Julia bindings for the [Geant4](https://geant4.web.cern.ch) particle transportat
 Documentation of the concepts and how to write applications with the Geant4 toolkit can be found with the [Application Developer Guide](https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/index.html) or the [Classes and Members reference guide](https://geant4.kek.jp/Reference/v11.1.1/index.html) for a detailed description of each C++ class. In this document we will only highlight the differences between the Julia and the C++ API. We will document the additional types that have been added on top of the C++ classes to make the user interface more Julia friendly. To distinguish these new types from the types coming directly from C++ via the CxxWrap wrappers, these types are prefixed with `G4JL`.
 
 ## Installation
-The Geant4.jl package does no require any special installation. Stable releases are registered into the Julia general registry, and therefore can be installed with the standard `Pkg` Julia package manager.
-
-To use and play with the examples on this package, the user can clone this repository and setup a complete Julia environment with:
-
-- `git clone https://github.com/JuliaHEP/Geant4.jl.git`
-- `julia --project=Geant4.jl/examples -e 'import Pkg; Pkg.instantiate()'`
+The Geant4.jl package does no require any special installation. Stable releases are registered into the Julia general registry, and therefore can be deployed with the standard `Pkg` Julia package manager.
+```julia
+julia> using Pkg
+julia> Pkg.add("Geant4")
+```
+Examples are located in a separate repository [G4Examples](https://github.com/JuliaHEP/G4Examples.jl) to minimize dependencies since they use additional functionality such as graphics, plotting, analysis tools, etc. To use and play with the examples, the user can clone the examples repository and setup a complete Julia environment with:
+```sh
+$ git clone https://github.com/JuliaHEP/G4Examples.jl.git
+$ julia --project=G4Examples.jl -e 'import Pkg; Pkg.instantiate()'
+```
 
 ## Getting started
 Import the `Geant4` module. All the wrapped Geant4 classes are exported since they are prefixed by `G4` minimizing the chances of a name clash with other Julia symbols. 
@@ -148,7 +152,7 @@ The user can define either a custom primary particle generator or use one of the
           ene=(type="Brem", min=2MeV, max=10MeV, temp=2e12),
           pos=(type="Plane", shape="Ellipse", centre=G4ThreeVector(3cm,1cm,0cm), halfx=1cm, halfy=2cm),
           ang=(type="iso", mintheta=0deg, maxtheta=180deg))
-  gps = G4JLGeneralParticleSource(sources = [ src1, src 2 ])
+  gps = G4JLGeneralParticleSource(sources = [ src1, src2 ])
   ```
   the standard particle gun parameters works as well:
   ```julia
@@ -157,13 +161,13 @@ The user can define either a custom primary particle generator or use one of the
                             direction = G4ThreeVector(0,0,1), 
                             position = G4ThreeVector(0,0,0))
   ```
-- **Custom Generator**. It is fairly simple to write a custom generator. It is needed to define a structure for the parameters to configure the genearator and a two functions to initialize and generate the primary particles called for each event. Here is an example:
+- **Custom Generator**. It is fairly simple to write a custom generator. It is needed to define a structure for the parameters to configure the generator, and a two functions to initialize and generate the primary particles called for each event. Here is an example:
   ```julia
   # define the data structure with the generator parameters
   mutable struct PlaneSourceData <: G4JLGeneratorData
     particleName::String
-   particlePtr::CxxPtr{G4ParticleDefinition}
-   energy::Float64 
+    particlePtr::CxxPtr{G4ParticleDefinition}
+    energy::Float64 
     halfx::Float64
     halfy::Float64
     position::G4ThreeVector
