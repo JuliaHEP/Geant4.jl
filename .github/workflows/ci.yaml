@@ -23,6 +23,8 @@ jobs:
           - x64
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.version }}
