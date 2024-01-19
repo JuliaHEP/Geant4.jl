@@ -11,21 +11,19 @@ end
     #---change the working directory
     cd(dirname(dirname(pathof(Geant4))))
 
-    # Basic examples
+    # All examples should be used for testing to ensure that the release is working correctly
     instantiate("examples")
     @test run(`julia --project=examples examples/basic/B2/B2a.jl`, devnull, devnull).exitcode  == 0
     @test run(`julia --project=examples examples/basic/B1/B1.jl`, devnull, devnull).exitcode  == 0
-    @test run(`julia --project=examples examples/extended/RE03/RE03.jl`, devnull, devnull).exitcode  == 0
-    @test run(`julia --project=examples examples/TestEm3/TestEm3.jl`, devnull, devnull).exitcode  == 0
-    @test run(`julia --project=examples examples/Scintillation/Scintillation.jl`, devnull, devnull).exitcode  == 0
+    @test run(`julia --project=examples examples/basic/B1/B1vis.jl`, devnull, devnull).exitcode == 0
+    @test run(`julia --project=examples examples/basic/B2/B2aVis.jl`, devnull, devnull).exitcode == 0
 
-    if VERSION > v"1.9"   # The module extension mechanism only works from 1.9
-        # Visualization
-        instantiate("ext/G4Vis/examples")
-        @test run(`julia --project=ext/G4Vis/examples ext/G4Vis/examples/HBC30/HBC30.jl`, devnull, devnull).exitcode == 0
-        @test run(`julia --project=ext/G4Vis/examples ext/G4Vis/examples/B1vis.jl`, devnull, devnull).exitcode == 0
-        @test run(`julia --project=ext/G4Vis/examples ext/G4Vis/examples/B2aVis.jl`, devnull, devnull).exitcode == 0
-        @test run(`julia --project=ext/G4Vis/examples ext/G4Vis/examples/TestEm3Vis.jl`, devnull, devnull).exitcode == 0
-        @test run(`julia --project=examples/extended/GPS/GPS.jl`, devnull, devnull).exitcode == 0
-    end
+    @test run(`julia --project=examples examples/extended/RE03/RE03.jl`, devnull, devnull).exitcode  == 0
+    @test run(`julia --project=examples examples/extended/GPS/GPS.jl`, devnull, devnull).exitcode == 0
+    @test run(`julia --project=examples examples/extended/TestEm3/TestEm3.jl`, devnull, devnull).exitcode  == 0
+    @test run(`julia --project=examples examples/extended/TestEm3/TestEm3Vis.jl`, devnull, devnull).exitcode == 0
+
+    @test run(`julia --project=examples examples/advanced/Scintillation/Scintillation.jl`, devnull, devnull).exitcode  == 0
+    @test run(`julia --project=examples examples/advanced/HBC30/HBC30.jl`, devnull, devnull).exitcode == 0
+
 end
