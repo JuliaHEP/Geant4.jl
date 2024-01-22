@@ -391,6 +391,12 @@ We have the possibility during the development of this package to re-generate lo
 Once the wrapper code is stabilized we move the generated code to the repository [Geant4\_cxxwrap](https://github.com/peremato/Geant4_cxxwrap) to regenerate the binary package `Geant4_julia_jll` using the `BinaryBuilder`.
 
 ## Release Notes
+### 0.1.12
+- Moved the examples to new repository https://github.com/JuliaHEP/G4Examples.jl
+- Fixes:
+    - Veto CLHEP::HepRandomEngine::get to avoid clash with Base.get
+    - Disable finalizer for class G4JLStateDependent. Fixes event display.
+
 ### 0.1.11
 - Migrated to Julia 1.10
 - Using the latest version of WrapIt to generate the CxxWrap wrappers
