@@ -22,9 +22,13 @@ jobs:
         arch:
           - x64
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Checkout G4Examples
+        uses: actions/checkout@v2
         with:
-          submodules: recursive
+          repository: JuliaHEP/G4Examples.jl
+          path: examples
       - uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.version }}
@@ -53,9 +57,13 @@ jobs:
     name: Documentation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Checkout G4Examples
+        uses: actions/checkout@v2
         with:
-          submodules: recursive
+          repository: JuliaHEP/G4Examples.jl
+          path: examples
       - uses: julia-actions/setup-julia@v1
         with:
           version: '1'
