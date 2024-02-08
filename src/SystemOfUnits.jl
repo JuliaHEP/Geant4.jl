@@ -214,6 +214,10 @@ module SystemOfUnits
   const  kilogray = 1.e+3*gray
   const milligray = 1.e-3*gray
   const microgray = 1.e-6*gray
+  const        Gy = gray
+  const       mGy = 1.e-3*gray
+  const       μGy = 1.e-6*gray
+  const       pGy = 1.e-9*gray
 
   # Luminous intensity [I]
   const candela = 1.
