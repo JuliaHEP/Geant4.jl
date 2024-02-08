@@ -15,8 +15,9 @@ makedocs(;
     ),
     pages=[
         "Introduction" => "index.md",
-        "APIs" => "api.md",
+        "Public API" => "api.md",
         "Examples" => T,
+        "Release Notes" => "releases.md",
     ],
     repo="https://github.com/JuliaHEP/Geant4.jl/blob/{commit}{path}#L{line}",
     sitename="Geant4.jl",

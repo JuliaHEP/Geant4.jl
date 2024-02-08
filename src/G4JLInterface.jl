@@ -200,6 +200,7 @@ mutable struct G4JLApplication{DET<:G4JLDetector,DAT<:G4JLSimulationData} <: G4J
     const endrunaction_method::Union{Nothing,Function}
     const begineventaction_method::Union{Nothing,Function}
     const endeventaction_method::Union{Nothing,Function}
+    const stackaction_method::Union{Nothing,Function}
     const statechange_method::Union{Nothing, Function}
     # Sensitive Detectors
     protoSDs::Dict{String,G4JLProtoSD}
@@ -236,6 +237,7 @@ Initialize a G4JLApplication with its associated tyopes and methods.
 - `endrunaction_method=nothing`: end run action method with signature `(::G4Run, ::G4JLApplication)::Nothing`
 - `begineventaction_method=nothing`: begin event action method with signature `(::G4Event, ::G4JLApplication)::Nothing`
 - `endeventaction_method=nothing`: end event action method with signature `(::G4Event, ::G4JLApplication)::Nothing`
+- `stackaction_method=nothing`: stacking classification of new track with signature `(::G4Track, ::G4JLApplication)::G4ClassificationOfNewTrack`
 - `statechange_method=nothing`: state change notifycation method with  signature `(from::G4ApplicationState, to::G4ApplicationState, ::G4JLApplication)::Bool`
 - `sdetectors::Vector{}=[]`: vector of pairs `lv::String => sd::G4JLSensitiveDetector` to associate logical volumes to sensitive detector
 - `scorers::Vector{}=[]`: vector of [`G4JLScoringMesh`](@ref)s
@@ -261,6 +263,7 @@ function G4JLApplication(;detector::G4JLDetector,
                 endrunaction_method=nothing,
                 begineventaction_method=nothing,
                 endeventaction_method=nothing,
+                stackaction_method=nothing,
                 statechange_method=nothing,
                 sdetectors=[],
                 scorers=[],
@@ -283,7 +286,7 @@ function G4JLApplication(;detector::G4JLDetector,
                            runaction_type, eventaction_type, trackaction_type, stepaction_type,
                            stepaction_method, pretrackaction_method, posttrackaction_method, 
                            beginrunaction_method, endrunaction_method, begineventaction_method, 
-                           endeventaction_method, statechange_method,
+                           endeventaction_method, stackaction_method, statechange_method,
                            Dict(sdetectors), Dict{String,Vector{G4JLSensitiveDetector}}(), 
                            scorers, nothing, nothing)
     # register state change dependent
@@ -405,6 +408,11 @@ function configure(app::G4JLApplication)
         end
         if !isnothing(app.begineventaction_method) || !isnothing(app.endeventaction_method)
             SetUserAction(uai, move!(app.eventaction_type(e1..., e2...)))
+        end
+        #---Staking acrion------------------------------------------------------------------------
+        if !isnothing(app.stackaction_method)
+            cd = make_callback(app, app.stackaction_method, G4ClassificationOfNewTrack, (ConstCxxPtr{G4Track},)) |> closure
+            SetUserAction(uai, move!(G4JLStackingAction(cd...)))
         end
         #---Primary particles generator---------(per thread)--------------------------------------
         gen = app.generator

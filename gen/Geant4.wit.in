@@ -66,6 +66,9 @@ input               = [ "Geant4Wrap.h",
                         "G4ProcessType.hh",
                         "G4EmStandardPhysics_option4.hh",
                         "G4OpticalPhysics.hh",
+                        "G4DecayPhysics.hh",
+                        "G4EmStandardPhysics.hh",
+                        "G4RadioactiveDecayPhysics.hh",
                         "G4OpBoundaryProcess.hh",
                         "G4ProcessManager.hh",
                         "G4ProcessVector.hh",
@@ -153,7 +156,7 @@ input               = [ "Geant4Wrap.h",
                         "G4ApplicationState.hh",
                       ]
 
-extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh", "G4ParticleMessenger.hh", "G4IonTable.hh", "G4AttValue.hh", "cstddef"  ]
+extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh", "G4ParticleMessenger.hh", "G4IonTable.hh", "G4VIsotopeTable.hh", "G4AttValue.hh", "cstddef"  ]
 vetoed_finalizer_classes = ["G4PVPlacement", "G4LogicalVolume", "G4PVReplica", "G4Material", "G4Isotope", "G4Element", "G4JLParticleGun", 
                             "G4JLDetectorConstruction", "G4JLGeneratorAction", "G4JLRunAction", "G4JLSensDet", "G4JLWorkerInitialization", "G4JLStateDependent",
                             "G4LogicalSkinSurface", "G4LogicalBorderSurface", "G4OpticalSurface"]
