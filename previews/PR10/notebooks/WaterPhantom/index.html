@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Example WaterPhantom · Geant4.jl</title><meta name="title" content="Example WaterPhantom · Geant4.jl"/><meta property="og:title" content="Example WaterPhantom · Geant4.jl"/><meta property="twitter:title" content="Example WaterPhantom · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../HBC30/">Example HBC30</a></li><li class="is-active"><a class="tocitem" href>Example WaterPhantom</a><ul class="internal"><li><a class="tocitem" href="#Detector-description"><span>Detector description</span></a></li><li><a class="tocitem" href="#Define-the-primary-particle-generator"><span>Define the primary particle generator</span></a></li><li><a class="tocitem" href="#Setup-the-scoring-with-the-the-scoring-interface"><span>Setup the scoring with the the scoring interface</span></a></li><li><a class="tocitem" href="#Instantiate-the-Geant4-Application"><span>Instantiate the Geant4 Application</span></a></li><li><a class="tocitem" href="#Configure,-initiliaze-and-run"><span>Configure, initiliaze and run</span></a></li><li><a class="tocitem" href="#Define-plotting-functions"><span>Define plotting functions</span></a></li><li><a class="tocitem" href="#Electron-20-Mev"><span>Electron 20 Mev</span></a></li><li><a class="tocitem" href="#Proton-200-MeV"><span>Proton 200 MeV</span></a></li><li><a class="tocitem" href="#Csub12/sub-ion-3-GeV"><span>C&lt;sub&gt;12&lt;/sub&gt; ion 3 GeV</span></a></li></ul></li><li><a class="tocitem" href="../B1/">Example B1</a></li><li><a class="tocitem" href="../B2a/">Example B2a</a></li><li><a class="tocitem" href="../GPS/">Example GPS</a></li><li><a class="tocitem" href="../Solids/">Example Solids</a></li><li><a class="tocitem" href="../TestEm3/">Example TestEm3</a></li></ul></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>Example WaterPhantom</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Example WaterPhantom</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/notebooks/WaterPhantom.md#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Water-Phantom-Simulation-with-Scoring"><a class="docs-heading-anchor" href="#Water-Phantom-Simulation-with-Scoring">Water Phantom Simulation with Scoring</a><a id="Water-Phantom-Simulation-with-Scoring-1"></a><a class="docs-heading-anchor-permalink" href="#Water-Phantom-Simulation-with-Scoring" title="Permalink"></a></h1><p>Example originated from the example in Geant4Py. It is using a very simple phantom model (a box of water) and exercises the scoring interface.</p><pre><code class="language-julia hljs">using Geant4
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Example WaterPhantom · Geant4.jl</title><meta name="title" content="Example WaterPhantom · Geant4.jl"/><meta property="og:title" content="Example WaterPhantom · Geant4.jl"/><meta property="twitter:title" content="Example WaterPhantom · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../HBC30/">Example HBC30</a></li><li class="is-active"><a class="tocitem" href>Example WaterPhantom</a><ul class="internal"><li><a class="tocitem" href="#Detector-description"><span>Detector description</span></a></li><li><a class="tocitem" href="#Define-the-primary-particle-generator"><span>Define the primary particle generator</span></a></li><li><a class="tocitem" href="#Setup-the-scoring-with-the-the-scoring-interface"><span>Setup the scoring with the the scoring interface</span></a></li><li><a class="tocitem" href="#Instantiate-the-Geant4-Application"><span>Instantiate the Geant4 Application</span></a></li><li><a class="tocitem" href="#Configure,-initiliaze-and-run"><span>Configure, initiliaze and run</span></a></li><li><a class="tocitem" href="#Define-plotting-functions"><span>Define plotting functions</span></a></li><li><a class="tocitem" href="#Electron-20-Mev"><span>Electron 20 Mev</span></a></li><li><a class="tocitem" href="#Proton-200-MeV"><span>Proton 200 MeV</span></a></li><li><a class="tocitem" href="#Csub12/sub-ion-3-GeV"><span>C&lt;sub&gt;12&lt;/sub&gt; ion 3 GeV</span></a></li></ul></li><li><a class="tocitem" href="../B1/">Example B1</a></li><li><a class="tocitem" href="../B2a/">Example B2a</a></li><li><a class="tocitem" href="../B3a/">Example B3a</a></li><li><a class="tocitem" href="../GPS/">Example GPS</a></li><li><a class="tocitem" href="../Solids/">Example Solids</a></li><li><a class="tocitem" href="../TestEm3/">Example TestEm3</a></li></ul></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>Example WaterPhantom</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Example WaterPhantom</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/notebooks/WaterPhantom.md#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Water-Phantom-Simulation-with-Scoring"><a class="docs-heading-anchor" href="#Water-Phantom-Simulation-with-Scoring">Water Phantom Simulation with Scoring</a><a id="Water-Phantom-Simulation-with-Scoring-1"></a><a class="docs-heading-anchor-permalink" href="#Water-Phantom-Simulation-with-Scoring" title="Permalink"></a></h1><p>Example originated from the example in Geant4Py. It is using a very simple phantom model (a box of water) and exercises the scoring interface.</p><pre><code class="language-julia hljs">using Geant4
 using Geant4.SystemOfUnits
 using Plots</code></pre><h2 id="Detector-description"><a class="docs-heading-anchor" href="#Detector-description">Detector description</a><a id="Detector-description-1"></a><a class="docs-heading-anchor-permalink" href="#Detector-description" title="Permalink"></a></h2><p>The main parameters are stored in the <code>RE03Detector</code> struct with some default values. </p><pre><code class="language-julia hljs">mutable struct RE03Detector &lt;: G4JLDetector
     const worldXY::Float64
@@ -115,9 +115,33 @@ G4ScoringBox : boxMesh_1 --- Shape: Box mesh
  displacement: (0, 0, 0) [cm]
  registered primitve scorers : 
    0  dose
-G4WT1 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
-G4WT3 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT6 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT5 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT6 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT6 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT6 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
+G4WT6 &gt;  # of segments: (61, 61, 150)
+G4WT5 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT6 &gt;  displacement: (0, 0, 0) [cm]
 G4WT4 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT3 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT6 &gt;  registered primitve scorers : 
+G4WT6 &gt;    0  dose
+G4WT5 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT5 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
+G4WT5 &gt;  # of segments: (61, 61, 150)
+G4WT5 &gt;  displacement: (0, 0, 0) [cm]
+G4WT5 &gt;  registered primitve scorers : 
+G4WT4 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT5 &gt;    0  dose
+G4WT4 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT4 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
+G4WT4 &gt;  # of segments: (61, 61, 150)
+G4WT3 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT4 &gt;  displacement: (0, 0, 0) [cm]
+G4WT1 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT4 &gt;  registered primitve scorers : 
+G4WT4 &gt;    0  dose
 G4WT1 &gt; G4ScoringManager has 1 scoring meshes.
 G4WT1 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
 G4WT1 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
@@ -125,20 +149,11 @@ G4WT1 &gt;  # of segments: (61, 61, 150)
 G4WT1 &gt;  displacement: (0, 0, 0) [cm]
 G4WT1 &gt;  registered primitve scorers : 
 G4WT1 &gt;    0  dose
-G4WT5 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
-G4WT3 &gt; G4ScoringManager has 1 scoring meshes.
 G4WT3 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
-G4WT4 &gt; G4ScoringManager has 1 scoring meshes.
-G4WT4 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
 G4WT3 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
 G4WT3 &gt;  # of segments: (61, 61, 150)
-G4WT5 &gt; G4ScoringManager has 1 scoring meshes.
-G4WT5 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
-G4WT5 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
 G4WT3 &gt;  displacement: (0, 0, 0) [cm]
-G4WT5 &gt;  # of segments: (61, 61, 150)
 G4WT3 &gt;  registered primitve scorers : 
-G4WT5 &gt;  displacement: (0, 0, 0) [cm]
 G4WT3 &gt;    0  dose
 G4WT2 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
 G4WT2 &gt; G4ScoringManager has 1 scoring meshes.
@@ -148,17 +163,8 @@ G4WT2 &gt;  # of segments: (61, 61, 150)
 G4WT2 &gt;  displacement: (0, 0, 0) [cm]
 G4WT2 &gt;  registered primitve scorers : 
 G4WT2 &gt;    0  dose
-G4WT6 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
-G4WT6 &gt; G4ScoringManager has 1 scoring meshes.
-G4WT6 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
-G4WT6 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
-G4WT6 &gt;  # of segments: (61, 61, 150)
-G4WT6 &gt;  displacement: (0, 0, 0) [cm]
-G4WT6 &gt;  registered primitve scorers : 
-G4WT6 &gt;    0  dose
-G4WT5 &gt;  registered primitve scorers : 
-G4WT5 &gt;    0  dose
 G4WT0 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT7 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
 G4WT0 &gt; G4ScoringManager has 1 scoring meshes.
 G4WT0 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
 G4WT0 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
@@ -166,12 +172,6 @@ G4WT0 &gt;  # of segments: (61, 61, 150)
 G4WT0 &gt;  displacement: (0, 0, 0) [cm]
 G4WT0 &gt;  registered primitve scorers : 
 G4WT0 &gt;    0  dose
-G4WT7 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
-G4WT4 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
-G4WT4 &gt;  # of segments: (61, 61, 150)
-G4WT4 &gt;  displacement: (0, 0, 0) [cm]
-G4WT4 &gt;  registered primitve scorers : 
-G4WT4 &gt;    0  dose
 G4WT7 &gt; G4ScoringManager has 1 scoring meshes.
 G4WT7 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
 G4WT7 &gt;  Size (x, y, z): (15.25, 15.25, 15) [cm]
@@ -200,4 +200,4 @@ do_plots(sc1)</code></pre><p><img src="../WaterPhantom_files/WaterPhantom_18_0.p
 SetParticleEnergy(app.generator, 3GeV)
 
 beamOn(app, 100000)
-do_plots(sc1)</code></pre><p><img src="../WaterPhantom_files/WaterPhantom_20_0.png" alt="png"/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../HBC30/">« Example HBC30</a><a class="docs-footer-nextpage" href="../B1/">Example B1 »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="auto">Automatic (OS)</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.2.1 on <span class="colophon-date" title="Friday 9 February 2024 09:11">Friday 9 February 2024</span>. Using Julia version 1.10.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+do_plots(sc1)</code></pre><p><img src="../WaterPhantom_files/WaterPhantom_20_0.png" alt="png"/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../HBC30/">« Example HBC30</a><a class="docs-footer-nextpage" href="../B1/">Example B1 »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="auto">Automatic (OS)</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.2.1 on <span class="colophon-date" title="Friday 9 February 2024 18:06">Friday 9 February 2024</span>. Using Julia version 1.10.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
