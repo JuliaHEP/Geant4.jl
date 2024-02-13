@@ -13,10 +13,11 @@ end
 
     # All examples should be used for testing to ensure that the release is working correctly
     instantiate("examples")
-    @test run(`julia --project=examples examples/basic/B2/B2a.jl`, devnull, devnull).exitcode  == 0
     @test run(`julia --project=examples examples/basic/B1/B1.jl`, devnull, devnull).exitcode  == 0
     @test run(`julia --project=examples examples/basic/B1/B1vis.jl`, devnull, devnull).exitcode == 0
+    @test run(`julia --project=examples examples/basic/B2/B2a.jl`, devnull, devnull).exitcode  == 0
     @test run(`julia --project=examples examples/basic/B2/B2aVis.jl`, devnull, devnull).exitcode == 0
+    @test run(`julia --project=examples examples/basic/B3/B3a.jl`, devnull, devnull).exitcode  == 0
 
     @test run(`julia --project=examples examples/extended/RE03/RE03.jl`, devnull, devnull).exitcode  == 0
     @test run(`julia --project=examples examples/extended/GPS/GPS.jl`, devnull, devnull).exitcode == 0

@@ -7,6 +7,8 @@
 #include "G4ParticleTable.hh"
 #include "G4Polycone.hh"
 #include "G4Polyhedra.hh"
+#include "G4VIsotopeTable.hh"
+#include "G4IonTable.hh"
 
 #include <stdexcept>
 
@@ -54,6 +56,10 @@ G4ParticleDefinition* FindParticle(const char* pname)
 {
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   return particleTable-> FindParticle(pname);
+}
+G4ParticleDefinition* GetIon(G4int Z, G4int A, G4double E, G4int J) {
+  G4IonTable* ionTable = G4IonTable::GetIonTable();
+  return ionTable->GetIon(Z, A, E, J);
 }
 
 char* G4JL_getenv(const char* x) { return std::getenv(x); };

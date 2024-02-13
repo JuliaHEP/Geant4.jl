@@ -9,6 +9,7 @@
 #include "G4UserTrackingAction.hh"
 #include "G4UserRunAction.hh"
 #include "G4UserEventAction.hh"
+#include "G4UserStackingAction.hh"
 #include "G4ParticleGun.hh"
 #include "G4VPhysicalVolume.hh"
 #include "G4VSensitiveDetector.hh"
@@ -223,6 +224,37 @@ class G4JLEventAction : public G4UserEventAction {
     eventaction_f endaction;
 };
 
+//---G4JLStackingAction------------------------------------------------------------------------------------
+typedef G4ClassificationOfNewTrack (*classify_f) (const G4Track*, void*);
+typedef void (*stackaction_f) (void*);
+class G4JLStackingAction : public G4UserStackingAction {
+  public:  
+    G4JLStackingAction(classify_f classify = nullptr, void* classifyd = nullptr, 
+                       stackaction_f newstage = nullptr, void* newstaged = nullptr,
+                       stackaction_f newevent = nullptr, void* neweventd = nullptr) : 
+                       classify_d(classifyd), classify_a(classify), 
+                       newstage_d(newstaged), newstage_a(newstage),
+                       newevent_d(neweventd), newevent_a(newevent) {}  
+    ~G4JLStackingAction() = default;
+    virtual G4ClassificationOfNewTrack ClassifyNewTrack(const G4Track* track) override {
+      if (classify_a) {
+        return classify_a(track, classify_d);
+      } else {
+        return fUrgent;
+      }
+    }
+    virtual void NewStage() override { if (newstage_a) newstage_a(newstage_d);}
+    virtual void PrepareNewEvent() override { if (newevent_a) newevent_a(newevent_d);}
+  private:
+    void* classify_d;
+    classify_f classify_a;
+    void* newstage_d;
+    stackaction_f newstage_a;
+    void* newevent_d;
+    stackaction_f newevent_a;
+};
+
+
 //---G4JLStateDependent------------------------------------------------------------------------------------
 typedef G4bool (*notify_f) (G4ApplicationState, G4ApplicationState, void*);
 class G4JLStateDependent : public G4VStateDependent {
@@ -246,11 +278,13 @@ G4PolyhedraSideRZ& GetPolyCorner(const G4Polyhedra&, G4int);
 
 void SetParticleByName(G4ParticleGun* gun, const char* pname);
 G4ParticleDefinition* FindParticle(const char* pname);
+G4ParticleDefinition* GetIon(G4int Z, G4int A, G4double E, G4int J = 0);
 inline G4String make_G4String(const char* s) {return G4String(s);}
 char* G4JL_getenv(const char* x);
 int   G4JL_setenv(const char* x, const char* v);
 void  G4JL_init(void);
 void  G4JL_println(const char *);
+
 
 //---Template instantiations-----------------------------------------------------------------------
 template class std::pair<G4double,G4bool>;

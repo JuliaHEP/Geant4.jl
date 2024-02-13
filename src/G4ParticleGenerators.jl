@@ -1,7 +1,7 @@
 #---Exports from this section----------------------------------------------------------------------
 export G4JLGunGenerator, G4JLGeneralParticleSource, G4JLPrimaryGenerator, G4JLGeneratorData
 
-#---Abstrcat Generator Data (Parameters)------------------------------------------------------------
+#---Abstract Generator Data (Parameters)------------------------------------------------------------
 abstract type  G4JLGeneratorData end
 
 #---Primary Particle Generator----------------------------------------------------------------------
