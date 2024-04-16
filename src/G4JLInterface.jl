@@ -88,12 +88,26 @@ function G4JLDetectorGDML(gdmlfile::String;
 end
 
 #---Custom Magnetic Field--------------------------------------------------------------------------
+"""
+    Custom Magnetic Field
+"""
 mutable struct G4JLMagneticField{UD<:G4JLFieldData}
     const name::String
     const data::UD
     const getfield::Function    #  signature  (result::G4ThreeVector, position::G4ThreeVector, ::SD)
     base::Vector{G4JLMagField}
 end
+"""
+    getfield(pos::G4ThreeVector, bfield::G4JLMagneticField)
+
+Function to exercise a custom magnetic field
+"""
+function getfield(pos::G4ThreeVector, bfield::G4JLMagneticField)
+    B = G4ThreeVector()
+    bfield.getfield(B, pos, bfield.data)
+    return B
+end 
+
 """
     G4JLMagneticField(name::String, data::DATA; <keyword arguments>) where DATA<:G4JLGeneratorData
 
@@ -173,6 +187,19 @@ end
 struct G4JLNoData <: G4JLSimulationData
 end
 
+#--Empty Detector----------------------------------------------------------------------------------
+struct G4JLEmptyDetector <: G4JLDetector end
+using Geant4.PhysicalConstants: universe_mean_density
+using Geant4.SystemOfUnits: g, mole, kelvin, pascal, parsec, m
+function _construct(::G4JLEmptyDetector)
+    vacuum = G4Material("Vacuum", z=1., a=1.01g/mole, density=universe_mean_density, state=kStateGas, 
+                        temperature=2.73*kelvin, pressure=3.e-18*pascal)
+    G4PVPlacement(nothing, G4ThreeVector(),
+                  G4LogicalVolume(G4Orb("World", 1m), move!(vacuum), "World"),
+                  "World", nothing, false, 0, false)
+end  
+Geant4.getConstructor(::G4JLEmptyDetector) = _construct
+
 #---Geant4 Application-----------------------------------------------------------------------------
 mutable struct G4JLApplication{DET<:G4JLDetector,DAT<:G4JLSimulationData} <: G4JLAbstrcatApp
     const runmanager::Any
@@ -242,9 +269,10 @@ Initialize a G4JLApplication with its associated tyopes and methods.
 - `sdetectors::Vector{}=[]`: vector of pairs `lv::String => sd::G4JLSensitiveDetector` to associate logical volumes to sensitive detector
 - `scorers::Vector{}=[]`: vector of [`G4JLScoringMesh`](@ref)s
 """
-function G4JLApplication(;detector::G4JLDetector,
-                simdata=G4JLNoData(),
-                generator=G4JLParticleGun(),
+function G4JLApplication(;
+                detector::G4JLDetector = G4JLEmptyDetector(),
+                simdata = G4JLNoData(),
+                generator = G4JLGunGenerator(),
                 field=nothing,
                 evtdisplay=nothing,
                 nthreads=0,
@@ -274,9 +302,11 @@ function G4JLApplication(;detector::G4JLDetector,
     runmgr = G4RunManager!GetRunManager()
     if runmgr == C_NULL
         runmgr = runmanager_type()
+        physics = nothing
     else
         statemgr = G4StateManager!GetStateManager()
         SetNewState(statemgr, G4State_PreInit)
+        physics = last(physicslists)
     end
     # instantiate G4JLApplication
     this = G4JLApplication{typeof(detector), typeof(simdata)}(
@@ -288,7 +318,7 @@ function G4JLApplication(;detector::G4JLDetector,
                            beginrunaction_method, endrunaction_method, begineventaction_method, 
                            endeventaction_method, stackaction_method, statechange_method,
                            Dict(sdetectors), Dict{String,Vector{G4JLSensitiveDetector}}(), 
-                           scorers, nothing, nothing)
+                           scorers, nothing, physics)
     # register state change dependent
     if !isnothing(statechange_method)
         sf = make_callback(this, statechange_method, CxxBool, (G4ApplicationState, G4ApplicationState)) |> closure
@@ -300,6 +330,8 @@ function G4JLApplication(;detector::G4JLDetector,
     end
     return this
 end
+
+physicslists = Vector{Any}()
 
 """
     configure(app::G4JLApplication)
@@ -352,15 +384,19 @@ function configure(app::G4JLApplication)
         end
         nothing
     end
-    det    = app.detector
+    det = app.detector
     cb1 = make_callback(det, getConstructor(det), CxxPtr{G4VPhysicalVolume}, ()) |> closure
     cb2 = make_callback(app, sdandf, Nothing, ()) |> closure
     app.detbuilder = app.builder_type(cb1..., cb2...)
     SetUserInitialization(runmgr, CxxPtr(app.detbuilder))
     #---Physics List---------------------------------------------------------------------------
-    physics = app.physics_type(app.verbose)
-    app.physics = CxxPtr(physics)
-    SetUserInitialization(runmgr, move!(physics))
+    if isnothing(app.physics)   # we need to construct the physics list only once
+        physics = app.physics_type(app.verbose)
+        push!(physicslists, physics)
+        app.physics = CxxPtr(physics)
+        push!(physicslists, app.physics)
+        SetUserInitialization(runmgr, move!(physics))
+    end
     #---Actions--------------------------------------------------------------------------------
     function build(uai::G4JLActionInitialization, app::G4JLApplication)::Nothing
         if !isnothing(app.stepaction_method)

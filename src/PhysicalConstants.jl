@@ -14,6 +14,7 @@
 module PhysicalConstants
 
     using Geant4.SystemOfUnits
+    using Geant4.SystemOfUnits: parsec
 
     const Avogadro = 6.02214076e+23/mole
 
@@ -67,11 +68,12 @@ module PhysicalConstants
     const kGasThreshold   = 10.0*mg/cm3
 
     const universe_mean_density = 1.e-25*g/cm3
+    const universe_radius = 14.240e9 * parsec
 
     #---Export the ones exported by Geant4
     export alpha_rcl2, amu, amu_c2, Avogadro, Bohr_radius, c_light, c_squared, classic_electr_radius, e_squared
     export electron_charge, electron_Compton_length, electron_mass_c2, elm_coupling, epsilon0, fine_structure_const 
     export h_Planck, hbar_Planck, hbarc, hbarc_squared, k_Boltzmann, kGasThreshold, mu0
     export neutron_mass_c2, proton_mass_c2, STP_Pressure, STP_Temperature, twopi_mc2_rcl2
-    export Bohr_magneton, nuclear_magneton, universe_mean_density
+    export Bohr_magneton, nuclear_magneton, universe_mean_density, universe_radius
 end
