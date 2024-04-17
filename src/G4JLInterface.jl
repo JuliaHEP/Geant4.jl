@@ -306,7 +306,7 @@ function G4JLApplication(;
     else
         statemgr = G4StateManager!GetStateManager()
         SetNewState(statemgr, G4State_PreInit)
-        physics = last(physicslists)
+        physics = isempty(physicslists) ? nothing : last(physicslists)
     end
     # instantiate G4JLApplication
     this = G4JLApplication{typeof(detector), typeof(simdata)}(
@@ -392,7 +392,6 @@ function configure(app::G4JLApplication)
     #---Physics List---------------------------------------------------------------------------
     if isnothing(app.physics)   # we need to construct the physics list only once
         physics = app.physics_type(app.verbose)
-        push!(physicslists, physics)
         app.physics = CxxPtr(physics)
         push!(physicslists, app.physics)
         SetUserInitialization(runmgr, move!(physics))

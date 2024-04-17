@@ -5,6 +5,7 @@ mutable struct G4JLEventDisplay <: G4JLDisplay
     const initDisplay::Function
     # mutable attributes
     lscene::LScene
+    figure::Figure
     G4JLEventDisplay(settings, statech, initdisp) = new(settings, statech, initdisp)
 end
 """
@@ -46,8 +47,9 @@ function initDisplay(evtdisp::G4JLEventDisplay)
         set_theme!(backgroundcolor = settings.display.backgroundcolor)
         fig = Figure(size=settings.display.resolution)
         sc = LScene(fig[1,1], show_axis=settings.display.show_axis)
-        display(fig)
+        #display(fig)
         evtdisp.lscene = sc
+        evtdisp.figure = fig
     end
     # draw the detector
     if settings.detector.show_detector
