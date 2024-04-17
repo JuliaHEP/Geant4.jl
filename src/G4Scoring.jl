@@ -98,9 +98,9 @@ end
 
 function Base.getproperty(sm::G4JLScoringMesh{T}, f::Symbol) where T
     qname = String(f)
-    if any(q.name == qname for q in getfield(sm, :quantities))
-        getScoringValues(getfield(sm, :name), qname, getfield(sm, :bins))
+    if any(q.name == qname for q in Base.getfield(sm, :quantities))
+        getScoringValues(Base.getfield(sm, :name), qname, Base.getfield(sm, :bins))
     else
-        getfield(sm, f)
+        Base.getfield(sm, f)
     end
 end
