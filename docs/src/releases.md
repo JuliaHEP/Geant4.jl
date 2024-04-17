@@ -1,4 +1,10 @@
 ## Release Notes
+### 0.1.14
+- New Features:
+    - Added function getfield(pos::G4ThreeVector, bfield::G4JLMagneticField)
+    - Added G4JLEmptyDetector as default detector (for testing and tutorials)
+    - build some protection to re-use physics lists in case re-creating an `G4JLApplication` 
+
 ### 0.1.13
 - New Features:
     - Added wrappers for PhysicsLists classes: `G4DecayPhysics`, `G4EmStandardPhysics`, `G4RadioactiveDecayPhysics`
