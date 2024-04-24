@@ -56,7 +56,7 @@ function beginrun(::G4Run, app::G4JLApplication)::Nothing
 end
 function endrun(::G4Run, app::G4JLApplication)::Nothing
     #---end run action is called for each workwer thread and the master one
-    if G4Threading!G4GetThreadId() == -1   
+    if G4Threading!G4GetThreadId() &lt; 0   
         data = app.simdata[1]
         #---This is the master thread, so we need to add all the simuation results-----------------
         for d in app.simdata[2:end]
@@ -110,7 +110,7 @@ app = G4JLApplication(detector = GPSDetector(),                   # detector wit
                       );
 configure(app)
 initialize(app)</code></pre><pre><code class="nohighlight hljs">**************************************************************
- Geant4 version Name: geant4-11-02 [MT]   (8-December-2023)
+ Geant4 version Name: geant4-11-02-patch-01 [MT]   (16-February-2024)
   &lt;&lt; in Multi-threaded mode &gt;&gt; 
                        Copyright : Geant4 Collaboration
                       References : NIM A 506 (2003), 250-303
@@ -248,4 +248,4 @@ display(&quot;image/png&quot;, img)</code></pre><pre><code class="nohighlight hl
 [33m[1m┌ [22m[39m[33m[1mWarning: [22m[39mWeights was probably used but StatsBase.Histogram doesn&#39;t record # of entries
 [33m[1m└ [22m[39m[90m@ FHist ~/.julia/packages/FHist/smrpp/src/FHist.jl:35[39m
 [33m[1m┌ [22m[39m[33m[1mWarning: [22m[39mWeights was probably used but StatsBase.Histogram doesn&#39;t record # of entries
-[33m[1m└ [22m[39m[90m@ FHist ~/.julia/packages/FHist/smrpp/src/FHist.jl:35[39m</code></pre><p><img src="../GPS_files/GPS_21_1.png" alt="png"/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../B3a/">« Example B3a</a><a class="docs-footer-nextpage" href="../Solids/">Example Solids »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.4.0 on <span class="colophon-date" title="Wednesday 17 April 2024 15:34">Wednesday 17 April 2024</span>. Using Julia version 1.10.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+[33m[1m└ [22m[39m[90m@ FHist ~/.julia/packages/FHist/smrpp/src/FHist.jl:35[39m</code></pre><p><img src="../GPS_files/GPS_21_1.png" alt="png"/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../B3a/">« Example B3a</a><a class="docs-footer-nextpage" href="../Solids/">Example Solids »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.4.0 on <span class="colophon-date" title="Wednesday 24 April 2024 09:25">Wednesday 24 April 2024</span>. Using Julia version 1.10.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
