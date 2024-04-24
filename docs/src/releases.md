@@ -1,4 +1,8 @@
 ## Release Notes
+### 0.1.15
+- Fixes:
+    - Returned threadid is -2 for non-multithreaded builds of Geant4
+
 ### 0.1.14
 - New Features:
     - Added function getfield(pos::G4ThreeVector, bfield::G4JLMagneticField)

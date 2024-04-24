@@ -358,6 +358,7 @@ function configure(app::G4JLApplication)
     function sdandf(app::G4JLApplication)::Nothing  # called by the worker thread during init------
         #---Add the Sensitive Detectors now that the geometry is constructed-----------------------
         tid = G4Threading!G4GetThreadId()
+        tid < 0 && (tid = -1)   # master thread (-2 for without multi-threading support)
         for (lv,protosd) in app.protoSDs
             sd = G4JLSensitiveDetector(protosd)
             app.sdetectors[protosd.name][tid+2] = sd
@@ -452,6 +453,7 @@ function configure(app::G4JLApplication)
         #---Primary particles generator---------(per thread)--------------------------------------
         gen = app.generator
         tid = G4Threading!G4GetThreadId()
+        tid < 0 && (tid = -1)   # master thread (-2 for without multi-threading support)
         g1 =  make_callback(gen.data, gen.gen_method, Nothing, (CxxPtr{G4Event},)) |> closure
         gen.base[tid+2] = G4JLGeneratorAction(g1...)
         init_method = gen.init_method
@@ -552,6 +554,7 @@ Get the data associated to the Sentitive Detector with a given name taking into 
 """
 function getSDdata(app, name)
     tid = G4Threading!G4GetThreadId()
+    tid < 0 && (tid = -1)   # master thread (-2 for without multi-threading support)
     app.sdetectors[name][tid+2].data
 end
 
@@ -561,6 +564,7 @@ Get the Simulation Data taking into account the current worker thread ID
 """
 function getSIMdata(app)
     tid = G4Threading!G4GetThreadId()
+    tid < 0 && (tid = -1)   # master thread (-2 for without multi-threading support)
     app.simdata[tid+2]
 end
 
