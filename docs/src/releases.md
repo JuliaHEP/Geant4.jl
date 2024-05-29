@@ -1,4 +1,8 @@
 ## Release Notes
+### 0.1.17
+- New Features
+    - Added wrapper for G4StepLimiterPhysics
+    
 ### 0.1.15
 - Fixes:
     - Returned threadid is -2 for non-multithreaded builds of Geant4

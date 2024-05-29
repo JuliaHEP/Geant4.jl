@@ -25,5 +25,6 @@ run(`cmake -DCMAKE_BUILD_TYPE=Release
            -DEXPAT_INCLUDE_DIR=$(Expat_jll.artifact_dir)/include
            -DEXPAT_LIBRARY=$(Expat_jll.libexpat)
            -DXercesC_INCLUDE_DIR=$(Xerces_jll.artifact_dir)/include
+           -DCxxWrap_VERSION=$(pkgversion(CxxWrap))
            -DCMAKE_PREFIX_PATH=$cxxwrap_prefix\;$geant4_prefix\;$xerces_prefix  $sourcedir`)
 run(`cmake --build . --config Release --parallel 8`)

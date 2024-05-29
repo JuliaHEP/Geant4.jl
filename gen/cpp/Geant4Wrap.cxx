@@ -88,14 +88,22 @@ void G4JLWorkerInitialization::WorkerInitialize() const {
   #endif
 }
 void G4JLWorkerInitialization::WorkerStart() const {
-  jl_task_t *ct = jl_current_task;
-  jl_gc_safe_enter(ct->ptls);
+  #if JULIA_VERSION_MAJOR >= 1 && JULIA_VERSION_MINOR >= 7
+    jl_ptls_t ptls = jl_current_task->ptls;
+  #else
+    jl_ptls_t ptls = jl_get_ptls_states();
+  #endif
+  jl_gc_safe_enter(ptls);
 }
 void G4JLWorkerInitialization::WorkerRunStart() const {
 }
 void G4JLWorkerInitialization::WorkerRunEnd() const {
-  jl_task_t *ct = jl_current_task;
-  jl_gc_safe_enter(ct->ptls);
+  #if JULIA_VERSION_MAJOR >= 1 && JULIA_VERSION_MINOR >= 7
+    jl_ptls_t ptls = jl_current_task->ptls;
+  #else
+    jl_ptls_t ptls = jl_get_ptls_states();
+  #endif
+  jl_gc_safe_enter(ptls);
 }
 void G4JLWorkerInitialization::WorkerStop() const {
 }
