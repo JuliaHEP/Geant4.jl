@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Example B3a · Geant4.jl</title><meta name="title" content="Example B3a · Geant4.jl"/><meta property="og:title" content="Example B3a · Geant4.jl"/><meta property="twitter:title" content="Example B3a · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../HBC30/">Example HBC30</a></li><li><a class="tocitem" href="../WaterPhantom/">Example WaterPhantom</a></li><li><a class="tocitem" href="../B1/">Example B1</a></li><li><a class="tocitem" href="../B2a/">Example B2a</a></li><li class="is-active"><a class="tocitem" href>Example B3a</a><ul class="internal"><li><a class="tocitem" href="#Load-modules"><span>Load modules</span></a></li><li><a class="tocitem" href="#Define-Detector"><span>Define Detector</span></a></li><li><a class="tocitem" href="#Physics-List"><span>Physics List</span></a></li><li><a class="tocitem" href="#Primary-Particle-Generator"><span>Primary Particle Generator</span></a></li><li><a class="tocitem" href="#Define-the-simulation-data-structures"><span>Define the simulation data structures</span></a></li><li><a class="tocitem" href="#Sensitive-Detector-Crystal"><span>Sensitive Detector Crystal</span></a></li><li><a class="tocitem" href="#Sensitive-Detector-Patient"><span>Sensitive Detector Patient</span></a></li><li><a class="tocitem" href="#User-Actions"><span>User Actions</span></a></li><li><a class="tocitem" href="#Geant4-Application"><span>Geant4 Application</span></a></li><li><a class="tocitem" href="#Display-Detector"><span>Display Detector</span></a></li></ul></li><li><a class="tocitem" href="../GPS/">Example GPS</a></li><li><a class="tocitem" href="../Solids/">Example Solids</a></li><li><a class="tocitem" href="../TestEm3/">Example TestEm3</a></li></ul></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>Example B3a</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Example B3a</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/notebooks/B3a.md#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Basic/B3a-Example"><a class="docs-heading-anchor" href="#Basic/B3a-Example">Basic/B3a Example</a><a id="Basic/B3a-Example-1"></a><a class="docs-heading-anchor-permalink" href="#Basic/B3a-Example" title="Permalink"></a></h1><p>It is equivalent to the B2a example in Geant4 but re-written with a new more Julia friendly interface. See <a href="https://raw.githubusercontent.com/Geant4/geant4/master/examples/basic/B3/README">README</a> file for the example.</p><h2 id="Load-modules"><a class="docs-heading-anchor" href="#Load-modules">Load modules</a><a id="Load-modules-1"></a><a class="docs-heading-anchor-permalink" href="#Load-modules" title="Permalink"></a></h2><p>In this example we only need to load the general Geant4 module and the SystemOfUnits one. Please note that not all the units are exported from the SystemOfUnits therefore we explicitly import the ones that ar used in this example. </p><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits:  cm, cm3, mm, pGy, eplus, keV, g, eV</code></pre><h2 id="Define-Detector"><a class="docs-heading-anchor" href="#Define-Detector">Define Detector</a><a id="Define-Detector-1"></a><a class="docs-heading-anchor-permalink" href="#Define-Detector" title="Permalink"></a></h2><p>We use here a separated file to define the geometry of the detector. It uses the G4 geometry classes, therefore is not too different from the C++ code found in the original example. </p><pre><code class="language-julia hljs">include(joinpath(@__DIR__, &quot;DetectorB3.jl&quot;))</code></pre><h2 id="Physics-List"><a class="docs-heading-anchor" href="#Physics-List">Physics List</a><a id="Physics-List-1"></a><a class="docs-heading-anchor-permalink" href="#Physics-List" title="Permalink"></a></h2><p>We could use already made physics lists such as <code>FTFP_BERT</code> or <code>QGS_BIC</code>, but in this example we construct one by selecting the required physics. This is done by providing a struct type inheriting from the type <code>G4VUserPhysicsList</code>, and in the constructor construct a <code>G4VModularPhysicsList</code> instance add register the needed physics. We do not need to create an instance at this moment, we need just to provide the type to the <code>G4JLApplication</code>, which will instantiate it at the appropriate moment in the initialization sequence. </p><pre><code class="language-julia hljs">struct PhysicsB3a &lt;: G4VUserPhysicsList
+    function PhysicsB3a(verbose)
+        pl = G4VModularPhysicsList()
+        RegisterPhysics(pl, move!(G4DecayPhysics(verbose)))           # Default physics
+        RegisterPhysics(pl, move!(G4EmStandardPhysics(verbose)))      # EM physics
+        RegisterPhysics(pl, move!(G4RadioactiveDecayPhysics(verbose))) # Radioactive decay
+        return pl
+    end
+end</code></pre><h2 id="Primary-Particle-Generator"><a class="docs-heading-anchor" href="#Primary-Particle-Generator">Primary Particle Generator</a><a id="Primary-Particle-Generator-1"></a><a class="docs-heading-anchor-permalink" href="#Primary-Particle-Generator" title="Permalink"></a></h2><p>In this example the user provides a custom made primary particle generator using the <code>G4ParticleGun</code> class. A custom particle generator consists of three elements:</p><ul><li>A custom data structure to hold the configuration parameters of the generator. In this case the struct <code>GeneratorB3aData</code> keeps the <code>Z</code>, <code>A</code>, <code>charge</code>, <code>direction</code>, etc.  of the ion that will be created.</li><li>A user function (<code>_init</code>) to initialize the generator called by the toolkit at initialization time. In this case, we crate an instance of <code>G4ParticleGun</code> that will be used later at each event to create the vertex and primary particle.</li><li>A user function (<code>_gen</code>) that will be called for each event. In this particular case we also do a late initialization of the creation of the ion since it needs to be done after the physics lists is configured.</li></ul><p>Both user functions receive the generate data with the configuration parameters as one of the input arguments. The final step is to instantiate an object of the type <code>G4JLPrimaryGenerator</code> with the configuration data and both user functions.  Please note that user data has been declared with <code>@with_kw</code>, which provides a constructor with all keywords arguments defaults. See <code>Parameters.jl</code> module for the details.   </p><pre><code class="language-julia hljs">@with_kw mutable struct GeneratorB3aData &lt;: G4JLGeneratorData
+    gun::Union{Nothing, CxxPtr{G4ParticleGun}} = nothing
+    ion::Union{Nothing, CxxPtr{G4ParticleDefinition}} = nothing
+    Z::Int64 = 9
+    A::Int64 = 18
+    ionCharge::Float64 = 0eplus
+    excitEnergy::Float64 = 0keV
+    position::G4ThreeVector = G4ThreeVector(4cm,4cm,4cm)
+    direction::G4ThreeVector = G4ThreeVector(1,0,0)
+end
+function GeneratorB3a(;kwargs...)
+    data = GeneratorB3aData(;kwargs...)
+    function _init(data::GeneratorB3aData, ::Any)
+        gun = data.gun = move!(G4ParticleGun())
+        SetParticleMomentumDirection(gun, G4ThreeVector(1,0,0))
+        SetParticleEnergy(gun, 1eV)
+    end
+    function _gen(evt::G4Event, data::GeneratorB3aData)::Nothing
+        if isnothing(data.ion)  # late initialize (after physics processes)
+            ion = data.ion = GetIon(data.Z, data.A, data.excitEnergy)
+            SetParticleDefinition(data.gun, ion)
+            SetParticleCharge(data.gun, data.ionCharge)
+        end
+        position = data.position + G4ThreeVector((rand()-0.5)*1cm, (rand()-0.5)*1cm, (rand()-0.5)*1cm)
+        SetParticlePosition(data.gun, position)
+        GeneratePrimaryVertex(data.gun, CxxPtr(evt))
+    end
+    G4JLPrimaryGenerator(&quot;GeneratorB3a&quot;, data; init_method=_init, generate_method=_gen)
+end</code></pre><pre><code class="nohighlight hljs">GeneratorB3a (generic function with 1 method)</code></pre><h2 id="Define-the-simulation-data-structures"><a class="docs-heading-anchor" href="#Define-the-simulation-data-structures">Define the simulation data structures</a><a id="Define-the-simulation-data-structures-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-simulation-data-structures" title="Permalink"></a></h2><p>The main outcome of the simulation is a custom struct with what the user wants to obtain. This is typically a set of counters, histograms, etc. In this example we want to to collect the number of &#39;good&#39; events (two crystals with energy deposited &gt;500keV) and the accumulated dose in the &#39;patient&#39; volume. These are the two members of the struct. In addition, if the user wants to run in MT mode, it needs to provide a <code>add!</code> function to reduce the results that has been obtained by the different worker threads. In this case is very simple, we just need to sum both counters.      </p><pre><code class="language-julia hljs">mutable struct SimDataB3a &lt;: G4JLSimulationData
+    #---Run data
+    goodEvents::Int64
+    sumDose::Float64
+    SimDataB3a() = new(0,0)
+end
+function add!(x::SimDataB3a, y::SimDataB3a)
+    x.goodEvents += y.goodEvents
+    x.sumDose += y.sumDose
+end</code></pre><pre><code class="nohighlight hljs">add! (generic function with 1 method)</code></pre><h2 id="Sensitive-Detector-Crystal"><a class="docs-heading-anchor" href="#Sensitive-Detector-Crystal">Sensitive Detector Crystal</a><a id="Sensitive-Detector-Crystal-1"></a><a class="docs-heading-anchor-permalink" href="#Sensitive-Detector-Crystal" title="Permalink"></a></h2><p>We will collect the energy deposited in the crystals a &#39;sensitive detector&#39;. This is done, similarly to the way we have created the custom primary particle generator by providing three elements:</p><ul><li>A custom data structure with what data we want to collect every time a particle enters the &#39;sensitive detector&#39;. In this case, we want to fill a dictionary with the crystal number and the accumulated deposited energy.</li><li>A custom function to initialize the data structure, that is called for each event. In this case, the user simply empties the dictionary. </li><li>A custom function to collect the information that is called for each particle entering the associated volume. In this function, the use navigates the G4 data structures to obtain the required information.</li></ul><p>Both functions receive the custom data structure as one of the arguments. The final step is to instance a <code>G4JLSensitiveDetector</code> with the 3 elements. </p><pre><code class="language-julia hljs">struct CrystalData &lt;: G4JLSDData
+    edep::Dict{Int64,Float64} # (CopyNo, Edep)
+    CrystalData() = new(Dict{Int64,Float64}())
+end
+function c_initialize(::G4HCofThisEvent, data::CrystalData)::Nothing
+    empty!(data.edep)
+    return
+end
+function c_processHits(step::G4Step, ::G4TouchableHistory, data::CrystalData)::Bool
+    edep = step |&gt; GetTotalEnergyDeposit
+    edep &lt;  0. &amp;&amp; return false
+    copy = step |&gt; GetPreStepPoint |&gt; GetTouchable |&gt; GetCopyNumber
+    data.edep[copy] = haskey(data.edep, copy) ? data.edep[copy] + edep : edep
+    return true
+end
+#---Create SD instance
+crystalSD = G4JLSensitiveDetector(&quot;CrystalSD&quot;, CrystalData();          # SD name an associated data are mandatory
+                                   processhits_method=c_processHits,   # process hist method (also mandatory)
+                                   initialize_method=c_initialize)     # intialize method
+</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLProtoSD{CrystalData}(&quot;CrystalSD&quot;, CrystalData(Dict{Int64, Float64}()), c_processHits, c_initialize, nothing)</code></pre><h2 id="Sensitive-Detector-Patient"><a class="docs-heading-anchor" href="#Sensitive-Detector-Patient">Sensitive Detector Patient</a><a id="Sensitive-Detector-Patient-1"></a><a class="docs-heading-anchor-permalink" href="#Sensitive-Detector-Patient" title="Permalink"></a></h2><p>This is similar to the previous one but for the &#39;patient&#39; volume. In this case we simply sum the dose produced by each particle entering the volume.</p><pre><code class="language-julia hljs">mutable struct PatientData &lt;: G4JLSDData
+    dose::Float64
+    PatientData() = new(0)
+end
+function p_initialize(::G4HCofThisEvent, data::PatientData)::Nothing
+    data.dose = 0
+    return
+end
+function p_processHits(step::G4Step, ::G4TouchableHistory, data::PatientData)::Bool
+    edep = step |&gt; GetTotalEnergyDeposit
+    edep &lt;  0. &amp;&amp; return false
+    volume  = step |&gt; GetPreStepPoint |&gt; GetTouchable |&gt; GetSolid |&gt; GetCubicVolume
+    density = step |&gt; GetPreStepPoint |&gt; GetMaterial |&gt; GetDensity
+    data.dose += edep /(density * volume)
+    return true
+end
+#---Create SD instance
+patientSD = G4JLSensitiveDetector(&quot;PatientSD&quot;, PatientData();           # SD name an associated data are mandatory
+                                   processhits_method=p_processHits,    # process hist method (also mandatory)
+                                   initialize_method=p_initialize)      # intialize method
+</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLProtoSD{PatientData}(&quot;PatientSD&quot;, PatientData(0.0), p_processHits, p_initialize, nothing)</code></pre><h2 id="User-Actions"><a class="docs-heading-anchor" href="#User-Actions">User Actions</a><a id="User-Actions-1"></a><a class="docs-heading-anchor-permalink" href="#User-Actions" title="Permalink"></a></h2><p>User actions at the proper moment during the execution of the simulation. </p><ul><li>Run actions: in this example we use the run actions to initialize the simulation data (beginrun) and print the results of the run (endrun). Please note that the end on run action is called by each worker thread, therefore we need to use the master one (thread_id == -1) to accumulate the results of all workers. This is done by calling the defined <code>add!</code> function. </li><li>Event action: the event action is used to get the data from the sensitive detector structure, which can be accessed with <code>getSDdata(app, &quot;CrystalSD&quot;)</code> or <code>getSDdata(app, &quot;PatientSD&quot;)</code> with <code>CrystalSD</code> and <code>PatientSD</code> being the names given to the sensitive detectors, and accumulate it in the simulation data. </li><li>Stacking action: it is used to kill neutrinos that we do not need to track.  </li></ul><pre><code class="language-julia hljs">function beginrun(run::G4Run, app::G4JLApplication)::Nothing
+    data = getSIMdata(app)
+    data.goodEvents = 0
+    data.sumDose = 0.
+    nothing
+end
+
+function endrun(run::G4Run, app::G4JLApplication)::Nothing
+    partName = app.generator.data.gun |&gt; GetParticleDefinition |&gt; GetParticleName |&gt; String
+    #---end run action is called for each workwer thread and the master one
+    if G4Threading!G4GetThreadId() &lt; 0
+        data = app.simdata[1]
+        #---This is the master thread, so we need to add all the simuation results-----------------
+        for d in app.simdata[2:end]
+            add!(data, d)
+        end
+        noEvents = run |&gt; GetNumberOfEvent
+        G4JL_println(&quot;&quot;&quot;
+                     --------------------End of Run------------------------------
+                      The run was $noEvents $partName Nb of &#39;good&#39; e+ annihilations: $(data.goodEvents)
+                      Total dose in patient : $(data.sumDose/pGy) pGy
+                     ------------------------------------------------------------ 
+                     &quot;&quot;&quot;)
+    end
+end 
+#---Event Action
+function endevent(evt::G4Event, app::G4JLApplication)
+    edep = getSDdata(app, &quot;CrystalSD&quot;).edep
+    dose = getSDdata(app, &quot;PatientSD&quot;).dose
+    data = getSIMdata(app)
+    if count(&gt;(500keV), values(edep)) == 2
+        data.goodEvents += 1
+    end
+    data.sumDose += dose
+    return
+end
+#---Stacking Action
+let G4NeutrinoE, first=true
+global function stacking(trk::G4Track, app::G4JLApplication)::G4ClassificationOfNewTrack
+    if first  # emulation of C++ static 
+        G4NeutrinoE = FindParticle(&quot;nu_e&quot;)
+        first = false
+    end
+    (trk |&gt; GetParentID) == 0 &amp;&amp; return fUrgent               # keep primary particle
+    (trk |&gt; GetDefinition) == G4NeutrinoE &amp;&amp; return fKill     # kill neutrino
+    return fUrgent
+end
+end</code></pre><pre><code class="nohighlight hljs">stacking (generic function with 1 method)</code></pre><h2 id="Geant4-Application"><a class="docs-heading-anchor" href="#Geant4-Application">Geant4 Application</a><a id="Geant4-Application-1"></a><a class="docs-heading-anchor-permalink" href="#Geant4-Application" title="Permalink"></a></h2><p>Finally we create an instance of <code>G4JLApplication</code> with all the defined elements: detector, simulation data, generator, type of the physics list, the user actions and the mapping between sensitive detector and volume in the geometry.  </p><pre><code class="language-julia hljs">#---Application------------------------------------------------------------------------------------
+app = G4JLApplication(; detector = DetectorB3(),                      # detector with parameters
+                        simdata = SimDataB3a(),                       # simulation data structure
+                        generator = GeneratorB3a(),                   # primary particle generator
+                        nthreads = 0,                                 # # of threads (0 = no MT)
+                        physics_type = PhysicsB3a,                    # what physics list to instantiate
+                        #evtdisplay =  display,                        # set event display 
+                        endeventaction_method = endevent,             # end-event action (fill histograms per event)
+                        beginrunaction_method = beginrun,             # begin run action
+                        endrunaction_method = endrun,                 # end run action
+                        stackaction_method = stacking,                # track classification action
+                        sdetectors = [&quot;CrystalLV+&quot; =&gt; crystalSD,
+                                      &quot;PatientLV&quot; =&gt; patientSD]       # mapping of LVs to SDs (+ means multiple LVs with same name)
+                      );
+
+configure(app)
+initialize(app)</code></pre><pre><code class="nohighlight hljs">**************************************************************
+ Geant4 version Name: geant4-11-02-patch-01 [MT]   (16-February-2024)
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+cryst_mat = CxxPtr{G4Material}(Ptr{G4Material} @0x0000000003a62870)
+Checking overlaps for volume crystal:0 (G4Box) ... OK! 
+Checking overlaps for volume crystal:1 (G4Box) ... OK! 
+Checking overlaps for volume crystal:2 (G4Box) ... OK! 
+Checking overlaps for volume crystal:3 (G4Box) ... OK! 
+Checking overlaps for volume crystal:4 (G4Box) ... OK! 
+Checking overlaps for volume crystal:5 (G4Box) ... OK! 
+Checking overlaps for volume crystal:6 (G4Box) ... OK! 
+Checking overlaps for volume crystal:7 (G4Box) ... OK! 
+Checking overlaps for volume crystal:8 (G4Box) ... OK! 
+Checking overlaps for volume crystal:9 (G4Box) ... OK! 
+Checking overlaps for volume crystal:10 (G4Box) ... OK! 
+Checking overlaps for volume crystal:11 (G4Box) ... OK! 
+Checking overlaps for volume crystal:12 (G4Box) ... OK! 
+Checking overlaps for volume crystal:13 (G4Box) ... OK! 
+Checking overlaps for volume crystal:14 (G4Box) ... OK! 
+Checking overlaps for volume crystal:15 (G4Box) ... OK! 
+Checking overlaps for volume crystal:16 (G4Box) ... OK! 
+Checking overlaps for volume crystal:17 (G4Box) ... OK! 
+Checking overlaps for volume crystal:18 (G4Box) ... OK! 
+Checking overlaps for volume crystal:19 (G4Box) ... OK! 
+Checking overlaps for volume crystal:20 (G4Box) ... OK! 
+Checking overlaps for volume crystal:21 (G4Box) ... OK! 
+Checking overlaps for volume crystal:22 (G4Box) ... OK! 
+Checking overlaps for volume crystal:23 (G4Box) ... OK! 
+Checking overlaps for volume crystal:24 (G4Box) ... OK! 
+Checking overlaps for volume crystal:25 (G4Box) ... OK! 
+Checking overlaps for volume crystal:26 (G4Box) ... OK! 
+Checking overlaps for volume crystal:27 (G4Box) ... OK! 
+Checking overlaps for volume crystal:28 (G4Box) ... OK! 
+Checking overlaps for volume crystal:29 (G4Box) ... OK! 
+Checking overlaps for volume crystal:30 (G4Box) ... OK! 
+Checking overlaps for volume crystal:31 (G4Box) ... OK! 
+Checking overlaps for volume ring:0 (G4Tubs) ... OK! 
+Checking overlaps for volume ring:1 (G4Tubs) ... OK! 
+Checking overlaps for volume ring:2 (G4Tubs) ... OK! 
+Checking overlaps for volume ring:3 (G4Tubs) ... OK! 
+Checking overlaps for volume ring:4 (G4Tubs) ... OK! 
+Checking overlaps for volume ring:5 (G4Tubs) ... OK! 
+Checking overlaps for volume ring:6 (G4Tubs) ... OK! 
+Checking overlaps for volume ring:7 (G4Tubs) ... OK! 
+Checking overlaps for volume ring:8 (G4Tubs) ... OK! 
+Checking overlaps for volume Detector:0 (G4Tubs) ... OK! 
+Checking overlaps for volume Patient:0 (G4Tubs) ... OK!</code></pre><h2 id="Display-Detector"><a class="docs-heading-anchor" href="#Display-Detector">Display Detector</a><a id="Display-Detector-1"></a><a class="docs-heading-anchor-permalink" href="#Display-Detector" title="Permalink"></a></h2><p>In case we want to visualize the detector, the user can trigger the loading of the visualization extension by loading this 3 modules.  </p><pre><code class="language-julia hljs">using CairoMakie, Rotations, IGLWrap_jll  # to force loding G4Vis extension
+
+world = GetWorldVolume()
+img = draw(world)
+display(&quot;image/png&quot;, img)</code></pre><p><img src="../B3a_files/B3a_19_0.png" alt="png"/></p><p>Execute a run with 10000 events</p><pre><code class="language-julia hljs">beamOn(app, 10000)</code></pre><pre><code class="nohighlight hljs">======================================================================
+======          Radioactive Decay Physics Parameters           =======
+======================================================================
+min MeanLife (from G4NuclideTable)                1 ns 
+Max life time (from G4DeexPrecoParameters)        1000 ps 
+Internal e- conversion flag                       1
+Stored internal conversion coefficients           1
+Enabled atomic relaxation mode                    1
+Enable correlated gamma emission                  0
+Max 2J for sampling of angular correlations       10
+Atomic de-excitation enabled                      1
+Auger electron emission enabled                   1
+Check EM cuts disabled for atomic de-excitation   1
+Use Bearden atomic level energies                 0
+Use ANSTO fluorescence model                      0
+Threshold for very long decay time at rest        1 y  
+======================================================================
+
+====================================================================
+                  HADRONIC PROCESSES SUMMARY (verbose level 1)
+-------------------------------------------------------------------------
+                           Hadronic Processes for GenericIon
+  Process: Radioactivation
+--------------------End of Run------------------------------
+ The run was 10000 F18 Nb of &#39;good&#39; e+ annihilations: 1328
+ Total dose in patient : 305.57998265899164 pGy
+------------------------------------------------------------</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../B2a/">« Example B2a</a><a class="docs-footer-nextpage" href="../GPS/">Example GPS »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.4.1 on <span class="colophon-date" title="Wednesday 29 May 2024 11:44">Wednesday 29 May 2024</span>. Using Julia version 1.10.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

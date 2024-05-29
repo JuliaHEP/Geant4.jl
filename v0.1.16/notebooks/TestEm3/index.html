@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Example TestEm3 · Geant4.jl</title><meta name="title" content="Example TestEm3 · Geant4.jl"/><meta property="og:title" content="Example TestEm3 · Geant4.jl"/><meta property="twitter:title" content="Example TestEm3 · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../HBC30/">Example HBC30</a></li><li><a class="tocitem" href="../WaterPhantom/">Example WaterPhantom</a></li><li><a class="tocitem" href="../B1/">Example B1</a></li><li><a class="tocitem" href="../B2a/">Example B2a</a></li><li><a class="tocitem" href="../B3a/">Example B3a</a></li><li><a class="tocitem" href="../GPS/">Example GPS</a></li><li><a class="tocitem" href="../Solids/">Example Solids</a></li><li class="is-active"><a class="tocitem" href>Example TestEm3</a></li></ul></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>Example TestEm3</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Example TestEm3</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/notebooks/TestEm3.md#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="TestEM3-Example"><a class="docs-heading-anchor" href="#TestEM3-Example">TestEM3 Example</a><a id="TestEM3-Example-1"></a><a class="docs-heading-anchor-permalink" href="#TestEM3-Example" title="Permalink"></a></h1><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits
+using FHist, Printf, Plots</code></pre><pre><code class="language-julia hljs">#---Define Detector Parameters struct--------------------------------------------------------------
+include(joinpath(@__DIR__, &quot;DetectorTestEm3.jl&quot;))</code></pre><pre><code class="language-julia hljs">#---Define Simulation Data struct------------------------------------------------------------------
+# In this example we share the same data structiure for all worker threads, so we need to protect 
+# with a lock
+mutable struct TestEm3SimData &lt;: G4JLSimulationData
+    #---Run data-----------------------------------------------------------------------------------
+    fParticle::CxxPtr{G4ParticleDefinition}
+    fEkin::Float64
+    
+    fChargedStep::Int32
+    fNeutralStep::Int32
+
+    fN_gamma::Int32
+    fN_elec::Int32
+    fN_pos::Int32
+
+    fEnergyDeposit::Vector{Float64}     # Energy deposit per event
+    fTrackLengthCh::Vector{Float64}     # Track length per event
+
+    fEdepEventHistos::Vector{Hist1D}
+    fTrackLengthChHistos::Vector{Hist1D}
+    fEdepHistos::Vector{Hist1D}
+    fAbsorLabel::Vector{String}
+
+    TestEm3SimData() = new()
+end
+#---add function-----------------------------------------------------------------------------------
+function add!(x::TestEm3SimData, y::TestEm3SimData)
+    x.fChargedStep += y.fChargedStep
+    x.fNeutralStep += y.fNeutralStep
+    x.fN_gamma += y.fN_gamma
+    x.fN_elec += y.fN_elec
+    x.fN_pos += y.fN_pos
+    x.fEdepEventHistos += y.fEdepEventHistos
+    x.fTrackLengthChHistos += y.fTrackLengthChHistos
+    x.fEdepHistos += y.fEdepHistos
+end</code></pre><pre><code class="nohighlight hljs">add! (generic function with 1 method)</code></pre><pre><code class="language-julia hljs">#---Plot the Sumulation data-----------------------------------------------------------------------
+function do_plot(data::TestEm3SimData)
+    (;fEdepHistos, fEdepEventHistos, fTrackLengthChHistos, fAbsorLabel) = data
+    lay = @layout [°; ° °]
+    p = plot(layout=lay, show=true, size=(1000,800))
+    for (h, l) in zip(fEdepHistos, fAbsorLabel)
+        plot!(subplot=1, h, title=&quot;Energy Deposition&quot;, xlabel=&quot;layer #&quot;, label=l, show=true)
+    end
+    for (h, l) in zip(fEdepEventHistos, fAbsorLabel)
+        plot!(subplot=2, h, title=&quot;Energy/event Distribution&quot;, label=l, xlabel=&quot;MeV&quot;)
+    end
+    for (h, l) in zip(fTrackLengthChHistos, fAbsorLabel)
+        plot!(subplot=3, h, title=&quot;Track Lengh Distribution&quot;, label=l, xlabel=&quot;mm&quot;)
+    end
+    display(&quot;image/png&quot;, p)
+end</code></pre><pre><code class="nohighlight hljs">do_plot (generic function with 1 method)</code></pre><pre><code class="language-julia hljs">#---Particle Gun initialization--------------------------------------------------------------------
+particlegun = G4JLGunGenerator(particle = &quot;e-&quot;, 
+                               energy = 1GeV, 
+                               direction = G4ThreeVector(1,0,0), 
+                               position = G4ThreeVector(0,0,0))  # temporary potition, will update once the detector is constructed
+</code></pre><pre><code class="nohighlight hljs">G4JLGunGenerator(&quot;ParticleGun&quot;, Geant4.G4JLParticleGunData(nothing, &quot;e-&quot;, G4ThreeVector(1.0,0.0,0.0), G4ThreeVector(0.0,0.0,0.0), 1000.0), Geant4.var&quot;#init#19&quot;(), Geant4.var&quot;#gen#20&quot;(), G4JLGeneratorAction[])</code></pre><pre><code class="language-julia hljs">#--------------------------------------------------------------------------------------------------
+#----Actions---------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+#---Step action------------------------------------------------------------------------------------
+function stepaction(step::G4Step, app::G4JLApplication)::Nothing
+    data = getSIMdata(app)
+    detector = app.detector
+    prepoint = GetPreStepPoint(step)
+    endPoint = GetPostStepPoint(step)
+    track = GetTrack(step)
+ 
+    # Return if step in not in the world volume
+    prepoint |&gt; GetPhysicalVolume |&gt; GetLogicalVolume |&gt; GetMaterial == detector.fWorldMaterial &amp;&amp; return nothing
+ 
+    particle = GetDefinition(track)
+    charge  = GetPDGCharge(particle)
+    stepl = 0.
+    if charge != 0.
+        stepl = GetStepLength(step)
+        data.fChargedStep += 1
+    else
+        data.fNeutralStep += 1
+    end
+    edep = GetTotalEnergyDeposit(step) * GetWeight(track)
+    absorNum  = GetCopyNumber(GetTouchable(prepoint), 0)
+    layerNum  = GetCopyNumber(GetTouchable(prepoint), 1) + 1  # replicas copynumber starts at 0
+
+    data.fEnergyDeposit[absorNum] += edep
+    data.fTrackLengthCh[absorNum] += stepl 	
+
+    push!(data.fEdepHistos[absorNum], layerNum, edep)
+    nothing
+end
+
+#---Tracking pre-action----------------------------------------------------------------------------
+let G4Gamma, G4Electron, G4Positron, first=true
+global function pretrackaction(track::G4Track, app::G4JLApplication)::Nothing
+    if first
+        G4Gamma    = FindParticle(&quot;gamma&quot;)
+        G4Electron = FindParticle(&quot;e-&quot;)
+        G4Positron = FindParticle(&quot;e+&quot;)
+        first = false
+    end
+    data = getSIMdata(app)
+    d = GetDefinition(track)
+    if d === G4Gamma 
+        data.fN_gamma += 1
+    elseif d === G4Electron
+        data.fN_elec +=1
+    elseif d === G4Positron
+        data.fN_pos += 1
+    end
+    nothing
+end
+end
+#---Tracking post-action---------------------------------------------------------------------------
+function posttrackaction(track::G4Track, ::G4JLApplication)::Nothing
+  return
+end
+#---Begin Run Action-------------------------------------------------------------------------------
+function beginrun(run::G4Run, app::G4JLApplication)::Nothing
+    data = getSIMdata(app)
+    (; fNbOfAbsor, fNbOfLayers, fAbsorMaterial, fAbsorThickness) = app.detector
+    gun = app.generator.data.gun
+    data.fParticle = GetParticleDefinition(gun)
+    data.fEkin = GetParticleEnergy(gun)
+    data.fN_gamma = data.fN_elec = data.fN_pos = 0
+    data.fChargedStep = data.fNeutralStep = 0
+    # init arrays
+    data.fEnergyDeposit = zeros(fNbOfAbsor)
+    data.fTrackLengthCh = zeros(fNbOfAbsor)
+    data.fEdepHistos = [Hist1D(Float64; bins=0.:1.0:fNbOfLayers) for i in 1:fNbOfAbsor]
+    data.fEdepEventHistos = [Hist1D(;bins=0:10:1000) for i in 1:fNbOfAbsor]
+    data.fTrackLengthChHistos = [Hist1D(;bins=0:20:2000) for i in 1:fNbOfAbsor]
+    data.fAbsorLabel = [&quot;$(fAbsorThickness[i])mm of $(fAbsorMaterial[i] |&gt; GetName |&gt; String)&quot; for i in 1:fNbOfAbsor]
+    return
+end
+#---End Run Action---------------------------------------------------------------------------------
+function endrun(run::G4Run, app::G4JLApplication)::Nothing
+    #---end run action is called for each workwer thread and the master onc
+    if G4Threading!G4GetThreadId() &lt; 0   
+        data = app.simdata[1]
+        #---This is the master thread, so we need to add all the simuation results-----------------
+        for d in app.simdata[2:end]
+            add!(data, d)
+        end
+        nEvt = GetNumberOfEvent(run)
+        norm = nEvt &gt; 0 ? 1/nEvt : 1.
+
+        @printf &quot;------------------------------------------------------------\n&quot;
+        @printf &quot; Beam particle %s E = %.2f GeV\n&quot; String(GetParticleName(data.fParticle)) data.fEkin/GeV 
+        @printf &quot; Mean number of gamma          %.2f\n&quot; data.fN_gamma*norm 
+        @printf &quot; Mean number of e-             %.2f\n&quot; data.fN_elec*norm 
+        @printf &quot; Mean number of e+             %.2f\n&quot; data.fN_pos*norm 
+        @printf &quot; Mean number of charged steps  %f\n&quot;   data.fChargedStep*norm 
+        @printf &quot; Mean number of neutral steps  %f\n&quot;   data.fNeutralStep*norm 
+        @printf &quot;------------------------------------------------------------\n&quot;
+    else
+        G4JL_println(&quot;end-run  for worker $(G4Threading!G4GetThreadId())&quot;) 
+    end
+end
+#---Begin Event Action-----------------------------------------------------------------------------
+function beginevent(evt::G4Event, app::G4JLApplication)
+    data = getSIMdata(app)
+    fill!(data.fEnergyDeposit, 0.0)
+    fill!(data.fTrackLengthCh, 0.0)
+    return
+end
+#---End Event Action-------------------------------------------------------------------------------
+function endevent(evt::G4Event, app::G4JLApplication)
+    data = getSIMdata(app)
+    (; fNbOfAbsor, fNbOfLayers) = app.detector
+    for i in 1:fNbOfAbsor
+        push!(data.fEdepEventHistos[i], data.fEnergyDeposit[i])
+        push!(data.fTrackLengthChHistos[i], data.fTrackLengthCh[i])
+    end
+    return
+end
+</code></pre><pre><code class="nohighlight hljs">endevent (generic function with 1 method)</code></pre><pre><code class="language-julia hljs">#---Create the Application-------------------------------------------------------------------------
+app = G4JLApplication(detector = TestEm3Detector(),               # detector with parameters
+                      simdata = TestEm3SimData(),                 # simulation data structure
+                      generator = particlegun,                    # primary particle generator
+                      nthreads = 8,                               # number of threads (MT)
+                      physics_type = FTFP_BERT,                   # what physics list to instantiate
+                      #----Actions--------------------------------
+                      stepaction_method = stepaction,             # step action method
+                      pretrackaction_method = pretrackaction,     # pre-tracking action
+                      posttrackaction_method = posttrackaction,   # post-tracking action
+                      beginrunaction_method = beginrun,           # begin-run action (initialize counters and histograms)
+                      endrunaction_method = endrun,               # end-run action (print summary)               
+                      begineventaction_method = beginevent,       # begin-event action (initialize per-event data)
+                      endeventaction_method = endevent            # end-event action (fill histogram per event data)
+                      );
+              
+
+#ui&quot;/tracking/verbose 1&quot;</code></pre><pre><code class="nohighlight hljs">**************************************************************
+ Geant4 version Name: geant4-11-02-patch-01 [MT]   (16-February-2024)
+  &lt;&lt; in Multi-threaded mode &gt;&gt; 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************</code></pre><pre><code class="language-julia hljs">#---Configure, Initialize and Run------------------------------------------------------------------                      
+configure(app)
+initialize(app)
+SetParticlePosition(particlegun, G4ThreeVector(-app.detector.fWorldSizeX/2,0,0))  # Only now is known the size of the &#39;world&#39;</code></pre><pre><code class="nohighlight hljs">Building Geometry now!!!
+
+
+### G4LevelReader: broken transition 0 from level 24 to 24 for isotope Z= 89 A= 219 - use ground level</code></pre><h3 id="Start-the-initial-run"><a class="docs-heading-anchor" href="#Start-the-initial-run">Start the initial run</a><a id="Start-the-initial-run-1"></a><a class="docs-heading-anchor-permalink" href="#Start-the-initial-run" title="Permalink"></a></h3><pre><code class="language-julia hljs">beamOn(app, 1000)
+do_plot(app.simdata[1])</code></pre><pre><code class="nohighlight hljs">G4WT2 &gt; end-run  for worker 2
+G4WT0 &gt; end-run  for worker 0
+G4WT3 &gt; end-run  for worker 3
+G4WT7 &gt; end-run  for worker 7
+G4WT6 &gt; end-run  for worker 6
+G4WT4 &gt; end-run  for worker 4
+G4WT5 &gt; end-run  for worker 5
+G4WT1 &gt; end-run  for worker 1
+------------------------------------------------------------
+ Beam particle e- E = 1.00 GeV
+
+
+ Mean number of gamma          520.61
+ Mean number of e-             894.80
+ Mean number of e+             53.32
+ Mean number of charged steps  3727.175000
+ Mean number of neutral steps  3724.099000
+------------------------------------------------------------</code></pre><p><img src="../TestEm3_files/TestEm3_10_2.png" alt="png"/></p><h3 id="Change-the-particle-gun-energy"><a class="docs-heading-anchor" href="#Change-the-particle-gun-energy">Change the particle gun energy</a><a id="Change-the-particle-gun-energy-1"></a><a class="docs-heading-anchor-permalink" href="#Change-the-particle-gun-energy" title="Permalink"></a></h3><pre><code class="language-julia hljs">SetParticleEnergy(particlegun, 100MeV)
+beamOn(app, 100)
+do_plot(app.simdata[1])</code></pre><pre><code class="nohighlight hljs">G4WT1 &gt; end-run  for worker 1
+G4WT6 &gt; end-run  for worker 6
+G4WT4 &gt; end-run  for worker 4
+G4WT7 &gt; end-run  for worker 7
+G4WT5 &gt; end-run  for worker 5
+G4WT3 &gt; end-run  for worker 3
+G4WT0 &gt; end-run  for worker 0
+G4WT2 &gt; end-run  for worker 2
+------------------------------------------------------------
+ Beam particle e- E = 0.10 GeV
+ Mean number of gamma          51.22
+ Mean number of e-             89.88
+ Mean number of e+             4.77
+ Mean number of charged steps  369.980000
+ Mean number of neutral steps  374.400000
+------------------------------------------------------------</code></pre><p><img src="../TestEm3_files/TestEm3_12_1.png" alt="png"/></p><h3 id="Change-the-geometry-and-re-start-the-run"><a class="docs-heading-anchor" href="#Change-the-geometry-and-re-start-the-run">Change the geometry and re-start the run</a><a id="Change-the-geometry-and-re-start-the-run-1"></a><a class="docs-heading-anchor-permalink" href="#Change-the-geometry-and-re-start-the-run" title="Permalink"></a></h3><pre><code class="language-julia hljs">reinitialize(app, TestEm3Detector(absorThickness = [2.3mm, 5.7mm, 1mm],
+                                  absorMaterial = [&quot;G4_Pb&quot;, &quot;G4_lAr&quot;, &quot;G4_Al&quot;]))
+beamOn(app, 100)
+do_plot(app.simdata[1])</code></pre><pre><code class="nohighlight hljs">Building Geometry now!!!
+G4WT0 &gt; end-run  for worker 0
+G4WT2 &gt; end-run  for worker 2
+G4WT6 &gt; end-run  for worker 6
+G4WT5 &gt; end-run  for worker 5
+G4WT4 &gt; end-run  for worker 4
+G4WT3 &gt; end-run  for worker 3
+G4WT1 &gt; end-run  for worker 1
+G4WT7 &gt; end-run  for worker 7
+------------------------------------------------------------
+ Beam particle e- E = 0.10 GeV
+ Mean number of gamma          48.94
+ Mean number of e-             86.95
+ Mean number of e+             4.43
+ Mean number of charged steps  406.210000
+ Mean number of neutral steps  461.200000
+------------------------------------------------------------</code></pre><p><img src="../TestEm3_files/TestEm3_14_1.png" alt="png"/></p><pre><code class="language-julia hljs">@time beamOn(app, 10000)</code></pre><pre><code class="nohighlight hljs">G4WT5 &gt; end-run  for worker 5
+G4WT7 &gt; end-run  for worker 7
+G4WT4 &gt; end-run  for worker 4
+G4WT3 &gt; end-run  for worker 3
+G4WT0 &gt; end-run  for worker 0
+G4WT1 &gt; end-run  for worker 1
+G4WT6 &gt; end-run  for worker 6
+G4WT2 &gt; end-run  for worker 2
+------------------------------------------------------------
+ Beam particle e- E = 0.10 GeV
+ Mean number of gamma          49.38
+ Mean number of e-             87.43
+ Mean number of e+             4.65
+ Mean number of charged steps  396.380500
+ Mean number of neutral steps  468.174500
+------------------------------------------------------------
+  6.131390 seconds (20.23 M allocations: 309.023 MiB)</code></pre><h3 id="Change-the-definition-of-the-action-and-re-start"><a class="docs-heading-anchor" href="#Change-the-definition-of-the-action-and-re-start">Change the definition of the action and re-start</a><a id="Change-the-definition-of-the-action-and-re-start-1"></a><a class="docs-heading-anchor-permalink" href="#Change-the-definition-of-the-action-and-re-start" title="Permalink"></a></h3><pre><code class="language-julia hljs">function posttrackaction(track::G4Track, ::G4JLApplication)::Nothing
+    G4JL_println(&quot;Track ID: $(GetTrackID(track)) ended&quot;)
+end
+beamOn(app, 3)</code></pre><pre><code class="nohighlight hljs">G4WT0 &gt; end-run  for worker 0
+G4WT6 &gt; end-run  for worker 6
+G4WT1 &gt; end-run  for worker 1
+G4WT2 &gt; end-run  for worker 2
+G4WT4 &gt; end-run  for worker 4
+G4WT7 &gt; Track ID: 1 ended
+G4WT5 &gt; Track ID: 1 ended
+G4WT7 &gt; Track ID: 7 ended
+G4WT3 &gt; Track ID: 1 ended
+G4WT7 &gt; Track ID: 8 ended
+G4WT7 &gt; Track ID: 6 ended
+G4WT3 &gt; Track ID: 18 ended
+G4WT5 &gt; Track ID: 16 ended
+G4WT3 &gt; Track ID: 21 ended
+G4WT7 &gt; Track ID: 5 ended
+G4WT3 &gt; Track ID: 20 ended
+G4WT7 &gt; Track ID: 9 ended
+G4WT7 &gt; Track ID: 4 ended
+G4WT7 &gt; Track ID: 10 ended
+G4WT3 &gt; Track ID: 19 ended
+G4WT5 &gt; Track ID: 18 ended
+G4WT3 &gt; Track ID: 17 ended
+G4WT7 &gt; Track ID: 3 ended
+G4WT5 &gt; Track ID: 21 ended
+G4WT3 &gt; Track ID: 16 ended
+G4WT5 &gt; Track ID: 23 ended
+G4WT3 &gt; Track ID: 22 ended
+G4WT5 &gt; Track ID: 22 ended
+G4WT3 &gt; Track ID: 23 ended
+G4WT5 &gt; Track ID: 20 ended
+G4WT5 &gt; Track ID: 24 ended
+G4WT5 &gt; Track ID: 19 ended
+G4WT3 &gt; Track ID: 15 ended
+G4WT3 &gt; Track ID: 24 ended
+G4WT3 &gt; Track ID: 14 ended
+G4WT3 &gt; Track ID: 25 ended
+G4WT5 &gt; Track ID: 17 ended
+G4WT7 &gt; Track ID: 12 ended
+G4WT3 &gt; Track ID: 13 ended
+G4WT3 &gt; Track ID: 28 ended
+G4WT7 &gt; Track ID: 33 ended
+G4WT3 &gt; Track ID: 27 ended
+G4WT7 &gt; Track ID: 34 ended
+G4WT3 &gt; Track ID: 26 ended
+G4WT7 &gt; Track ID: 32 ended
+G4WT5 &gt; Track ID: 26 ended
+G4WT3 &gt; Track ID: 12 ended
+G4WT3 &gt; Track ID: 29 ended
+G4WT5 &gt; Track ID: 28 ended
+G4WT7 &gt; Track ID: 35 ended
+G4WT3 &gt; Track ID: 11 ended
+G4WT5 &gt; Track ID: 27 ended
+G4WT7 &gt; Track ID: 31 ended
+G4WT3 &gt; Track ID: 30 ended
+G4WT7 &gt; Track ID: 36 ended
+G4WT5 &gt; Track ID: 25 ended
+G4WT7 &gt; Track ID: 30 ended
+G4WT7 &gt; Track ID: 37 ended
+G4WT5 &gt; Track ID: 30 ended
+G4WT7 &gt; Track ID: 29 ended
+G4WT7 &gt; Track ID: 38 ended
+G4WT5 &gt; Track ID: 29 ended
+G4WT7 &gt; Track ID: 28 ended
+G4WT7 &gt; Track ID: 40 ended
+G4WT3 &gt; Track ID: 10 ended
+G4WT7 &gt; Track ID: 39 ended
+G4WT5 &gt; Track ID: 15 ended
+G4WT5 &gt; Track ID: 14 ended
+G4WT7 &gt; Track ID: 42 ended
+G4WT5 &gt; Track ID: 31 ended
+G4WT7 &gt; Track ID: 41 ended
+G4WT5 &gt; Track ID: 13 ended
+G4WT7 &gt; Track ID: 27 ended
+G4WT7 &gt; Track ID: 43 ended
+G4WT3 &gt; Track ID: 32 ended
+G4WT5 &gt; Track ID: 32 ended
+G4WT7 &gt; Track ID: 26 ended
+G4WT3 &gt; Track ID: 37 ended
+G4WT7 &gt; Track ID: 45 ended
+G4WT5 &gt; Track ID: 12 ended
+G4WT7 &gt; Track ID: 44 ended
+G4WT3 &gt; Track ID: 38 ended
+G4WT7 &gt; Track ID: 25 ended
+G4WT5 &gt; Track ID: 34 ended
+G4WT7 &gt; Track ID: 46 ended
+G4WT7 &gt; Track ID: 24 ended
+G4WT5 &gt; Track ID: 33 ended
+G4WT7 &gt; Track ID: 47 ended
+G4WT3 &gt; Track ID: 36 ended
+G4WT3 &gt; Track ID: 40 ended
+G4WT3 &gt; Track ID: 39 ended
+G4WT7 &gt; Track ID: 23 ended
+G4WT7 &gt; Track ID: 52 ended
+G4WT7 &gt; Track ID: 51 ended
+G4WT5 &gt; Track ID: 11 ended
+G4WT7 &gt; Track ID: 50 ended
+G4WT5 &gt; Track ID: 37 ended
+G4WT3 &gt; Track ID: 35 ended
+G4WT7 &gt; Track ID: 49 ended
+G4WT5 &gt; Track ID: 36 ended
+G4WT3 &gt; Track ID: 41 ended
+G4WT7 &gt; Track ID: 48 ended
+G4WT7 &gt; Track ID: 22 ended
+G4WT7 &gt; Track ID: 53 ended
+G4WT5 &gt; Track ID: 35 ended
+G4WT7 &gt; Track ID: 21 ended
+G4WT3 &gt; Track ID: 34 ended
+G4WT5 &gt; Track ID: 40 ended
+G4WT3 &gt; Track ID: 45 ended
+G4WT5 &gt; Track ID: 41 ended
+G4WT3 &gt; Track ID: 44 ended
+G4WT3 &gt; Track ID: 43 ended
+G4WT5 &gt; Track ID: 39 ended
+G4WT5 &gt; Track ID: 42 ended
+G4WT5 &gt; Track ID: 38 ended
+G4WT5 &gt; Track ID: 43 ended
+G4WT7 &gt; Track ID: 55 ended
+G4WT7 &gt; Track ID: 63 ended
+G4WT7 &gt; Track ID: 64 ended
+G4WT5 &gt; Track ID: 10 ended
+G4WT7 &gt; Track ID: 62 ended
+G4WT3 &gt; Track ID: 42 ended
+G4WT7 &gt; Track ID: 66 ended
+G4WT5 &gt; Track ID: 45 ended
+G4WT7 &gt; Track ID: 65 ended
+G4WT5 &gt; Track ID: 44 ended
+G4WT5 &gt; Track ID: 9 ended
+G4WT7 &gt; Track ID: 61 ended
+G4WT3 &gt; Track ID: 33 ended
+G4WT5 &gt; Track ID: 46 ended
+G4WT7 &gt; Track ID: 67 ended
+G4WT3 &gt; Track ID: 46 ended
+G4WT7 &gt; Track ID: 70 ended
+G4WT5 &gt; Track ID: 8 ended
+G4WT7 &gt; Track ID: 69 ended
+G4WT5 &gt; Track ID: 7 ended
+G4WT7 &gt; Track ID: 68 ended
+G4WT7 &gt; Track ID: 71 ended
+G4WT7 &gt; Track ID: 72 ended
+G4WT7 &gt; Track ID: 60 ended
+G4WT7 &gt; Track ID: 74 ended
+G4WT7 &gt; Track ID: 73 ended
+G4WT7 &gt; Track ID: 59 ended
+G4WT7 &gt; Track ID: 75 ended
+G4WT7 &gt; Track ID: 58 ended
+G4WT7 &gt; Track ID: 76 ended
+G4WT7 &gt; Track ID: 57 ended
+G4WT3 &gt; Track ID: 31 ended
+G4WT7 &gt; Track ID: 78 ended
+G4WT7 &gt; Track ID: 77 ended
+G4WT7 &gt; Track ID: 56 ended
+G4WT3 &gt; Track ID: 52 ended
+G4WT3 &gt; Track ID: 54 ended
+G4WT3 &gt; Track ID: 53 ended
+G4WT5 &gt; Track ID: 48 ended
+G4WT5 &gt; Track ID: 59 ended
+G4WT7 &gt; Track ID: 54 ended
+G4WT7 &gt; Track ID: 84 ended
+G4WT5 &gt; Track ID: 60 ended
+G4WT7 &gt; Track ID: 85 ended
+G4WT7 &gt; Track ID: 83 ended
+G4WT7 &gt; Track ID: 87 ended
+G4WT5 &gt; Track ID: 58 ended
+G4WT7 &gt; Track ID: 86 ended
+G4WT5 &gt; Track ID: 62 ended
+G4WT7 &gt; Track ID: 88 ended
+G4WT7 &gt; Track ID: 89 ended
+G4WT5 &gt; Track ID: 61 ended
+G4WT7 &gt; Track ID: 82 ended
+G4WT7 &gt; Track ID: 90 ended
+G4WT5 &gt; Track ID: 57 ended
+G4WT7 &gt; Track ID: 81 ended
+G4WT5 &gt; Track ID: 64 ended
+G4WT7 &gt; Track ID: 91 ended
+G4WT7 &gt; Track ID: 80 ended
+G4WT3 &gt; Track ID: 51 ended
+G4WT5 &gt; Track ID: 63 ended
+G4WT7 &gt; Track ID: 92 ended
+G4WT5 &gt; Track ID: 56 ended
+G4WT3 &gt; Track ID: 56 ended
+G4WT5 &gt; Track ID: 65 ended
+G4WT7 &gt; Track ID: 79 ended
+G4WT3 &gt; Track ID: 55 ended
+G4WT7 &gt; Track ID: 95 ended
+G4WT7 &gt; Track ID: 94 ended
+G4WT3 &gt; Track ID: 57 ended
+G4WT5 &gt; Track ID: 55 ended
+G4WT7 &gt; Track ID: 93 ended
+G4WT7 &gt; Track ID: 20 ended
+G4WT5 &gt; Track ID: 67 ended
+G4WT7 &gt; Track ID: 96 ended
+G4WT7 &gt; Track ID: 19 ended
+G4WT7 &gt; Track ID: 98 ended
+G4WT5 &gt; Track ID: 66 ended
+G4WT5 &gt; Track ID: 54 ended
+G4WT5 &gt; Track ID: 69 ended
+G4WT5 &gt; Track ID: 68 ended
+G4WT5 &gt; Track ID: 53 ended
+G4WT5 &gt; Track ID: 71 ended
+G4WT5 &gt; Track ID: 70 ended
+G4WT5 &gt; Track ID: 52 ended
+G4WT5 &gt; Track ID: 74 ended
+G4WT7 &gt; Track ID: 97 ended
+G4WT5 &gt; Track ID: 73 ended
+G4WT7 &gt; Track ID: 99 ended
+G4WT5 &gt; Track ID: 72 ended
+G4WT7 &gt; Track ID: 100 ended
+G4WT7 &gt; Track ID: 18 ended
+G4WT7 &gt; Track ID: 101 ended
+G4WT5 &gt; Track ID: 51 ended
+G4WT5 &gt; Track ID: 76 ended
+G4WT5 &gt; Track ID: 75 ended
+G4WT3 &gt; Track ID: 50 ended
+G4WT3 &gt; Track ID: 49 ended
+G4WT5 &gt; Track ID: 50 ended
+G4WT5 &gt; Track ID: 80 ended
+G4WT5 &gt; Track ID: 79 ended
+G4WT5 &gt; Track ID: 78 ended
+G4WT5 &gt; Track ID: 77 ended
+G4WT3 &gt; Track ID: 59 ended
+G4WT3 &gt; Track ID: 61 ended
+G4WT5 &gt; Track ID: 49 ended
+G4WT3 &gt; Track ID: 63 ended
+G4WT5 &gt; Track ID: 84 ended
+G4WT3 &gt; Track ID: 62 ended
+G4WT5 &gt; Track ID: 83 ended
+G4WT5 &gt; Track ID: 82 ended
+G4WT7 &gt; Track ID: 17 ended
+G4WT5 &gt; Track ID: 81 ended
+G4WT7 &gt; Track ID: 16 ended
+G4WT7 &gt; Track ID: 15 ended
+G4WT7 &gt; Track ID: 102 ended
+G4WT3 &gt; Track ID: 60 ended
+G4WT7 &gt; Track ID: 14 ended
+G4WT7 &gt; Track ID: 106 ended
+G4WT3 &gt; Track ID: 64 ended
+G4WT3 &gt; Track ID: 58 ended
+G4WT7 &gt; Track ID: 105 ended
+G4WT7 &gt; Track ID: 104 ended
+G4WT7 &gt; Track ID: 103 ended
+G4WT7 &gt; Track ID: 13 ended
+G4WT7 &gt; Track ID: 108 ended
+G4WT7 &gt; Track ID: 107 ended
+G4WT3 &gt; Track ID: 48 ended
+G4WT3 &gt; Track ID: 47 ended
+G4WT3 &gt; Track ID: 66 ended
+G4WT3 &gt; Track ID: 65 ended
+G4WT7 &gt; Track ID: 11 ended
+G4WT5 &gt; Track ID: 47 ended
+G4WT7 &gt; Track ID: 113 ended
+G4WT7 &gt; Track ID: 114 ended
+G4WT5 &gt; Track ID: 86 ended
+G4WT7 &gt; Track ID: 112 ended
+G4WT5 &gt; Track ID: 87 ended
+G4WT3 &gt; Track ID: 9 ended
+G4WT7 &gt; Track ID: 115 ended
+G4WT7 &gt; Track ID: 111 ended
+G4WT7 &gt; Track ID: 117 ended
+G4WT7 &gt; Track ID: 119 ended
+G4WT7 &gt; Track ID: 120 ended
+G4WT7 &gt; Track ID: 118 ended
+G4WT7 &gt; Track ID: 122 ended
+G4WT7 &gt; Track ID: 121 ended
+G4WT5 &gt; Track ID: 85 ended
+G4WT7 &gt; Track ID: 116 ended
+G4WT5 &gt; Track ID: 91 ended
+G4WT3 &gt; Track ID: 68 ended
+G4WT7 &gt; Track ID: 110 ended
+G4WT5 &gt; Track ID: 90 ended
+G4WT7 &gt; Track ID: 124 ended
+G4WT5 &gt; Track ID: 89 ended
+G4WT7 &gt; Track ID: 123 ended
+G4WT3 &gt; Track ID: 67 ended
+G4WT7 &gt; Track ID: 109 ended
+G4WT7 &gt; Track ID: 125 ended
+G4WT7 &gt; Track ID: 2 ended
+G4WT7 &gt; Track ID: 127 ended
+G4WT3 &gt; Track ID: 8 ended
+G4WT7 &gt; Track ID: 129 ended
+G4WT7 &gt; Track ID: 130 ended
+G4WT3 &gt; Track ID: 7 ended
+G4WT7 &gt; Track ID: 128 ended
+G4WT5 &gt; Track ID: 88 ended
+G4WT7 &gt; Track ID: 132 ended
+G4WT7 &gt; Track ID: 131 ended
+G4WT5 &gt; Track ID: 95 ended
+G4WT7 &gt; Track ID: 126 ended
+G4WT5 &gt; Track ID: 96 ended
+G4WT7 &gt; Track ID: 133 ended
+G4WT5 &gt; Track ID: 94 ended
+G4WT7 &gt; end-run  for worker 7
+G4WT5 &gt; Track ID: 97 ended
+G4WT3 &gt; Track ID: 69 ended
+G4WT5 &gt; Track ID: 93 ended
+G4WT5 &gt; Track ID: 98 ended
+G4WT5 &gt; Track ID: 92 ended
+G4WT3 &gt; Track ID: 6 ended
+G4WT5 &gt; Track ID: 99 ended
+G4WT5 &gt; Track ID: 6 ended
+G4WT5 &gt; Track ID: 101 ended
+G4WT5 &gt; Track ID: 100 ended
+G4WT3 &gt; Track ID: 71 ended
+G4WT3 &gt; Track ID: 76 ended
+G4WT3 &gt; Track ID: 77 ended
+G4WT3 &gt; Track ID: 75 ended
+G4WT3 &gt; Track ID: 78 ended
+G4WT3 &gt; Track ID: 74 ended
+G4WT3 &gt; Track ID: 79 ended
+G4WT3 &gt; Track ID: 73 ended
+G4WT3 &gt; Track ID: 80 ended
+G4WT3 &gt; Track ID: 81 ended
+G4WT5 &gt; Track ID: 5 ended
+G4WT3 &gt; Track ID: 82 ended
+G4WT5 &gt; Track ID: 103 ended
+G4WT5 &gt; Track ID: 102 ended
+G4WT3 &gt; Track ID: 72 ended
+G4WT5 &gt; Track ID: 104 ended
+G4WT5 &gt; Track ID: 106 ended
+G4WT5 &gt; Track ID: 105 ended
+G4WT5 &gt; Track ID: 4 ended
+G4WT3 &gt; Track ID: 70 ended
+G4WT3 &gt; Track ID: 86 ended
+G4WT3 &gt; Track ID: 88 ended
+G4WT3 &gt; Track ID: 87 ended
+G4WT3 &gt; Track ID: 85 ended
+G4WT5 &gt; Track ID: 108 ended
+G4WT3 &gt; Track ID: 90 ended
+G4WT5 &gt; Track ID: 107 ended
+G4WT5 &gt; Track ID: 110 ended
+G4WT5 &gt; Track ID: 113 ended
+G4WT5 &gt; Track ID: 112 ended
+G4WT5 &gt; Track ID: 111 ended
+G4WT5 &gt; Track ID: 109 ended
+G4WT5 &gt; Track ID: 114 ended
+G4WT3 &gt; Track ID: 89 ended
+G4WT5 &gt; Track ID: 3 ended
+G4WT5 &gt; Track ID: 115 ended
+G4WT3 &gt; Track ID: 84 ended
+G4WT3 &gt; Track ID: 83 ended
+G4WT3 &gt; Track ID: 91 ended
+G4WT3 &gt; Track ID: 5 ended
+G4WT5 &gt; Track ID: 2 ended
+G4WT3 &gt; Track ID: 92 ended
+G4WT3 &gt; Track ID: 4 ended
+G4WT5 &gt; Track ID: 118 ended
+G4WT3 &gt; Track ID: 93 ended
+G4WT3 &gt; Track ID: 3 ended
+G4WT5 &gt; Track ID: 117 ended
+G4WT5 &gt; Track ID: 116 ended
+G4WT5 &gt; end-run  for worker 5
+G4WT3 &gt; Track ID: 95 ended
+G4WT3 &gt; Track ID: 100 ended
+G4WT3 &gt; Track ID: 103 ended
+G4WT3 &gt; Track ID: 102 ended
+G4WT3 &gt; Track ID: 101 ended
+G4WT3 &gt; Track ID: 99 ended
+G4WT3 &gt; Track ID: 104 ended
+G4WT3 &gt; Track ID: 98 ended
+G4WT3 &gt; Track ID: 106 ended
+G4WT3 &gt; Track ID: 105 ended
+G4WT3 &gt; Track ID: 97 ended
+G4WT3 &gt; Track ID: 107 ended
+G4WT3 &gt; Track ID: 96 ended
+G4WT3 &gt; Track ID: 110 ended
+G4WT3 &gt; Track ID: 109 ended
+G4WT3 &gt; Track ID: 108 ended
+G4WT3 &gt; Track ID: 94 ended
+G4WT3 &gt; Track ID: 111 ended
+G4WT3 &gt; Track ID: 112 ended
+G4WT3 &gt; Track ID: 2 ended
+G4WT3 &gt; Track ID: 115 ended
+G4WT3 &gt; Track ID: 114 ended
+G4WT3 &gt; Track ID: 113 ended
+G4WT3 &gt; Track ID: 117 ended
+G4WT3 &gt; Track ID: 118 ended
+G4WT3 &gt; Track ID: 116 ended
+G4WT3 &gt; Track ID: 119 ended
+G4WT3 &gt; end-run  for worker 3
+------------------------------------------------------------
+ Beam particle e- E = 0.10 GeV
+
+
+ Mean number of gamma          44.00
+ Mean number of e-             76.00
+ Mean number of e+             3.33
+ Mean number of charged steps  422.666667
+ Mean number of neutral steps  322.666667
+------------------------------------------------------------</code></pre><pre><code class="language-julia hljs"></code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../Solids/">« Example Solids</a><a class="docs-footer-nextpage" href="../../releases/">Release Notes »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.4.1 on <span class="colophon-date" title="Wednesday 29 May 2024 11:44">Wednesday 29 May 2024</span>. Using Julia version 1.10.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
