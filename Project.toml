@@ -1,7 +1,7 @@
 name = "Geant4"
 uuid = "559df036-b7a0-42fd-85df-7d5dd9d70f44"
 authors = ["Pere Mato <pere.mato@cern.ch>"]
-version = "0.1.16"
+version = "0.1.17"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
@@ -41,3 +41,7 @@ BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 IGLWrap_jll = "283677c1-8365-580c-84e5-ef4b5d190868"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+
+[targets]
+test = ["Test", "Pkg"]
