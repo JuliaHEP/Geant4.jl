@@ -79,7 +79,7 @@ function drawEvent(evtdisp::G4JLEventDisplay)
             end
             push!(points, Point3{Float64}(NaN, NaN, NaN))
         end
-        lines!(s, points, color=settings.trajectories.color, tranparency=false, overdraw=false)
+        lines!(s, points, color=settings.trajectories.color, transparency=false, overdraw=false)
     end
     #wait_for_key("Press any key to continue with next event")
 end
