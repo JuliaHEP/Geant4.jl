@@ -47,6 +47,8 @@ function initDisplay(evtdisp::G4JLEventDisplay)
         set_theme!(backgroundcolor = settings.display.backgroundcolor)
         fig = Figure(size=settings.display.resolution)
         sc = LScene(fig[1,1], show_axis=settings.display.show_axis)
+        rotate_cam!(sc.scene, settings.display.camera_rotation...)
+        zoom!(sc.scene, settings.display.camera_zoom)
         #display(fig)
         evtdisp.lscene = sc
         evtdisp.figure = fig
