@@ -7,7 +7,9 @@
         backgroundcolor =  :black,    # Display background color
         resolution = (1280, 720),     # Display resolution
         show_axis = true,             # Whether to show or not the axis
-    ),
+        camera_rotation = (0,0,0),    # Camera rotation
+        camera_zoom = 1.0,            # Camera zoom
+        ),
     trajectories = (
         color = :yellow,              # Color of the trajectories
     ),
