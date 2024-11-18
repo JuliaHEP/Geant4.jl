@@ -17,20 +17,6 @@ include(${Geant4_USE_FILE})
 
 #  Files are in gen folder
 file(REAL_PATH ${CMAKE_SOURCE_DIR}/../gen SOURCE_DIR)
-
-#---Generate wrapper if WrapIt is found---------------------------------------------
-find_program(WRAPIT_EXECUTABLE wrapit)
-if(WRAPIT_EXECUTABLE)
-  configure_file(${SOURCE_DIR}/Geant4.wit.in ${SOURCE_DIR}/Geant4.wit @ONLY)
-  add_custom_command(OUTPUT ${SOURCE_DIR}/cpp/jlGeant4.cxx
-    COMMAND mkdir -p ${SOURCE_DIR}/jl
-    COMMAND ${WRAPIT_EXECUTABLE} --force -v 1 ${SOURCE_DIR}/Geant4.wit
-    WORKING_DIRECTORY ${SOURCE_DIR}
-    DEPENDS ${SOURCE_DIR}/Geant4.wit ${SOURCE_DIR}/Geant4-veto.h  ${SOURCE_DIR}/cpp/Geant4Wrap.h)
-else()
-  message(STATUS "The executable wrapit was not found. Building wrapper using the generated jlGeant4.cxx/h files from the sources.")
-endif()
-
 file(GLOB GEN_SOURCES CONFIGURE_DEPENDS  ${SOURCE_DIR}/cpp/Jl*.cxx)
 add_library(Geant4Wrap SHARED ${SOURCE_DIR}/cpp/Geant4Wrap.cxx ${SOURCE_DIR}/cpp/jlGeant4.cxx ${GEN_SOURCES})
 

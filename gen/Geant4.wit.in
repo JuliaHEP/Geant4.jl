@@ -9,10 +9,10 @@ out_jl_dir          = "jl"
 clang_opts          = ["-v"]
 
 include_dirs        = [ "./cpp", 
-                        "@Geant4_INCLUDE_DIRS@",
+                        "@Geant4_INCLUDE_DIR@",
                         "@XercesC_INCLUDE_DIR@",
-                        "@Julia_INCLUDE_DIRS@",  
-                        "@JlCxx_DIR@/../../../include"]
+                        "@Julia_INCLUDE_DIR@",  
+                        "@JlCxx_INCLUDE_DIR@"]
 
 input               = [ "Geant4Wrap.h",
                         "G4RunManager.hh",
