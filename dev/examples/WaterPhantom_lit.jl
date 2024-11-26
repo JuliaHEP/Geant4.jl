@@ -1,4 +1,4 @@
-# # Water Phantom Simulation with Scoring
+# # Water Phantom with Scoring
 # 
 #md # !!! note "Note that"
 #md #     You can also download this example as a
