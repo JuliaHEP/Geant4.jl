@@ -1,5 +1,5 @@
 using CxxWrap
-using WrapIt
+#using WrapIt
 using Geant4_jll
 using Expat_jll
 using Xerces_jll
@@ -27,14 +27,16 @@ witin = joinpath(@__DIR__, "Geant4.wit.in")
 open(wit, "w") do f
     for l in eachline(witin)
 	println(f, replace(l, "@Geant4_INCLUDE_DIR@" => "$geant4_prefix/include/Geant4",
-                          "@XercesC_INCLUDE_DIR@" => "$xercesc_prefix/include/xercesc",
+                          "@XercesC_INCLUDE_DIR@" => "$xercesc_prefix/include",
                           "@Julia_INCLUDE_DIR@" => "$julia_prefix/include/julia",
                           "@JlCxx_INCLUDE_DIR@" => "$cxxwrap_prefix/include",
                           "@CxxWrap_VERSION@" => "$(pkgversion(CxxWrap))"))
     end
 end
 
-rc = wrapit(wit, force=true, cmake=false, update=updatemode, verbosity=0)
+
+#rc = wrapit(wit, force=true, cmake=false, update=updatemode, verbosity=1)
+rc = run(`wrapit $wit --force -v 1`).exitcode
 if !isnothing(rc) && rc != 0
     println(stderr, "Failed to produce wrapper code with the wrapit function. Exited with code ", rc, ".")
     exit(rc)

@@ -492,7 +492,15 @@ Initialize the Geant4 application. It initializes the RunManager, which construc
 the declared sensitive detectors.
 """
 function initialize(app::G4JLApplication)
-    Initialize(app.runmanager)
+    if app.nthreads > 0
+        # before initializing (creation of worker threads) we need to enter GC safe state not 
+        # to block any garbage collection.  
+        state = ccall(:jl_gc_safe_enter,Cint,())
+        Initialize(app.runmanager)
+        ccall(:jl_gc_safe_leave,Cint,(Cint,), state)
+    else
+        Initialize(app.runmanager)
+    end
     #---Process scorers------------------------------------------------------------------------
     for sc in app.scorers
         uicmd = toUIstring(sc)

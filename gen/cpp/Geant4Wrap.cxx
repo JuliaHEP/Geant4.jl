@@ -64,7 +64,13 @@ G4ParticleDefinition* GetIon(G4int Z, G4int A, G4double E, G4int J) {
 
 char* G4JL_getenv(const char* x) { return std::getenv(x); };
 
-int G4JL_setenv(const char* x, const char* v) { return setenv(x, v, 1); }
+int G4JL_setenv(const char* x, const char* v) { 
+#ifdef _WIN32
+  return _putenv_s(x, v);
+#else
+  return setenv(x, v, 1);
+#endif 
+}
 
 void G4JL_init(void) {
   auto sm = G4StateManager::GetStateManager();

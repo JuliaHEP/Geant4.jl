@@ -26,5 +26,5 @@ end
 
     @test run(`julia --project=examples examples/advanced/Scintillation/Scintillation.jl`, devnull, devnull).exitcode  == 0
     @test run(`julia --project=examples examples/advanced/HBC30/HBC30.jl`, devnull, devnull).exitcode == 0
-
+    @test run(`julia --project=examples examples/advanced/AlephTPC/TPCSim.jl`, devnull, devnull).exitcode == 0
 end

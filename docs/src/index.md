@@ -340,9 +340,9 @@ To run it, execute
 julia --project=examples -i examples/Scintillator/Scintillator.jl
 ```
 ## Visualization examples
-The Geant4.jl project includes additional functionality for visualization under the extension directory `ext/G4Vis/examples`. This is done in a different directory to separate and minimise the dependencies. The julia `ext/G4Vis/examples/Project.toml` file  has the complete list of dependencies needed for running these examples. In order to load all the required dependencies the user can execute the first time:
+The Geant4.jl project includes additional functionality for visualization under the extension directory `ext/G4Vis`. This is done in a different directory to separate and minimise the dependencies. The Julia `examples/Project.toml` file  has the complete list of dependencies needed for running also the visualization examples. In order to load all the required dependencies the user can execute the first time:
 ```
-`julia --project=Geant4.jl/ext/G4Vis/examples -e 'import Pkg; Pkg.instantiate()'`
+`julia --project=examples -e 'import Pkg; Pkg.instantiate()'`
 ```
 
 !!! note
@@ -351,7 +351,7 @@ The Geant4.jl project includes additional functionality for visualization under 
 ### B1vis.jl
 This example uses the `GLMakie` backend (OpenGL) of Makie. The use may change to other backends depending on his/her setup. To visualize the B1 detector do:
 ```
-julia --project=ext/G4Vis/examples -i  ext/G4Vis/examples/B1vis.jl
+julia --project=examples -i  examples/basic/B1/B1vis.jl
 ```
 !!! note  
     Note the option `-i` to keep the interactive session open
@@ -359,13 +359,13 @@ julia --project=ext/G4Vis/examples -i  ext/G4Vis/examples/B1vis.jl
 ### B2aVis.jl
 This example to visualize the detector and (a very simplistic) visualization of one event.
 ``` 
-julia --project=ext/G4Vis/examples -i  ext/G4Vis/examples/B2avis.jl
+julia --project=examples -i  examples/basic/B2/B2aVis.jl
 ```
 
 ### Solids.ipynb
 This notebook shows all the possible solids in Geant4. This is work in progress and some solids do not have graphical representation yet.
 ```
-jupyter notebook ext/G4Vis/examples/Solids.ipynb
+jupyter notebook examples/extended/Solids/Solids.ipynb
 ```
 See the [rendered notebook](https://juliahep.github.io/Geant4.jl/dev/notebooks/Solids/)
 
@@ -374,18 +374,29 @@ This example mimics the CERN 30cm liquid hydrogen bubble chamber. It demonstrate
 
 To run it, execute
 ```
-julia --project=ext/G4Vis/examples -i ext/G4Vis/examples/HBC30/HBC30.jl
+julia --project=examples -i examples/advanced/HBC30/HBC30.jl
 ``` 
 It also exists in a [notebook](https://juliahep.github.io/Geant4.jl/dev/notebooks/HBC30/) format. 
 
+### AlephTPC
+Example to integrate Geant4 with the PYTHIA8 event generator. We generate LEP e+ e- collisions to be used as primary particles into a very simplified Aleph TPC.
+
+To run it, execute
+```
+julia --project=examples -i examples/advanced/AlephTPC/TPCSim.jl
+``` 
+
 ## Building the wrapper code
-We use the Geant4 native binary libraries and data from the binary package [Geant4\_jll](https://github.com/JuliaBinaryWrappers/Geant4_jll.jl), which has been produced with the `BinaryBuilder` [recipe](https://github.com/JuliaPackaging/Yggdrasil/tree/master/G/Geant4). The wrapper library is downloaded from the binary package [Geant4\_julia\_jll](https://github.com/JuliaBinaryWrappers/Geant4_julia_jll.jl).
+We use the Geant4 native binary libraries and data from the binary package [Geant4\_jll](https://github.com/JuliaBinaryWrappers/Geant4_jll.jl), which has been produced with the `BinaryBuilder` [recipe](https://github.com/JuliaPackaging/Yggdrasil/tree/master/G/Geant4). We will have a new version of the `Geant4_jll` package for each new release of Geant4.
 
-We have the possibility during the development of this package to re-generate locally new C++ wrapper code. For this we need to have `wrapit` installed, which itself requires `libclang` to be installed. If the executable is not found (not in the PATH), we can use the wrapper code that is already pre-generated and distributed with this package.
-- what C++ classes get wrapped is controlled by the file `gen/Geant4.wit.in`. See the documentation of WrapIt for the details. 
-- run the `gen/build.jl` script generate the wrapper code (if wrapit found) and build the wrapper library.
+The wrapper library is downloaded from the binary package [Geant4\_julia\_jll](https://github.com/JuliaBinaryWrappers/Geant4_julia_jll.jl).
 
-!!! note
-    Please note that compiling the single generated wrapper file takes very long. This is due to the current implementation of WrapIt that places all wrapped types in a single file. This may change in the future.
+We have the possibility during the development of this package, or to add addtional classes, to re-generate locally new C++ wrapper library. For this we need to have [`wrapit`](https://github.com/grasph/wrapit) installed, which itself requires `libclang` to be installed.
 
+- The configuration file `gen/Geant4.wit.in` is the input to the automated process. New header files can be added to the input list.
+- The script `gen/build.jl` does the work of generating the code and building the library. The commands to execute are:
+  ```
+  julia --project=gen -e 'import Pkg; Pkg.instantiate()'
+  julia --project=gen gen/build.jl
+  ```
 Once the wrapper code is stabilized we move the generated code to the repository [Geant4\_cxxwrap](https://github.com/peremato/Geant4_cxxwrap) to regenerate the binary package `Geant4_julia_jll` using the `BinaryBuilder`.
