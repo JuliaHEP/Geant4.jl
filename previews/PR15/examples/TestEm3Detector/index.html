@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>TestEm3Detector.jl · Geant4.jl</title><meta name="title" content="TestEm3Detector.jl · Geant4.jl"/><meta property="og:title" content="TestEm3Detector.jl · Geant4.jl"/><meta property="twitter:title" content="TestEm3Detector.jl · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><span class="tocitem">Examples</span><ul><li><input class="collapse-toggle" id="menuitem-3-1" type="checkbox"/><label class="tocitem" for="menuitem-3-1"><span class="docs-label">Basic</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../B1/">Example B1</a></li><li><a class="tocitem" href="../B2a/">Example B2a</a></li><li><a class="tocitem" href="../B2aVis/">Example B2aVis</a></li><li><a class="tocitem" href="../B3a/">Example B3a</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox"/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Extended</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../GPS/">Example GPS</a></li><li><a class="tocitem" href="../RE03/">Example RE03</a></li><li><a class="tocitem" href="../TestEm3/">Example TestEm3</a></li><li><a class="tocitem" href="../Solids/">Example Solids</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox"/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Advanced</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../TPCSim/">Example TPCSim</a></li><li><a class="tocitem" href="../HBC30/">Example HBC30</a></li><li><a class="tocitem" href="../WaterPhantom/">Example WaterPhantom</a></li></ul></li></ul></li><li class="is-active"><a class="tocitem" href>TestEm3Detector.jl</a></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>TestEm3Detector.jl</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>TestEm3Detector.jl</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/examples/TestEm3Detector.md#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="TestEm3Detector.jl"><a class="docs-heading-anchor" href="#TestEm3Detector.jl">TestEm3Detector.jl</a><a id="TestEm3Detector.jl-1"></a><a class="docs-heading-anchor-permalink" href="#TestEm3Detector.jl" title="Permalink"></a></h1><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits
+
+#--------------------------------------------------------------------------------------------------
+# TestEm3 Detector definition
+#--------------------------------------------------------------------------------------------------
+
+mutable struct TestEm3Detector &lt;: G4JLDetector
+    # main input parameters
+    const fNbOfAbsor::Int64
+    const fNbOfLayers::Int64
+    const fCalorSizeYZ::Float64
+    const fAbsorThickness::Vector{Float64}
+
+    # mutable (computed) detector data
+    fLayerThickness::Float64
+    fCalorThickness::Float64
+    fWorldSizeYZ::Float64
+    fWorldSizeX::Float64
+
+    fAbsorMaterial::Vector{CxxPtr{G4Material}}
+    fWorldMaterial::CxxPtr{G4Material}
+
+    fSolidWorld::G4Box
+    fLogicWorld::G4LogicalVolume
+    fPhysiWorld::CxxPtr{G4VPhysicalVolume}
+  
+    fSolidCalor::G4Box
+    fLogicCalor::G4LogicalVolume
+    fPhysiCalor::CxxPtr{G4VPhysicalVolume}
+  
+    fSolidLayer::G4Box
+    fLogicLayer::G4LogicalVolume
+    fPhysiLayer::CxxPtr{G4VPhysicalVolume}
+  
+    fSolidAbsor::Vector{G4Box}
+    fLogicAbsor::Vector{G4LogicalVolume}
+    fPhysiAbsor::Vector{CxxPtr{G4VPhysicalVolume}}
+
+    function TestEm3Detector(;nbOfLayers = 50, 
+                              calorSizeYZ = 40cm,
+                              absorThickness = [2.3mm, 5.7mm],
+                              absorMaterial = [&quot;G4_Pb&quot;, &quot;G4_lAr&quot;])
+        self = new(length(absorThickness), nbOfLayers, calorSizeYZ, absorThickness)
+
+        # Compute derived parameters of the calorimeter
+        self.fLayerThickness = 0.
+        for i in 1:self.fNbOfAbsor
+          self.fLayerThickness += self.fAbsorThickness[i]
+        end
+        self.fCalorThickness = self.fNbOfLayers * self.fLayerThickness     
+        self.fWorldSizeX = 1.2 * self.fCalorThickness 
+        self.fWorldSizeYZ = 1.2 * self.fCalorSizeYZ
+
+        DefineMaterials!(self)
+
+        nist = G4NistManager!Instance()
+        self.fWorldMaterial = FindOrBuildMaterial(nist,&quot;Galactic&quot;)
+        self.fAbsorMaterial = [FindOrBuildMaterial(nist, mat) for mat in absorMaterial]
+        self
+    end
+
+end      
+
+using Geant4.SystemOfUnits:cm3, mole, kelvin, atmosphere, eV, pascal, bar
+const perCent=0.01
+
+function DefineMaterials!(det::TestEm3Detector)
+    # to avoid warnings of redefinitions
+    G4Material!GetMaterial(&quot;liquidH2&quot;, false) != C_NULL &amp;&amp; return
+
+    nist = G4NistManager!Instance()
+    H  = FindOrBuildElement(nist,1)
+    C  = FindOrBuildElement(nist,6)
+    N  = FindOrBuildElement(nist,7)
+    O  = FindOrBuildElement(nist,8)
+    Si = FindOrBuildElement(nist,14)
+    Ge = FindOrBuildElement(nist,32)
+    Sb = FindOrBuildElement(nist,51)
+    I  = FindOrBuildElement(nist,53)
+    Cs = FindOrBuildElement(nist,55)
+    Pb = FindOrBuildElement(nist,82)
+    Bi = FindOrBuildElement(nist,83)
+
+    U5 = G4Isotope(&quot;U235&quot;, z=92, n=235, a=235.01*g/mole)
+    U8 = G4Isotope(&quot;U238&quot;, z=92, n=238, a=238.03*g/mole)
+  
+    U  = G4Element(&quot;enriched Uranium&quot;, &quot;U&quot;, 2)
+    AddIsotope(U, move!(U5), 0.90)
+    AddIsotope(U, move!(U8), 0.10)
+
+    G4Material(&quot;liquidH2&quot;,    z=1.,  a= 1.008*g/mole,  density= 70.8*mg/cm3)
+    G4Material(&quot;Aluminium&quot;,   z=13., a= 26.98*g/mole,  density= 2.700*g/cm3)
+    G4Material(&quot;Titanium&quot;,    z=22., a= 47.867*g/mole, density= 4.54*g/cm3)
+    G4Material(&quot;Iron&quot;,        z=26., a= 55.85*g/mole,  density= 7.870*g/cm3)
+    G4Material(&quot;Copper&quot;,      z=29., a= 63.55*g/mole,  density= 8.960*g/cm3)
+    G4Material(&quot;Tungsten&quot;,    z=74., a= 183.85*g/mole, density= 19.30*g/cm3)
+    G4Material(&quot;Gold&quot;,        z=79., a= 196.97*g/mole, density= 19.32*g/cm3)
+    G4Material(&quot;Uranium&quot;,     z=92., a= 238.03*g/mole, density= 18.95*g/cm3)
+
+    # define a material from elements.   case 1: chemical molecule
+  
+    H₂O = G4Material(&quot;Water&quot;, density=1.000*g/cm3, ncomponents=2)
+
+    AddElement(H₂O, H, natoms=2)
+    AddElement(H₂O, O, natoms=1)
+    #SetMeanExcitationEnergy(GetIonisation(H₂O), 78.0*eV)
+    SetChemicalFormula(H₂O, &quot;H_2O&quot;)
+    
+    CH = G4Material(&quot;Polystyrene&quot;, density= 1.032*g/cm3, ncomponents=2)
+    AddElement(CH, C, natoms=1)
+    AddElement(CH, H, natoms=1)
+ 
+    Sci = G4Material(&quot;Scintillator&quot;, density= 1.032*g/cm3, ncomponents=2)
+    AddElement(Sci, C, natoms=9)
+    AddElement(Sci, H, natoms=10)
+    #SetBirksConstant(GetIonisation(Sci), 0.126*mm/MeV)
+  
+    Lct = G4Material(&quot;Lucite&quot;, density= 1.185*g/cm3, ncomponents=3)
+    AddElement(Lct, C, fractionmass=.5997)
+    AddElement(Lct, H, fractionmass=.0807)
+    AddElement(Lct, O, fractionmass=.3196)
+  
+    Sili = G4Material(&quot;Silicon&quot;, density= 2.330*g/cm3, ncomponents=1)
+    AddElement(Sili, Si, natoms=1)
+  
+    SiO₂ = G4Material(&quot;quartz&quot;, density= 2.200*g/cm3, ncomponents=2)
+    AddElement(SiO₂, Si, natoms=1)
+    AddElement(SiO₂, O , natoms=2)
+  
+    G10 = G4Material(&quot;NemaG10&quot;, density= 1.700*g/cm3, ncomponents=4)
+    AddElement(G10, Si, natoms=1)
+    AddElement(G10, O , natoms=2)
+    AddElement(G10, C , natoms=3)
+    AddElement(G10, H , natoms=3)
+  
+    CsI = G4Material(&quot;CsI&quot;, density= 4.534*g/cm3, ncomponents=2)
+    AddElement(CsI, Cs, natoms=1)
+    AddElement(CsI, I , natoms=1)
+    #SetMeanExcitationEnergy(GetIonisation(CsI), 553.1*eV)
+  
+    BGO = G4Material(&quot;BGO&quot;, density= 7.10*g/cm3, ncomponents=3)
+    AddElement(BGO, O , natoms=12)
+    AddElement(BGO, Ge, natoms= 3)
+    AddElement(BGO, Bi, natoms= 4)
+  
+    SiNx= G4Material(&quot;SiNx&quot;, density= 3.1 *g/cm3, ncomponents=3)
+    AddElement(SiNx, Si, natoms=300)
+    AddElement(SiNx, N, natoms=310)
+    AddElement(SiNx, H, natoms=6)
+
+    # define gaseous materials using G4 NIST database 
+    Air = FindOrBuildMaterial(nist, &quot;G4_AIR&quot;)
+    ConstructNewGasMaterial(nist, &quot;Air20&quot;,&quot;G4_AIR&quot;, 293kelvin, 1atmosphere)
+
+    lAr = FindOrBuildMaterial(nist, &quot;G4_lAr&quot;)
+    lArEm3 = G4Material(&quot;liquidArgon&quot;, density= 1.390g/cm3, ncomponents=1)
+    AddMaterial(lArEm3, lAr, fractionmass=1.0)
+
+    # define a material from elements and others materials (mixture of mixtures)
+    Lead = G4Material(&quot;Lead&quot;, density=11.35*g/cm3, ncomponents=1)
+    AddElement(Lead, Pb, fractionmass=1.0)
+  
+    LeadSb = G4Material(&quot;LeadSb&quot;, density=11.35*g/cm3, ncomponents=2)
+    AddElement(LeadSb, Sb, fractionmass=4perCent)
+    AddElement(LeadSb, Pb, fractionmass=96perCent)
+  
+    Aerog = G4Material(&quot;Aerogel&quot;, density= 0.200*g/cm3, ncomponents=3)
+    AddMaterial(Aerog, SiO₂, fractionmass=62.5*perCent)
+    AddMaterial(Aerog, H₂O , fractionmass=37.4*perCent)
+    AddElement(Aerog, C , fractionmass= 0.1*perCent)
+  
+    # examples of gas in non STP conditions
+    CO₂ = G4Material(&quot;CarbonicGas&quot;, density= 27*mg/cm3, ncomponents=2, state=kStateGas, temperature= 325*kelvin, pressure= 50*atmosphere)
+    AddElement(CO₂, C, natoms=1)
+    AddElement(CO₂, O, natoms=2)
+  
+    steam = G4Material(&quot;WaterSteam&quot;, density= 1.0*mg/cm3, ncomponents=1, state=kStateGas, temperature= 273*kelvin, pressure= 1*atmosphere)
+    AddMaterial(steam, H₂O, fractionmass=1.)
+    
+    G4Material(&quot;ArgonGas&quot;, z=18., a=39.948*g/mole, density= 1.782*mg/cm3, state=kStateGas, temperature=273.15*kelvin, pressure=1*atmosphere)
+
+    # examples of vacuum
+    universe_mean_density = 1.e-25*g/cm3
+    move!(G4Material(&quot;Galactic&quot;, z=1., a=1.008*g/mole, density=universe_mean_density, state=kStateGas, temperature=2.73*kelvin, pressure=3.e-18*pascal))
+  
+    beam = G4Material(&quot;Beam&quot;, density=1.e-5*g/cm3, ncomponents=1, state=kStateGas, temperature=273.15*kelvin, pressure=2e-2*bar)
+    AddMaterial(beam, Air, fractionmass=1.)
+
+end
+
+function TestEm3Construct(det::TestEm3Detector)::CxxPtr{G4VPhysicalVolume}
+    (; fNbOfAbsor, fNbOfLayers, fCalorSizeYZ, fAbsorThickness, fLayerThickness, fCalorThickness, fWorldSizeYZ, fWorldSizeX, fWorldMaterial, fAbsorMaterial) = det
+
+    #isdefined(det,:fSolidWorld) &amp;&amp; return det.fPhysiWorld
+    println(&quot;Building Geometry now!!!&quot;)
+    
+    #---World--------------------------------------------------------------------------------------
+    det.fSolidWorld = G4Box(&quot;World&quot;, fWorldSizeX/2,fWorldSizeYZ/2,fWorldSizeYZ/2)
+    det.fLogicWorld = G4LogicalVolume(CxxPtr(det.fSolidWorld), fWorldMaterial, &quot;World&quot;)
+    det.fPhysiWorld = G4PVPlacement(nothing,              # no rotation
+                                    G4ThreeVector(),      # at (0,0,0)
+                                    det.fLogicWorld,      # its fLogical volume
+                                    &quot;World&quot;,              # its name
+                                    nothing,              # its mother  volume
+                                    false,                # no boolean operation
+                                    0)                    #copy number
+
+    #---Calorimeter--------------------------------------------------------------------------------
+    det.fSolidCalor = G4Box(&quot;Calorimeter&quot;, fCalorThickness/2,fCalorSizeYZ/2,fCalorSizeYZ/2)
+    det.fLogicCalor = G4LogicalVolume(CxxPtr(det.fSolidCalor), fWorldMaterial, &quot;Calorimeter&quot;)      
+    det.fPhysiCalor = G4PVPlacement(nothing,               # no rotation
+                                    G4ThreeVector(),       # at (0,0,0)
+                                    det.fLogicCalor,       # its fLogical volume
+                                    &quot;Calorimeter&quot;,         # its name
+                                    det.fLogicWorld,       # its mother  volume
+                                    false,                 # no boolean operation
+                                    0)                     # copy number
+
+    #---Layers-------------------------------------------------------------------------------------
+    det.fSolidLayer = G4Box(&quot;Layer&quot;, fLayerThickness/2,fCalorSizeYZ/2,fCalorSizeYZ/2)
+    det.fLogicLayer = G4LogicalVolume(CxxPtr(det.fSolidLayer), fWorldMaterial, &quot;Layer&quot;)              
+    if fNbOfLayers &gt; 1
+        det.fPhysiLayer = G4PVReplica(&quot;Layer&quot;,              
+                                      det.fLogicLayer,     
+                                      det.fLogicCalor,      
+                                      kXAxis,              
+                                      fNbOfLayers,            
+                                      fLayerThickness)     
+    else
+        det.fPhysiLayer = G4PVPlacement(nothing,                   
+                                        G4ThreeVector(),     
+                                        det.fLogicLayer,           
+                                        &quot;Layer&quot;,             
+                                        det.fLogicCalor,         
+                                        false,             
+                                        0)                    
+    end
+
+    #---Absorbers----------------------------------------------------------------------------------
+    det.fSolidAbsor = [G4Box(&quot;Absorber&quot;, fAbsorThickness[k]/2,fCalorSizeYZ/2,fCalorSizeYZ/2) for k in 1:fNbOfAbsor]
+    det.fLogicAbsor = [G4LogicalVolume(CxxPtr(det.fSolidAbsor[k]), fAbsorMaterial[k], GetName(fAbsorMaterial[k])) for  k in 1:fNbOfAbsor]
+
+    xcenter = zeros(fNbOfAbsor)
+    xfront = -0.5*fLayerThickness
+    for k in 1:fNbOfAbsor
+        xcenter[k] = xfront + 0.5*fAbsorThickness[k]
+        xfront += fAbsorThickness[k]
+    end
+    det.fPhysiAbsor = [G4PVPlacement(nothing,              
+                                     G4ThreeVector(xcenter[k],0.,0.),
+                                     det.fLogicAbsor[k],               
+                                     String(GetName(fAbsorMaterial[k])),
+                                     det.fLogicLayer,                  
+                                     false,                      
+                                     k) for  k in 1:fNbOfAbsor]
+    return det.fPhysiWorld
+end
+
+Geant4.getConstructor(::TestEm3Detector)::Function = TestEm3Construct</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../RE03Detector/">« RE03Detector.jl</a><a class="docs-footer-nextpage" href="../HBC30Detector/">HBC30Detector.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.0 on <span class="colophon-date" title="Tuesday 26 November 2024 12:59">Tuesday 26 November 2024</span>. Using Julia version 1.11.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
