@@ -71,6 +71,11 @@ getConstructor(::G4JLDetectorGDML) = (det::G4JLDetectorGDML) -> det.fPhysicalWor
     G4JLDetectorGDML(gdmlfile::String; check_overlap::Bool, validate_schema::Bool, init_method::Union{Function,Nothing})
 
 Initialize a G4JLDetector from a GDML file. The GDML file is parsed at this moment.
+# Arguments
+- `gdmlfile::String`: GDML file name
+- `check_overlap::Bool=false`: check for overlaps
+- `validate_schema::Bool=true`: validate the schema
+- `init_method::Union{Function,Nothing}=nothing`: initialization method to be called when the detector is constructed
 """
 function G4JLDetectorGDML(gdmlfile::String; 
                           check_overlap::Bool=false, 
@@ -101,6 +106,9 @@ end
     getfield(pos::G4ThreeVector, bfield::G4JLMagneticField)
 
 Function to exercise a custom magnetic field
+# Arguments
+- `pos::G4ThreeVector`: position
+- `bfield::G4JLMagneticField`: magnetic field object
 """
 function getfield(pos::G4ThreeVector, bfield::G4JLMagneticField)
     B = G4ThreeVector()
@@ -113,6 +121,9 @@ end
 
 Create a G4JLMagneticField with its name and associated DATA structure
 # Arguments
+- `name::String`: magnetic field name
+- `data::DATA`: data structure associated to the magnetic field
+- `getfield_method=nothing`: user provided `getfield` function with signature: `(result::G4ThreeVector, position::G4ThreeVector, ::DATA)`
 """
 function G4JLMagneticField(name::String, data::T;
                            getfield_method=nothing) where T<:G4JLFieldData
@@ -125,6 +136,12 @@ mutable struct G4JLUniformMagFieldData <: G4JLFieldData
     field::G4ThreeVector
 end
 
+"""
+    G4JLUniformMagField(field::G4ThreeVector)
+Create a Uniform magnetic field
+# Arguments
+- `field::G4ThreeVector`: magnetic field vector
+"""
 function G4JLMagneticField{G4JLUniformMagFieldData}(field::G4ThreeVector)
     data = G4JLUniformMagFieldData(field)
     function getfield!(field::G4ThreeVector, pos::G4ThreeVector, data::G4JLUniformMagFieldData)::Nothing
@@ -335,7 +352,9 @@ physicslists = Vector{Any}()
 
 """
     configure(app::G4JLApplication)
-Configure the Geant4 application. It sets the declared user actions, event generator, and physcis list. 
+Configure the Geant4 application. It sets the declared user actions, event generator, and physcis list.
+# Arguments
+- `app::G4JLApplication`: Geant4 application
 """
 function configure(app::G4JLApplication)
     runmgr = app.runmanager
@@ -488,11 +507,22 @@ function configure(app::G4JLApplication)
 end
 """
     initialize(app::G4JLApplication)
-Initialize the Geant4 application. It initializes the RunManager, which constructs the detector geometry, and sets 
-the declared sensitive detectors.
+Initialize the Geant4 application. It initializes the `G4RunManager``, which constructs the detector geometry, and sets 
+the declared sensitive detectors. In case of multi-threading, the function enters a GC safe state before
+initializing the application, which will be calling the `build()` functions by the worker threads.
+# Arguments
+- `app::G4JLApplication`: Geant4 application
 """
 function initialize(app::G4JLApplication)
-    Initialize(app.runmanager)
+    if app.nthreads > 0
+        # before initializing (creation of worker threads) we need to enter GC safe state not 
+        # to block any garbage collection.  
+        state = ccall(:jl_gc_safe_enter,Cint,())
+        Initialize(app.runmanager)
+        ccall(:jl_gc_safe_leave,Cint,(Cint,), state)
+    else
+        Initialize(app.runmanager)
+    end
     #---Process scorers------------------------------------------------------------------------
     for sc in app.scorers
         uicmd = toUIstring(sc)
@@ -511,6 +541,9 @@ end
 """
     reinitialize(app::G4JLApplication, det::G4JLDetector)
 Re-initialize the Geant4 application with a new detector defintion.
+# Arguments
+- `app::G4JLApplication`: Geant4 application
+- `det::G4JLDetector`: new detector definition
 """
 function reinitialize(app::G4JLApplication, det::G4JLDetector)
     app.detector = det
@@ -526,7 +559,11 @@ function reinitialize(app::G4JLApplication, det::G4JLDetector)
 end
 """
     beamOn(app::G4JLApplication, nevents::Int)
-Start a new run with `nevents` events.
+Start a new run with `nevents` events. In case of multi-threading, the function enters a GC safe state before
+starting the run.
+# Arguments
+- `app::G4JLApplication`: Geant4 application
+- `nevents::Int`: number of events
 """
 function beamOn(app::G4JLApplication, nevents::Int)
     statemgr = G4StateManager!GetStateManager()
@@ -550,7 +587,10 @@ end
 
 """
     getSDdata(app::G4JLApplication, name::String)
-Get the data associated to the Sentitive Detector with a given name taking into account the current worker thread ID 
+Get the data associated to the Sentitive Detector with a given name taking into account the current worker thread ID
+# Arguments
+- `app::G4JLApplication`: Geant4 application
+- `name::String`: sensitive detector name
 """
 function getSDdata(app, name)
     tid = G4Threading!G4GetThreadId()
@@ -560,7 +600,9 @@ end
 
 """
     getSIMdata(app::G4JLApplication)
-Get the Simulation Data taking into account the current worker thread ID 
+Get the Simulation Data taking into account the current worker thread ID
+# Arguments
+- `app::G4JLApplication`: Geant4 application
 """
 function getSIMdata(app)
     tid = G4Threading!G4GetThreadId()
@@ -576,5 +618,16 @@ GetWorldVolume() = GetWorldVolume(GetNavigatorForTracking(G4TransportationManage
 """
     GetVolume(name::String)
 Get the  the G4LogicalVolume with this name.
+# Arguments
+- `name::String`: logical volume name
 """
 GetVolume(name::String) = GetVolume(G4LogicalVolumeStore!GetInstance(), name)
+
+#---Additional docs strings to functions created in the wrapper-----------------------------------
+@doc """
+    G4JL_println(::AbstractString)
+Print the string to the Geant4 output in a thread safe manner prefixing
+the string with the thread ID.
+# Arguments
+- `s::AbstractString`: string to be printed
+""" -> G4JL_println

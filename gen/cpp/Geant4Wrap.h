@@ -20,10 +20,17 @@
 #include "G4MagneticField.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4VStateDependent.hh"
+#include "G4TwoVector.hh"
 #include "jlcxx/functions.hpp"
+
 
 #include <cstddef>
 #include <string>
+
+// BinaryBuilder uses old SDK which doesn't have ranges
+#ifdef __APPLE__
+  #undef JLCXX_HAS_RANGES
+#endif
 
 #ifndef VECCORE_ENABLE_VC
   #define VECCORE_ENABLE_VC
@@ -286,7 +293,31 @@ void  G4JL_init(void);
 void  G4JL_println(const char *);
 
 
+inline void gc_safe_enter() {
+    #if JULIA_VERSION_MAJOR >= 1 && JULIA_VERSION_MINOR >= 7
+        jl_ptls_t ptls = jl_current_task->ptls;
+    #else
+        jl_ptls_t ptls = jl_get_ptls_states();
+    #endif
+    jl_gc_safe_enter(ptls);
+}
+inline void gc_safe_leave() {
+        #if JULIA_VERSION_MAJOR >= 1 && JULIA_VERSION_MINOR >= 7
+        jl_ptls_t ptls = jl_current_task->ptls;
+    #else
+        jl_ptls_t ptls = jl_get_ptls_states();
+    #endif
+    jl_gc_unsafe_enter(ptls);
+}
+
+
 //---Template instantiations-----------------------------------------------------------------------
+
+#include <vector>
+#include <utility>
+#include "G4Types.hh"
+#include "G4TwoVector.hh"
 template class std::pair<G4double,G4bool>;
+template class std::vector<G4TwoVector>;
 
 #endif

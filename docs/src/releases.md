@@ -1,4 +1,11 @@
 ## Release Notes
+### 0.2.0
+- New Features
+    - Adapted to CxxWrap 0.16
+    - Changed `gen/build.jl` to generate the code first and then call `cmake` (not yet using WrapIt.jl package)
+    - Added new example `advanced/AlephTPC` to integrate Geant4 with PYTHIA8
+    - Changed the documentation to generate examples as markdown, as notebook and as julia script using the package Literate.jl 
+
 ### 0.1.17
 - New Features
     - Added wrapper for G4StepLimiterPhysics

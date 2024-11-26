@@ -15,10 +15,11 @@ callbacks = Vector{CallBack}()
 #----Function to create a callback avoiding the use of closures (ARM is not supporting closures)
 #    We need to project with a lock the make_callback since it can be called from concurrent threads
 const spinlock = Base.Threads.SpinLock()
+const cb_counter = Ref(0)
 function make_callback(ctx, fun, rt, args)
     lock(spinlock)
     try
-        i_callback = Symbol(:_internal_callback_, Symbol(typeof(ctx)))
+        i_callback = Symbol(:_internal_callback_, "$(fun)_", cb_counter[])
         narg = length(args)
         CONTEXT = typeof(ctx)
         #---create the internal callback function------------------------------------------------------
