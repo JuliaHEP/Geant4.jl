@@ -7,7 +7,7 @@ function process_literate(names...)
     examples_mds = []
     for name in names
         run(`julia --project=$project docs/literate.jl $name`)
-        push!(examples_mds, "Example $name" => "examples/$name.md")
+        push!(examples_mds, "examples/$name.md")
     end
     return examples_mds
 end
@@ -34,6 +34,9 @@ extend_mds   = process_literate("GPS", "RE03", "TestEm3", "Solids")
 advanced_mds = process_literate("TPCSim", "HBC30", "WaterPhantom")
 extra_mds    = create_extras("B2aDetector", "B2aVisSettings", "B3Detector", "GPSDetector", 
                              "RE03Detector", "TestEm3Detector", "HBC30Detector")  
+
+examples_mds = []
+append!(examples_mds, basic_mds, extend_mds, advanced_mds)
 
 #---Build the documentation-----------------------------------------------------------------------
 makedocs(;

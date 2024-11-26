@@ -78,14 +78,14 @@ Once the `G4JLApplication` is instantiated (and implicitly an instance of the `G
 - ` beamOn(::G4JLApplication, ::Int)`. Starts a run with a given number of events.
 
 ### Constructing the detector
-Parameters of the detector are collected in a user defined mutable data structure inheriting from `G4JLDetector`. The user also needs to provide a Julia method for constructing the geometry. This method needs to have the signature
+Parameters of the detector are collected in a user defined mutable data structure inheriting from `G4JLDetector`. The user also needs to provide a Julia method for constructing the geometry. This method needs to have following the signature
 ```julia
 <User_Det_Constructor_Function>(::G4JLDetector)::CxxPtr{G4VPhysicalVolume}
 ```
 The only argument of the function gives access to the user defined structure with all the detector parameters.
 !!! note
     The type `CxxPtr{G4VPhysicalVolume}` denotes a C++ pointer to the `G4VPhysicalVolume` type.
-The user can use the native G4 classes for constructing the geometry such as the different type of solids (e.g. G4Box, G4Tubs, etc.), `G4LogicalVolume`, `G4PVPlacement`, `G4PVReplica`, etc. Alternatively can the type [`G4JLDetectorGDML`](@ref) to construct a detector from a GDML file.
+The user can use the native G4 classes for constructing the geometry such as the different type of solids (e.g. G4Box, G4Tubs, etc.), `G4LogicalVolume`, `G4PVPlacement`, `G4PVReplica`, etc. Alternatively, the user can use the type [`G4JLDetectorGDML`](@ref) to construct a detector from a GDML file.
 
 !!! note
     Note that by default constructed C++ objects from Julia would get automatically deleted by the Julia garbage collector (GC) since a `finalizer` gets installed to the wrapper classes. This is particularly a problem when constructing the geometry.
@@ -295,95 +295,22 @@ For visualization applications, the user can create an instance of `G4JLEventDis
 )
 ```
 
-## Examples
+## Provided Examples
+Examples are located in a separate repository [G4Examples](https://github.com/JuliaHEP/G4Examples.jl) to minimize dependencies for this core package.
 
-### basic/B1 
-This is most basic example. For this example we have kept the interface closer to the native C++ interface. The only difference with respect the C++, is that that we need to instantiate a `G4JLDetectorConstruction` with the Julia function that will be callback to construct the detector geometry as argument. This is because we cannot inherit from Julia the C++ class `G4VUserDetectorConstruction`, which is the way foreseen in the native Geant4 toolkit to provide the specific user detector geometry. Similarly, for the user actions and primary particle generator we need to instantiate a `G4JLActionInitialization`. The interaction with the application is done with the `G4UImanager`. 
+In addition, they are documented in this generated documentation. The user can browse the rendered examples in documentation together with the generated output of running them with the current version of the package. At the same time it is possible to download a copy of them as a `Jupyter notebook`, as `Markdown`file and as a plain `Julia script`.
 
-To run it execute
-```
-julia --project=examples examples/basic/B1/B1.j
-```
-or execute the notebook `examples/basic/B1/B1.ipynb`
-### basic/B2a
-This example fills a vector of `TrackerHit` that is stored in the `B2aSDData` simulation data structure for each event. This is achieved with a sensitive detector associated to the `Chamber` logical volume. The example is using the high-level Julia interface with the instantiation of a `G4JLApplication` declaring all the elements of the application (geometry, physics, simulation data, user actions, etc.)
+If you want to run them you need to have Julia [installed](https://julialang.org/downloads/). Then, to setup a proper Julia environment, the user can take the [`Project.toml`](https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/Project.toml) that contains the full list of dependencies required for the examples.
 
-To run it execute
-```
-julia --project=examples examples/basic/B2/B2a.jl
-```
-### extended/RE03
-This example makes use of the built-in scoring capability of Geant4 with a new Julia API interface creating an instance of [`G4JLScoringMesh`](@ref), instead of using the native Geant4 UI. The user defines a scoring mesh, and quantities to be collect and gets the results after the run. 
+To setup the environment:
+- Place the `Project.toml` file in the current directory
+- Execute `julia --project -e 'import Pkg;Pkg.instantiate()'` to download and install all required packages. This may take long rthe first time because some of the examples depend of complex and elaborated packages, for example `Geant4` itself with all the data files and `Makie` for the visualization
+- Now, you can run the downloaded example `julia --project <example.jl>`
 
-To run it execute
-```
-julia --project=examples examples/extended/RE03/RE03.jl
-```
-### WaterPhantom
-This example is similar to RE03 but it defines a custom primary particle generator (`MedicalBeam`) instead of using the predefined particle gun generator (`G4JLGunGenerator`). It is a notebook and produces plots after each run.   
-To run it execute
-```
-jupyter notebook examples/WaterPhantom/WaterPhantom.ipynb
-```
-See the [rendered notebook](https://juliahep.github.io/Geant4.jl/dev/notebooks/WaterPhantom).
-### TestEm3
-This example comes from *extended/electromagnetic/TestEm3* example. Since it requires additional packages such as `FHist` for histograms and `Plots` for their visualization, it has its own Julia environment in the folder `examples/TestEm3`. It uses the Julia high-level interface with the instantiation of a `G4JLApplication` declaring all the elements of the application.
-
-To run it, execute
-```
-julia --project=examples -i examples/TestEm3/TestEm3.jl
-``` 
-### Scintillator
-Example with optical photons and customized physics list, as well as with a couple of sensitive detectors (for the crystal and silicon) and some simple analysis of the results.
-To run it, execute
-```bash
-julia --project=examples -i examples/Scintillator/Scintillator.jl
-```
-## Visualization examples
-The Geant4.jl project includes additional functionality for visualization under the extension directory `ext/G4Vis`. This is done in a different directory to separate and minimise the dependencies. The Julia `examples/Project.toml` file  has the complete list of dependencies needed for running also the visualization examples. In order to load all the required dependencies the user can execute the first time:
-```
-`julia --project=examples -e 'import Pkg; Pkg.instantiate()'`
-```
-
-!!! note
-    Note that depending on the actual platform and the desired interactivity, the user may need to choose a different `Makie.jl` backend among the existing ones (`GLMakie`, `CairoMakie`, `WGLMakie`,...).
-
-### B1vis.jl
-This example uses the `GLMakie` backend (OpenGL) of Makie. The use may change to other backends depending on his/her setup. To visualize the B1 detector do:
-```
-julia --project=examples -i  examples/basic/B1/B1vis.jl
-```
-!!! note  
-    Note the option `-i` to keep the interactive session open
-
-### B2aVis.jl
-This example to visualize the detector and (a very simplistic) visualization of one event.
-``` 
-julia --project=examples -i  examples/basic/B2/B2aVis.jl
-```
-
-### Solids.ipynb
-This notebook shows all the possible solids in Geant4. This is work in progress and some solids do not have graphical representation yet.
-```
-jupyter notebook examples/extended/Solids/Solids.ipynb
-```
-See the [rendered notebook](https://juliahep.github.io/Geant4.jl/dev/notebooks/Solids/)
-
-### HBC30
-This example mimics the CERN 30cm liquid hydrogen bubble chamber. It demonstrates the use of a uniform magnetic field (`G4JLUniformMagField`). It is useful for displaying the detector and the produced particles in a customizable manner.
-
-To run it, execute
-```
-julia --project=examples -i examples/advanced/HBC30/HBC30.jl
-``` 
-It also exists in a [notebook](https://juliahep.github.io/Geant4.jl/dev/notebooks/HBC30/) format. 
-
-### AlephTPC
-Example to integrate Geant4 with the PYTHIA8 event generator. We generate LEP e+ e- collisions to be used as primary particles into a very simplified Aleph TPC.
-
-To run it, execute
-```
-julia --project=examples -i examples/advanced/AlephTPC/TPCSim.jl
+List of currently available examples:
+```@contents
+   Pages = Main.examples_mds
+   Depth = 1:1
 ``` 
 
 ## Building the wrapper code
@@ -391,7 +318,7 @@ We use the Geant4 native binary libraries and data from the binary package [Gean
 
 The wrapper library is downloaded from the binary package [Geant4\_julia\_jll](https://github.com/JuliaBinaryWrappers/Geant4_julia_jll.jl).
 
-We have the possibility during the development of this package, or to add addtional classes, to re-generate locally new C++ wrapper library. For this we need to have [`wrapit`](https://github.com/grasph/wrapit) installed, which itself requires `libclang` to be installed.
+We have the possibility during the development of this package, or to add addtional classes, to re-generate locally a new C++ wrapper library. For this, we need to have [`wrapit`](https://github.com/grasph/wrapit) installed, which itself requires `libclang` to be installed. Soon will be available as a Julia package `WrapIt.jl`.
 
 - The configuration file `gen/Geant4.wit.in` is the input to the automated process. New header files can be added to the input list.
 - The script `gen/build.jl` does the work of generating the code and building the library. The commands to execute are:
