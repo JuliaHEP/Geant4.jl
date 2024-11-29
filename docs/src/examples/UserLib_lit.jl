@@ -37,7 +37,7 @@ dlext = Libdl.dlext;
 # The custom library is defined in the C++ file [`UserLib.cpp`](@ref). Please note that the
 # callable functions are defined with the `extern "C"` attribute to avoid name mangling.
 Base.run(`c++ -O2 -shared -fPIC -std=c++17 -I$prefix/include/Geant4 
-         -Wl,-rpath,$prefix/lib -L$prefix/lib 
+         -Wl,-rpath,$prefix/lib -Wl,--no-as-needed -L$prefix/lib 
          -lG4geometry -lG4materials -lG4global -lG4clhep
          -o UserLib.$dlext $(@__DIR__)/UserLib.cpp`).exitcode == 0 || error("Compilation failed")
 
