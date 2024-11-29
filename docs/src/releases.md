@@ -1,4 +1,8 @@
 ## Release Notes
+### 0.2.x
+- New Examples:
+    - UserLib: how to build and call a user custom library providing additional Geant4 functionally that is not provided by the set of wrapped classes
+
 ### 0.2.0
 - New Features
     - Adapted to CxxWrap 0.16
