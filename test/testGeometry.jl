@@ -1,4 +1,4 @@
-include(joinpath(@__DIR__, "../examples/basic/B1/DetectorB1.jl"))
+include(joinpath(@__DIR__, "B1Detector.jl"))
 
 @testset "G4Geometry" begin
     # Vectors
