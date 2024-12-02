@@ -24,7 +24,7 @@ using CairoMakie, Rotations, LinearAlgebra, IGLWrap_jll  # to force loading G4Vi
 #md import DisplayAs: PNG #hide
 
 # ## Building the custom library
-# The custom library is defined in the C++ file `UserLib.cpp`.
+# The custom library is defined in the C++ file `UserLibrary.cpp`.
 # The library provides a function to create a custom solid `RoundCube` and some additional functions
 # to interact with the solid.
 #
@@ -39,7 +39,7 @@ else
     ldflags = "-Wl,-rpath,$prefix/lib -Wl"
 end
 ## Compilation of the custom library
-# The custom library is defined in the C++ file [`UserLib.cpp`](@ref). Please note that the
+# The custom library is defined in the C++ file [`UserLibrary.cpp`](@ref). Please note that the
 # callable functions are defined with the `extern "C"` attribute to avoid name mangling.
 Base.run(`c++ -O2 -shared -fPIC -std=c++17 -I$prefix/include/Geant4 $ldflags
          -L$prefix/lib -lG4geometry -lG4materials -lG4global -lG4clhep
