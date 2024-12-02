@@ -16,7 +16,7 @@ function create_extras(extrafiles...)
     for fname in extrafiles
         name, ext = splitext(fname)
         open(joinpath(examplesdir,"$fname"), "r") do src
-            open(joinpath(examplesdir,"$fname.md"), "w") do dest
+            open(joinpath(examplesdir,"$name.md"), "w") do dest
                 write(dest, "# $fname\n")
                 if ext == ".cpp"
                     write(dest, "```c++\n")
@@ -31,7 +31,7 @@ function create_extras(extrafiles...)
                 write(dest, "```\n")
             end
         end
-        push!(extra_mds, "examples/$fname.md")
+        push!(extra_mds, "examples/$name.md")
     end
     return extra_mds
 end
@@ -39,8 +39,8 @@ end
 basic_mds    = process_literate("B1", "B2a", "B2aVis", "B3a")
 extend_mds   = process_literate("GPS", "RE03", "TestEm3", "Solids")
 advanced_mds = process_literate("TPCSim", "HBC30", "WaterPhantom", "UserLib")
-extra_mds    = create_extras("B2aDetector.jl", "B2aVisSettings.jl", "B3Detector.jl",
-                             "RE03Detector.jl", "TestEm3Detector.jl", "HBC30Detector.jl", "UserLib.cpp")  
+extra_mds    = create_extras("B2aDetector.jl", "B2aVisSettings.jl", "B3Detector.jl", "GPSDetector.jl", 
+                             "RE03Detector.jl", "TestEm3Detector.jl", "HBC30Detector.jl", "UserLibrary.cpp")  
 
 examples_mds = []
 append!(examples_mds, basic_mds, extend_mds, advanced_mds)

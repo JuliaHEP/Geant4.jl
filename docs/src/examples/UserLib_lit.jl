@@ -43,12 +43,12 @@ end
 # callable functions are defined with the `extern "C"` attribute to avoid name mangling.
 Base.run(`c++ -O2 -shared -fPIC -std=c++17 -I$prefix/include/Geant4 $ldflags
          -L$prefix/lib -lG4geometry -lG4materials -lG4global -lG4clhep
-         -o UserLib.$dlext $(@__DIR__)/UserLib.cpp`).exitcode == 0 || error("Compilation failed")
+         -o UserLibrary.$dlext $(@__DIR__)/UserLibrary.cpp`).exitcode == 0 || error("Compilation failed")
 
 # ## Define Julia functions to interact with the custom library
 # The `@call` macro provides a very convenient way to call C functions (or extern "C").
 # We define the following functions to interact with the custom library in a more Julia-friendly way:
-const lib = "./UserLib.$(Libdl.dlext)"
+const lib = "./UserLibrary.$(Libdl.dlext)"
 createRoundCube(a,r) = @ccall lib.createRoundCube(a::Float64, r::Float64)::CxxPtr{G4VSolid}
 deleteRoundCube(s::CxxPtr{G4VSolid}) = @ccall lib.deleteRoundCube(s::CxxPtr{G4VSolid})::Cvoid
 infoRoundCube(s::CxxPtr{G4VSolid}) = (@ccall lib.infoRoundCube(s::CxxPtr{G4VSolid})::Cstring) |> unsafe_string
