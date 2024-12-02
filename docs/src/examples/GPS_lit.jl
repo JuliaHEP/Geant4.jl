@@ -31,7 +31,7 @@ using Plots
 
 # ## Define the Detector
 # The GPS detector is a simple box filled with air. The detector is defined by the `GPSDetector` structure.
-# We include the [GPSDetector.jl](@ref) file not to clutter the example.
+# We include the GPSDetector.jl file not to clutter the example.
 include(joinpath(@__DIR__, "GPSDetector.jl"))
 
 # ## Define the Simulation Data
