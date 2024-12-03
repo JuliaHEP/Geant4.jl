@@ -38,10 +38,10 @@ end
 
 basic_mds    = process_literate("B1", "B2a", "B2aVis", "B3a")
 extend_mds   = process_literate("GPS", "RE03", "TestEm3", "Solids")
-advanced_mds = process_literate("TPCSim", "HBC30", "WaterPhantom", "UserLib")
+advanced_mds = process_literate("TPCSim", "HBC30", "WaterPhantom", "UserLib", "JuliaAction")
 extra_mds    = create_extras("B2aDetector.jl", "B2aVisSettings.jl", "B3Detector.jl", "GPSDetector.jl", 
-                             "RE03Detector.jl", "TestEm3Detector.jl", "HBC30Detector.jl", "UserLibrary.cpp")  
-
+                             "RE03Detector.jl", "TestEm3Detector.jl", "HBC30Detector.jl", "UserLibrary.cpp",
+                             "MyCode.jl", "G4example.cpp")  
 examples_mds = []
 append!(examples_mds, basic_mds, extend_mds, advanced_mds)
 
