@@ -85,10 +85,11 @@ Base.run(`c++ -O2 -fPIC $cflags -I$jlprefix/include/julia $ldflags $g4libs $jlli
 
 # ## Run the application
 # We need to set the variable `JULIA_PROJECT` pointing to correctly setup Julia environment. 
-withenv("JULIA_PROJECT" => "@.") do
-   Base.run(`./G4example.exe`).exitcode == 0 || error("Execution failed");
+withenv("JULIA_PROJECT" => "@.", "G4NUMTHREADS" => "4") do
+   Base.run(`./G4example.exe`).exitcode == 0 || error("Execution failed")
 end
 
 # ## Display the results
 println("=====> The file edepHist.png should have been saved")
 #md # ![](edepHist.png)
+#nb # ![](edepHist.png)

@@ -15,6 +15,7 @@
 //#include &quot;G4SystemOfUnits.hh&quot;
 #include &quot;globals.hh&quot;
 #include &quot;G4VUserActionInitialization.hh&quot;
+#include &quot;G4UserWorkerInitialization.hh&quot;
 #include &lt;julia.h&gt;
 #include &lt;iostream&gt;
 
@@ -38,6 +39,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
         new G4PVPlacement(0, G4ThreeVector(), logicCore, &quot;Core&quot;, logicWorld, false, 0);
         return physWorld;
     }
+    void ConstructSDandField() override {}
 };
 
 //---Primary generator action class----------------------------------------------------------------
@@ -108,13 +110,32 @@ class RunAction : public G4UserRunAction
     runaction_f endrun_jl;
 };
 
+
+class WorkerInitialization : public G4UserWorkerInitialization {
+  public:
+    WorkerInitialization() = default;
+    virtual ~WorkerInitialization() = default;
+    virtual void WorkerInitialize() const override {
+      if (jl_get_pgcstack() == NULL) jl_adopt_thread();
+    }
+    virtual void WorkerStart() const override {}
+    virtual void WorkerRunStart() const override {}
+    virtual void WorkerRunEnd() const override {
+      jl_ptls_t ptls = jl_current_task-&gt;ptls;
+      jl_gc_safe_enter(ptls);
+    }
+    virtual void WorkerStop() const override {}
+};
+
 //---Action initialization class-------------------------------------------------------------------
 class ActionInitialization : public G4VUserActionInitialization
 {
   public:
     ActionInitialization() = default;
     ~ActionInitialization() override = default;
-    void BuildForMaster() const override {}
+    void BuildForMaster() const override {
+        SetUserAction(new RunAction);
+    }
     void Build() const override {
         SetUserAction(new PrimaryGeneratorAction);
         SetUserAction(new RunAction);
@@ -123,12 +144,17 @@ class ActionInitialization : public G4VUserActionInitialization
     }
 };
 
+
+
 JULIA_DEFINE_FAST_TLS // only define this once, in an executable (not in a shared library) if you want fast code.
 
 //----Main program---------------------------------------------------------------------------------
 int main(int, char**)
 {
-    //--- Required to setup the Julia context
+    int nthreads = 0; // Default number of threads
+    if (getenv(&quot;G4NUMTHREADS&quot;)) nthreads = atoi(getenv(&quot;G4NUMTHREADS&quot;));
+
+    //--- Required to setup the Julia context------------------------------------------------------
     jl_init();
         /* run Julia commands */
     jl_eval_string(&quot;include(\&quot;MyCode.jl\&quot;)&quot;);
@@ -136,10 +162,17 @@ int main(int, char**)
         std::cout &lt;&lt; &quot;=====&gt; &quot; &lt;&lt; jl_typeof_str(jl_exception_occurred()) &lt;&lt; std::endl;
     }
 
-    //---Construct the default run manager
-    auto runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::Serial);
+    //---Construct the default run manager (taking into account the number of threads)-------------
+    G4RunManager* runManager;
+    if (nthreads &gt; 0) { 
+        runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::MT);
+        runManager-&gt;SetNumberOfThreads(nthreads);
+        runManager-&gt;SetUserInitialization(new WorkerInitialization());
+    } else {
+        runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::Serial);
+    }
 
-    //---Set mandatory initialization classes
+    //---Set mandatory initialization classes------------------------------------------------------
     // Detector construction
     runManager-&gt;SetUserInitialization(new DetectorConstruction());
 
@@ -160,12 +193,17 @@ int main(int, char**)
     //UImanager-&gt;ApplyCommand(&quot;/tracking/verbose 1&quot;);
     UImanager-&gt;ApplyCommand(&quot;/gun/particle e+&quot;);
     UImanager-&gt;ApplyCommand(&quot;/gun/energy 100 MeV&quot;);
-    UImanager-&gt;ApplyCommand(&quot;/run/beamOn 100000&quot;);
 
-    // Job termination
+    // Start a run (we need to enter GC safe region here because the worker threads 
+    // will enter a wait state while waiting for workers to finish and this can block GC
+    auto state = jl_gc_safe_enter(jl_current_task-&gt;ptls);
+    runManager-&gt;BeamOn(100000);
+    jl_gc_safe_leave(jl_current_task-&gt;ptls, state);
+
+    // Job termination---------------------------------------------------------------------------
     delete runManager;
 
     // strongly recommended: notify Julia that the program is about to terminate. 
     // this allows Julia time to cleanup pending write requests and run all finalizers
     jl_atexit_hook(0);
-}</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../MyCode/">« MyCode.jl</a><a class="docs-footer-nextpage" href="../../releases/">Release Notes »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.0 on <span class="colophon-date" title="Wednesday 4 December 2024 12:36">Wednesday 4 December 2024</span>. Using Julia version 1.11.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+}</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../MyCode/">« MyCode.jl</a><a class="docs-footer-nextpage" href="../../releases/">Release Notes »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.0 on <span class="colophon-date" title="Wednesday 4 December 2024 13:29">Wednesday 4 December 2024</span>. Using Julia version 1.11.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
