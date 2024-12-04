@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Basic/B1 Example · Geant4.jl</title><meta name="title" content="Basic/B1 Example · Geant4.jl"/><meta property="og:title" content="Basic/B1 Example · Geant4.jl"/><meta property="twitter:title" content="Basic/B1 Example · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><span class="tocitem">Examples</span><ul><li><input class="collapse-toggle" id="menuitem-3-1" type="checkbox" checked/><label class="tocitem" for="menuitem-3-1"><span class="docs-label">Basic</span><i class="docs-chevron"></i></label><ul class="collapsed"><li class="is-active"><a class="tocitem" href>Basic/B1 Example</a><ul class="internal"><li><a class="tocitem" href="#Loading-the-necessary-Julia-modules"><span>Loading the necessary Julia modules</span></a></li><li><a class="tocitem" href="#Define-the-Detector-Construction"><span>Define the Detector Construction</span></a></li><li><a class="tocitem" href="#Define-User-Actions"><span>Define User Actions</span></a></li><li><a class="tocitem" href="#Instantiate-RunManager-and-initialize"><span>Instantiate RunManager and initialize</span></a></li><li><a class="tocitem" href="#Execute-the-commands-to-initialize-the-simulation"><span>Execute the commands to initialize the simulation</span></a></li></ul></li><li><a class="tocitem" href="../B2a/">Basic/B2a Example</a></li><li><a class="tocitem" href="../B2aVis/">Basic/B2a Event Display Example</a></li><li><a class="tocitem" href="../B3a/">Basic/B3a Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox"/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Extended</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../GPS/">Extended/GPS Example</a></li><li><a class="tocitem" href="../RE03/">Extended/RE03 Example</a></li><li><a class="tocitem" href="../TestEm3/">Extended/TestEm3 Example</a></li><li><a class="tocitem" href="../Solids/">Geant4 Solids</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox"/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Advanced</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../TPCSim/">Simulation of the Aleph TPC</a></li><li><a class="tocitem" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber</a></li><li><a class="tocitem" href="../WaterPhantom/">Water Phantom with Scoring</a></li><li><a class="tocitem" href="../UserLib/">Calling Custom C++ library</a></li><li><a class="tocitem" href="../JuliaAction/">Calling G4 actions in Julia</a></li></ul></li></ul></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li><a class="is-disabled">Basic</a></li><li class="is-active"><a href>Basic/B1 Example</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Basic/B1 Example</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/examples/B1_lit.jl#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Basic/B1-Example"><a class="docs-heading-anchor" href="#Basic/B1-Example">Basic/B1 Example</a><a id="Basic/B1-Example-1"></a><a class="docs-heading-anchor-permalink" href="#Basic/B1-Example" title="Permalink"></a></h1><p>In this example is based on the Geant4 basic/B1 example of the Geant4 distribution. It is a simple example that shows how to interact with the Geant4 classes. The example uses the native interface emulating the C++ code.</p><div class="admonition is-info"><header class="admonition-header">Note that</header><div class="admonition-body"><p>You can also download this example as a <a href="../B1.ipynb">Jupyter notebook</a> and a plain <a href="../B1.jl">Julia source file</a>.</p></div></div><h4 id="Table-of-contents"><a class="docs-heading-anchor" href="#Table-of-contents">Table of contents</a><a id="Table-of-contents-1"></a><a class="docs-heading-anchor-permalink" href="#Table-of-contents" title="Permalink"></a></h4><ul><li><a href="#Loading-the-necessary-Julia-modules">Loading the necessary Julia modules</a></li><li><a href="#Define-the-Detector-Construction">Define the Detector Construction</a></li><li><a href="#Define-User-Actions">Define User Actions</a></li><li><a href="#Instantiate-RunManager-and-initialize">Instantiate RunManager and initialize</a></li><li><a href="#Execute-the-commands-to-initialize-the-simulation">Execute the commands to initialize the simulation</a></li></ul><h2 id="Loading-the-necessary-Julia-modules"><a class="docs-heading-anchor" href="#Loading-the-necessary-Julia-modules">Loading the necessary Julia modules</a><a id="Loading-the-necessary-Julia-modules-1"></a><a class="docs-heading-anchor-permalink" href="#Loading-the-necessary-Julia-modules" title="Permalink"></a></h2><p>Load the <code>Geant4</code> and <code>Geant4.SystemOfUnits</code> modules</p><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits</code></pre><h2 id="Define-the-Detector-Construction"><a class="docs-heading-anchor" href="#Define-the-Detector-Construction">Define the Detector Construction</a><a id="Define-the-Detector-Construction-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Detector-Construction" title="Permalink"></a></h2><p>Define the function that will construct the detector geometry. The setup consists of a an envelope of box shape containing two volumes: a spherical cone and a trapezoid.</p><p>In this example we use  some common materials materials for medical applications. The envelope is made of water and the two inner volumes are made from tissue and bone materials. The materials are created with the help of the G4NistManager class, which allows to build a material from the NIST database using their names. All available materials can be found in the Geant4 User&#39;s Guide for Application Developers, Appendix 10: Geant4 Materials Database. detector construction class <code>B1DetectorConstruction</code> that inherits from <code>G4VUserDetectorConstruction</code></p><pre><code class="language-julia hljs">function constructB1Detector(::Nothing)::CxxPtr{G4VPhysicalVolume}
+    nist = G4NistManager!Instance()
+
+    # Envelope parameters
+    env_sizeXY = 20cm
+    env_sizeZ  = 30cm
+    env_mat    = FindOrBuildMaterial(nist, &quot;G4_WATER&quot;)
+
+    # Option to switch on/off checking of volumes overlaps
+    checkOverlaps = true
+
+    # World
+    world_sizeXY = 1.2*env_sizeXY
+    world_sizeZ  = 1.2*env_sizeZ
+    world_mat = FindOrBuildMaterial(nist, &quot;G4_AIR&quot;)
+
+    solidworld = G4Box(&quot;World&quot;, 0.5 * world_sizeXY, 0.5 * world_sizeXY, 0.5 * world_sizeZ)
+    logicworld = G4LogicalVolume(solidworld, world_mat, &quot;World&quot;)
+
+    physWorld = G4PVPlacement(nothing,          ## no rotation
+                              G4ThreeVector(),  ## at (0,0,0)
+                              logicworld,       ## its logical volume
+                              &quot;World&quot;,          ## its name
+                              nothing,          ## its mother volume
+                              false,            ## no boolean operation
+                              0,                ## copy number
+                              checkOverlaps)    ## overlaps checking
+
+    # Envelope
+    solidEnv = G4Box(&quot;Envelope&quot;, 0.5 * env_sizeXY, 0.5 * env_sizeXY, 0.5 * env_sizeZ)
+    logicEnv = G4LogicalVolume(solidEnv, env_mat, &quot;Envelope&quot;)
+
+    G4PVPlacement(nothing,           ## no rotation
+                  G4ThreeVector(),   ## at (0,0,0)
+                  logicEnv,          ## its logical volume
+                  &quot;Envelope&quot;,        ## its name
+                  logicworld,        ## its mother  volume
+                  false,             ## no boolean operation
+                  0,                 ## copy number
+                  checkOverlaps)     ## overlaps checking
+    # shape 1
+    shape1_mat = FindOrBuildMaterial(nist, &quot;G4_A-150_TISSUE&quot;)
+    pos1 = G4ThreeVector(0, 2cm, -7cm)
+
+    # Conical section shape
+    shape1_rmina =  0cm; shape1_rmaxa = 2cm
+    shape1_rminb =  0cm; shape1_rmaxb = 4cm
+    shape1_hz = 3cm
+    shape1_phimin = 0deg; shape1_phimax = 360deg
+
+    solidShape1 = G4Cons(&quot;Shape1&quot;, shape1_rmina, shape1_rmaxa, shape1_rminb, shape1_rmaxb,
+                  shape1_hz, shape1_phimin, shape1_phimax)
+
+    logicShape1 = G4LogicalVolume(solidShape1, shape1_mat, &quot;Shape1&quot;)
+    G4PVPlacement(nothing,      ## no rotation
+                  pos1,         ## at position
+                  logicShape1,  ## its logical volume
+                  &quot;Shape1&quot;,     ## its name
+                  logicEnv,     ## its mother  volume
+                  false,        ## no boolean operation
+                  0,            ## copy number
+                  checkOverlaps)## overlaps checking
+    # Shape 2
+    shape2_mat = FindOrBuildMaterial(nist, &quot;G4_BONE_COMPACT_ICRU&quot;)
+    pos2 = G4ThreeVector(0, -1cm, 7cm)
+
+    # Trapezoid shape
+    shape2_dxa = 12cm; shape2_dxb = 12cm
+    shape2_dya = 10cm; shape2_dyb = 16cm
+    shape2_dz  = 6cm
+    solidShape2 = G4Trd(&quot;Shape2&quot;, 0.5 * shape2_dxa, 0.5 * shape2_dxb, 0.5 * shape2_dya, 0.5 * shape2_dyb, 0.5 * shape2_dz)
+    logicShape2 = G4LogicalVolume(solidShape2, shape2_mat, &quot;Shape2&quot;)
+    G4PVPlacement(nothing,        ## no rotation
+                  pos2,           ## at position
+                  logicShape2,    ## its logical volume
+                  &quot;Shape2&quot;,       ## its name
+                  logicEnv,       ## its mother  volume
+                  false,          ## no boolean operation
+                  0,              ## copy number
+                  checkOverlaps)  ## overlaps checking
+
+    # Visualization attributes
+    SetVisAttributes(logicworld, G4VisAttributes!GetInvisible())
+    SetVisAttributes(logicEnv, G4VisAttributes!GetInvisible())
+    SetVisAttributes(logicShape1, G4VisAttributes(G4Colour(1.0, 1.0, 0.0)))
+    SetVisAttributes(logicShape2, G4VisAttributes(G4Colour(0.0, 0.0, 1.0)))
+
+    return physWorld              ## return a pointer to the G4PhysicalVolume
+end</code></pre><pre><code class="nohighlight hljs">constructB1Detector (generic function with 1 method)</code></pre><p>crate an instance of the detector construction and physics list to be used in the simulation</p><pre><code class="language-julia hljs">detctor = G4JLDetectorConstruction(constructB1Detector)
+physics = QBBC()</code></pre><pre><code class="nohighlight hljs">Geant4.QBBCAllocated(Ptr{Nothing} @0x0000000002811c00)</code></pre><h2 id="Define-User-Actions"><a class="docs-heading-anchor" href="#Define-User-Actions">Define User Actions</a><a id="Define-User-Actions-1"></a><a class="docs-heading-anchor-permalink" href="#Define-User-Actions" title="Permalink"></a></h2><pre><code class="language-julia hljs">function buildApp(self::G4JLActionInitialization, ::Nothing)
+    # Create particle gun
+    particle_gun = G4JLParticleGun()
+    # Setup particle gun
+    pg = GetGun(particle_gun)
+    SetParticleByName(pg, &quot;e-&quot;)
+    SetParticleEnergy(pg, 100MeV)
+    SetParticleMomentumDirection(pg, G4ThreeVector(0,0,1))
+    SetParticlePosition(pg, G4ThreeVector(0,0,-16cm))
+    # Register and relinquish ownership
+    SetUserAction(self, move!(particle_gun))
+end
+app = G4JLActionInitialization(buildApp)</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLActionInitializationAllocated(Ptr{Nothing} @0x000000000302a770)</code></pre><h2 id="Instantiate-RunManager-and-initialize"><a class="docs-heading-anchor" href="#Instantiate-RunManager-and-initialize">Instantiate RunManager and initialize</a><a id="Instantiate-RunManager-and-initialize-1"></a><a class="docs-heading-anchor-permalink" href="#Instantiate-RunManager-and-initialize" title="Permalink"></a></h2><pre><code class="language-julia hljs"># Construct the default run manager and set initializers
+runManager = G4RunManager()
+
+# Register User initialization objects and relinquish ownership
+SetUserInitialization(runManager, move!(detctor))
+SetUserInitialization(runManager, move!(physics))
+SetUserInitialization(runManager, move!(app))
+
+# Get the pointer to the User Interface manager
+UImanager = G4UImanager!GetUIpointer();</code></pre><pre><code class="nohighlight hljs">
+**************************************************************
+ Geant4 version Name: geant4-11-02-patch-01 [MT]   (16-February-2024)
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+</code></pre><h2 id="Execute-the-commands-to-initialize-the-simulation"><a class="docs-heading-anchor" href="#Execute-the-commands-to-initialize-the-simulation">Execute the commands to initialize the simulation</a><a id="Execute-the-commands-to-initialize-the-simulation-1"></a><a class="docs-heading-anchor-permalink" href="#Execute-the-commands-to-initialize-the-simulation" title="Permalink"></a></h2><pre><code class="language-julia hljs"># Initialize kernel
+ApplyCommand(UImanager, &quot;/run/initialize&quot;)
+
+# Change verbosity
+#ApplyCommand(UImanager, &quot;/control/verbose 2&quot;)
+#ApplyCommand(UImanager, &quot;/run/verbose 2&quot;)
+#ApplyCommand(UImanager, &quot;/event/verbose 0&quot;)
+ApplyCommand(UImanager, &quot;/tracking/verbose 1&quot;)
+
+# gamma 6 MeV to the direction (0.,0.,1.)
+ApplyCommand(UImanager, &quot;/gun/particle gamma&quot;)
+ApplyCommand(UImanager, &quot;/gun/energy 6 MeV&quot;)
+
+# go
+ApplyCommand(UImanager, &quot;/run/beamOn 1&quot;)</code></pre><pre><code class="nohighlight hljs">0</code></pre><p>Change the energy and run again</p><pre><code class="language-julia hljs">ApplyCommand(UImanager, &quot;/gun/particle e+&quot;)
+ApplyCommand(UImanager, &quot;/gun/energy 60 MeV&quot;)
+ApplyCommand(UImanager, &quot;/run/beamOn 1&quot;)</code></pre><pre><code class="nohighlight hljs">0</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../api/">« Public API</a><a class="docs-footer-nextpage" href="../B2a/">Basic/B2a Example »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.0 on <span class="colophon-date" title="Wednesday 4 December 2024 12:36">Wednesday 4 December 2024</span>. Using Julia version 1.11.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

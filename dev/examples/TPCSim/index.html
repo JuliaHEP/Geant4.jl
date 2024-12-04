@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Simulation of the Aleph TPC · Geant4.jl</title><meta name="title" content="Simulation of the Aleph TPC · Geant4.jl"/><meta property="og:title" content="Simulation of the Aleph TPC · Geant4.jl"/><meta property="twitter:title" content="Simulation of the Aleph TPC · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><span class="tocitem">Examples</span><ul><li><input class="collapse-toggle" id="menuitem-3-1" type="checkbox"/><label class="tocitem" for="menuitem-3-1"><span class="docs-label">Basic</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../B1/">Basic/B1 Example</a></li><li><a class="tocitem" href="../B2a/">Basic/B2a Example</a></li><li><a class="tocitem" href="../B2aVis/">Basic/B2a Event Display Example</a></li><li><a class="tocitem" href="../B3a/">Basic/B3a Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox"/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Extended</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../GPS/">Extended/GPS Example</a></li><li><a class="tocitem" href="../RE03/">Extended/RE03 Example</a></li><li><a class="tocitem" href="../TestEm3/">Extended/TestEm3 Example</a></li><li><a class="tocitem" href="../Solids/">Geant4 Solids</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox" checked/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Advanced</span><i class="docs-chevron"></i></label><ul class="collapsed"><li class="is-active"><a class="tocitem" href>Simulation of the Aleph TPC</a><ul class="internal"><li><a class="tocitem" href="#Loading-the-necessary-Julia-modules"><span>Loading the necessary Julia modules</span></a></li><li><a class="tocitem" href="#Define-the-TPC-Detector"><span>Define the TPC Detector</span></a></li><li><a class="tocitem" href="#Magnetic-Field-initialization"><span>Magnetic Field initialization</span></a></li><li><a class="tocitem" href="#Primary-Particle-Generator"><span>Primary Particle Generator</span></a></li><li><a class="tocitem" href="#Event-Display"><span>Event Display</span></a></li><li><a class="tocitem" href="#Create-the-Application"><span>Create the Application</span></a></li><li><a class="tocitem" href="#Run-the-Application"><span>Run the Application</span></a></li></ul></li><li><a class="tocitem" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber</a></li><li><a class="tocitem" href="../WaterPhantom/">Water Phantom with Scoring</a></li><li><a class="tocitem" href="../UserLib/">Calling Custom C++ library</a></li><li><a class="tocitem" href="../JuliaAction/">Calling G4 actions in Julia</a></li></ul></li></ul></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li><a class="is-disabled">Advanced</a></li><li class="is-active"><a href>Simulation of the Aleph TPC</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Simulation of the Aleph TPC</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/examples/TPCSim_lit.jl#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Simulation-of-the-Aleph-TPC"><a class="docs-heading-anchor" href="#Simulation-of-the-Aleph-TPC">Simulation of the Aleph TPC</a><a id="Simulation-of-the-Aleph-TPC-1"></a><a class="docs-heading-anchor-permalink" href="#Simulation-of-the-Aleph-TPC" title="Permalink"></a></h1><p>In this example we demonstrate how to connect the <a href="https://pythia.org">PYTHIA</a> MC generator to a to a Geant4 application that implements a very simplistic model of the ALEPH TPC.</p><p>The TPC detector is a simple cylinder filled with a mixture of Argon and Methane gas inside an axial 1.5 tesla magnetic field. The primary particles are generated by PYTHIA8 with the the LEP collision settings.</p><div class="admonition is-info"><header class="admonition-header">Note that</header><div class="admonition-body"><p>You can also download this example as a <a href="../TPCSim.ipynb">Jupyter notebook</a> and a plain <a href="../TPCSim.jl">Julia source file</a>.</p></div></div><h4 id="Table-of-contents"><a class="docs-heading-anchor" href="#Table-of-contents">Table of contents</a><a id="Table-of-contents-1"></a><a class="docs-heading-anchor-permalink" href="#Table-of-contents" title="Permalink"></a></h4><ul><li><a href="#Loading-the-necessary-Julia-modules">Loading the necessary Julia modules</a></li><li><a href="#Define-the-TPC-Detector">Define the TPC Detector</a></li><li><a href="#Magnetic-Field-initialization">Magnetic Field initialization</a></li><li><a href="#Primary-Particle-Generator">Primary Particle Generator</a></li><li><a href="#Event-Display">Event Display</a></li><li><a href="#Create-the-Application">Create the Application</a></li><li><a href="#Run-the-Application">Run the Application</a></li></ul><h2 id="Loading-the-necessary-Julia-modules"><a class="docs-heading-anchor" href="#Loading-the-necessary-Julia-modules">Loading the necessary Julia modules</a><a id="Loading-the-necessary-Julia-modules-1"></a><a class="docs-heading-anchor-permalink" href="#Loading-the-necessary-Julia-modules" title="Permalink"></a></h2><ul><li><code>Geant4</code> and <code>Geant4.SystemOfUnits</code> for the Geant4 simulation</li><li><code>Parameters</code> for the parameter handling in the detector definition</li><li><code>PYTHIA8</code> for the PYTHIA8 generator</li></ul><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits
+using Parameters
+using PYTHIA8
+
+# to force loading G4Vis extension we need to load the following modules
+using CairoMakie, Rotations, IGLWrap_jll, LinearAlgebra
+using PYTHIA8: px, py, pz
+import DisplayAs: PNG</code></pre><h2 id="Define-the-TPC-Detector"><a class="docs-heading-anchor" href="#Define-the-TPC-Detector">Define the TPC Detector</a><a id="Define-the-TPC-Detector-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-TPC-Detector" title="Permalink"></a></h2><p>The TPC detector is a simple cylinder filled with a mixture of Ar and CH4 gas</p><pre><code class="language-julia hljs">using Geant4.SystemOfUnits: m, cm, mole,cm3</code></pre><p>The data structure <code>AlephTPC</code> is defined with the default detector parameters</p><pre><code class="language-julia hljs">@with_kw mutable struct AlephTPC &lt;: G4JLDetector
+    totalL::Float64 = 4.4m      # total length of the TPC
+    innerR::Float64 = 0.31m     # inner radius of the TPC
+    outerR::Float64 = 1.8m      # outer radius of the TPC
+    checkOverlaps::Bool = false # do check overlaps when creating the geometry
+end</code></pre><pre><code class="nohighlight hljs">Main.var&quot;##230&quot;.AlephTPC</code></pre><p>The function <code>construct</code> is defined to create the geometry of the TPC detector. It receives an instance of the <code>AlephTPC</code> structure and returns a pointer to the physical volume of the world.</p><pre><code class="language-julia hljs">function construct(det::AlephTPC)::CxxPtr{G4VPhysicalVolume}
+    (; totalL, innerR, outerR, checkOverlaps) = det
+
+    ##---Materials----------------------------------------------------------------------------------
+    nist = G4NistManager!Instance()
+    m_Ar     = FindOrBuildMaterial(nist, &quot;G4_Ar&quot;)
+    m_CH₄    = FindOrBuildMaterial(nist, &quot;G4_METHANE&quot;)
+    ArCH₄  = G4Material(&quot;ArCH₄&quot;, 3.491*mg/cm3, 2)
+    AddMaterial( ArCH₄, m_Ar, 0.91 )
+    AddMaterial( ArCH₄, m_CH₄,0.09 )
+    m_ArCH₄  = FindOrBuildMaterial(nist, &quot;ArCH₄&quot;)
+    m_air    = FindOrBuildMaterial(nist, &quot;G4_AIR&quot;)
+    m_Al     = FindOrBuildMaterial(nist, &quot;G4_Al&quot;)
+
+    ##---Volumes------------------------------------------------------------------------------------
+    worldZHalfLength = 1.1 * totalL/2
+    worldS  = G4Box(&quot;world&quot;, worldZHalfLength, worldZHalfLength, worldZHalfLength)
+    worldLV = G4LogicalVolume(worldS, m_air, &quot;World&quot;)
+    worldPV = G4PVPlacement(nothing, G4ThreeVector(), worldLV, &quot;World&quot;, nothing, false, 0, checkOverlaps)
+
+    fcOuterS  = G4Tubs(&quot;fcOuter&quot;, outerR, outerR + 1.8cm, totalL/2, 0, 2π)
+    fcOuterLV = G4LogicalVolume(fcOuterS, m_Al, &quot;fcOuter&quot;)
+    fcInnerS  = G4Tubs(&quot;fcInner&quot;, innerR - 0.8cm, innerR, totalL/2, 0, 2π)
+    fcInnerLV = G4LogicalVolume(fcInnerS, m_Al, &quot;fcInner&quot;)
+
+    chamberS  = G4Tubs(&quot;chamber&quot;, innerR, outerR, totalL/2, 0, 2π)
+    chamberLV = G4LogicalVolume(chamberS, m_ArCH₄, &quot;chamber&quot;)
+    G4PVPlacement(nothing, G4ThreeVector(), fcOuterLV, &quot;fcOuter&quot;, worldLV, false, 0, checkOverlaps)
+    G4PVPlacement(nothing, G4ThreeVector(), fcInnerLV, &quot;fcInner&quot;, worldLV, false, 0, checkOverlaps)
+    G4PVPlacement(nothing, G4ThreeVector(), chamberLV, &quot;chamber&quot;, worldLV, false, 0, checkOverlaps)
+    ##SetUserLimits(chamberLV, G4UserLimits(5mm))
+
+    ##---Visualization attributes------------------------------------------------------------------
+    boxVisAtt = G4VisAttributes(G4Colour(1.0, 1.0, 1.0, 0.0))
+    chamberVisAtt = G4VisAttributes(G4Colour(0.0, 1.0, 1.0, 0.2))
+    fcVisAtt = G4VisAttributes(G4Colour(0.0, 1.0, 0.0, 0.1))
+    SetVisAttributes(worldLV, boxVisAtt)
+    SetVisAttributes(chamberLV, chamberVisAtt)
+    SetVisAttributes(fcInnerLV, fcVisAtt)
+    SetVisAttributes(fcOuterLV, fcVisAtt)
+
+    ##---Always return the physical world-------------------------------------------------------------
+    return worldPV
+end
+Geant4.getConstructor(::AlephTPC)::Function = construct</code></pre><p>Finally, the detector is created with the default parameters</p><pre><code class="language-julia hljs">tpc = AlephTPC()          # create the detector</code></pre><pre><code class="nohighlight hljs">Main.var&quot;##230&quot;.AlephTPC
+  totalL: Float64 4400.0
+  innerR: Float64 310.0
+  outerR: Float64 1800.0
+  checkOverlaps: Bool false
+</code></pre><h2 id="Magnetic-Field-initialization"><a class="docs-heading-anchor" href="#Magnetic-Field-initialization">Magnetic Field initialization</a><a id="Magnetic-Field-initialization-1"></a><a class="docs-heading-anchor-permalink" href="#Magnetic-Field-initialization" title="Permalink"></a></h2><pre><code class="language-julia hljs">bfield = G4JLUniformMagField(G4ThreeVector(0,0, 1.5tesla))</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLUniformMagField(&quot;UnifiormB&quot;, Geant4.G4JLUniformMagFieldData(G4ThreeVector(0.0,0.0,0.0015)), Geant4.var&quot;#getfield!#33&quot;(), Geant4.G4JLMagField[])</code></pre><h2 id="Primary-Particle-Generator"><a class="docs-heading-anchor" href="#Primary-Particle-Generator">Primary Particle Generator</a><a id="Primary-Particle-Generator-1"></a><a class="docs-heading-anchor-permalink" href="#Primary-Particle-Generator" title="Permalink"></a></h2><pre><code class="language-julia hljs">@with_kw mutable struct PythiaGenerator &lt;: G4JLGeneratorData
+    eCM::Float64 = 91.2*GeV
+    pythia = nothing
+end
+
+function LEPCollision()
+    data = PythiaGenerator()
+    function LEPinit(data::PythiaGenerator, app::G4JLApplication)
+        data.pythia = PYTHIA8.Pythia(&quot;&quot;, false)
+        data.pythia &lt;&lt; &quot;Beams:idA = -11&quot; # positron
+        data.pythia &lt;&lt; &quot;Beams:idB = 11&quot;  # electron
+        data.pythia &lt;&lt; &quot;Beams:eCM = $(data.eCM/GeV)&quot; # CM energy
+        data.pythia &lt;&lt; &quot;PDF:lepton = off&quot; # no lepton PDFs
+        # Process: hadronic decays of Z0. Initialize. Histogram.
+        data.pythia &lt;&lt; &quot;WeakSingleBoson:ffbar2gmZ = on&quot;
+        data.pythia &lt;&lt; &quot;23:onMode = off&quot;
+        data.pythia &lt;&lt; &quot;23:onIfAny = 1 2 3 4 5&quot;
+        # If Pythia fails to initialize, exit with error.
+        data.pythia |&gt; init || error(&quot;Pythia initialization failed&quot;)
+    end
+    function LEPgenerate(g4evt::G4Event, data::PythiaGenerator)::Nothing
+        # Generate event. Skip if error. List first one.
+        data.pythia |&gt; next || return
+        evt = data.pythia |&gt; event
+        # Define primary vertex
+        vertex = G4PrimaryVertex(G4ThreeVector(0,0,0), 0)
+        # Loop over the particles in the Pythia event
+        for p in evt
+            if isFinal(p)
+                primary = G4PrimaryParticle(p |&gt; id, px(p)*GeV, py(p)*GeV, pz(p)*GeV)
+                SetPrimary(vertex, move!(primary))    ## note that we give up ownership of the objects just created
+            end
+        end
+        AddPrimaryVertex(g4evt, move!(vertex))  ## note that we give up ownership of the objects just created
+    end
+    G4JLPrimaryGenerator(&quot;LEPCollision&quot;, data; init_method=LEPinit, generate_method=LEPgenerate)
+end</code></pre><pre><code class="nohighlight hljs">LEPCollision (generic function with 1 method)</code></pre><h2 id="Event-Display"><a class="docs-heading-anchor" href="#Event-Display">Event Display</a><a id="Event-Display-1"></a><a class="docs-heading-anchor-permalink" href="#Event-Display" title="Permalink"></a></h2><p>Overwriting the default <code>drawEvent</code> function defined in the G4Vis extension</p><pre><code class="language-julia hljs">const G4Vis = Base.get_extension(Geant4, :G4Vis)
+function G4Vis.drawEvent(evtdisp::G4Vis.G4JLEventDisplay)
+    println(&quot;Drawing event&quot;, typeof(evtdisp))
+    s = evtdisp.lscene.scene
+    settings = evtdisp.settings
+    trajectories = G4EventManager!GetEventManager() |&gt; GetConstCurrentEvent |&gt; GetTrajectoryContainer
+    if trajectories != C_NULL
+        points = Point3{Float64}[]
+        for t in trajectories
+            t |&gt; GetCharge == 0 &amp;&amp; continue # skip neutral particles
+            npoints = GetPointEntries(t)
+            npoints &lt; 3 &amp;&amp; continue         # skip particles with less than 3 points
+            for i in 1:npoints
+                pos = GetPoint(t, i-1) |&gt; GetPosition
+                r = sqrt(pos[0]^2 + pos[1]^2)
+                z = pos[2]
+                (r &gt; 1.8m || abs(z) &gt; 2.4m) &amp;&amp; break  # kill particle outside the TPC
+                if r &gt; 0.38m                # skip points inside the beam pipe
+                    push!(points, convert(Point3{Float64}, pos))
+                else
+                    push!(points, Point3{Float64}(NaN, NaN, NaN))
+                end
+            end
+            push!(points, Point3{Float64}(NaN, NaN, NaN))
+        end
+        lines!(s, points, color=settings.trajectories.color, transparency=false, overdraw=false)
+    end
+    ##wait_for_key(&quot;Press any key to continue with next event&quot;)
+end
+evtdisplay = G4JLEventDisplay(joinpath(@__DIR__, &quot;TPCSimVisSettings.jl&quot;))</code></pre><pre><code class="nohighlight hljs">G4Vis.G4JLEventDisplay((display = (backgroundcolor = :black, resolution = (1280, 720), show_axis = false, camera_rotation = (0, 0, -1.5707963267948966), camera_zoom = 0.1), trajectories = (color = :yellow,), detector = (show_detector = true,)), G4Vis.stateChange, G4Vis.initDisplay, #undef, #undef)</code></pre><h2 id="Create-the-Application"><a class="docs-heading-anchor" href="#Create-the-Application">Create the Application</a><a id="Create-the-Application-1"></a><a class="docs-heading-anchor-permalink" href="#Create-the-Application" title="Permalink"></a></h2><pre><code class="language-julia hljs">app = G4JLApplication(detector     = tpc,                       # detector defined above
+                      generator    = LEPCollision(),            # primary generator to instantiate
+                      field        = bfield,                    # magnetic field
+                      physics_type = FTFP_BERT,                 # what physics list to instantiate
+                      evtdisplay   = evtdisplay                 # event display
+                     );
+configure(app)
+initialize(app)</code></pre><pre><code class="nohighlight hljs">
+**************************************************************
+ Geant4 version Name: geant4-11-02-patch-01 [MT]   (16-February-2024)
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+
+ *-------  PYTHIA Process Initialization  --------------------------*
+ |                                                                  |
+ | We collide e+ with e- at a CM energy of 9.120e+01 GeV            |
+ |                                                                  |
+ |------------------------------------------------------------------|
+ |                                                    |             |
+ | Subprocess                                    Code |   Estimated |
+ |                                                    |    max (mb) |
+ |                                                    |             |
+ |------------------------------------------------------------------|
+ |                                                    |             |
+ | f fbar -&gt; gamma*/Z0                            221 |   4.352e-05 |
+ |                                                                  |
+ *-------  End PYTHIA Process Initialization -----------------------*
+
+ *-------  PYTHIA Flag + Mode + Parm + Word + FVec + MVec + PVec + WVec Settings (changes only)  ------------------* 
+ |                                                                                                                 | 
+ | Name                                          |                      Now |      Default         Min         Max | 
+ |                                               |                          |                                      | 
+ | Beams:eCM                                     |                 91.20000 |    14000.000         0.0             | 
+ | Beams:idA                                     |                      -11 |         2212                         | 
+ | Beams:idB                                     |                       11 |         2212                         | 
+ | PDF:lepton                                    |                      off |           on                         | 
+ | WeakSingleBoson:ffbar2gmZ                     |                       on |          off                         | 
+ |                                                                                                                 | 
+ *-------  End PYTHIA Flag + Mode + Parm + Word + FVec + MVec + PVec + WVec Settings  -----------------------------* 
+
+ --------  PYTHIA Particle Data Table (changed only)  ------------------------------------------------------------------------------
+ 
+      id   name            antiName         spn chg col      m0        mWidth      mMin       mMax       tau0    res dec ext vis wid
+             no onMode   bRatio   meMode     products 
+
+      23  Z0                                  3   0   0   91.18760    2.50419   10.00000    0.00000  7.87987e-14   1   1   0   0   0
+              0     1   0.1540492    0        1       -1 
+              1     1   0.1194935    0        2       -2 
+              2     1   0.1540386    0        3       -3 
+              3     1   0.1193325    0        4       -4 
+              4     1   0.1523269    0        5       -5 
+              5     0   0.0335480    0       11      -11 
+              6     0   0.0667305    0       12      -12 
+              7     0   0.0335477    0       13      -13 
+              8     0   0.0667305    0       14      -14 
+              9     0   0.0334720    0       15      -15 
+             10     0   0.0667305    0       16      -16 
+
+ --------  End PYTHIA Particle Data Table  -----------------------------------------------------------------------------------------
+
+ G4ChordFinder: stepperDriverId: 2
+</code></pre><h2 id="Run-the-Application"><a class="docs-heading-anchor" href="#Run-the-Application">Run the Application</a><a id="Run-the-Application-1"></a><a class="docs-heading-anchor-permalink" href="#Run-the-Application" title="Permalink"></a></h2><pre><code class="language-julia hljs">beamOn(app, 1)
+PNG(evtdisplay.figure)</code></pre><p><img src="../TPCSim-23.png" alt/></p><p>Another event</p><pre><code class="language-julia hljs">beamOn(app, 1)
+PNG(evtdisplay.figure)</code></pre><p><img src="../TPCSim-25.png" alt/></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../Solids/">« Geant4 Solids</a><a class="docs-footer-nextpage" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.0 on <span class="colophon-date" title="Wednesday 4 December 2024 12:36">Wednesday 4 December 2024</span>. Using Julia version 1.11.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
