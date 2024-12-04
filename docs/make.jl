@@ -45,6 +45,7 @@ end
 examples_mds = []
 #append!(examples_mds, basic_mds, extend_mds, advanced_mds)
 advanced_mds = process_literate("JuliaAction")
+extra_mds    = create_extras("MyCode.jl", "G4example.cpp")
 append!(examples_mds, advanced_mds)
 
 #---Build the documentation-----------------------------------------------------------------------
@@ -62,7 +63,7 @@ makedocs(;
         #"Examples" => [ "Basic" => basic_mds, 
         #                "Extended" => extend_mds ,       
         #                "Advanced" => advanced_mds ],
-        #hide.(extra_mds)...,
+        hide.(extra_mds)...,
         "Release Notes" => "releases.md",
     ],
     repo="https://github.com/JuliaHEP/Geant4.jl/blob/{commit}{path}#L{line}",
