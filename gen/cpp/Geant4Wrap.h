@@ -280,7 +280,9 @@ class G4PolyconeSideRZ;
 class G4PolyhedraSideRZ;
 class G4Polycone;
 class G4Polyhedra;
+class G4GenericPolycone;
 G4PolyconeSideRZ& GetPolyCorner(const G4Polycone&, G4int);
+G4PolyconeSideRZ& GetPolyCorner(const G4GenericPolycone&, G4int);
 G4PolyhedraSideRZ& GetPolyCorner(const G4Polyhedra&, G4int);
 
 void SetParticleByName(G4ParticleGun* gun, const char* pname);

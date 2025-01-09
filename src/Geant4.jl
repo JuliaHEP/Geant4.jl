@@ -11,6 +11,7 @@ module Geant4
     else
         using Geant4_julia_jll
         include(Geant4_julia_jll.Geant4_exports)
+        export G4GenericPolycone, LBE      # Export the C++ classes that where forgotten in the binary package
         @wrapmodule(()->Geant4_julia_jll.libGeant4Wrap)
     end
 
@@ -49,4 +50,3 @@ module Geant4
     H1D() = "Not implemented"  # Constructors
     H2D() = "Not implemented"  # Constructors
 end
-

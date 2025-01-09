@@ -140,3 +140,54 @@ function GeometryBasics.faces(pcon::G4Polycone, facets=24)
     end
     return faces
 end
+
+#---G4GenericPolycone-------------------------------------------------------------------------------------
+
+mutable struct GenericPolyconeParams
+    startPhi::Float64
+    endPhi::Float64
+    phiIsOpen::Bool
+    numCorner::Int32
+    corners::Ptr{SideRZ}
+end
+
+function GeometryBasics.coordinates(pcon::G4GenericPolycone, facets=24)
+    ϕ₀ = GetStartPhi(pcon)
+    ϕₑ = GetEndPhi(pcon)
+    n = GetNumRZCorner(pcon)
+    issector = !(ϕₑ-ϕ₀ ≈ 2π)
+    rz = [unsafe_load(Ptr{SideRZ}(GetPolyCorner(pcon, i-1).cpp_object)) for i in 1:n]
+    ϕfacets = round(Int64, (facets/2π) * (ϕₑ-ϕ₀))
+    ϕ = LinRange(ϕ₀, ϕₑ, ϕfacets)
+    inner(ϕ, r, z) = Point(r * cos(ϕ), r * sin(ϕ), z)
+    points =  vec([inner(ϕ, rz[j].r, rz[j].z) for ϕ in ϕ, j in 1:n])
+    #if issector
+    #    for ϕ in (ϕ₀, ϕₑ)
+    #        for i in 1:n
+    #            push!(points, Point(rz[i].r * cos(ϕ), rz[i].r * sin(ϕ), rz[i].z))
+    #        end
+    #    end
+    #end
+    return points
+end
+
+function GeometryBasics.faces(pcon::G4GenericPolycone, facets=24)
+    ϕ₀ = GetStartPhi(pcon)
+    ϕₑ = GetEndPhi(pcon)
+    n = GetNumRZCorner(pcon)
+    issector = !(ϕₑ-ϕ₀ ≈ 2π)
+    ϕfacets = round(Int64, (facets/2π) * (ϕₑ-ϕ₀))
+    idx = LinearIndices((ϕfacets, n))
+    quad(i, j) = QuadFace{Int}(idx[i, j], idx[i + 1, j], idx[i + 1, cyc(j + 1,n)], idx[i, cyc(j + 1,n)])
+    faces = vec([quad(i, j) for i in 1:(ϕfacets - 1), j in 1:n])
+    #if issector
+    #    offset = ϕfacets  * n
+    #    for c in 0:1
+    #        for i in 0:n-2
+    #            odx = offset + 2*i + 2*n*c
+    #            push!(faces, QuadFace{Int}(odx+1, odx+2, odx+4, odx+3))
+    #        end
+    #    end
+    #end
+    return faces
+end

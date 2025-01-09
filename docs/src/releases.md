@@ -1,8 +1,11 @@
 ## Release Notes
-### 0.2.x
+### 0.2.1
+- New Features
+    - Added wrappers for classes `LBE`, `G4GenericPolycone`
+    - Added Visualization for `G4GenericPolycone`
 - New Examples:
     - UserLib: how to build and call a user custom library providing additional Geant4 functionally that is not provided by the set of wrapped classes
-    - JuliaAction: emmbeding Julia in a C++ application. In this example we call user actions implemented in Julia
+    - JuliaAction: embedding Julia in a C++ application. In this example we call user actions implemented in Julia
 
 ### 0.2.0
 - New Features

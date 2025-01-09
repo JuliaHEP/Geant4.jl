@@ -6,6 +6,7 @@
 #include "G4PVPlacement.hh"
 #include "G4ParticleTable.hh"
 #include "G4Polycone.hh"
+#include "G4GenericPolycone.hh"
 #include "G4Polyhedra.hh"
 #include "G4VIsotopeTable.hh"
 #include "G4IonTable.hh"
@@ -129,6 +130,11 @@ void G4JLDetectorConstruction::SetSensitiveDetector(const G4String& lv, G4JLSens
 }
 
 G4PolyconeSideRZ& GetPolyCorner(const G4Polycone& pc, G4int index) {
+  static G4PolyconeSideRZ side;
+  side = pc.GetCorner(index);
+  return side;
+}
+G4PolyconeSideRZ& GetPolyCorner(const G4GenericPolycone& pc, G4int index) {
   static G4PolyconeSideRZ side;
   side = pc.GetCorner(index);
   return side;

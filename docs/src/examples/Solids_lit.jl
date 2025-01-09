@@ -188,6 +188,24 @@ img = draw(pcon, wireframe=true, color=:blue)
 #md PNG(img) #hide
 #nb display("image/png", img)
 
+# ## G4GenericPolycone
+# A genric polycone is constructed using:
+# 
+# | parameter | description |
+# | :-------- | :---------- |
+# | ϕ₀ | Starting phi angle in radians ( ϕ₀+Δϕ <= 2π, ϕ₀ > -2π) |
+# | Δϕ | Delta angle of the segment in radians |
+# | numRZ  | Number of RZ corners |
+# | r | r coordinate of corners |
+# | z | z coordinate of corners |
+gpcon = G4GenericPolycone("pcone", 0, π, 4,
+                         [ 5., 10., 10., 5.,],
+                         [ 0., 10., 20., 30.]
+                        )
+img = draw(gpcon, wireframe=true, color=:blue)
+#md PNG(img) #hide
+#nb display("image/png", img)
+
 # ## G4Polyhedra
 # A polyhedra is constructed using:
 #
