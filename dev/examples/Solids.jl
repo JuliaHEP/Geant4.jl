@@ -51,6 +51,12 @@ pcon = G4Polycone("pcone", π/4, 3π/2, 9,
                  )
 img = draw(pcon, wireframe=true, color=:blue)
 
+gpcon = G4GenericPolycone("pcone", 0, π, 4,
+                         [ 5., 10., 10., 5.,],
+                         [ 0., 10., 20., 30.]
+                        )
+img = draw(gpcon, wireframe=true, color=:blue)
+
 pgon = G4Polyhedra("pgon", -π/4, 5π/4, 3, 7,
                   [ 0., 5., 8., 13. , 30., 32., 35. ],
                   [ 0., 0., 0., 0., 0., 0., 0. ],
