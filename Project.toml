@@ -30,18 +30,19 @@ G4Vis = ["Makie", "Colors", "StaticArrays", "Rotations", "LinearAlgebra", "IGLWr
 [compat]
 CSV = "0.10"
 CxxWrap = "0.16"
+FHist = "0.11"
 Geant4_julia_jll = "0.2"
 GeometryBasics = "0.4,0.5"
 IGLWrap_jll = "2.4.0"
+StaticArrays = "1"
 julia = "1.9"
-FHist = "0.11"
 
 [extras]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 IGLWrap_jll = "283677c1-8365-580c-84e5-ef4b5d190868"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 
 [targets]
 test = ["Test", "Pkg"]
