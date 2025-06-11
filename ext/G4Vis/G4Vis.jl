@@ -26,10 +26,10 @@ module G4Vis
         return (RGB(GetRed(c),GetGreen(c), GetBlue(c)),GetAlpha(c))
     end
 
-    function GeometryBasics.Tesselation(s::G4VSolid, nvertices::NTuple{N,<:Integer}) where N
-        return Tesselation{3,Float64,typeof(s),N}(s, Int.(nvertices))
+    function GeometryBasics.Tessellation(s::G4VSolid, nvertices::NTuple{N,<:Integer}) where N
+        return Tessellation{3,Float64,typeof(s),N}(s, Int.(nvertices))
     end
-    GeometryBasics.mesh(s::G4VSolid) = GeometryBasics.mesh(Tesselation(s, 36), facetype=QuadFace{Int})
+    GeometryBasics.mesh(s::G4VSolid) = GeometryBasics.mesh(Tessellation(s, 36), facetype=QuadFace{Int})
 
  
     colors = colormap("Grays", 8)
@@ -94,7 +94,7 @@ module G4Vis
                 points = GeometryBasics.coordinates(m)
                 faces  = GeometryBasics.faces(m)
                 map!(c -> c * t, points, points)
-                m = GeometryBasics.Mesh(meta(points; normals=normals(points, faces)), faces)
+                m = GeometryBasics.mesh(points, faces, normal=GeometryBasics.normals(points, faces, Vec3f))
             end
             color = g4vis != C_NULL ? convert(Tuple{RGB, Float64}, GetColour(g4vis)) : (colors[level], GetDensity(GetMaterial(lv))/(12g/cm3))
             visible = g4vis != C_NULL ? IsVisible(g4vis) : true
