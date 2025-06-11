@@ -44,7 +44,7 @@ function boolean(op, m1::GeometryBasics.Mesh, m2::GeometryBasics.Mesh, t::Transf
     if ret == 0
         c = unsafe_array(Point3{Float64}, cm.vertices, cm.nv)
         f = unsafe_array(TriangleFace{Int32}, cm.faces, cm.nf)
-        return GeometryBasics.Mesh(c,f)
+        return GeometryBasics.mesh(c,f)
     else
         return
     end
@@ -62,13 +62,15 @@ const operation = Dict("G4UnionSolid" => 0, "G4IntersectionSolid" => 1, "G4Subtr
 
 function GeometryBasics.mesh(s::G4BooleanSolid)
     if  isdefined(IGLWrap_jll, :libiglwrap)
-        op = operation[GetEntityType(s)]
-        left = GetConstituentSolid(s, 0)
-        right = GetConstituentSolid(s, 1)
-        boolean(op, GeometryBasics.mesh(left), GeometryBasics.mesh(right))
+        println("IGLWrap_jll is available but interface needs to be fixed for drawing boolean solids (TODO)")
+        GeometryBasics.mesh(Point3{Float64}[], QuadFace{Int32}[])
+        # op = operation[GetEntityType(s)]
+        # left = GetConstituentSolid(s, 0)
+        # right = GetConstituentSolid(s, 1)
+        # boolean(op, GeometryBasics.mesh(left), GeometryBasics.mesh(right))
     else
-        println("IGLWrap_jll is not available for currrent platform $(Sys.MACHINE) and is needed for drawing boolean solids")
-        GeometryBasics.Mesh(Point3{Float64}[], QuadFace{Int32}[])
+        println("IGLWrap_jll is not available for current platform $(Sys.MACHINE) and is needed for drawing boolean solids")
+        GeometryBasics.mesh(Point3{Float64}[], QuadFace{Int32}[])
     end
 end
 
@@ -80,7 +82,7 @@ function GeometryBasics.mesh(s::G4DisplacedSolid)
     points = GeometryBasics.coordinates(m)
     faces  = GeometryBasics.faces(m)
     map!(c -> c * t, points, points)
-    GeometryBasics.Mesh(points, faces)
+    GeometryBasics.mesh(points, faces)
 end
 
 function Geant4.draw(solid::G4BooleanSolid; wireframe::Bool=false, kwargs...)
