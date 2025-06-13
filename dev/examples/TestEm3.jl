@@ -226,7 +226,7 @@ app = G4JLApplication(detector = TestEm3Detector(),               ## detector wi
 
 configure(app)
 initialize(app)
-SetParticlePosition(particlegun, G4ThreeVector(-app.detector.fWorldSizeX/2,0,0))  ## Only now is known the size of the 'world'
+SetParticlePosition(particlegun, G4ThreeVector(-app.detector.fWorldSizeX/2 + 1mm,0,0))  ## Only now is known the size of the 'world'
 
 beamOn(app, 1000)
 
