@@ -7,6 +7,7 @@ module Geant4
     gendir = normpath(joinpath(@__DIR__, "../gen"))
     if isdir(joinpath(gendir, "build/lib"))
         include(joinpath(gendir, "jl/src/Geant4-export.jl"))
+        println("Using local Geant4 wrapper code from: $gendir")
         @wrapmodule(()->joinpath(gendir, "build/lib", "libGeant4Wrap.$(Libdl.dlext)"))
     else
         using Geant4_julia_jll

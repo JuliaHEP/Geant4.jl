@@ -1,4 +1,12 @@
 ## Release Notes
+
+### 0.2.2
+- Using new version of Geant4_jll v11.3.2
+- Fixes:
+    - TestEm3 particle gun needs to be inside world volume
+    - `length` is also a method of Geant4 (removed from exports)
+    - Update G4Vis to breaking changes in GeometryBasics@0.5
+
 ### 0.2.1
 - New Features
     - Added wrappers for classes `LBE`, `G4GenericPolycone`

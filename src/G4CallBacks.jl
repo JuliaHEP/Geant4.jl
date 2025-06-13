@@ -20,7 +20,7 @@ function make_callback(ctx, fun, rt, args)
     lock(spinlock)
     try
         i_callback = Symbol(:_internal_callback_, "$(fun)_", cb_counter[])
-        narg = length(args)
+        narg = Base.length(args)
         CONTEXT = typeof(ctx)
         #---create the internal callback function------------------------------------------------------
         if narg == 0
