@@ -32,7 +32,7 @@ CSV = "0.10"
 CxxWrap = "0.16"
 Geant4_julia_jll = "0.2"
 GeometryBasics = "0.5"
-IGLWrap_jll = "2.4.0"
+IGLWrap_jll = "2.6.0"
 julia = "1.9"
 FHist = "0.11"
 
