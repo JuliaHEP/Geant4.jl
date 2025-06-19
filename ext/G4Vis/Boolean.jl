@@ -62,12 +62,10 @@ const operation = Dict("G4UnionSolid" => 0, "G4IntersectionSolid" => 1, "G4Subtr
 
 function GeometryBasics.mesh(s::G4BooleanSolid)
     if  isdefined(IGLWrap_jll, :libiglwrap)
-        println("IGLWrap_jll is available but interface needs to be fixed for drawing boolean solids (TODO)")
-        GeometryBasics.mesh(Point3{Float64}[], QuadFace{Int32}[])
-        # op = operation[GetEntityType(s)]
-        # left = GetConstituentSolid(s, 0)
-        # right = GetConstituentSolid(s, 1)
-        # boolean(op, GeometryBasics.mesh(left), GeometryBasics.mesh(right))
+        op = operation[GetEntityType(s)]
+        left = GetConstituentSolid(s, 0)
+        right = GetConstituentSolid(s, 1)
+        boolean(op, GeometryBasics.mesh(left), GeometryBasics.mesh(right))
     else
         println("IGLWrap_jll is not available for current platform $(Sys.MACHINE) and is needed for drawing boolean solids")
         GeometryBasics.mesh(Point3{Float64}[], QuadFace{Int32}[])
