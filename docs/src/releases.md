@@ -1,7 +1,9 @@
 ## Release Notes
 
-### 0.2.2
-- Using new version of Geant4_jll v11.3.2
+### 0.2.2 - 20-June-2025
+- New Features:
+    - Using new version of Geant4_jll v11.3.2
+    - Added CompatHelper
 - Fixes:
     - TestEm3 particle gun needs to be inside world volume
     - `length` is also a method of Geant4 (removed from exports)
