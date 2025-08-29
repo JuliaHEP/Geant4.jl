@@ -1,7 +1,7 @@
 name = "Geant4"
 uuid = "559df036-b7a0-42fd-85df-7d5dd9d70f44"
 authors = ["Pere Mato <pere.mato@cern.ch>"]
-version = "0.2.2"
+version = "0.2.3"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
@@ -30,9 +30,9 @@ G4Vis = ["Makie", "Colors", "StaticArrays", "Rotations", "LinearAlgebra", "IGLWr
 [compat]
 CSV = "0.10"
 Colors = "0.12.9, 0.13"
-CxxWrap = "0.16, 0.17"
+CxxWrap = "0.17"
 FHist = "0.11"
-Geant4_julia_jll = "0.2"
+Geant4_julia_jll = "0.3"
 GeometryBasics = "0.5"
 IGLWrap_jll = "2.6.0"
 Makie = "0.22, 0.23"

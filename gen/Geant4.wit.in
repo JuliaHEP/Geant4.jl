@@ -169,5 +169,5 @@ export              = "all"
 veto_list           = "Geant4-veto.h"
 cxx-std             = "c++17"
 inheritances        = [ ]
-export_blacklist    = ["length"]
+export_blacklist    = ["length", "size", "angle", "decompose", "contains"]
 cxxwrap_version     = "@CxxWrap_VERSION@"

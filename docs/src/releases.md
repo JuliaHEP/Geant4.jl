@@ -1,5 +1,11 @@
 ## Release Notes
 
+### 0.2.3 - 29-Aug-2025
+- New Features:
+    - Upgraded to CxxWrap version 0,17
+- Fixes:
+    - #37 Removed from exports the ones clashing with `Base`: "length", "size", "angle", "decompose", "contains"
+
 ### 0.2.2 - 20-June-2025
 - New Features:
     - Using new version of Geant4_jll v11.3.2
