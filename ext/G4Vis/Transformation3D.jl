@@ -9,8 +9,8 @@ Base.:*(x::Vector3, n::Number) = Vector3(x[1]*n, x[2]*n, x[3]*n)
 Base.:*(n::Number, x::Vector3) = x * n
 Base.:/(p::Point3, n::Number) = Point3(p[1]/n, p[2]/n, p[3]/n)
 LinearAlgebra.:⋅(x::Vector3, y::Vector3) = x[1]*y[1] + x[2]*y[2] + x[3]*y[3]
-Base.:-(p1::Point3, p2::Point3) = Vector3(p1[1]-p2[1], p1[2]-p2[2], p1[3]-p2[3])
-Base.:+(p1::Point3, p2::Point3) = Vector3(p1[1]+p2[1], p1[2]+p2[2], p1[3]+p2[3])
+#Base.:-(p1::Point3, p2::Point3) = Vector3(p1[1]-p2[1], p1[2]-p2[2], p1[3]-p2[3])
+#Base.:+(p1::Point3, p2::Point3) = Vector3(p1[1]+p2[1], p1[2]+p2[2], p1[3]+p2[3])
 LinearAlgebra.:×(x::Vector3, y::Vector3) = Vector3(x[2]*y[3]-x[3]*y[2], -x[1]*y[3]+x[3]*y[1], x[1]*y[2]-x[2]*y[1])
 unitize(v::Vector3) = v/sqrt(v⋅v)
 

@@ -5,6 +5,7 @@
     - Upgraded to CxxWrap version 0,17
 - Fixes:
     - #37 Removed from exports the ones clashing with `Base`: "length", "size", "angle", "decompose", "contains"
+    - Fix type piracy in Transformation3D.jl (removed +(Point3, Point3)). It was breaking Makie 0.24 
 
 ### 0.2.2 - 20-June-2025
 - New Features:
