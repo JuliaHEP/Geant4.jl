@@ -95,7 +95,7 @@ function LEPCollision()
         # Loop over the particles in the Pythia event
         for p in evt
             if isFinal(p)
-                primary = G4PrimaryParticle(p |> id, px(p)*GeV, py(p)*GeV, pz(p)*GeV)
+                primary = G4PrimaryParticle(p |> PYTHIA8.id, px(p)*GeV, py(p)*GeV, pz(p)*GeV)
                 SetPrimary(vertex, move!(primary))    ## note that we give up ownership of the objects just created
             end
         end
