@@ -21,6 +21,9 @@
 #include "G4LogicalVolumeStore.hh"
 #include "G4VStateDependent.hh"
 #include "G4TwoVector.hh"
+#include "G4Point3D.hh"
+#include "G4Normal3D.hh"
+#include "G4ThreeVector.hh"
 #include "jlcxx/functions.hpp"
 
 
@@ -313,6 +316,10 @@ inline void gc_safe_leave() {
 }
 
 
+// Convert G4Point3D to G4ThreeVector and vice versa
+inline G4ThreeVector toG4ThreeVector(const G4Point3D& p) { return G4ThreeVector(p[0], p[1], p[2]);}
+inline double _getindex(const G4Point3D& p, size_t i) { return p[i-1];}
+inline double _getindex(const G4Normal3D& p, size_t i) { return p[i-1];}
 //---Template instantiations-----------------------------------------------------------------------
 
 #include <vector>
@@ -321,5 +328,4 @@ inline void gc_safe_leave() {
 #include "G4TwoVector.hh"
 template class std::pair<G4double,G4bool>;
 template class std::vector<G4TwoVector>;
-
 #endif

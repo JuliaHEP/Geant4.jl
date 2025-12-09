@@ -25,13 +25,40 @@ module G4Vis
     function convert(::Type{Tuple{RGB, Float64}}, c::ConstCxxRef{G4Colour})
         return (RGB(GetRed(c),GetGreen(c), GetBlue(c)),GetAlpha(c))
     end
-
-    function GeometryBasics.Tessellation(s::G4VSolid, nvertices::NTuple{N,<:Integer}) where N
-        return Tessellation{3,Float64,typeof(s),N}(s, Int.(nvertices))
+#---Create GeometryBasics Mesh from G4VSolid-------------------------------------------------------
+    function GeometryBasics.mesh(s::G4VSolid; withnormals::Bool=false)
+        println("Creating mesh for solid of type: ", GetEntityType(s))
+        ph = GetPolyhedron(s)
+        nv = GetNoVertices(ph)
+        nf = GetNoFacets(ph)
+        points = map(1:nv) do i
+            v = GetVertex(ph, i)
+            Point3{Float64}(v[1], v[2], v[3])
+        end
+        faces = map(1:nf) do i
+            nodes = Vector{Int32}(undef,4)
+            n = Ref{Int32}(0)
+            GetFacet(ph, i, n, nodes)
+            if n[] == 3
+                TriangleFace(nodes[1], nodes[2], nodes[3])
+            elseif n[] == 4
+                QuadFace(nodes[1], nodes[2], nodes[3], nodes[4])
+            else
+                error("Facet with $n nodes not supported")
+            end
+        end
+        if withnormals
+            face_normals = map(1:nf) do i
+                n = GetNormal(ph, i)
+                Vec3{Float64}(n[1], n[2], n[3])
+            end
+            return GeometryBasics.Mesh(points, faces; normal=per_face(face_normals,faces))
+        else
+            return GeometryBasics.Mesh(points, faces)
+        end
     end
-    GeometryBasics.mesh(s::G4VSolid) = GeometryBasics.mesh(Tessellation(s, 36), facetype=QuadFace{Int})
 
- 
+#---Visualization functions---------------------------------------------------------------------
     colors = colormap("Grays", 8)
 
     function Geant4.draw(pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
@@ -54,13 +81,9 @@ module G4Vis
             m = GeometryBasics.mesh(solid)
             img = Makie.wireframe(m; linewidth=1, kwargs...)
         else
-            points = GeometryBasics.coordinates(solid)
-            faces  = GeometryBasics.faces(solid)
-            #normals = GeometryBasics.normals(solid)
-            m = GeometryBasics.normal_mesh(points, faces)
+            m = GeometryBasics.mesh(solid; withnormals=true)
             img = Makie.mesh(m; kwargs...)
         end
-        #display("image/png", img)
     end
 
     function Geant4.draw!(s, pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
@@ -153,16 +176,6 @@ module G4Vis
    #---Utility  functions--------------------------------------------------------------------------
    cyc(x,n) = mod(x-1, n) + 1
 
-   #---Basic solids--------------------------------------------------------------------------------
-   include("Tubes.jl")
-   include("Traps.jl")
-   include("Torus.jl")
-   include("Cones.jl")
-   include("Sphere.jl")
-   include("PGon.jl")
-
-   #---Boolean solids------------------------------------------------------------------------------
-   include("Boolean.jl")
 
    #---Event Display-------------------------------------------------------------------------------
    include("G4Display.jl")

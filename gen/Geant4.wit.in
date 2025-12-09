@@ -109,11 +109,13 @@ input               = [ "Geant4Wrap.h",
                         "G4Hype.hh",
                         "G4Tet.hh",
                         "G4ExtrudedSolid.hh",
+                        "G4VTwistedFaceted.hh",
                         "G4TwistedBox.hh",
                         "G4TwistedTrap.hh",
                         "G4TwistedTrd.hh",
                         "G4GenericTrap.hh",
                         "G4TwistedTubs.hh",
+                        "G4Hype.hh",
                         "CLHEP/Vector/ThreeVector.h",
                         "CLHEP/Vector/TwoVector.h",
                         "CLHEP/Vector/Rotation.h",
@@ -121,6 +123,7 @@ input               = [ "Geant4Wrap.h",
                         "CLHEP/Vector/Boost.h",
                         "CLHEP/Vector/LorentzRotation.h",
                         "CLHEP/Geometry/Transform3D.h",
+                        "CLHEP/Geometry/Point3D.h",
                         "G4BooleanSolid.hh",
                         "G4UnionSolid.hh",
                         "G4SubtractionSolid.hh",
@@ -128,6 +131,8 @@ input               = [ "Geant4Wrap.h",
                         "G4MultiUnion.hh",
                         "G4DisplacedSolid.hh",
                         "G4AffineTransform.hh",
+                        "G4TessellatedSolid.hh",
+                        "G4TriangularFacet.hh",
                         #---Random----------------
                         "CLHEP/Random/Random.h",
                         "CLHEP/Random/RandomEngine.h",
@@ -159,6 +164,9 @@ input               = [ "Geant4Wrap.h",
                         "G4StateManager.hh",
                         "G4VStateDependent.hh",
                         "G4ApplicationState.hh",
+                        #---GraphicReps-----------
+                        "G4Polyhedron.hh",
+                        "HepPolyhedron.h"
                       ]
 
 extra_headers       = [ "G4MaterialCutsCouple.hh", "G4FieldManager.hh", "G4VSensitiveDetector.hh", "G4ParticleMessenger.hh", "G4IonTable.hh", "G4VIsotopeTable.hh", "G4AttValue.hh", "cstddef"  ]
@@ -169,5 +177,5 @@ export              = "all"
 veto_list           = "Geant4-veto.h"
 cxx-std             = "c++17"
 inheritances        = [ ]
-export_blacklist    = ["length", "size", "angle", "decompose", "contains"]
+export_blacklist    = ["length", "size", "angle", "decompose", "contains", "intersect"]
 cxxwrap_version     = "@CxxWrap_VERSION@"

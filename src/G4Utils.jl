@@ -85,3 +85,11 @@ function Base.iterate(iter::G4TrajectoryContainer, i::Int)
     i >= Geant4.size(iter) && return nothing
     return (iter[i], i)
 end
+
+#---G4Point3D-------------------------------------------------------------------------------------
+const G4Point3D = HepGeom!Point3D{Float64}
+const G4Normal3D = HepGeom!Normal3D{Float64}
+Base.getindex(p::G4Point3D, i::Int) = 0 < i < 4 ? _getindex(p, i) : throw(BoundsError(p, i))
+Base.getindex(p::G4Normal3D, i::Int) = 0 < i < 4 ? _getindex(p, i) : throw(BoundsError(p, i))
+
+AddFacet(s::G4TessellatedSolid, f::G4TriangularFacet) = AddFacet(s, move!(f))

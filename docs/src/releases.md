@@ -1,5 +1,10 @@
 ## Release Notes
 
+### 0.2.4
+- New Features:
+    - Added new G4 classes to the Wrapper: G4VTwistedFaceted, G4Hype, G4TessellatedSolid, G4TriangularFacet, G4Polyhedron, HepPolyhedron
+    - Change the way to create the meshes of Solids for G4Vis using the GetPolyhedron() virtual function. Remove all obsolete code. 
+
 ### 0.2.3 - 29-Aug-2025
 - New Features:
     - Upgraded to CxxWrap version 0.17
