@@ -36,7 +36,7 @@ function create_extras(extrafiles...)
     return extra_mds
 end
 
-basic_mds    = process_literate("B1", "B2a", "B2aVis", "B3a")
+basic_mds    = process_literate("B1", "B2a", "B2aVis", "B3a", "B4a")
 extend_mds   = process_literate("GPS", "RE03", "TestEm3", "Solids")
 advanced_mds = process_literate("TPCSim", "HBC30", "WaterPhantom", "UserLib", "JuliaAction")
 extra_mds    = create_extras("B2aDetector.jl", "B2aVisSettings.jl", "B3Detector.jl", "GPSDetector.jl", 
