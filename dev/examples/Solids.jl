@@ -2,6 +2,8 @@ using Geant4
 using Geant4.SystemOfUnits
 using CairoMakie  ## to force loading G4Vis extension
 
+HepPolyhedron!SetNumberOfRotationSteps(64)
+
 box = G4Box("Box", 2,3,4)
 img = draw(box;color=:green)
 
