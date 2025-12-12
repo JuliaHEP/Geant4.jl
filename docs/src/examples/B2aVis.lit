@@ -18,10 +18,10 @@
 # ## Loading the necessary Julia modules
 # Load the `Geant4` and `Geant4.SystemOfUnits` modules.
 # In order to trigger the load of the G4Vis extension we need to load the 
-# following modules: `GLMakie`, `Rotations`, `LinearAlgebra`, `IGLWrap_jll`
+# following modules: `GLMakie`
 using Geant4
 using Geant4.SystemOfUnits
-using CairoMakie, Rotations, LinearAlgebra, IGLWrap_jll  # to force loading G4Vis extension
+using CairoMakie  # to force loading G4Vis extension
 #md import DisplayAs: PNG
 #nb import DisplayAs: PNG
 

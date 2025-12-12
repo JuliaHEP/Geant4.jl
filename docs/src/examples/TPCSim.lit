@@ -29,9 +29,9 @@ using Parameters
 using PYTHIA8
 
 ## to force loading G4Vis extension we need to load the following modules
-#md using CairoMakie, Rotations, IGLWrap_jll, LinearAlgebra
-#nb using CairoMakie, Rotations, IGLWrap_jll, LinearAlgebra
-#jl using CairoMakie, Rotations, IGLWrap_jll, LinearAlgebra
+#md using CairoMakie
+#nb using CairoMakie
+#jl using GLMakie
 using PYTHIA8: px, py, pz
 #md import DisplayAs: PNG
 #nb import DisplayAs: PNG

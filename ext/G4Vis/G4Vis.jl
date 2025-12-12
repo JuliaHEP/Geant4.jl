@@ -1,5 +1,6 @@
 module G4Vis
     using Geant4
+    using Geant4.SystemOfUnits: g, cm3, cm
     using Makie
     using Colors
 
@@ -14,6 +15,7 @@ module G4Vis
     function convert(::Type{Point3{Float64}}, v::G4ThreeVector)
         Point3{Float64}(x(v), y(v), z(v))
     end
+
     function convert(::Type{RotMatrix3{Float64}}, r::CxxPtr{G4RotationMatrix})
         if r == C_NULL
             one(RotMatrix3{Float64})
@@ -22,12 +24,14 @@ module G4Vis
         end
     end
 
+    #---Color conversion-----------------------------------------------------------------------------
+    const LVColor = Union{ColorTypes.Color, Tuple{ColorTypes.RGB{Float64}, Float64}}
     function convert(::Type{Tuple{RGB, Float64}}, c::ConstCxxRef{G4Colour})
         return (RGB(GetRed(c),GetGreen(c), GetBlue(c)),GetAlpha(c))
     end
-#---Create GeometryBasics Mesh from G4VSolid-------------------------------------------------------
-    function GeometryBasics.mesh(s::G4VSolid; withnormals::Bool=false)
-        println("Creating mesh for solid of type: ", GetEntityType(s))
+
+    #---Get vertices and facets from G4VSolid---------------------------------------------------------   
+    function mesh_constituents(s::G4VSolid; withnormals::Bool=false)
         ph = GetPolyhedron(s)
         nv = GetNoVertices(ph)
         nf = GetNoFacets(ph)
@@ -48,34 +52,28 @@ module G4Vis
             end
         end
         if withnormals
-            face_normals = map(1:nf) do i
+            normals = map(1:nf) do i
                 n = GetNormal(ph, i)
                 Vec3{Float64}(n[1], n[2], n[3])
             end
-            return GeometryBasics.Mesh(points, faces; normal=per_face(face_normals,faces))
+            return (points, faces, normals)
         else
-            return GeometryBasics.Mesh(points, faces)
+            return (points, faces, nothing)
+        end
+    end
+
+    #---Create GeometryBasics Mesh from G4VSolid-------------------------------------------------------
+    function GeometryBasics.mesh(s::G4VSolid; withnormals::Bool=false)
+        p, f, n = mesh_constituents(s; withnormals=withnormals)
+        if withnormals
+            return GeometryBasics.Mesh(p, f; normal=per_face(n,f))
+        else
+            return GeometryBasics.Mesh(p, f)
         end
     end
 
 #---Visualization functions---------------------------------------------------------------------
-    colors = colormap("Grays", 8)
-
-    function Geant4.draw(pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
-        lv = GetLogicalVolume(pv)
-        fig = Figure(size=(1280, 720))
-        s = LScene(fig[1,1])
-        draw!(s, lv[], one(Transformation3D{Float64}), 1, wireframe, maxlevel)
-        return fig
-    end
-
-    function Geant4.draw(lv::G4LogicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
-        fig = Figure(size=(1280, 720))
-        s = LScene(fig[1,1])
-        draw!(s, lv, one(Transformation3D{Float64}), 1, wireframe, maxlevel)
-        return fig
-    end
-
+    #---Solid-level drawing---------------------------------------------------------------------
     function Geant4.draw(solid::G4VSolid; wireframe::Bool=false, kwargs...)
         if wireframe
             m = GeometryBasics.mesh(solid)
@@ -86,46 +84,69 @@ module G4Vis
         end
     end
 
+    #---PhysicalVolume-level drawing--------------------------------------------------------------
+    function Geant4.draw(pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
+        fig = Figure()
+        s = LScene(fig[1, 1])
+        draw!(s, GetLogicalVolume(pv)[]; wireframe=wireframe, maxlevel=maxlevel)
+    end
     function Geant4.draw!(s, pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
-        lv = GetLogicalVolume(pv)
-        draw!(s, lv[], one(Transformation3D{Float64}), 1, wireframe, maxlevel)
+        draw!(s, GetLogicalVolume(pv)[]; wireframe=wireframe, maxlevel=maxlevel)
     end
 
-    using Geant4.SystemOfUnits:cm3,g
-
-    function GetReplicaParameters(pv::CxxPtr{G4VPhysicalVolume})
-        axis = Ref{EAxis}(kYAxis)
-        nReplicas = Ref{Int32}(0)
-        width = Ref{Float64}(0.)
-        offset = Ref{Float64}(0.)
-        consuming = Ref{UInt8}(0)
-        GetReplicationData(pv, axis, nReplicas, width, offset, consuming)
-        return (axis[], nReplicas[], width[])
+    #---CxxPtr overloads---------------------------------------------------------------------------
+    function Geant4.draw(pv::CxxPtr{G4VPhysicalVolume}; wireframe::Bool=false, maxlevel::Int64=999)
+        fig = Figure()
+        s = LScene(fig[1, 1])
+        draw!(s, GetLogicalVolume(pv[])[]; wireframe=wireframe, maxlevel=maxlevel)
+    end
+    function Geant4.draw!(s, pv::CxxPtr{G4VPhysicalVolume}; wireframe::Bool=false, maxlevel::Int64=999)
+        draw!(s, GetLogicalVolume(pv[])[]; wireframe=wireframe, maxlevel=maxlevel)
     end
 
+    #---LogicalVolume-level drawing----------------------------------------------------------------
+    function Geant4.draw(lv::G4LogicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
+        fig = Figure()
+        s = LScene(fig[1, 1])
+        Geant4.draw!(s, lv; wireframe=wireframe, maxlevel=maxlevel)
+        return fig
+    end
+
+    function Geant4.draw!(s, lv::G4LogicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
+        #---Collect the meshes recursively and Vis attributes recursively--------------------------
+        # This assumes that all Placements of a given LogicalVolume are drawn with the same visibility and color
+        lv_meshes = Dict{G4LogicalVolume, Tuple{Vector{GeometryBasics.Mesh}, LVColor, Bool}}()
+        collect_meshes(lv, lv_meshes, one(Transformation3D{Float64}), 1, maxlevel)
+        #---Draw all collected meshes----------------------------------------------------------------
+        for (clv, (meshes, color, visible)) in lv_meshes
+            m = merge(meshes)
+            if wireframe
+                Makie.wireframe!(s, m; linewidth=1, visible=visible)
+            else
+                Makie.mesh!(s, m; color=color, transparency=true, visible=visible)
+            end
+        end
+    end
+
+#---Helper functions for recursive drawing------------------------------------------------------
+    const colors = colormap("Grays", 8)
     const UnitOnAxis = [( 1,0,0), (0,1,0), (0,0,1)]
 
-    function Geant4.draw!(s, lv::G4LogicalVolume, t::Transformation3D{Float64}, level::Int64, wireframe::Bool, maxlevel::Int64)
-        vsolid = GetSolid(lv)
-        tsolid = GetEntityType(vsolid)
-        shape =  getproperty(Geant4,Symbol(tsolid))
-        solid = CxxRef{shape}(vsolid)
-        m = GeometryBasics.mesh(solid[])
+    function collect_meshes(lv::G4LogicalVolume, lv_meshes::Dict{G4LogicalVolume, Tuple{Vector{GeometryBasics.Mesh}, LVColor, Bool}}, t::Transformation3D{Float64}, level::Int64, maxlevel::Int64)
+        solid = GetSolid(lv)
         g4vis = GetVisAttributes(lv)
-        if ! isempty(m)
-            if ! isone(t)
-                points = GeometryBasics.coordinates(m)
-                faces  = GeometryBasics.faces(m)
-                map!(c -> c * t, points, points)
-                m = GeometryBasics.mesh(points, faces, normal=GeometryBasics.normals(points, faces, Vec3f))
-            end
+        points, faces, normals = mesh_constituents(solid[], withnormals=true)
+        if ! isone(t)
+            map!(c -> c * t, points, points)
+            map!(n -> t.rotation * n, normals, normals)
+        end
+        m = GeometryBasics.Mesh(points, faces, normal=per_face(normals, faces))
+        if haskey(lv_meshes, lv)
+            push!(lv_meshes[lv][1], m)
+        else
             color = g4vis != C_NULL ? convert(Tuple{RGB, Float64}, GetColour(g4vis)) : (colors[level], GetDensity(GetMaterial(lv))/(12g/cm3))
             visible = g4vis != C_NULL ? IsVisible(g4vis) : true
-            if wireframe
-                wireframe!(s, m, linewidth=1, visible=visible)
-            else
-                mesh!(s, m, color=color, transparency=true, visible=visible )
-            end
+            lv_meshes[lv] = ([m], color, visible)
         end
         # Go down to the daughters (eventually)
         level >= maxlevel && return
@@ -139,16 +160,26 @@ module G4Vis
                 for i in 1:nReplicas
                     g4t = unitV * (-width*(nReplicas-1)*0.5 + (i-1)*width)
                     transformation = Transformation3D{Float64}(one(RotMatrix3{Float64}), convert(Vector3{Float64}, g4t))
-                    draw!(s, volume[], transformation * t, level+1, wireframe, maxlevel)
+                    collect_meshes(volume[], lv_meshes, transformation * t, level+1, maxlevel)
                 end
             else    
                 g4t = GetTranslation(daughter)
                 g4r = GetRotation(daughter)
                 transformation = Transformation3D{Float64}(convert(RotMatrix3{Float64}, g4r), convert(Vector3{Float64}, g4t))
                 volume = GetLogicalVolume(daughter)
-                draw!(s, volume[], transformation * t, level+1, wireframe, maxlevel)
+                collect_meshes(volume[], lv_meshes, transformation * t, level+1, maxlevel)
             end
         end
+    end
+
+    function GetReplicaParameters(pv::CxxPtr{G4VPhysicalVolume})
+        axis = Ref{EAxis}(kYAxis)
+        nReplicas = Ref{Int32}(0)
+        width = Ref{Float64}(0.)
+        offset = Ref{Float64}(0.)
+        consuming = Ref{UInt8}(0)
+        GetReplicationData(pv, axis, nReplicas, width, offset, consuming)
+        return (axis[], nReplicas[], width[])
     end
 
 #---Testing functions------------------------------------------------------------
