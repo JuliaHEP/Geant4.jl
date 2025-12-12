@@ -222,7 +222,7 @@ beamOn(app, 10000)
 ## ui`/tracking/verbose 0`
 # ## Visualize the detector geometry
 # Load the needed modules for visualization
-using CairoMakie, Rotations, LinearAlgebra, IGLWrap_jll  ## to force loading G4Vis extension
+using CairoMakie ## to force loading G4Vis extension
 #md import DisplayAs: PNG
 #nb import DisplayAs: PNG
 # Display the detector geometry

@@ -167,7 +167,7 @@ beamOn(app, 10000)
 
 # ui`/tracking/verbose 0`
 
-using CairoMakie, Rotations, LinearAlgebra, IGLWrap_jll  ## to force loading G4Vis extension
+using CairoMakie ## to force loading G4Vis extension
 
 world = GetVolume("World")
 img = draw(world[])

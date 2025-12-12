@@ -1,7 +1,7 @@
 using Geant4
 using Geant4.SystemOfUnits
 using Libdl
-using CairoMakie, Rotations, LinearAlgebra, IGLWrap_jll  # to force loading G4Vis extension
+using CairoMakie  # to force loading G4Vis extension
 
 prefix = Geant4.Geant4_jll.artifact_dir
 dlext = Libdl.dlext;

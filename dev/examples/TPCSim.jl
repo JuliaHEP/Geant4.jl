@@ -4,7 +4,7 @@ using Parameters
 using PYTHIA8
 
 # to force loading G4Vis extension we need to load the following modules
-using CairoMakie, Rotations, IGLWrap_jll, LinearAlgebra
+using GLMakie
 using PYTHIA8: px, py, pz
 
 using Geant4.SystemOfUnits: m, cm, mole,cm3
