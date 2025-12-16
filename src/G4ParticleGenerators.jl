@@ -49,7 +49,15 @@ function G4JLPrimaryGenerator{G4JLParticleGunData}(;particle="e-", energy=10., d
     end
     G4JLPrimaryGenerator("ParticleGun", data; init_method=init, generate_method=gen)
 end
-
+"""
+G4JLGunGenerator(; particle="e-", energy=10., direction=G4ThreeVector(), position=G4ThreeVector())
+Create a Particle Gun generator with specified particle type, energy, direction, and position.
+# Arguments
+- `particle::String="e-"`: The name of the particle to be generated (default is electron).
+- `energy::Float64=10.`: The energy of the particle in Me   V (default is 10 MeV).
+- `direction::G4ThreeVector=G4ThreeVector()`: The momentum direction of the particle (default is zero vector).
+- `position::G4ThreeVector=G4ThreeVector()`: The position of the particle (default is zero vector).
+"""
 const G4JLGunGenerator = G4JLPrimaryGenerator{G4JLParticleGunData}
 
 function SetParticleByName(gen::G4JLGunGenerator, particle::String)
