@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>G4example.cpp · Geant4.jl</title><meta name="title" content="G4example.cpp · Geant4.jl"/><meta property="og:title" content="G4example.cpp · Geant4.jl"/><meta property="twitter:title" content="G4example.cpp · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><span class="tocitem">Examples</span><ul><li><input class="collapse-toggle" id="menuitem-3-1" type="checkbox"/><label class="tocitem" for="menuitem-3-1"><span class="docs-label">Basic</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../B1/">Basic/B1 Example</a></li><li><a class="tocitem" href="../B2a/">Basic/B2a Example</a></li><li><a class="tocitem" href="../B2aVis/">Basic/B2a Event Display Example</a></li><li><a class="tocitem" href="../B3a/">Basic/B3a Example</a></li><li><a class="tocitem" href="../B4a/">Basic/B4a Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox"/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Extended</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../GPS/">Extended/GPS Example</a></li><li><a class="tocitem" href="../RE03/">Extended/RE03 Example</a></li><li><a class="tocitem" href="../TestEm3/">Extended/TestEm3 Example</a></li><li><a class="tocitem" href="../Solids/">Geant4 Solids</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox"/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Advanced</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../TPCSim/">Simulation of the Aleph TPC</a></li><li><a class="tocitem" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber</a></li><li><a class="tocitem" href="../WaterPhantom/">Water Phantom with Scoring</a></li><li><a class="tocitem" href="../UserLib/">Calling Custom C++ library</a></li><li><a class="tocitem" href="../JuliaAction/">Calling G4 actions in Julia</a></li></ul></li></ul></li><li class="is-active"><a class="tocitem" href>G4example.cpp</a></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>G4example.cpp</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>G4example.cpp</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/examples/G4example.md#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="G4example.cpp"><a class="docs-heading-anchor" href="#G4example.cpp">G4example.cpp</a><a id="G4example.cpp-1"></a><a class="docs-heading-anchor-permalink" href="#G4example.cpp" title="Permalink"></a></h1><pre><code class="language-c hljs">#include &quot;G4VUserDetectorConstruction.hh&quot;
+#include &quot;G4VUserPrimaryGeneratorAction.hh&quot;
+#include &quot;G4UserEventAction.hh&quot;
+#include &quot;G4UserRunAction.hh&quot;
+#include &quot;G4ParticleGun.hh&quot;
+#include &quot;G4RunManager.hh&quot;
+#include &quot;G4UImanager.hh&quot;
+#include &quot;G4RunManagerFactory.hh&quot;
+#include &quot;QBBC.hh&quot;
+#include &quot;G4NistManager.hh&quot;
+#include &quot;G4Box.hh&quot;
+#include &quot;G4LogicalVolume.hh&quot;
+#include &quot;G4PVPlacement.hh&quot;
+//#include &quot;G4SystemOfUnits.hh&quot;
+#include &quot;globals.hh&quot;
+#include &quot;G4VUserActionInitialization.hh&quot;
+#include &quot;G4UserWorkerInitialization.hh&quot;
+#include &lt;julia.h&gt;
+#include &lt;iostream&gt;
+
+//---Detector construction class-------------------------------------------------------------------
+class DetectorConstruction : public G4VUserDetectorConstruction
+{
+  public:
+    DetectorConstruction() = default;
+    ~DetectorConstruction() override = default;
+    G4VPhysicalVolume* Construct() override {
+        auto nist = G4NistManager::Instance();
+        auto world_mat = nist-&gt;FindOrBuildMaterial(&quot;G4_AIR&quot;);
+        auto core_mat  = nist-&gt;FindOrBuildMaterial(&quot;G4_WATER&quot;);
+        auto world_size = 1.0*CLHEP::m;
+        auto solidWorld = new G4Box(&quot;World&quot;, world_size, world_size, world_size);
+        auto logicWorld = new G4LogicalVolume(solidWorld, world_mat, &quot;World&quot;);
+        auto physWorld = new G4PVPlacement(0, G4ThreeVector(), logicWorld, &quot;World&quot;, 0, false, 0);
+        auto core_size = 0.5*CLHEP::m;
+        auto solidCore = new G4Box(&quot;Core&quot;, core_size, core_size, core_size);
+        auto logicCore = new G4LogicalVolume(solidCore, core_mat, &quot;Core&quot;);
+        new G4PVPlacement(0, G4ThreeVector(), logicCore, &quot;Core&quot;, logicWorld, false, 0);
+        return physWorld;
+    }
+    void ConstructSDandField() override {}
+};
+
+//---Primary generator action class----------------------------------------------------------------
+class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
+{
+public:
+    PrimaryGeneratorAction() { fParticleGun  = new G4ParticleGun(); }    
+    ~PrimaryGeneratorAction() { delete fParticleGun; }
+    void GeneratePrimaries(G4Event* anEvent) override {
+        fPrimaryParticleName = fParticleGun-&gt;GetParticleDefinition()-&gt;GetParticleName();
+        fParticleGun-&gt;SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
+        fParticleGun-&gt;SetParticlePosition(G4ThreeVector(0.,0.,-1.*CLHEP::m));
+        fParticleGun-&gt;GeneratePrimaryVertex(anEvent);
+    }
+    G4ParticleGun* GetParticleGun() {return fParticleGun;};
+    const G4String&amp; GetParticleName() { return fPrimaryParticleName;}
+private:
+    G4String fPrimaryParticleName;
+    G4ParticleGun* fParticleGun;
+};
+
+typedef  void (*stepaction_f)(const G4Step*);
+class SteppingAction : public G4UserSteppingAction
+{
+public:
+    SteppingAction() {
+      action_jl = (stepaction_f)(jl_unbox_voidpointer(jl_eval_string(&quot;@cfunction(stepping_action, Nothing, (CxxPtr{G4Step},))&quot;)));
+      std::cout &lt;&lt; &quot;=====&gt; &quot; &lt;&lt; action_jl &lt;&lt; std::endl;
+    } 
+    ~SteppingAction() {}
+    void UserSteppingAction(const G4Step* step) override { action_jl(step); }
+private:
+    stepaction_f action_jl;
+};
+
+typedef  void (*eventaction_f)(const G4Event*);
+class EventAction : public G4UserEventAction
+{
+  public:
+    EventAction() {
+      beginevent_jl = (eventaction_f)(jl_unbox_voidpointer(jl_eval_string(&quot;@cfunction(begin_of_event_action, Nothing, (CxxPtr{G4Event},))&quot;)));
+      endevent_jl = (eventaction_f)(jl_unbox_voidpointer(jl_eval_string(&quot;@cfunction(end_of_event_action, Nothing, (CxxPtr{G4Event},))&quot;)));
+    }
+    ~EventAction() override = default;
+
+    void BeginOfEventAction(const G4Event* event) override { beginevent_jl(event); }
+    void EndOfEventAction(const G4Event* event) override { endevent_jl(event); }
+  private:
+    eventaction_f beginevent_jl;
+    eventaction_f endevent_jl;
+};
+
+typedef  void (*runaction_f)(const G4Run*);
+class RunAction : public G4UserRunAction
+{
+  public:
+    RunAction() {
+      beginrun_jl = (runaction_f)(jl_unbox_voidpointer(jl_eval_string(&quot;@cfunction(begin_of_run_action, Nothing, (CxxPtr{G4Run},))&quot;)));
+      endrun_jl = (runaction_f)(jl_unbox_voidpointer(jl_eval_string(&quot;@cfunction(end_of_run_action, Nothing, (CxxPtr{G4Run},))&quot;)));
+    }
+    ~RunAction() override = default;
+
+    void BeginOfRunAction(const G4Run* run) override { beginrun_jl(run); }
+    void EndOfRunAction(const G4Run* run) override { endrun_jl(run); }
+
+  private:
+    runaction_f beginrun_jl;
+    runaction_f endrun_jl;
+};
+
+
+class WorkerInitialization : public G4UserWorkerInitialization {
+  public:
+    WorkerInitialization() = default;
+    virtual ~WorkerInitialization() = default;
+    virtual void WorkerInitialize() const override {
+      if (jl_get_pgcstack() == NULL) jl_adopt_thread();
+    }
+    virtual void WorkerStart() const override {}
+    virtual void WorkerRunStart() const override {}
+    virtual void WorkerRunEnd() const override {
+      jl_ptls_t ptls = jl_current_task-&gt;ptls;
+      jl_gc_safe_enter(ptls);
+    }
+    virtual void WorkerStop() const override {}
+};
+
+//---Action initialization class-------------------------------------------------------------------
+class ActionInitialization : public G4VUserActionInitialization
+{
+  public:
+    ActionInitialization() = default;
+    ~ActionInitialization() override = default;
+    void BuildForMaster() const override {
+        SetUserAction(new RunAction);
+    }
+    void Build() const override {
+        SetUserAction(new PrimaryGeneratorAction);
+        SetUserAction(new RunAction);
+        SetUserAction(new EventAction);
+        SetUserAction(new SteppingAction);
+    }
+};
+
+
+
+JULIA_DEFINE_FAST_TLS // only define this once, in an executable (not in a shared library) if you want fast code.
+
+//----Main program---------------------------------------------------------------------------------
+int main(int, char**)
+{
+    int nthreads = 0; // Default number of threads
+    if (getenv(&quot;G4NUMTHREADS&quot;)) nthreads = atoi(getenv(&quot;G4NUMTHREADS&quot;));
+
+    //--- Required to setup the Julia context------------------------------------------------------
+    jl_init();
+        /* run Julia commands */
+    jl_eval_string(&quot;include(\&quot;MyCode.jl\&quot;)&quot;);
+    if (jl_exception_occurred()) {
+        std::cout &lt;&lt; &quot;=====&gt; &quot; &lt;&lt; jl_typeof_str(jl_exception_occurred()) &lt;&lt; std::endl;
+    }
+
+    //---Construct the default run manager (taking into account the number of threads)-------------
+    G4RunManager* runManager;
+    if (nthreads &gt; 0) { 
+        runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::MT);
+        runManager-&gt;SetNumberOfThreads(nthreads);
+        runManager-&gt;SetUserInitialization(new WorkerInitialization());
+    } else {
+        runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::Serial);
+    }
+
+    //---Set mandatory initialization classes------------------------------------------------------
+    // Detector construction
+    runManager-&gt;SetUserInitialization(new DetectorConstruction());
+
+    // Physics list
+    runManager-&gt;SetUserInitialization(new QBBC(0));
+
+    // User action initialization
+    runManager-&gt;SetUserInitialization(new ActionInitialization());
+
+    // Initialize G4 kernel
+    runManager-&gt;Initialize();
+    
+    // Get the pointer to the User Interface manager
+    auto UImanager = G4UImanager::GetUIpointer();
+    UImanager-&gt;ApplyCommand(&quot;/control/verbose 1&quot;);
+    UImanager-&gt;ApplyCommand(&quot;/run/verbose 1&quot;);
+    //UImanager-&gt;ApplyCommand(&quot;/event/verbose 0&quot;);
+    //UImanager-&gt;ApplyCommand(&quot;/tracking/verbose 1&quot;);
+    UImanager-&gt;ApplyCommand(&quot;/gun/particle e+&quot;);
+    UImanager-&gt;ApplyCommand(&quot;/gun/energy 100 MeV&quot;);
+
+    // Start a run (we need to enter GC safe region here because the worker threads 
+    // will enter a wait state while waiting for workers to finish and this can block GC
+    auto state = jl_gc_safe_enter(jl_current_task-&gt;ptls);
+    runManager-&gt;BeamOn(100000);
+    jl_gc_safe_leave(jl_current_task-&gt;ptls, state);
+
+    // Job termination---------------------------------------------------------------------------
+    delete runManager;
+
+    // strongly recommended: notify Julia that the program is about to terminate. 
+    // this allows Julia time to cleanup pending write requests and run all finalizers
+    jl_atexit_hook(0);
+}</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../MyCode/">« MyCode.jl</a><a class="docs-footer-nextpage" href="../../releases/">Release Notes »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Tuesday 16 December 2025 09:43">Tuesday 16 December 2025</span>. Using Julia version 1.12.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

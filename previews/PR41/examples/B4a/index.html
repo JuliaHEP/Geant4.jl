@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Basic/B4a Example · Geant4.jl</title><meta name="title" content="Basic/B4a Example · Geant4.jl"/><meta property="og:title" content="Basic/B4a Example · Geant4.jl"/><meta property="twitter:title" content="Basic/B4a Example · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><span class="tocitem">Examples</span><ul><li><input class="collapse-toggle" id="menuitem-3-1" type="checkbox" checked/><label class="tocitem" for="menuitem-3-1"><span class="docs-label">Basic</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../B1/">Basic/B1 Example</a></li><li><a class="tocitem" href="../B2a/">Basic/B2a Example</a></li><li><a class="tocitem" href="../B2aVis/">Basic/B2a Event Display Example</a></li><li><a class="tocitem" href="../B3a/">Basic/B3a Example</a></li><li class="is-active"><a class="tocitem" href>Basic/B4a Example</a><ul class="internal"><li><a class="tocitem" href="#Loading-the-necessary-Julia-modules"><span>Loading the necessary Julia modules</span></a></li><li><a class="tocitem" href="#Define-Detector-Parameters-struct"><span>Define Detector Parameters struct</span></a></li><li><a class="tocitem" href="#Defining-the-geometry-constructor"><span>Defining the geometry constructor</span></a></li><li><a class="tocitem" href="#Primary-Particle-Generator"><span>Primary Particle Generator</span></a></li><li><a class="tocitem" href="#Defining-the-simulation-data"><span>Defining the simulation data</span></a></li><li><a class="tocitem" href="#User-Actions"><span>User Actions</span></a></li><li><a class="tocitem" href="#Begin-Run-Action"><span>Begin Run Action</span></a></li><li><a class="tocitem" href="#Making-the-Application"><span>Making the Application</span></a></li><li><a class="tocitem" href="#Run-the-Example"><span>Run the Example</span></a></li><li><a class="tocitem" href="#Plotting-the-histograms"><span>Plotting the histograms</span></a></li></ul></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox"/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Extended</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../GPS/">Extended/GPS Example</a></li><li><a class="tocitem" href="../RE03/">Extended/RE03 Example</a></li><li><a class="tocitem" href="../TestEm3/">Extended/TestEm3 Example</a></li><li><a class="tocitem" href="../Solids/">Geant4 Solids</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox"/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Advanced</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../TPCSim/">Simulation of the Aleph TPC</a></li><li><a class="tocitem" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber</a></li><li><a class="tocitem" href="../WaterPhantom/">Water Phantom with Scoring</a></li><li><a class="tocitem" href="../UserLib/">Calling Custom C++ library</a></li><li><a class="tocitem" href="../JuliaAction/">Calling G4 actions in Julia</a></li></ul></li></ul></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li><a class="is-disabled">Basic</a></li><li class="is-active"><a href>Basic/B4a Example</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Basic/B4a Example</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/examples/B4a.lit#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Basic/B4a-Example"><a class="docs-heading-anchor" href="#Basic/B4a-Example">Basic/B4a Example</a><a id="Basic/B4a-Example-1"></a><a class="docs-heading-anchor-permalink" href="#Basic/B4a-Example" title="Permalink"></a></h1><p>This example simulates a simple Sampling Calorimeter setup. To demonstrate several possible ways of data scoring, the example is provided in four variants: %B4a, %B4b, %B4c, %B4d. See <a href="https://github.com/Geant4/geant4/blob/master/examples/basic/B5/README.md">README</a> file for the example.</p><div class="admonition is-info" id="Note-that-e3bdae33921cd559"><header class="admonition-header">Note that<a class="admonition-anchor" href="#Note-that-e3bdae33921cd559" title="Permalink"></a></header><div class="admonition-body"><p>You can also download this example as a <a href="../B4a.ipynb">Jupyter notebook</a> and a plain <a href="../B4a.jl">Julia source file</a>.</p></div></div><h4 id="Table-of-contents"><a class="docs-heading-anchor" href="#Table-of-contents">Table of contents</a><a id="Table-of-contents-1"></a><a class="docs-heading-anchor-permalink" href="#Table-of-contents" title="Permalink"></a></h4><ul><li><a href="#Loading-the-necessary-Julia-modules">Loading the necessary Julia modules</a></li><li><a href="#Define-Detector-Parameters-struct">Define Detector Parameters struct</a></li><li><a href="#Defining-the-geometry-constructor">Defining the geometry constructor</a></li><li><a href="#Primary-Particle-Generator">Primary Particle Generator</a></li><li><a href="#Defining-the-simulation-data">Defining the simulation data</a></li><li><a href="#User-Actions">User Actions</a></li><li><a href="#Begin-Run-Action">Begin Run Action</a></li><li class="no-marker"><ul><li><a href="#End-Run-Action">End Run Action</a></li><li><a href="#Begin-Event-Action">Begin Event Action</a></li><li><a href="#Stepping-Action">Stepping Action</a></li></ul></li><li><a href="#Making-the-Application">Making the Application</a></li><li><a href="#Run-the-Example">Run the Example</a></li><li><a href="#Plotting-the-histograms">Plotting the histograms</a></li></ul><h2 id="Loading-the-necessary-Julia-modules"><a class="docs-heading-anchor" href="#Loading-the-necessary-Julia-modules">Loading the necessary Julia modules</a><a id="Loading-the-necessary-Julia-modules-1"></a><a class="docs-heading-anchor-permalink" href="#Loading-the-necessary-Julia-modules" title="Permalink"></a></h2><p>Load the <code>Geant4</code> and <code>Geant4.SystemOfUnits</code> modules.</p><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits:  cm, cm3, mm, pGy, eplus, keV, g, eV, MeV, mole
+using FHist, Plots
+
+# to force loading G4Vis extension we need to load the following module
+using CairoMakie</code></pre><h2 id="Define-Detector-Parameters-struct"><a class="docs-heading-anchor" href="#Define-Detector-Parameters-struct">Define Detector Parameters struct</a><a id="Define-Detector-Parameters-struct-1"></a><a class="docs-heading-anchor-permalink" href="#Define-Detector-Parameters-struct" title="Permalink"></a></h2><p>The <code>B4Detector</code> structure is defined with the default detector parameters.</p><pre><code class="language-julia hljs">mutable struct B4aDetector &lt;: G4JLDetector
+    # main input parameters
+    const nofLayers::Int
+    const checkOverlaps::Bool
+    const absoThickness::Float64
+    const gapThickness::Float64
+    const calorSizeXY::Float64
+
+    # constructor with defaults values for parameters
+    function B4aDetector(;      nofLayers::Int=10,
+                                checkOverlaps::Bool=true,
+                                absoThickness::Float64=10mm,
+                                gapThickness::Float64=5mm,
+                                calorSizeXY::Float64=10cm)
+            self = new(nofLayers, checkOverlaps, absoThickness, gapThickness, calorSizeXY)
+        return self
+    end
+end
+_layerThickness(d::B4aDetector) = d.absoThickness + d.gapThickness
+_calorThickness(d::B4aDetector) = d.nofLayers * _layerThickness(d)
+_worldSizeZ(d::B4aDetector) = 1.2 * _calorThickness(d)
+_worldSizeXY(d::B4aDetector) = 1.2 * d.calorSizeXY</code></pre><pre><code class="nohighlight hljs">_worldSizeXY (generic function with 1 method)</code></pre><h2 id="Defining-the-geometry-constructor"><a class="docs-heading-anchor" href="#Defining-the-geometry-constructor">Defining the geometry constructor</a><a id="Defining-the-geometry-constructor-1"></a><a class="docs-heading-anchor-permalink" href="#Defining-the-geometry-constructor" title="Permalink"></a></h2><pre><code class="language-julia hljs">function B4aConstruct(det::B4aDetector)::CxxPtr{G4VPhysicalVolume}
+    (; nofLayers, checkOverlaps, absoThickness, gapThickness, calorSizeXY) = det
+    nist = G4NistManager!Instance()
+
+
+    layerThickness = _layerThickness(det)
+    calorThickness = _calorThickness(det)
+    worldSizeXY = _worldSizeXY(det)
+    worldSizeZ = _worldSizeZ(det)
+
+    G4Material(&quot;liquidArgon&quot;, z = 18., a = 30.95g/mole, density = 1.390g/cm3)
+
+    defaultMaterial = FindOrBuildMaterial(nist, &quot;G4_Galactic&quot;)
+    absorberMaterial = FindOrBuildMaterial(nist, &quot;G4_Pb&quot;)
+    gapMaterial = FindOrBuildMaterial(nist, &quot;liquidArgon&quot;)
+
+
+
+    worldS = G4Box(&quot;World&quot;, 0.5 * worldSizeXY, 0.5 * worldSizeXY, 0.5 * worldSizeZ)
+
+    worldLV = G4LogicalVolume(worldS, defaultMaterial, &quot;WorldLV&quot;)
+
+    worldPV = G4PVPlacement(nothing,          # no rotation
+                            G4ThreeVector(),  # at (0,0,0)
+                            worldLV,          # its logical volume
+                            &quot;World&quot;,          # its name
+                            nothing,          # its mother volume
+                            false,            # no boolean operation
+                            0,                # copy number
+                            checkOverlaps)    # overlaps checking
+
+##---------------------------------------
+    calorimeterS = G4Box(&quot;Calorimeter&quot;, 0.5 * calorSizeXY, 0.5 * calorSizeXY, 0.5 * calorThickness)
+
+
+    calorLV = G4LogicalVolume(calorimeterS, defaultMaterial, &quot;CalorLV&quot;)
+
+    println(calorLV)
+
+    G4PVPlacement(nothing,
+                    G4ThreeVector(),
+                    calorLV,
+                    &quot;CalorPV&quot;,
+                    worldLV,
+                    false,
+                    0,
+                    checkOverlaps)
+##----------------------------------------------
+
+     layerS = G4Box(&quot;Layer&quot;,
+                    0.5*calorSizeXY, 0.5*calorSizeXY, 0.5*layerThickness)
+
+     layerLV = G4LogicalVolume(layerS,
+                           defaultMaterial,
+                           &quot;Layer&quot;)
+
+    G4PVReplica(&quot;Layer&quot;,
+                  layerLV,
+                  calorLV,
+                  kZAxis,
+                  nofLayers,
+                  layerThickness)
+
+##---------------------------------------------------
+   absorberS = G4Box(&quot;Abso&quot;,
+                      0.5*calorSizeXY, 0.5*calorSizeXY, 0.5*absoThickness)
+
+    absorberLV = G4LogicalVolume(absorberS, absorberMaterial, &quot;AbsoLV&quot;)
+
+    G4PVPlacement(nothing,
+                  G4ThreeVector(0., 0., -0.5*gapThickness),
+                    absorberLV,
+                    &quot;AbsPV&quot;,
+                    layerLV,
+                    false,
+                    0,
+                    checkOverlaps)
+##--------------------------------------
+
+  gapS = G4Box(&quot;Gap&quot;, 0.5*calorSizeXY, 0.5*calorSizeXY, 0.5*gapThickness)
+
+  gapLV = G4LogicalVolume(gapS, gapMaterial, &quot;Gap&quot;)
+
+  G4PVPlacement(nothing,
+                G4ThreeVector(0., 0., 0.5*absoThickness),
+                gapLV,
+                &quot;GapPV&quot;,
+                layerLV,
+                false,
+                0,
+                checkOverlaps)
+
+
+##------------------------------------------
+##Visualization attributes
+    SetVisAttributes(worldLV, G4VisAttributes!GetInvisible())
+    SetVisAttributes(calorLV, G4VisAttributes!GetInvisible())
+
+return worldPV              # return a pointer to the G4PhysicalVolume
+end</code></pre><pre><code class="nohighlight hljs">B4aConstruct (generic function with 1 method)</code></pre><p>Instantiate the detector</p><pre><code class="language-julia hljs">detector = B4aDetector()</code></pre><pre><code class="nohighlight hljs">Main.var&quot;##277&quot;.B4aDetector(10, true, 10.0, 5.0, 100.0)</code></pre><h2 id="Primary-Particle-Generator"><a class="docs-heading-anchor" href="#Primary-Particle-Generator">Primary Particle Generator</a><a id="Primary-Particle-Generator-1"></a><a class="docs-heading-anchor-permalink" href="#Primary-Particle-Generator" title="Permalink"></a></h2><pre><code class="language-julia hljs">worldZHalfLength = _worldSizeZ(detector)/2
+particlegun = G4JLGunGenerator(particle = &quot;e-&quot;,
+                               energy = 300MeV,
+                               direction = G4ThreeVector(0., 0., 1.),
+                               position = G4ThreeVector(0,0,-worldZHalfLength))</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLGunGenerator(&quot;ParticleGun&quot;, Geant4.G4JLParticleGunData(nothing, &quot;e-&quot;, G4ThreeVector(0.0,0.0,1.0), G4ThreeVector(0.0,0.0,-90.0), 300.0), Geant4.var&quot;#init#19&quot;(), Geant4.var&quot;#gen#20&quot;(), Geant4.G4JLGeneratorAction[])</code></pre><h2 id="Defining-the-simulation-data"><a class="docs-heading-anchor" href="#Defining-the-simulation-data">Defining the simulation data</a><a id="Defining-the-simulation-data-1"></a><a class="docs-heading-anchor-permalink" href="#Defining-the-simulation-data" title="Permalink"></a></h2><pre><code class="language-julia hljs">const Hist1D64 = Hist1D{Float64}
+mutable struct B4aSimData &lt;: G4JLSimulationData
+    fEnergyDeposit_Abs::Float64
+    fEnergyDeposit_Gap::Float64
+
+    fStepLength_Abs::Float64
+    fStepLength_Gap::Float64
+
+    fEdepHist_Abs::Hist1D64
+    fStepLenHist_Abs::Hist1D64
+
+    fEdepHist_Gap::Hist1D64
+    fStepLenHist_Gap::Hist1D64
+
+    B4aSimData() = new()
+end</code></pre><h2 id="User-Actions"><a class="docs-heading-anchor" href="#User-Actions">User Actions</a><a id="User-Actions-1"></a><a class="docs-heading-anchor-permalink" href="#User-Actions" title="Permalink"></a></h2><h2 id="Begin-Run-Action"><a class="docs-heading-anchor" href="#Begin-Run-Action">Begin Run Action</a><a id="Begin-Run-Action-1"></a><a class="docs-heading-anchor-permalink" href="#Begin-Run-Action" title="Permalink"></a></h2><pre><code class="language-julia hljs">function beginrun(run::G4Run, app::G4JLApplication)::Nothing
+    data = getSIMdata(app)
+
+    data.fEdepHist_Abs = Hist1D(;binedges=100.:1.:300.)
+    data.fStepLenHist_Abs = Hist1D(;binedges=0.:2.:500.)
+
+    data.fEdepHist_Gap = Hist1D(;binedges=0.:1.:200.)
+    data.fStepLenHist_Gap = Hist1D(;binedges=0.:2.:500.)
+    nothing
+end</code></pre><pre><code class="nohighlight hljs">beginrun (generic function with 1 method)</code></pre><h3 id="End-Run-Action"><a class="docs-heading-anchor" href="#End-Run-Action">End Run Action</a><a id="End-Run-Action-1"></a><a class="docs-heading-anchor-permalink" href="#End-Run-Action" title="Permalink"></a></h3><pre><code class="language-julia hljs">function endrun(run::G4Run, app::G4JLApplication)::Nothing
+    nothing
+end</code></pre><pre><code class="nohighlight hljs">endrun (generic function with 1 method)</code></pre><h3 id="Begin-Event-Action"><a class="docs-heading-anchor" href="#Begin-Event-Action">Begin Event Action</a><a id="Begin-Event-Action-1"></a><a class="docs-heading-anchor-permalink" href="#Begin-Event-Action" title="Permalink"></a></h3><pre><code class="language-julia hljs">function beginevent(evt::G4Event, app::G4JLApplication)
+    G4JL_println(&quot;===============started event $(evt |&gt; GetEventID)&quot;)
+    data = getSIMdata(app)
+    data.fEnergyDeposit_Abs = 0.0
+    data.fStepLength_Abs = 0.0
+
+    data.fEnergyDeposit_Gap = 0.0
+    data.fStepLength_Gap = 0.0
+    return
+end</code></pre><pre><code class="nohighlight hljs">beginevent (generic function with 1 method)</code></pre><p>###End event action</p><pre><code class="language-julia hljs">function endevent(evt::G4Event, app::G4JLApplication)
+    data = getSIMdata(app)
+#     G4JL_println(&quot;AbsEdep: $(data.fEnergyDeposit_Abs)&quot;)
+#     println(&quot;AbsStepLength: &quot;, data.fStepLength_Abs)
+
+    push!(data.fEdepHist_Abs, data.fEnergyDeposit_Abs)
+    push!(data.fStepLenHist_Abs, data.fStepLength_Abs)
+
+    push!(data.fEdepHist_Gap, data.fEnergyDeposit_Gap)
+    push!(data.fStepLenHist_Gap, data.fStepLength_Gap)
+
+    println(&quot;Total Energy deposited in Absorber: &quot;,data.fEnergyDeposit_Abs)
+    println(&quot;Total Energy deposited in Gaps: &quot;, data.fEnergyDeposit_Gap)
+    G4JL_println(&quot;================event ended $(evt |&gt; GetEventID) \n&quot;)
+    return
+end</code></pre><pre><code class="nohighlight hljs">endevent (generic function with 1 method)</code></pre><h3 id="Stepping-Action"><a class="docs-heading-anchor" href="#Stepping-Action">Stepping Action</a><a id="Stepping-Action-1"></a><a class="docs-heading-anchor-permalink" href="#Stepping-Action" title="Permalink"></a></h3><pre><code class="language-julia hljs">function stepaction(step::G4Step, app::G4JLApplication)
+    data = getSIMdata(app)
+
+    volume = step |&gt; GetPreStepPoint |&gt; GetPhysicalVolume |&gt; GetName
+    edep = step |&gt; GetTotalEnergyDeposit
+
+    stepLength = 0
+    if step |&gt; GetTrack |&gt; GetDefinition |&gt; GetPDGCharge != 0.
+        stepLength = step |&gt; GetStepLength
+    end
+
+    if volume[] == &quot;AbsPV&quot;
+        data.fEnergyDeposit_Abs += edep
+        data.fStepLength_Abs += stepLength
+    end
+
+    if volume[] == &quot;GapPV&quot;
+        data.fEnergyDeposit_Gap += edep
+        data.fStepLength_Gap += stepLength
+    end
+    return
+end</code></pre><pre><code class="nohighlight hljs">stepaction (generic function with 1 method)</code></pre><h2 id="Making-the-Application"><a class="docs-heading-anchor" href="#Making-the-Application">Making the Application</a><a id="Making-the-Application-1"></a><a class="docs-heading-anchor-permalink" href="#Making-the-Application" title="Permalink"></a></h2><pre><code class="language-julia hljs">evtdisplay   = G4JLEventDisplay(joinpath(@__DIR__, &quot;B4aVis.jl&quot;))
+Geant4.getConstructor(::B4aDetector)::Function = B4aConstruct
+app = G4JLApplication(detector = detector,               # detector with parameters
+                      simdata = B4aSimData(),            # simulation data
+                      generator = particlegun,           # primary particle generator
+                      nthreads = 0,                      # # of threads (0 = no MT)
+                      physics_type = FTFP_BERT,          # what physics list to instantiate
+                      evtdisplay   = evtdisplay,         # event display
+                      stepaction_method = stepaction,
+                      beginrunaction_method = beginrun,  # begin-run action (initialize counters and histograms)
+                      endrunaction_method = endrun,
+                      begineventaction_method=beginevent,
+                      endeventaction_method = endevent
+                     )
+
+configure(app)
+initialize(app)</code></pre><pre><code class="nohighlight hljs">
+**************************************************************
+ Geant4 version Name: geant4-11-03-patch-02 [MT]   (25-April-2025)
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+Geant4.G4LogicalVolumeAllocated(Ptr{Nothing}(0x00000000039259c0))
+Checking overlaps for volume CalorPV:0 (G4Box) ... OK! 
+Checking overlaps for volume AbsPV:0 (G4Box) ... OK! 
+Checking overlaps for volume GapPV:0 (G4Box) ... OK! 
+</code></pre><h2 id="Run-the-Example"><a class="docs-heading-anchor" href="#Run-the-Example">Run the Example</a><a id="Run-the-Example-1"></a><a class="docs-heading-anchor-permalink" href="#Run-the-Example" title="Permalink"></a></h2><p>Run a single event and display it</p><pre><code class="language-julia hljs"># ui`/tracking/verbose 1`
+beamOn(app,1)</code></pre><p><img src="../B4a-29.png" alt/></p><p>Run for 100 events</p><pre><code class="language-julia hljs">beamOn(app, 100)</code></pre><pre><code class="nohighlight hljs">===============started event 0
+Total Energy deposited in Absorber: 271.5302704609608
+Total Energy deposited in Gaps: 22.247044337367168
+================event ended 0 
+
+===============started event 1
+Total Energy deposited in Absorber: 274.6097012437138
+Total Energy deposited in Gaps: 8.849499385274473
+================event ended 1 
+
+===============started event 2
+Total Energy deposited in Absorber: 272.96409020278264
+Total Energy deposited in Gaps: 7.620688171941664
+================event ended 2 
+
+===============started event 3
+Total Energy deposited in Absorber: 276.3075115649578
+Total Energy deposited in Gaps: 14.617492816857656
+================event ended 3 
+
+===============started event 4
+Total Energy deposited in Absorber: 271.30106988196525
+Total Energy deposited in Gaps: 9.649821775814084
+================event ended 4 
+
+===============started event 5
+Total Energy deposited in Absorber: 277.50875635543196
+Total Energy deposited in Gaps: 12.028791713243322
+================event ended 5 
+
+===============started event 6
+Total Energy deposited in Absorber: 276.2774023842731
+Total Energy deposited in Gaps: 10.873744405847377
+================event ended 6 
+
+===============started event 7
+Total Energy deposited in Absorber: 272.58335738273445
+Total Energy deposited in Gaps: 16.504516172365314
+================event ended 7 
+
+===============started event 8
+Total Energy deposited in Absorber: 268.56514501628266
+Total Energy deposited in Gaps: 9.374397195957695
+================event ended 8 
+
+===============started event 9
+Total Energy deposited in Absorber: 266.60954854589994
+Total Energy deposited in Gaps: 20.03420842145821
+================event ended 9 
+
+===============started event 10
+Total Energy deposited in Absorber: 264.6632888805728
+Total Energy deposited in Gaps: 19.89085973304624
+================event ended 10 
+
+===============started event 11
+Total Energy deposited in Absorber: 261.1659043839921
+Total Energy deposited in Gaps: 25.96207683323858
+================event ended 11 
+
+===============started event 12
+Total Energy deposited in Absorber: 263.9113355442207
+Total Energy deposited in Gaps: 12.086460646878681
+================event ended 12 
+
+===============started event 13
+Total Energy deposited in Absorber: 275.47935757157643
+Total Energy deposited in Gaps: 5.585884189308387
+================event ended 13 
+
+===============started event 14
+Total Energy deposited in Absorber: 266.66981722234993
+Total Energy deposited in Gaps: 17.708362841557456
+================event ended 14 
+
+===============started event 15
+Total Energy deposited in Absorber: 265.13480458927836
+Total Energy deposited in Gaps: 5.078813905447857
+================event ended 15 
+
+===============started event 16
+Total Energy deposited in Absorber: 280.14444323065277
+Total Energy deposited in Gaps: 13.517502162242703
+================event ended 16 
+
+===============started event 17
+Total Energy deposited in Absorber: 273.90318511946424
+Total Energy deposited in Gaps: 13.841553385175665
+================event ended 17 
+
+===============started event 18
+Total Energy deposited in Absorber: 285.46817801987845
+Total Energy deposited in Gaps: 7.1652911510377315
+================event ended 18 
+
+===============started event 19
+Total Energy deposited in Absorber: 285.42631393208654
+Total Energy deposited in Gaps: 10.866951511295085
+================event ended 19 
+
+===============started event 20
+Total Energy deposited in Absorber: 264.32736231604133
+Total Energy deposited in Gaps: 7.495083390595656
+================event ended 20 
+
+===============started event 21
+Total Energy deposited in Absorber: 269.46034862233734
+Total Energy deposited in Gaps: 19.89924842626208
+================event ended 21 
+
+===============started event 22
+Total Energy deposited in Absorber: 255.9006794410447
+Total Energy deposited in Gaps: 28.224088019024187
+================event ended 22 
+
+===============started event 23
+Total Energy deposited in Absorber: 274.8331245850757
+Total Energy deposited in Gaps: 13.10464787804353
+================event ended 23 
+
+===============started event 24
+Total Energy deposited in Absorber: 275.6724503633872
+Total Energy deposited in Gaps: 9.339361020438217
+================event ended 24 
+
+===============started event 25
+Total Energy deposited in Absorber: 273.14975600312204
+Total Energy deposited in Gaps: 7.898540249163019
+================event ended 25 
+
+===============started event 26
+Total Energy deposited in Absorber: 277.0518247299117
+Total Energy deposited in Gaps: 13.686805942376653
+================event ended 26 
+
+===============started event 27
+Total Energy deposited in Absorber: 268.4485795022632
+Total Energy deposited in Gaps: 9.262851680748316
+================event ended 27 
+
+===============started event 28
+Total Energy deposited in Absorber: 274.56249975416995
+Total Energy deposited in Gaps: 14.93133636957628
+================event ended 28 
+
+===============started event 29
+Total Energy deposited in Absorber: 273.26332532863916
+Total Energy deposited in Gaps: 6.758370170409846
+================event ended 29 
+
+===============started event 30
+Total Energy deposited in Absorber: 263.28576822444046
+Total Energy deposited in Gaps: 18.868108272301328
+================event ended 30 
+
+===============started event 31
+Total Energy deposited in Absorber: 263.9778187057986
+Total Energy deposited in Gaps: 14.938126535798482
+================event ended 31 
+
+===============started event 32
+Total Energy deposited in Absorber: 268.53954399514924
+Total Energy deposited in Gaps: 10.715023637743306
+================event ended 32 
+
+===============started event 33
+Total Energy deposited in Absorber: 265.1286202168488
+Total Energy deposited in Gaps: 15.258216100981054
+================event ended 33 
+
+===============started event 34
+Total Energy deposited in Absorber: 283.369632056252
+Total Energy deposited in Gaps: 9.059658581663804
+================event ended 34 
+
+===============started event 35
+Total Energy deposited in Absorber: 265.69368231913654
+Total Energy deposited in Gaps: 25.457531655081898
+================event ended 35 
+
+===============started event 36
+Total Energy deposited in Absorber: 287.29181810181876
+Total Energy deposited in Gaps: 9.81425407940541
+================event ended 36 
+
+===============started event 37
+Total Energy deposited in Absorber: 279.82455974625196
+Total Energy deposited in Gaps: 9.515392827128693
+================event ended 37 
+
+===============started event 38
+Total Energy deposited in Absorber: 274.830992769914
+Total Energy deposited in Gaps: 22.05029324833358
+================event ended 38 
+
+===============started event 39
+Total Energy deposited in Absorber: 280.2751679219884
+Total Energy deposited in Gaps: 8.185210446275084
+================event ended 39 
+
+===============started event 40
+Total Energy deposited in Absorber: 268.431546034184
+Total Energy deposited in Gaps: 21.10387110732702
+================event ended 40 
+
+===============started event 41
+Total Energy deposited in Absorber: 276.51491505734293
+Total Energy deposited in Gaps: 11.831995291496469
+================event ended 41 
+
+===============started event 42
+Total Energy deposited in Absorber: 275.91548644033065
+Total Energy deposited in Gaps: 13.836939077590575
+================event ended 42 
+
+===============started event 43
+Total Energy deposited in Absorber: 266.1100444061175
+Total Energy deposited in Gaps: 10.463924297030259
+================event ended 43 
+
+===============started event 44
+Total Energy deposited in Absorber: 235.38805703709855
+Total Energy deposited in Gaps: 14.368025269709882
+================event ended 44 
+
+===============started event 45
+Total Energy deposited in Absorber: 280.73941056822775
+Total Energy deposited in Gaps: 10.821263658533569
+================event ended 45 
+
+===============started event 46
+Total Energy deposited in Absorber: 252.7537458555065
+Total Energy deposited in Gaps: 18.86936281697088
+================event ended 46 
+
+===============started event 47
+Total Energy deposited in Absorber: 262.6618329377232
+Total Energy deposited in Gaps: 10.881715980763683
+================event ended 47 
+
+===============started event 48
+Total Energy deposited in Absorber: 267.5603007432256
+Total Energy deposited in Gaps: 16.081054176471376
+================event ended 48 
+
+===============started event 49
+Total Energy deposited in Absorber: 247.69734357784904
+Total Energy deposited in Gaps: 31.20048383086373
+================event ended 49 
+
+===============started event 50
+Total Energy deposited in Absorber: 287.54933045810725
+Total Energy deposited in Gaps: 7.660629990581378
+================event ended 50 
+
+===============started event 51
+Total Energy deposited in Absorber: 276.2145872190434
+Total Energy deposited in Gaps: 8.823261810096348
+================event ended 51 
+
+===============started event 52
+Total Energy deposited in Absorber: 282.9363728704208
+Total Energy deposited in Gaps: 10.509016573086056
+================event ended 52 
+
+===============started event 53
+Total Energy deposited in Absorber: 280.1348800668081
+Total Energy deposited in Gaps: 12.211694301407004
+================event ended 53 
+
+===============started event 54
+Total Energy deposited in Absorber: 268.4454006318798
+Total Energy deposited in Gaps: 26.633374332581337
+================event ended 54 
+
+===============started event 55
+Total Energy deposited in Absorber: 265.63042192729864
+Total Energy deposited in Gaps: 26.9953598950771
+================event ended 55 
+
+===============started event 56
+Total Energy deposited in Absorber: 262.8087617810532
+Total Energy deposited in Gaps: 23.24308472322126
+================event ended 56 
+
+===============started event 57
+Total Energy deposited in Absorber: 281.8425818009749
+Total Energy deposited in Gaps: 7.137476093932297
+================event ended 57 
+
+===============started event 58
+Total Energy deposited in Absorber: 243.86358870779446
+Total Energy deposited in Gaps: 28.573968849496776
+================event ended 58 
+
+===============started event 59
+Total Energy deposited in Absorber: 275.5898767996863
+Total Energy deposited in Gaps: 8.329332678242565
+================event ended 59 
+
+===============started event 60
+Total Energy deposited in Absorber: 271.85918936550274
+Total Energy deposited in Gaps: 19.34917606355801
+================event ended 60 
+
+===============started event 61
+Total Energy deposited in Absorber: 271.2447400994799
+Total Energy deposited in Gaps: 9.949441514710973
+================event ended 61 
+
+===============started event 62
+Total Energy deposited in Absorber: 267.93068775530514
+Total Energy deposited in Gaps: 5.725603223230712
+================event ended 62 
+
+===============started event 63
+Total Energy deposited in Absorber: 257.2280915823931
+Total Energy deposited in Gaps: 10.256436585685329
+================event ended 63 
+
+===============started event 64
+Total Energy deposited in Absorber: 281.6129218959985
+Total Energy deposited in Gaps: 12.996706339772318
+================event ended 64 
+
+===============started event 65
+Total Energy deposited in Absorber: 251.20371209563345
+Total Energy deposited in Gaps: 32.16117766217677
+================event ended 65 
+
+===============started event 66
+Total Energy deposited in Absorber: 284.4041463408074
+Total Energy deposited in Gaps: 10.090488441725848
+================event ended 66 
+
+===============started event 67
+Total Energy deposited in Absorber: 263.96035778323574
+Total Energy deposited in Gaps: 29.661540305699255
+================event ended 67 
+
+===============started event 68
+Total Energy deposited in Absorber: 269.59921664642326
+Total Energy deposited in Gaps: 18.631364935382752
+================event ended 68 
+
+===============started event 69
+Total Energy deposited in Absorber: 278.5687630954204
+Total Energy deposited in Gaps: 11.51049790485247
+================event ended 69 
+
+===============started event 70
+Total Energy deposited in Absorber: 274.8020097846883
+Total Energy deposited in Gaps: 10.387141954806443
+================event ended 70 
+
+===============started event 71
+Total Energy deposited in Absorber: 274.7764611985769
+Total Energy deposited in Gaps: 8.379843245123523
+================event ended 71 
+
+===============started event 72
+Total Energy deposited in Absorber: 276.18848861009263
+Total Energy deposited in Gaps: 13.810238428951555
+================event ended 72 
+
+===============started event 73
+Total Energy deposited in Absorber: 279.7210296261763
+Total Energy deposited in Gaps: 14.96372127532957
+================event ended 73 
+
+===============started event 74
+Total Energy deposited in Absorber: 272.7647309025295
+Total Energy deposited in Gaps: 14.71608231620604
+================event ended 74 
+
+===============started event 75
+Total Energy deposited in Absorber: 276.59083247132884
+Total Energy deposited in Gaps: 13.359287840739055
+================event ended 75 
+
+===============started event 76
+Total Energy deposited in Absorber: 264.80242468370795
+Total Energy deposited in Gaps: 29.84032267622901
+================event ended 76 
+
+===============started event 77
+Total Energy deposited in Absorber: 284.68184990270333
+Total Energy deposited in Gaps: 12.705001390678385
+================event ended 77 
+
+===============started event 78
+Total Energy deposited in Absorber: 289.9678545924821
+Total Energy deposited in Gaps: 4.54552596970594
+================event ended 78 
+
+===============started event 79
+Total Energy deposited in Absorber: 273.3873666184511
+Total Energy deposited in Gaps: 10.430262513371451
+================event ended 79 
+
+===============started event 80
+Total Energy deposited in Absorber: 285.65292276101906
+Total Energy deposited in Gaps: 6.5432094526258595
+================event ended 80 
+
+===============started event 81
+Total Energy deposited in Absorber: 275.3393433817967
+Total Energy deposited in Gaps: 6.92015130244125
+================event ended 81 
+
+===============started event 82
+Total Energy deposited in Absorber: 270.0656844257361
+Total Energy deposited in Gaps: 18.078974811282755
+================event ended 82 
+
+===============started event 83
+Total Energy deposited in Absorber: 277.1458536549407
+Total Energy deposited in Gaps: 10.296917367794205
+================event ended 83 
+
+===============started event 84
+Total Energy deposited in Absorber: 276.89626825343134
+Total Energy deposited in Gaps: 14.91789582027482
+================event ended 84 
+
+===============started event 85
+Total Energy deposited in Absorber: 272.55492005653076
+Total Energy deposited in Gaps: 14.266470394104385
+================event ended 85 
+
+===============started event 86
+Total Energy deposited in Absorber: 288.0235261121361
+Total Energy deposited in Gaps: 8.451586174889467
+================event ended 86 
+
+===============started event 87
+Total Energy deposited in Absorber: 264.69907610278176
+Total Energy deposited in Gaps: 9.55716411814127
+================event ended 87 
+
+===============started event 88
+Total Energy deposited in Absorber: 278.4155437798181
+Total Energy deposited in Gaps: 12.387640581532821
+================event ended 88 
+
+===============started event 89
+Total Energy deposited in Absorber: 269.47328536785307
+Total Energy deposited in Gaps: 7.260328638944791
+================event ended 89 
+
+===============started event 90
+Total Energy deposited in Absorber: 260.4511929400287
+Total Energy deposited in Gaps: 22.793401266537025
+================event ended 90 
+
+===============started event 91
+Total Energy deposited in Absorber: 279.6722220733974
+Total Energy deposited in Gaps: 12.755540091185122
+================event ended 91 
+
+===============started event 92
+Total Energy deposited in Absorber: 270.87815689997666
+Total Energy deposited in Gaps: 10.364716281417099
+================event ended 92 
+
+===============started event 93
+Total Energy deposited in Absorber: 279.5137884708
+Total Energy deposited in Gaps: 10.309408469483841
+================event ended 93 
+
+===============started event 94
+Total Energy deposited in Absorber: 284.2969184748863
+Total Energy deposited in Gaps: 14.137393326582005
+================event ended 94 
+
+===============started event 95
+Total Energy deposited in Absorber: 286.76226032277134
+Total Energy deposited in Gaps: 8.626755674946576
+================event ended 95 
+
+===============started event 96
+Total Energy deposited in Absorber: 277.94654265404256
+Total Energy deposited in Gaps: 14.942657765708086
+================event ended 96 
+
+===============started event 97
+Total Energy deposited in Absorber: 259.93769471623136
+Total Energy deposited in Gaps: 13.891338298218164
+================event ended 97 
+
+===============started event 98
+Total Energy deposited in Absorber: 264.202396766432
+Total Energy deposited in Gaps: 22.948150076431723
+================event ended 98 
+
+===============started event 99
+Total Energy deposited in Absorber: 275.7902709947264
+Total Energy deposited in Gaps: 17.515152162298065
+================event ended 99 
+
+</code></pre><h2 id="Plotting-the-histograms"><a class="docs-heading-anchor" href="#Plotting-the-histograms">Plotting the histograms</a><a id="Plotting-the-histograms-1"></a><a class="docs-heading-anchor-permalink" href="#Plotting-the-histograms" title="Permalink"></a></h2><pre><code class="language-julia hljs">data = getSIMdata(app)
+lay = @layout [°; °; °; °]
+img = Plots.plot(layout=lay, show=true, size=(800,1000))
+
+Plots.plot!(subplot=1, data.fEdepHist_Abs, title=&quot;Total EDep in Absorber&quot;, xlabel=&quot;Edep (MeV)&quot;, label=&quot;Abs Edep&quot;, show=true)
+Plots.plot!(subplot=2, data.fEdepHist_Gap, title=&quot;Total EDep in Gaps&quot;, xlabel=&quot;Edep (MeV)&quot;, label=&quot;Gap_Edep&quot;, show=true)
+
+Plots.plot!(subplot=3, data.fStepLenHist_Abs, title=&quot;Total StepLeng in Absorbers&quot;, xlabel=&quot;Step Length (mm)&quot;, label=&quot;Abs_StepLen&quot;, show=true)
+Plots.plot!(subplot=4, data.fStepLenHist_Gap, title=&quot;Total StepLeng in Gaps&quot;, xlabel=&quot;Step Length (mm)&quot;, label=&quot;Gap_StepLen&quot;, show=true)</code></pre><p><img src="../B4a-33.png" alt/></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../B3a/">« Basic/B3a Example</a><a class="docs-footer-nextpage" href="../GPS/">Extended/GPS Example »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Tuesday 16 December 2025 09:43">Tuesday 16 December 2025</span>. Using Julia version 1.12.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Extended/TestEm3 Example · Geant4.jl</title><meta name="title" content="Extended/TestEm3 Example · Geant4.jl"/><meta property="og:title" content="Extended/TestEm3 Example · Geant4.jl"/><meta property="twitter:title" content="Extended/TestEm3 Example · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><span class="tocitem">Examples</span><ul><li><input class="collapse-toggle" id="menuitem-3-1" type="checkbox"/><label class="tocitem" for="menuitem-3-1"><span class="docs-label">Basic</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../B1/">Basic/B1 Example</a></li><li><a class="tocitem" href="../B2a/">Basic/B2a Example</a></li><li><a class="tocitem" href="../B2aVis/">Basic/B2a Event Display Example</a></li><li><a class="tocitem" href="../B3a/">Basic/B3a Example</a></li><li><a class="tocitem" href="../B4a/">Basic/B4a Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox" checked/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Extended</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../GPS/">Extended/GPS Example</a></li><li><a class="tocitem" href="../RE03/">Extended/RE03 Example</a></li><li class="is-active"><a class="tocitem" href>Extended/TestEm3 Example</a><ul class="internal"><li><a class="tocitem" href="#Geometry"><span>Geometry</span></a></li><li><a class="tocitem" href="#Loading-the-necessary-Julia-modules"><span>Loading the necessary Julia modules</span></a></li><li><a class="tocitem" href="#Define-Detector-structure"><span>Define Detector structure</span></a></li><li><a class="tocitem" href="#Define-Simulation-Data-struct"><span>Define Simulation Data struct</span></a></li><li><a class="tocitem" href="#Particle-Gun-initialization"><span>Particle Gun initialization</span></a></li><li><a class="tocitem" href="#Define-the-Simulation-User-Actions"><span>Define the Simulation User Actions</span></a></li><li><a class="tocitem" href="#Create-the-Application"><span>Create the Application</span></a></li><li><a class="tocitem" href="#Configure,-Initialize-and-Run"><span>Configure, Initialize and Run</span></a></li><li><a class="tocitem" href="#Plot-the-results"><span>Plot the results</span></a></li></ul></li><li><a class="tocitem" href="../Solids/">Geant4 Solids</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox"/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Advanced</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../TPCSim/">Simulation of the Aleph TPC</a></li><li><a class="tocitem" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber</a></li><li><a class="tocitem" href="../WaterPhantom/">Water Phantom with Scoring</a></li><li><a class="tocitem" href="../UserLib/">Calling Custom C++ library</a></li><li><a class="tocitem" href="../JuliaAction/">Calling G4 actions in Julia</a></li></ul></li></ul></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li><a class="is-disabled">Extended</a></li><li class="is-active"><a href>Extended/TestEm3 Example</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Extended/TestEm3 Example</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/examples/TestEm3.lit#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Extended/TestEm3-Example"><a class="docs-heading-anchor" href="#Extended/TestEm3-Example">Extended/TestEm3 Example</a><a id="Extended/TestEm3-Example-1"></a><a class="docs-heading-anchor-permalink" href="#Extended/TestEm3-Example" title="Permalink"></a></h1><p>This example is based on the Geant4 extended/TestEm3 example of the Geant4 distribution. It can be used to test the electromagnetic physics processes in Geant4.</p><ul><li>How to collect energy deposition in a sampling calorimeter.</li><li>How to survey energy flow.</li><li>How to print stopping power.</li></ul><h2 id="Geometry"><a class="docs-heading-anchor" href="#Geometry">Geometry</a><a id="Geometry-1"></a><a class="docs-heading-anchor-permalink" href="#Geometry" title="Permalink"></a></h2><p>The calorimeter is a box made of a given number of layers. A layer consists of a sequence of various absorbers (maximum MaxAbsor=9). The layer is replicated.</p><p>Parameters defining the calorimeter :</p><ul><li>the number of layers,</li><li>the number of absorbers within a layer,</li><li>the material of the absorbers,</li><li>the thickness of the absorbers,</li><li>the transverse size of the calorimeter (the input face is a square).</li></ul><p>In addition a transverse uniform magnetic field can be applied.</p><p>The default geometry is constructed in DetectorConstruction class, but all of the above parameters can be modified interactively via the commands defined in the DetectorMessenger class.</p><pre><code class="nohighlight hljs">      |&lt;----layer 0----------&gt;|&lt;----layer 1----------&gt;|&lt;----layer 2----------&gt;|
+      |           |           |                       |                       |
+      ==========================================================================
+      ||          |           ||          |           ||          |           ||
+      ||          |           ||          |           ||          |           ||
+      ||   abs 1  | abs 2     ||   abs 1  | abs 2     ||   abs 1  | abs 2     ||
+      ||          |           ||          |           ||          |           ||
+      ||          |           ||          |           ||          |           ||
+beam  ||          |           ||          |           ||          |           ||
+====&gt; ||          |           ||          |           ||          |           ||
+      ||          |           ||          |           ||          |           ||
+      ||          |           ||          |           ||          |           ||
+      ||          |           ||          |           ||          |           ||
+      ||          |           ||          |           ||          |           ||
+      ||   cell 1 | cell 2    ||   cell 3 | cell 4    ||   cell 5 | cell 6    ||
+      ==========================================================================
+      ^           ^           ^           ^           ^           ^           ^
+      pln1        pln2        pln3       pln4        pln5        pln6       pln7</code></pre><div class="admonition is-info" id="Note-that-e3bdae33921cd559"><header class="admonition-header">Note that<a class="admonition-anchor" href="#Note-that-e3bdae33921cd559" title="Permalink"></a></header><div class="admonition-body"><p>You can also download this example as a <a href="../TestEm3.ipynb">Jupyter notebook</a> and a plain <a href="../TestEm3.jl">Julia source file</a>.</p></div></div><h4 id="Table-of-contents"><a class="docs-heading-anchor" href="#Table-of-contents">Table of contents</a><a id="Table-of-contents-1"></a><a class="docs-heading-anchor-permalink" href="#Table-of-contents" title="Permalink"></a></h4><ul><li><a href="#Geometry">Geometry</a></li><li><a href="#Loading-the-necessary-Julia-modules">Loading the necessary Julia modules</a></li><li><a href="#Define-Detector-structure">Define Detector structure</a></li><li><a href="#Define-Simulation-Data-struct">Define Simulation Data struct</a></li><li><a href="#Particle-Gun-initialization">Particle Gun initialization</a></li><li><a href="#Define-the-Simulation-User-Actions">Define the Simulation User Actions</a></li><li><a href="#Create-the-Application">Create the Application</a></li><li><a href="#Configure,-Initialize-and-Run">Configure, Initialize and Run</a></li><li><a href="#Plot-the-results">Plot the results</a></li><li class="no-marker"><ul><li><a href="#Change-the-primary-particle-enerqy-and-run-the-simulation-again">Change the primary particle enerqy and run the simulation again</a></li><li><a href="#Change-the-geometry-and-run-the-simulation-again">Change the geometry and run the simulation again</a></li></ul></li></ul><h2 id="Loading-the-necessary-Julia-modules"><a class="docs-heading-anchor" href="#Loading-the-necessary-Julia-modules">Loading the necessary Julia modules</a><a id="Loading-the-necessary-Julia-modules-1"></a><a class="docs-heading-anchor-permalink" href="#Loading-the-necessary-Julia-modules" title="Permalink"></a></h2><p>Load the <code>Geant4</code> and <code>Geant4.SystemOfUnits</code> modules. We will also use the <code>FHist</code> and <code>Plots</code> modules to handle the histograms and plots, and <code>Printf</code> to format the output.</p><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits
+using FHist, Plots, Printf
+import DisplayAs: PNG</code></pre><h2 id="Define-Detector-structure"><a class="docs-heading-anchor" href="#Define-Detector-structure">Define Detector structure</a><a id="Define-Detector-structure-1"></a><a class="docs-heading-anchor-permalink" href="#Define-Detector-structure" title="Permalink"></a></h2><p>The detector is a sandwich calorimeter made of layers of sensitive and absorber materials. The detector is defined by the <code>TestEm3Detector</code> structure. We include the <a href="../TestEm3Detector/#TestEm3Detector.jl">TestEm3Detector.jl</a> file not to clutter the example. We can also use a GDML file to define the geometry. This is done by instantiating the <code>G4JLDetectorGDML</code> type with the GDML file as argument.</p><pre><code class="language-julia hljs">const useGdml = true
+include(joinpath(@__DIR__, &quot;TestEm3Detector.jl&quot;))
+if useGdml
+    detector = G4JLDetectorGDML(&quot;$(@__DIR__)/TestEm3.gdml&quot;)
+else
+    detector = TestEm3Detector()
+end</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLDetectorGDML(CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4VPhysicalVolume}(Ptr{Geant4.G4VPhysicalVolume}(0x000000001c72b530)))</code></pre><h2 id="Define-Simulation-Data-struct"><a class="docs-heading-anchor" href="#Define-Simulation-Data-struct">Define Simulation Data struct</a><a id="Define-Simulation-Data-struct-1"></a><a class="docs-heading-anchor-permalink" href="#Define-Simulation-Data-struct" title="Permalink"></a></h2><p>It consists on a number of counters and statistical accumulators to store the simulation results. In addition, it includes a number of histograms to store the results.</p><pre><code class="language-julia hljs">const Hist1D64 = Hist1D{Float64}
+mutable struct TestEm3SimData &lt;: G4JLSimulationData
+    ##---Run data-----------------------------------------------------------------------------------
+    fParticle::CxxPtr{G4ParticleDefinition}
+    fEkin::Float64
+
+    ##fSumEAbs::Vector{Float64}
+    ##fSum2EAbs::Vector{Float64}
+    ##fSumLAbs::Vector{Float64}
+    ##fSum2LAbs::Vector{Float64}
+
+    ##fEdepTot::Float64
+    ##fEdepTot2::Float64
+    ##fEleakTot::Float64
+    ##fEleakTot2::Float64
+
+    ##fEtotal::Float64
+    ##fEtotal2::Float64
+
+    ##fEnergyFlow::Vector{Float64}
+    ##fLateralEleak::Vector{Float64}
+    ##fEnergyDeposit::Matrix{Float64}
+
+    fChargedStep::Int32
+    fNeutralStep::Int32
+
+    fN_gamma::Int32
+    fN_elec::Int32
+    fN_pos::Int32
+
+    fEnergyDeposit::Vector{Float64}     ## Energy deposit per event
+    fTrackLengthCh::Vector{Float64}     ## Track length per event
+
+    fEdepEventHistos::Vector{Hist1D64}
+    fTrackLengthChHistos::Vector{Hist1D64}
+    fEdepHistos::Vector{Hist1D64}
+    fAbsorLabel::Vector{String}
+
+    ##G4double fEdeptrue [kMaxAbsor];
+    ##G4double fRmstrue  [kMaxAbsor];
+    ##G4double fLimittrue[kMaxAbsor];
+    ##G4bool fApplyLimit;
+
+    ##fTimer::Float64
+
+    TestEm3SimData() = new()
+end</code></pre><p>We also define the <code>add!</code> function to reduce the simulation results between the master and worker threads.</p><pre><code class="language-julia hljs">function add!(x::TestEm3SimData, y::TestEm3SimData)
+    x.fChargedStep += y.fChargedStep
+    x.fNeutralStep += y.fNeutralStep
+    x.fN_gamma += y.fN_gamma
+    x.fN_elec += y.fN_elec
+    x.fN_pos += y.fN_pos
+    x.fEdepEventHistos += y.fEdepEventHistos
+    x.fTrackLengthChHistos += y.fTrackLengthChHistos
+    x.fEdepHistos += y.fEdepHistos
+end</code></pre><pre><code class="nohighlight hljs">add! (generic function with 1 method)</code></pre><p>Define a function to plot the simulation data from the application</p><pre><code class="language-julia hljs">function do_plot(data::TestEm3SimData)
+    (;fEdepHistos, fEdepEventHistos, fTrackLengthChHistos, fAbsorLabel) = data
+    lay = @layout [°; ° °]
+    img = plot(layout=lay, show=true, size=(1400,1000))
+    for (h, l) in zip(fEdepHistos, fAbsorLabel)
+        plot!(subplot=1, h, title=&quot;Energy Deposition&quot;, xlabel=&quot;layer #&quot;, label=l, show=true)
+    end
+    for (h, l) in zip(fEdepEventHistos, fAbsorLabel)
+        plot!(subplot=2, h, title=&quot;Energy/event Distribution&quot;, label=l, xlabel=&quot;MeV&quot;)
+    end
+    for (h, l) in zip(fTrackLengthChHistos, fAbsorLabel)
+        plot!(subplot=3, h, title=&quot;Track Lengh Distribution&quot;, label=l, xlabel=&quot;mm&quot;)
+    end
+    return img
+end</code></pre><pre><code class="nohighlight hljs">do_plot (generic function with 1 method)</code></pre><h2 id="Particle-Gun-initialization"><a class="docs-heading-anchor" href="#Particle-Gun-initialization">Particle Gun initialization</a><a id="Particle-Gun-initialization-1"></a><a class="docs-heading-anchor-permalink" href="#Particle-Gun-initialization" title="Permalink"></a></h2><pre><code class="language-julia hljs">particlegun = G4JLGunGenerator(particle = &quot;e-&quot;,
+                               energy = 1GeV,
+                               direction = G4ThreeVector(1,0,0),
+                               position = G4ThreeVector(0,0,0))  # temporary potition, will update once the detector is constructed</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLGunGenerator(&quot;ParticleGun&quot;, Geant4.G4JLParticleGunData(nothing, &quot;e-&quot;, G4ThreeVector(1.0,0.0,0.0), G4ThreeVector(0.0,0.0,0.0), 1000.0), Geant4.var&quot;#init#19&quot;(), Geant4.var&quot;#gen#20&quot;(), Geant4.G4JLGeneratorAction[])</code></pre><h2 id="Define-the-Simulation-User-Actions"><a class="docs-heading-anchor" href="#Define-the-Simulation-User-Actions">Define the Simulation User Actions</a><a id="Define-the-Simulation-User-Actions-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Simulation-User-Actions" title="Permalink"></a></h2><pre><code class="language-julia hljs">##---Step action------------------------------------------------------------------------------------
+function stepaction(step::G4Step, app::G4JLApplication)::Nothing
+    detector = app.detector
+    data = getSIMdata(app)
+    prepoint = GetPreStepPoint(step)
+    track = GetTrack(step)
+
+    # Return if step in not in the world volume
+    prepoint |&gt; GetPhysicalVolume |&gt; GetLogicalVolume |&gt; GetMaterial == detector.fWorldMaterial &amp;&amp; return nothing
+
+    particle = GetDefinition(track)
+    charge  = GetPDGCharge(particle)
+    stepl = 0.
+    if charge != 0.
+        stepl = GetStepLength(step)
+        data.fChargedStep += 1
+    else
+        data.fNeutralStep += 1
+    end
+    edep = GetTotalEnergyDeposit(step) * GetWeight(track)
+    absorNum  = GetCopyNumber(GetTouchable(prepoint), 0)
+    layerNum  = GetCopyNumber(GetTouchable(prepoint), 1) + 1  ## replicas copynumber starts at 0
+
+    data.fEnergyDeposit[absorNum] += edep
+    data.fTrackLengthCh[absorNum] += stepl
+
+    push!(data.fEdepHistos[absorNum], layerNum, edep)
+    nothing
+end
+
+##---Tracking pre-action----------------------------------------------------------------------------
+let G4Gamma, G4Electron, G4Positron, first=true
+global function pretrackaction(track::G4Track, app::G4JLApplication)::Nothing
+    if first
+        G4Gamma    = FindParticle(&quot;gamma&quot;)
+        G4Electron = FindParticle(&quot;e-&quot;)
+        G4Positron = FindParticle(&quot;e+&quot;)
+        first = false
+    end
+    data = getSIMdata(app)
+    d = GetDefinition(track)
+    if d === G4Gamma
+        data.fN_gamma += 1
+    elseif d === G4Electron
+        data.fN_elec +=1
+    elseif d === G4Positron
+        data.fN_pos += 1
+    end
+    nothing
+end
+end
+
+##---Tracking post-action---------------------------------------------------------------------------
+function posttrackaction(track::G4Track, ::G4JLApplication)::Nothing
+  nothing
+end
+
+##---Begin Run Action-------------------------------------------------------------------------------
+function beginrun(run::G4Run, app::G4JLApplication)::Nothing
+    data = getSIMdata(app)
+    (; fNbOfAbsor, fNbOfLayers, fAbsorMaterial, fAbsorThickness) = app.detector
+    gun = app.generator.data.gun
+    data.fParticle = GetParticleDefinition(gun)
+    data.fEkin = GetParticleEnergy(gun)
+    data.fN_gamma = data.fN_elec = data.fN_pos = 0
+    data.fChargedStep = data.fNeutralStep = 0
+    # init arrays
+    data.fEnergyDeposit = zeros(fNbOfAbsor)
+    data.fTrackLengthCh = zeros(fNbOfAbsor)
+    data.fEdepHistos = [Hist1D(;counttype=Float64,binedges=0.:1.0:fNbOfLayers) for i in 1:fNbOfAbsor]
+    data.fEdepEventHistos = [Hist1D(;binedges=0.:10.:1000.) for i in 1:fNbOfAbsor]
+    data.fTrackLengthChHistos = [Hist1D(;binedges=0.:20.:2000.) for i in 1:fNbOfAbsor]
+    data.fAbsorLabel = [&quot;$(fAbsorThickness[i])mm of $(fAbsorMaterial[i] |&gt; GetName |&gt; String)&quot; for i in 1:fNbOfAbsor]
+    nothing
+end
+##---End Run Action---------------------------------------------------------------------------------
+function endrun(run::G4Run, app::G4JLApplication)::Nothing
+    ##---end run action is called for each workwer thread and the master one
+    if G4Threading!G4GetThreadId() &lt; 0
+        data = app.simdata[1]
+        ##---This is the master thread, so we need to add all the simuation results-----------------
+        for d in app.simdata[2:end]
+            add!(data, d)
+        end
+        nEvt = GetNumberOfEvent(run)
+        norm = nEvt &gt; 0 ? 1/nEvt : 1.
+
+        @printf &quot;------------------------------------------------------------\n&quot;
+        @printf &quot; Beam particle %s E = %.2f GeV\n&quot; String(GetParticleName(data.fParticle)) data.fEkin/GeV
+        @printf &quot; Mean number of gamma          %.2f\n&quot; data.fN_gamma*norm
+        @printf &quot; Mean number of e-             %.2f\n&quot; data.fN_elec*norm
+        @printf &quot; Mean number of e+             %.2f\n&quot; data.fN_pos*norm
+        @printf &quot; Mean number of charged steps  %f\n&quot;   data.fChargedStep*norm
+        @printf &quot; Mean number of neutral steps  %f\n&quot;   data.fNeutralStep*norm
+        @printf &quot;------------------------------------------------------------&quot;
+    else
+        G4JL_println(&quot;end-run  for worker $(G4Threading!G4GetThreadId())&quot;)
+    end
+end
+
+##---Begin Event Action-----------------------------------------------------------------------------
+function beginevent(evt::G4Event, app::G4JLApplication)
+    data = getSIMdata(app)
+    fill!(data.fEnergyDeposit, 0.0)
+    fill!(data.fTrackLengthCh, 0.0)
+    nothing
+end
+
+##---End Event Action-------------------------------------------------------------------------------
+function endevent(evt::G4Event, app::G4JLApplication)
+    data = getSIMdata(app)
+    (; fNbOfAbsor, fNbOfLayers) = app.detector
+    for i in 1:fNbOfAbsor
+        push!(data.fEdepEventHistos[i], data.fEnergyDeposit[i])
+        push!(data.fTrackLengthChHistos[i], data.fTrackLengthCh[i])
+    end
+    nothing
+end</code></pre><pre><code class="nohighlight hljs">endevent (generic function with 1 method)</code></pre><h2 id="Create-the-Application"><a class="docs-heading-anchor" href="#Create-the-Application">Create the Application</a><a id="Create-the-Application-1"></a><a class="docs-heading-anchor-permalink" href="#Create-the-Application" title="Permalink"></a></h2><pre><code class="language-julia hljs">app = G4JLApplication(detector = TestEm3Detector(),               ## detector with parameters
+                      simdata = TestEm3SimData(),                 ## simulation data structure
+                      generator = particlegun,                    ## primary particle generator
+                      nthreads = VERSION &gt; v&quot;1.9&quot; ? 4 : 0,        ## number of threads (MT)
+                      physics_type = FTFP_BERT,                   ## what physics list to instantiate
+                      ##----Actions--------------------------------
+                      stepaction_method = stepaction,             ## step action method
+                      pretrackaction_method = pretrackaction,     ## pre-tracking action
+                      posttrackaction_method = posttrackaction,   ## post-tracking action
+                      beginrunaction_method = beginrun,           ## begin-run action (initialize counters and histograms)
+                      endrunaction_method = endrun,               ## end-run action (print summary)
+                      begineventaction_method = beginevent,       ## begin-event action (initialize per-event data)
+                      endeventaction_method = endevent            ## end-event action (fill histogram per event data)
+                      )</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLApplication{Main.var&quot;##277&quot;.TestEm3Detector, Main.var&quot;##277&quot;.TestEm3SimData}(Geant4.G4MTRunManagerAllocated(Ptr{Nothing}(0x000000001b3b3a50)), Main.var&quot;##277&quot;.TestEm3Detector(2, 50, 400.0, [2.3, 5.7], 8.0, 400.0, 480.0, 480.0, CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4Material}[CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4Material}(Ptr{Geant4.G4Material}(0x000000001c528250)), CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4Material}(Ptr{Geant4.G4Material}(0x000000001b5fdcd0))], CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4Material}(Ptr{Geant4.G4Material}(0x000000001be45f50)), #undef, #undef, CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4VPhysicalVolume}(Ptr{Geant4.G4VPhysicalVolume}(0x00007ff8d0eee650)), #undef, #undef, CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4VPhysicalVolume}(Ptr{Geant4.G4VPhysicalVolume}(0x00007ff8d0eee6b0)), #undef, #undef, CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4VPhysicalVolume}(Ptr{Geant4.G4VPhysicalVolume}(0xffffffffffffffff)), #undef, #undef, #undef), Main.var&quot;##277&quot;.TestEm3SimData[Main.var&quot;##277&quot;.TestEm3SimData(CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4ParticleDefinition}(Ptr{Geant4.G4ParticleDefinition}(0x0000000000000008)), 6.95182939381346e-310, -771751928, 32760, -771751928, 32760, -771751928, #undef, #undef, #undef, #undef, #undef, #undef), Main.var&quot;##277&quot;.TestEm3SimData(CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4ParticleDefinition}(Ptr{Geant4.G4ParticleDefinition}(0x0000000000000008)), 6.95182939381346e-310, -771751928, 32760, -771751928, 32760, -771751928, #undef, #undef, #undef, #undef, #undef, #undef), Main.var&quot;##277&quot;.TestEm3SimData(CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4ParticleDefinition}(Ptr{Geant4.G4ParticleDefinition}(0x0000000000000008)), 6.95182939381346e-310, -771751928, 32760, -771751928, 32760, -771751928, #undef, #undef, #undef, #undef, #undef, #undef), Main.var&quot;##277&quot;.TestEm3SimData(CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4ParticleDefinition}(Ptr{Geant4.G4ParticleDefinition}(0x0000000000000008)), 6.95182939381346e-310, -771751928, 32760, -771751928, 32760, -771751928, #undef, #undef, #undef, #undef, #undef, #undef), Main.var&quot;##277&quot;.TestEm3SimData(CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4ParticleDefinition}(Ptr{Geant4.G4ParticleDefinition}(0x0000000000000008)), 6.95182939381346e-310, -771751928, 32760, -771751928, 32760, -771751928, #undef, #undef, #undef, #undef, #undef, #undef)], Geant4.G4JLGunGenerator(&quot;ParticleGun&quot;, Geant4.G4JLParticleGunData(nothing, &quot;e-&quot;, G4ThreeVector(1.0,0.0,0.0), G4ThreeVector(0.0,0.0,0.0), 1000.0), Geant4.var&quot;#init#19&quot;(), Geant4.var&quot;#gen#20&quot;(), Geant4.G4JLGeneratorAction[]), nothing, nothing, 4, 0, Geant4.G4MTRunManager, Geant4.G4JLDetectorConstruction, Geant4.FTFP_BERT, Geant4.G4JLRunAction, Geant4.G4JLEventAction, Geant4.G4JLTrackingAction, Geant4.G4JLSteppingAction, Main.var&quot;##277&quot;.stepaction, Main.var&quot;##277&quot;.pretrackaction, Main.var&quot;##277&quot;.posttrackaction, Main.var&quot;##277&quot;.beginrun, Main.var&quot;##277&quot;.endrun, Main.var&quot;##277&quot;.beginevent, Main.var&quot;##277&quot;.endevent, nothing, nothing, Dict{String, Geant4.G4JLProtoSD}(), Dict{String, Vector{Geant4.G4JLSensitiveDetector}}(), Geant4.G4JLScoringMesh[], nothing, nothing)</code></pre><h2 id="Configure,-Initialize-and-Run"><a class="docs-heading-anchor" href="#Configure,-Initialize-and-Run">Configure, Initialize and Run</a><a id="Configure,-Initialize-and-Run-1"></a><a class="docs-heading-anchor-permalink" href="#Configure,-Initialize-and-Run" title="Permalink"></a></h2><pre><code class="language-julia hljs">configure(app)
+initialize(app)
+SetParticlePosition(particlegun, G4ThreeVector(-app.detector.fWorldSizeX/2 + 1mm,0,0))  ## Only now is known the size of the &#39;world&#39;
+
+beamOn(app, 1000)</code></pre><pre><code class="nohighlight hljs">Building Geometry now!!!
+G4WT1 &gt; end-run  for worker 1
+G4WT2 &gt; end-run  for worker 2
+G4WT3 &gt; end-run  for worker 3
+G4WT0 &gt; end-run  for worker 0
+------------------------------------------------------------
+ Beam particle e- E = 1.00 GeV
+ Mean number of gamma          521.14
+ Mean number of e-             897.74
+ Mean number of e+             53.34
+ Mean number of charged steps  3739.165000
+ Mean number of neutral steps  3719.589000
+------------------------------------------------------------</code></pre><h2 id="Plot-the-results"><a class="docs-heading-anchor" href="#Plot-the-results">Plot the results</a><a id="Plot-the-results-1"></a><a class="docs-heading-anchor-permalink" href="#Plot-the-results" title="Permalink"></a></h2><pre><code class="language-julia hljs">img = do_plot(app.simdata[1])
+PNG(img)</code></pre><p><img src="../TestEm3-30.png" alt/></p><h3 id="Change-the-primary-particle-enerqy-and-run-the-simulation-again"><a class="docs-heading-anchor" href="#Change-the-primary-particle-enerqy-and-run-the-simulation-again">Change the primary particle enerqy and run the simulation again</a><a id="Change-the-primary-particle-enerqy-and-run-the-simulation-again-1"></a><a class="docs-heading-anchor-permalink" href="#Change-the-primary-particle-enerqy-and-run-the-simulation-again" title="Permalink"></a></h3><pre><code class="language-julia hljs">SetParticleEnergy(particlegun, 100MeV)
+beamOn(app, 1000)
+img = do_plot(app.simdata[1])
+PNG(img)</code></pre><p><img src="../TestEm3-32.png" alt/></p><h3 id="Change-the-geometry-and-run-the-simulation-again"><a class="docs-heading-anchor" href="#Change-the-geometry-and-run-the-simulation-again">Change the geometry and run the simulation again</a><a id="Change-the-geometry-and-run-the-simulation-again-1"></a><a class="docs-heading-anchor-permalink" href="#Change-the-geometry-and-run-the-simulation-again" title="Permalink"></a></h3><p>Add a new absorber layer</p><pre><code class="language-julia hljs">reinitialize(app, TestEm3Detector(absorThickness = [2.3mm, 5.7mm, 1mm],
+                                  absorMaterial = [&quot;G4_Pb&quot;, &quot;G4_lAr&quot;, &quot;G4_Al&quot;]))
+beamOn(app, 1000)
+img = do_plot(app.simdata[1])
+PNG(img)</code></pre><p><img src="../TestEm3-34.png" alt/></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../RE03/">« Extended/RE03 Example</a><a class="docs-footer-nextpage" href="../Solids/">Geant4 Solids »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Tuesday 16 December 2025 09:43">Tuesday 16 December 2025</span>. Using Julia version 1.12.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>UserLibrary.cpp · Geant4.jl</title><meta name="title" content="UserLibrary.cpp · Geant4.jl"/><meta property="og:title" content="UserLibrary.cpp · Geant4.jl"/><meta property="twitter:title" content="UserLibrary.cpp · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><span class="tocitem">Examples</span><ul><li><input class="collapse-toggle" id="menuitem-3-1" type="checkbox"/><label class="tocitem" for="menuitem-3-1"><span class="docs-label">Basic</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../B1/">Basic/B1 Example</a></li><li><a class="tocitem" href="../B2a/">Basic/B2a Example</a></li><li><a class="tocitem" href="../B2aVis/">Basic/B2a Event Display Example</a></li><li><a class="tocitem" href="../B3a/">Basic/B3a Example</a></li><li><a class="tocitem" href="../B4a/">Basic/B4a Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox"/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Extended</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../GPS/">Extended/GPS Example</a></li><li><a class="tocitem" href="../RE03/">Extended/RE03 Example</a></li><li><a class="tocitem" href="../TestEm3/">Extended/TestEm3 Example</a></li><li><a class="tocitem" href="../Solids/">Geant4 Solids</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox"/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Advanced</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../TPCSim/">Simulation of the Aleph TPC</a></li><li><a class="tocitem" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber</a></li><li><a class="tocitem" href="../WaterPhantom/">Water Phantom with Scoring</a></li><li><a class="tocitem" href="../UserLib/">Calling Custom C++ library</a></li><li><a class="tocitem" href="../JuliaAction/">Calling G4 actions in Julia</a></li></ul></li></ul></li><li class="is-active"><a class="tocitem" href>UserLibrary.cpp</a></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>UserLibrary.cpp</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>UserLibrary.cpp</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/examples/UserLibrary.md#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="UserLibrary.cpp"><a class="docs-heading-anchor" href="#UserLibrary.cpp">UserLibrary.cpp</a><a id="UserLibrary.cpp-1"></a><a class="docs-heading-anchor-permalink" href="#UserLibrary.cpp" title="Permalink"></a></h1><pre><code class="language-c hljs">// Example of a custom solid class that will be called by Julia 
+#include &quot;G4Box.hh&quot;
+#include &quot;G4Tubs.hh&quot;
+#include &quot;G4Orb.hh&quot;
+#include &quot;G4SubtractionSolid.hh&quot;
+#include &quot;G4UnionSolid.hh&quot;
+
+// The custom solid class needs to inherit from G4VSolid and implement the required methods
+class RoundCube : public G4VSolid
+{
+public:
+  RoundCube(double a, double r);
+  virtual ~RoundCube() { delete solid; }
+
+  // Required methods for a custom solid
+  virtual EInside Inside(const G4ThreeVector&amp; p) const override {return solid-&gt;Inside(p);}
+  virtual G4ThreeVector SurfaceNormal(const G4ThreeVector&amp; p) const override {return solid-&gt;SurfaceNormal(p);}
+  virtual G4double DistanceToIn(const G4ThreeVector&amp; p, const G4ThreeVector&amp; v) const override {return solid-&gt;DistanceToIn(p, v);}
+  virtual G4double DistanceToIn(const G4ThreeVector&amp; p) const override {return solid-&gt;DistanceToIn(p);}
+  virtual G4double DistanceToOut(const G4ThreeVector&amp; p, const G4ThreeVector&amp; v, 
+                                 const G4bool calcNorm=false, G4bool *validNorm=0, 
+                                 G4ThreeVector *n=0) const override {return solid-&gt;DistanceToOut(p, v, calcNorm, validNorm, n);}
+  virtual G4double DistanceToOut(const G4ThreeVector&amp; p) const override {return solid-&gt;DistanceToOut(p);}
+  virtual G4GeometryType GetEntityType() const override {return &quot;RoundCube&quot;;}
+  virtual std::ostream&amp; StreamInfo(std::ostream&amp; os) const override {os &lt;&lt; &quot;RoundCube with a = &quot; &lt;&lt; a &lt;&lt; &quot; r = &quot; &lt;&lt; r; return os;}
+
+  virtual G4bool CalculateExtent(const EAxis pAxis, const G4VoxelLimits&amp; pVoxelLimits, const G4AffineTransform&amp; pTransform, G4double&amp; pMin, G4double&amp; pMax) const override {return solid-&gt;CalculateExtent(pAxis, pVoxelLimits, pTransform, pMin, pMax);}
+  virtual void DescribeYourselfTo (G4VGraphicsScene&amp; scene) const override {return solid-&gt;DescribeYourselfTo(scene);}
+  virtual void BoundingLimits(G4ThreeVector&amp; pMin, G4ThreeVector&amp; pMax) const override {return solid-&gt;BoundingLimits(pMin, pMax);}
+private:
+  G4VSolid* solid;
+  double a, r;
+};
+
+// Constructor of the custom solid (RoundCube) implemented as a union and subtractions of several solids
+RoundCube::RoundCube(double a, double r) : a(a), r(r), G4VSolid(&quot;RoundCube&quot;) {
+  G4double ca = a / 4;
+  G4VSolid* cube = new G4Box(&quot;cube&quot;, ca, ca, ca);
+  G4VSolid* cyl = new G4Tubs(&quot;cyl&quot;, 0, r, ca, 0, 2 * M_PI);
+  G4VSolid* orb = new G4Orb(&quot;orb&quot;, r);
+
+  G4VSolid* edge = new G4Box(&quot;edge&quot;, r, r, ca);
+  G4VSolid* vert = new G4Box(&quot;vert&quot;, r, r, r);
+  G4VSolid* frame = new G4Box(&quot;frame&quot;, ca, ca, ca);
+
+  G4VSolid* acyl1 = new G4SubtractionSolid(&quot;ucyl&quot;, edge, cyl, G4Transform3D(G4RotationMatrix(), G4ThreeVector(-r, -r, 0)));
+  G4VSolid* acyl2 = new G4SubtractionSolid(&quot;ucyl&quot;, edge, cyl, G4Transform3D(G4RotationMatrix(), G4ThreeVector(-r, r, 0)));
+  G4VSolid* acyl3 = new G4SubtractionSolid(&quot;ucyl&quot;, edge, cyl, G4Transform3D(G4RotationMatrix(), G4ThreeVector(r, r, 0)));
+  G4VSolid* aorb  = new G4SubtractionSolid(&quot;uorb&quot;, vert, orb, G4Transform3D(G4RotationMatrix(), G4ThreeVector(-r, -r, -r)));
+
+  G4Transform3D t1(G4RotationMatrix(), G4ThreeVector(ca, ca, 0));
+  G4Transform3D t2(G4RotationMatrix(0, M_PI / 2, 0), G4ThreeVector(ca, 0, ca));
+  G4Transform3D t3(G4RotationMatrix(0, M_PI / 2, M_PI / 2), G4ThreeVector(0, ca, ca));
+  G4Transform3D t4(G4RotationMatrix(), G4ThreeVector(ca, ca, ca));
+
+  G4VSolid* s1 = new G4SubtractionSolid(&quot;s1&quot;, cube, acyl1, t1);
+  G4VSolid* s2 = new G4SubtractionSolid(&quot;s2&quot;, s1, acyl2, t2);
+  G4VSolid* s3 = new G4SubtractionSolid(&quot;s3&quot;, s2, acyl3, t3);
+  G4VSolid* s4 = new G4SubtractionSolid(&quot;s4&quot;, s3, aorb, t4);
+
+  G4Transform3D t5(G4RotationMatrix(0, 0, 0), G4ThreeVector(ca, ca, ca));
+  G4Transform3D t6(G4RotationMatrix(0, M_PI / 2, 0), G4ThreeVector(ca, ca, -ca));
+  G4Transform3D t7(G4RotationMatrix(0, -M_PI / 2, 0), G4ThreeVector(ca, -ca, ca));
+  G4Transform3D t8(G4RotationMatrix(0, M_PI / 2, M_PI / 2), G4ThreeVector(ca, -ca, -ca));
+
+  G4VSolid* u1 = new G4UnionSolid(&quot;u1&quot;, frame, s4, t5);
+  G4VSolid* u2 = new G4UnionSolid(&quot;u2&quot;, u1, s4, t6);
+  G4VSolid* u3 = new G4UnionSolid(&quot;u3&quot;, u2, s4, t7);
+  G4VSolid* u4 = new G4UnionSolid(&quot;u4&quot;, u3, s4, t8);
+
+  solid = new G4UnionSolid(&quot;u5&quot;, u4, u4, G4Transform3D(G4RotationMatrix(0, 0, M_PI), G4ThreeVector()));
+}
+
+// Define the callable functions for the custom solid
+extern &quot;C&quot; {
+  G4VSolid* createRoundCube(double a, double r) {
+    return new RoundCube(a, r);
+  }
+  void deleteRoundCube(G4VSolid* solid) {
+    delete solid;
+  }
+  const char* infoRoundCube(G4VSolid* solid) {
+    static std::string str;
+    std::ostringstream os;
+    solid-&gt;StreamInfo(os);
+    str = os.str();
+    return str.c_str();
+  }
+}
+</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../HBC30Detector/">« HBC30Detector.jl</a><a class="docs-footer-nextpage" href="../MyCode/">MyCode.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Tuesday 16 December 2025 09:43">Tuesday 16 December 2025</span>. Using Julia version 1.12.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
