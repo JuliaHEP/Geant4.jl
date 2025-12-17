@@ -13,7 +13,9 @@
 
 using Geant4
 using Geant4.SystemOfUnits
-using CairoMakie  ## to force loading G4Vis extension
+#md using CairoMakie ## to force loading G4Vis extension
+#nb using CairoMakie ## to force loading G4Vis extension
+#jl using GLMakie ## to force loading G4Vis extension
 
 # Change the number of steps when drawing curbed surfaces from 24 (default) to 64
 HepPolyhedron!SetNumberOfRotationSteps(64)

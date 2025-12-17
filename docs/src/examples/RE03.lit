@@ -24,8 +24,7 @@
 # We will also use the `FHist` and `Plots` modules to handle the histograms and plots.
 using Geant4
 using Geant4.SystemOfUnits
-#md import DisplayAs: PNG
-#nb import DisplayAs: PNG
+#md import DisplayAs: PNG #hide
 
 # ## Define Detector structure
 # The RE03 detector is a simple box filled with air. The detector is defined by the `RE03Detector` structure.
@@ -84,6 +83,6 @@ println("Central EDep = $(sum(t[10:20,10:20,:]))")
 # center of the scoring mesh.
 using CairoMakie
 img = heatmap(t[1:30,15,1:30])
-#nb PNG(img)
-#md PNG(img)
-#jl display(img)
+
+#md PNG(img) #hide
+

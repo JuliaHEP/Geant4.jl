@@ -64,8 +64,7 @@
 using Geant4
 using Geant4.SystemOfUnits
 using FHist, Plots, Printf
-#md import DisplayAs: PNG
-#nb import DisplayAs: PNG
+#md import DisplayAs: PNG #hide
 
 # ## Define Detector structure
 # The detector is a sandwich calorimeter made of layers of sensitive and absorber materials. The detector is defined by the `TestEm3Detector` structure.
@@ -308,16 +307,16 @@ beamOn(app, 1000)
 
 # ## Plot the results
 img = do_plot(app.simdata[1])
-#md PNG(img)
-#nb PNG(img)
+#md PNG(img) #hide
+#nb display(img)
 #jl display(img)
 
 # ### Change the primary particle enerqy and run the simulation again
 SetParticleEnergy(particlegun, 100MeV)
 beamOn(app, 1000)
 img = do_plot(app.simdata[1])
-#md PNG(img)
-#nb PNG(img)
+#md PNG(img) #hide
+#nb display(img)
 #jl display(img)
 
 # ### Change the geometry and run the simulation again
@@ -326,8 +325,8 @@ reinitialize(app, TestEm3Detector(absorThickness = [2.3mm, 5.7mm, 1mm],
                                   absorMaterial = ["G4_Pb", "G4_lAr", "G4_Al"]))
 beamOn(app, 1000)
 img = do_plot(app.simdata[1])
-#md PNG(img)
-#nb PNG(img)
+#md PNG(img) #hide
+#nb display(img)
 #jl display(img)
 
 

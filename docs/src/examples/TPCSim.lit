@@ -33,8 +33,7 @@ using PYTHIA8
 #nb using CairoMakie
 #jl using GLMakie
 using PYTHIA8: px, py, pz
-#md import DisplayAs: PNG
-#nb import DisplayAs: PNG
+#md import DisplayAs: PNG #hide
 
 
 # ## Define the TPC Detector
@@ -147,7 +146,6 @@ end
 # Overwriting the default `drawEvent` function defined in the G4Vis extension
 const G4Vis = Base.get_extension(Geant4, :G4Vis)
 function G4Vis.drawEvent(evtdisp::G4Vis.G4JLEventDisplay)
-    println("Drawing event", typeof(evtdisp))
     s = evtdisp.lscene.scene
     settings = evtdisp.settings
     trajectories = G4EventManager!GetEventManager() |> GetConstCurrentEvent |> GetTrajectoryContainer
@@ -188,12 +186,18 @@ initialize(app)
 
 # ## Run the Application
 beamOn(app, 1)
-#nb PNG(evtdisplay.figure)
-#md PNG(evtdisplay.figure)
+#md # ```julia
+#md # display(evtdisplay.figure)
+#md # ```
+#md PNG(evtdisplay.figure) #hide
+#nb display(evtdisplay.figure)
 #jl display(evtdisplay.figure)
 
 # Another event
 beamOn(app, 1)
-#nb PNG(evtdisplay.figure)
-#md PNG(evtdisplay.figure)
+#md # ```julia
+#md # display(evtdisplay.figure)
+#md # ```
+#md PNG(evtdisplay.figure) #hide
+#nb display(evtdisplay.figure)
 #jl display(evtdisplay.figure)
