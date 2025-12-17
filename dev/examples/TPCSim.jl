@@ -106,7 +106,6 @@ end
 
 const G4Vis = Base.get_extension(Geant4, :G4Vis)
 function G4Vis.drawEvent(evtdisp::G4Vis.G4JLEventDisplay)
-    println("Drawing event", typeof(evtdisp))
     s = evtdisp.lscene.scene
     settings = evtdisp.settings
     trajectories = G4EventManager!GetEventManager() |> GetConstCurrentEvent |> GetTrajectoryContainer

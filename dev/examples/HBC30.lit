@@ -21,10 +21,11 @@
 using Geant4
 using Geant4.SystemOfUnits
 using Printf, GeometryBasics
-using CairoMakie  # to force loading G4Vis extension
+## to force loading G4Vis extension we need to load the following module
+#md using CairoMakie
+#nb using CairoMakie
+#jl using GLMakie
 #md import DisplayAs: PNG #hide
-#nb import DisplayAs: PNG #hide
-
 
 # ## Define the Detector
 # The HBC30 is cylinder of 30cm filled with liquid hydrogen
@@ -183,8 +184,11 @@ s = LScene(fig[1,1])
 drawdetector(s, app)
 nexttrigger(app); drawevent(s, app)
 
-#md PNG(fig)
-#nb PNG(fig)
+#md # ```julia
+#md # display(fig)
+#md # ```
+#md PNG(fig) #hide
+#nb display(fig)
 #jl display(fig)
 
 # Change the energy and type of particle and draw the next event that triggers
@@ -197,6 +201,9 @@ s = LScene(fig[1,1])
 drawdetector(s, app)
 nexttrigger(app); drawevent(s, app)
 
-#md PNG(fig)
-#nb PNG(fig)
+#md # ```julia
+#md # display(fig)
+#md # ```
+#md PNG(fig) #hide 
+#nb display(fig)
 #jl display(fig)

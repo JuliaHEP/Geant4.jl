@@ -6,8 +6,7 @@ using PYTHIA8
 
 # to force loading G4Vis extension we need to load the following modules
 using CairoMakie
-using PYTHIA8: px, py, pz
-import DisplayAs: PNG</code></pre><h2 id="Define-the-TPC-Detector"><a class="docs-heading-anchor" href="#Define-the-TPC-Detector">Define the TPC Detector</a><a id="Define-the-TPC-Detector-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-TPC-Detector" title="Permalink"></a></h2><p>The TPC detector is a simple cylinder filled with a mixture of Ar and CH4 gas</p><pre><code class="language-julia hljs">using Geant4.SystemOfUnits: m, cm, mole,cm3</code></pre><p>The data structure <code>AlephTPC</code> is defined with the default detector parameters</p><pre><code class="language-julia hljs">@with_kw mutable struct AlephTPC &lt;: G4JLDetector
+using PYTHIA8: px, py, pz</code></pre><h2 id="Define-the-TPC-Detector"><a class="docs-heading-anchor" href="#Define-the-TPC-Detector">Define the TPC Detector</a><a id="Define-the-TPC-Detector-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-TPC-Detector" title="Permalink"></a></h2><p>The TPC detector is a simple cylinder filled with a mixture of Ar and CH4 gas</p><pre><code class="language-julia hljs">using Geant4.SystemOfUnits: m, cm, mole,cm3</code></pre><p>The data structure <code>AlephTPC</code> is defined with the default detector parameters</p><pre><code class="language-julia hljs">@with_kw mutable struct AlephTPC &lt;: G4JLDetector
     totalL::Float64 = 4.4m      # total length of the TPC
     innerR::Float64 = 0.31m     # inner radius of the TPC
     outerR::Float64 = 1.8m      # outer radius of the TPC
@@ -99,7 +98,6 @@ function LEPCollision()
     G4JLPrimaryGenerator(&quot;LEPCollision&quot;, data; init_method=LEPinit, generate_method=LEPgenerate)
 end</code></pre><pre><code class="nohighlight hljs">LEPCollision (generic function with 1 method)</code></pre><h2 id="Event-Display"><a class="docs-heading-anchor" href="#Event-Display">Event Display</a><a id="Event-Display-1"></a><a class="docs-heading-anchor-permalink" href="#Event-Display" title="Permalink"></a></h2><p>Overwriting the default <code>drawEvent</code> function defined in the G4Vis extension</p><pre><code class="language-julia hljs">const G4Vis = Base.get_extension(Geant4, :G4Vis)
 function G4Vis.drawEvent(evtdisp::G4Vis.G4JLEventDisplay)
-    println(&quot;Drawing event&quot;, typeof(evtdisp))
     s = evtdisp.lscene.scene
     settings = evtdisp.settings
     trajectories = G4EventManager!GetEventManager() |&gt; GetConstCurrentEvent |&gt; GetTrajectoryContainer
@@ -192,6 +190,123 @@ initialize(app)</code></pre><pre><code class="nohighlight hljs">
  --------  End PYTHIA Particle Data Table  -----------------------------------------------------------------------------------------
 
  G4ChordFinder: stepperDriverId: 2
-</code></pre><h2 id="Run-the-Application"><a class="docs-heading-anchor" href="#Run-the-Application">Run the Application</a><a id="Run-the-Application-1"></a><a class="docs-heading-anchor-permalink" href="#Run-the-Application" title="Permalink"></a></h2><pre><code class="language-julia hljs">beamOn(app, 1)
-PNG(evtdisplay.figure)</code></pre><p><img src="../TPCSim-23.png" alt/></p><p>Another event</p><pre><code class="language-julia hljs">beamOn(app, 1)
-PNG(evtdisplay.figure)</code></pre><p><img src="../TPCSim-25.png" alt/></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../Solids/">« Geant4 Solids</a><a class="docs-footer-nextpage" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Tuesday 16 December 2025 10:54">Tuesday 16 December 2025</span>. Using Julia version 1.12.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</code></pre><h2 id="Run-the-Application"><a class="docs-heading-anchor" href="#Run-the-Application">Run the Application</a><a id="Run-the-Application-1"></a><a class="docs-heading-anchor-permalink" href="#Run-the-Application" title="Permalink"></a></h2><pre><code class="language-julia hljs">beamOn(app, 1)</code></pre><pre><code class="nohighlight hljs">
+ --------  PYTHIA Info Listing  ---------------------------------------- 
+ 
+ Beam A: id =    -11, pz =  4.560e+01, e =  4.560e+01, m =  5.110e-04.
+ Beam B: id =     11, pz = -4.560e+01, e =  4.560e+01, m =  5.110e-04.
+
+ In 1: id =  -11, x =  1.000e+00, pdf =  1.000e+00 at Q2 =  8.317e+03.
+ In 2: id =   11, x =  1.000e+00, pdf =  1.000e+00 at same Q2.
+
+ Subprocess f fbar -&gt; gamma*/Z0 with code 221 is 2 -&gt; 1.
+ It has sHat =  8.317e+03.
+     alphaEM =  7.818e-03,  alphaS =  1.300e-01    at Q2 =  8.317e+03.
+
+ Impact parameter b =  0.000e+00 gives enhancement factor =  1.000e+00.
+ Max pT scale for MPI =  9.120e+01, ISR =  9.120e+01, FSR =  9.120e+01.
+ Number of MPI =     1, ISR =     0, FSRproc =     0, FSRreson =     5.
+
+ --------  End PYTHIA Info Listing  ------------------------------------
+
+ --------  PYTHIA Event Listing  (hard process)  -----------------------------------------------------------------------------------
+ 
+    no         id  name            status     mothers   daughters     colours      p_x        p_y        p_z         e          m 
+     0         90  (system)           -11     0     0     0     0     0     0      0.000      0.000      0.000     91.200     91.200
+     1        -11  (e+)               -12     0     0     3     0     0     0      0.000      0.000     45.600     45.600      0.001
+     2         11  (e-)               -12     0     0     4     0     0     0      0.000      0.000    -45.600     45.600      0.001
+     3        -11  (e+)               -21     1     0     5     0     0     0      0.000      0.000     45.600     45.600      0.000
+     4         11  (e-)               -21     2     0     5     0     0     0      0.000      0.000    -45.600     45.600      0.000
+     5         23  (Z0)               -22     3     4     6     7     0     0      0.000      0.000      0.000     91.200     91.200
+     6          4  c                   23     5     0     0     0   101     0      2.496      9.144    -44.579     45.600      1.500
+     7         -4  cbar                23     5     0     0     0     0   101     -2.496     -9.144     44.579     45.600      1.500
+                                   Charge sum:  0.000           Momentum sum:      0.000      0.000      0.000     91.200     91.200
+
+ --------  End PYTHIA Event Listing  -----------------------------------------------------------------------------------------------
+
+ --------  PYTHIA Event Listing  (complete event)  ---------------------------------------------------------------------------------
+ 
+    no         id  name            status     mothers   daughters     colours      p_x        p_y        p_z         e          m 
+     0         90  (system)           -11     0     0     0     0     0     0      0.000      0.000      0.000     91.200     91.200
+     1        -11  (e+)               -12     0     0     3     0     0     0      0.000      0.000     45.600     45.600      0.001
+     2         11  (e-)               -12     0     0     4     0     0     0      0.000      0.000    -45.600     45.600      0.001
+     3        -11  (e+)               -21     1     0     5     0     0     0      0.000      0.000     45.600     45.600      0.000
+     4         11  (e-)               -21     2     0     5     0     0     0      0.000      0.000    -45.600     45.600      0.000
+     5         23  (Z0)               -22     3     4     6     7     0     0      0.000      0.000      0.000     91.200     91.200
+     6          4  (c)                -23     5     0    10    10   101     0      2.496      9.144    -44.579     45.600      1.500
+     7         -4  (cbar)             -23     5     0     8     9     0   101     -2.496     -9.144     44.579     45.600      1.500
+     8         -4  (cbar)             -51     7     0    11    12     0   102     -2.892     -8.826     44.585     45.567      1.500
+     9         21  (g)                -51     7     0    13    13   102   101      0.501      0.066     -1.877      1.944      0.000
+    10          4  (c)                -52     6     6    23    23   101     0      2.391      8.760    -42.708     43.689      1.500
+    11         -4  (cbar)             -51     8     0    19    19     0   103     -1.553     -7.359     38.768     39.519      1.500
+    12         21  (g)                -51     8     0    14    15   103   102     -1.326     -1.466      5.769      6.098      0.000
+    13         21  (g)                -52     9     9    16    16   102   101      0.488      0.064     -1.829      1.894      0.000
+    14         21  (g)                -51    12     0    17    18   103   104     -0.900     -0.284      4.281      4.384      0.000
+    15         21  (g)                -51    12     0    22    22   104   102     -0.393     -1.178      1.363      1.844      0.000
+    16         21  (g)                -52    13    13    20    21   102   101      0.454      0.060     -1.704      1.764      0.000
+    17         21  (g)                -51    14     0    31    31   105   104     -1.413     -1.644      9.897     10.132      0.000
+    18         21  (g)                -51    14     0    32    32   103   105      0.276     -0.472      3.535      3.577      0.000
+    19         -4  (cbar)             -52    11    11    33    33     0   103     -1.316     -5.528     29.616     30.194      1.500
+    20         -1  (dbar)             -51    16     0    24    24     0   101      0.016     -0.556     -0.490      0.811      0.330
+    21          1  (d)                -51    16     0    29    29   102     0      0.381      0.446     -1.017      1.219      0.330
+    22         21  (g)                -52    15    15    30    30   104   102     -0.336     -1.007      1.166      1.577      0.000
+    23          4  (c)                -71    10    10    25    28   101     0      2.391      8.760    -42.708     43.689      1.500
+    24         -1  (dbar)             -71    20    20    25    28     0   101      0.016     -0.556     -0.490      0.811      0.330
+    25        433  (D*_s+)            -83    23    24    52    53     0     0      1.594      5.437    -25.689     26.392      2.112
+    26       -313  (K*bar0)           -83    23    24    42    43     0     0      0.162      1.084     -8.760      8.880      0.953
+    27        113  (rho0)             -83    23    24    44    45     0     0      0.441      1.908     -6.675      6.988      0.662
+    28        223  (omega)            -84    23    24    54    56     0     0      0.210     -0.226     -2.074      2.241      0.791
+    29          1  (d)                -71    21    21    34    41   102     0      0.381      0.446     -1.017      1.219      0.330
+    30         21  (g)                -71    22    22    34    41   104   102     -0.336     -1.007      1.166      1.577      0.000
+    31         21  (g)                -71    17    17    34    41   105   104     -1.413     -1.644      9.897     10.132      0.000
+    32         21  (g)                -71    18    18    34    41   103   105      0.276     -0.472      3.535      3.577      0.000
+    33         -4  (cbar)             -71    19    19    34    41     0   103     -1.316     -5.528     29.616     30.194      1.500
+    34       -211  pi-                 83    29    33     0     0     0     0      0.255     -0.125     -0.555      0.639      0.140
+    35        213  (rho+)             -83    29    33    46    47     0     0     -0.023     -0.204      0.296      0.893      0.818
+    36       -213  (rho-)             -83    29    33    48    49     0     0     -0.066      0.012      0.942      1.240      0.804
+    37        211  pi+                 83    29    33     0     0     0     0     -0.689      0.162      1.443      1.613      0.140
+    38       -211  pi-                 83    29    33     0     0     0     0      0.568     -0.525      1.223      1.454      0.140
+    39        211  pi+                 84    29    33     0     0     0     0     -0.896     -0.301      3.716      3.837      0.140
+    40        313  (K*0)              -84    29    33    50    51     0     0     -0.363     -2.802     11.177     11.563      0.887
+    41       -433  (D*_s-)            -84    29    33    57    58     0     0     -1.193     -4.421     24.956     25.460      2.112
+    42       -321  K-                  91    26     0     0     0     0     0     -0.209      0.443     -4.499      4.552      0.494
+    43        211  pi+                 91    26     0     0     0     0     0      0.371      0.641     -4.261      4.328      0.140
+    44        211  pi+                 91    27     0     0     0     0     0      0.047      0.795     -1.860      2.028      0.140
+    45       -211  pi-                 91    27     0     0     0     0     0      0.394      1.113     -4.815      4.960      0.140
+    46        211  pi+                 91    35     0     0     0     0     0      0.209      0.120      0.373      0.465      0.140
+    47        111  (pi0)              -91    35     0    59    60     0     0     -0.232     -0.324     -0.077      0.428      0.135
+    48       -211  pi-                 91    36     0     0     0     0     0      0.182     -0.293      0.582      0.691      0.140
+    49        111  (pi0)              -91    36     0    61    62     0     0     -0.247      0.305      0.360      0.550      0.135
+    50        321  K+                  91    40     0     0     0     0     0     -0.222     -2.661     10.127     10.484      0.494
+    51       -211  pi-                 91    40     0     0     0     0     0     -0.141     -0.141      1.051      1.079      0.140
+    52        431  (D_s+)             -91    25     0    63    64     0     0      1.466      4.909    -22.785     23.436      1.968
+    53         22  gamma               91    25     0     0     0     0     0      0.129      0.528     -2.905      2.955      0.000
+    54        211  pi+                 91    28     0     0     0     0     0      0.172     -0.123     -0.906      0.941      0.140
+    55       -211  pi-                 91    28     0     0     0     0     0     -0.095     -0.227     -0.927      0.969      0.140
+    56        111  (pi0)              -91    28     0    65    66     0     0      0.134      0.125     -0.242      0.332      0.135
+    57       -431  (D_s-)             -91    41     0    67    68     0     0     -1.224     -4.222     24.350     24.822      1.968
+    58         22  gamma               91    41     0     0     0     0     0      0.031     -0.199      0.606      0.638      0.000
+    59         22  gamma               91    47     0     0     0     0     0     -0.134     -0.231      0.009      0.268      0.000
+    60         22  gamma               91    47     0     0     0     0     0     -0.098     -0.093     -0.087      0.160      0.000
+    61         22  gamma               91    49     0     0     0     0     0     -0.012      0.102      0.070      0.125      0.000
+    62         22  gamma               91    49     0     0     0     0     0     -0.235      0.202      0.290      0.425      0.000
+    63        333  (phi)              -91    52     0    69    70     0     0      0.819      2.554    -10.484     10.869      1.020
+    64        213  (rho+)             -91    52     0    71    72     0     0      0.646      2.355    -12.301     12.567      0.808
+    65         22  gamma               91    56     0     0     0     0     0     -0.024     -0.002     -0.014      0.028      0.000
+    66         22  gamma               91    56     0     0     0     0     0      0.157      0.127     -0.227      0.304      0.000
+    67       -321  K-                  91    57     0     0     0     0     0     -0.217     -1.445     11.682     11.783      0.494
+    68        313  (K*0)              -91    57     0    73    74     0     0     -1.008     -2.776     12.669     13.039      0.893
+    69        130  K_L0                91    63     0     0     0     0     0      0.428      1.238     -5.537      5.711      0.498
+    70        310  (K_S0)             -91    63     0    75    76     0     0      0.391      1.316     -4.947      5.158      0.498
+    71        211  pi+                 91    64     0     0     0     0     0      0.432      0.526     -2.557      2.649      0.140
+    72        111  (pi0)              -91    64     0    77    78     0     0      0.215      1.829     -9.744      9.918      0.135
+    73        321  K+                  91    68     0     0     0     0     0     -1.046     -2.589     11.320     11.670      0.494
+    74       -211  pi-                 91    68     0     0     0     0     0      0.038     -0.187      1.348      1.369      0.140
+    75        211  pi+                 91    70     0     0     0     0     0      0.361      1.030     -3.250      3.431      0.140
+    76       -211  pi-                 91    70     0     0     0     0     0      0.030      0.286     -1.697      1.727      0.140
+    77         22  gamma               91    72     0     0     0     0     0      0.045      0.122     -0.779      0.790      0.000
+    78         22  gamma               91    72     0     0     0     0     0      0.170      1.707     -8.965      9.128      0.000
+                                   Charge sum:  0.000           Momentum sum:      0.000      0.000     -0.000     91.200     91.200
+
+ --------  End PYTHIA Event Listing  -----------------------------------------------------------------------------------------------
+</code></pre><pre><code class="language-julia hljs">display(evtdisplay.figure)</code></pre><p><img src="../TPCSim-25.png" alt/></p><p>Another event</p><pre><code class="language-julia hljs">beamOn(app, 1)</code></pre><pre><code class="language-julia hljs">display(evtdisplay.figure)</code></pre><p><img src="../TPCSim-29.png" alt/></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../Solids/">« Geant4 Solids</a><a class="docs-footer-nextpage" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Wednesday 17 December 2025 09:27">Wednesday 17 December 2025</span>. Using Julia version 1.12.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

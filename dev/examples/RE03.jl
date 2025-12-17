@@ -41,4 +41,3 @@ println("Central EDep = $(sum(t[10:20,10:20,:]))")
 
 using CairoMakie
 img = heatmap(t[1:30,15,1:30])
-display(img)

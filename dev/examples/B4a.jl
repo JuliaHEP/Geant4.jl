@@ -220,7 +220,7 @@ function stepaction(step::G4Step, app::G4JLApplication)
     return
 end
 
-evtdisplay   = G4JLEventDisplay(joinpath(@__DIR__, "B4aVis.jl"))
+evtdisplay   = G4JLEventDisplay(joinpath(@__DIR__, "B4aVisSettings.jl"))
 Geant4.getConstructor(::B4aDetector)::Function = B4aConstruct
 app = G4JLApplication(detector = detector,               # detector with parameters
                       simdata = B4aSimData(),            # simulation data
@@ -253,4 +253,3 @@ Plots.plot!(subplot=2, data.fEdepHist_Gap, title="Total EDep in Gaps", xlabel="E
 
 Plots.plot!(subplot=3, data.fStepLenHist_Abs, title="Total StepLeng in Absorbers", xlabel="Step Length (mm)", label="Abs_StepLen", show=true)
 Plots.plot!(subplot=4, data.fStepLenHist_Gap, title="Total StepLeng in Gaps", xlabel="Step Length (mm)", label="Gap_StepLen", show=true)
-display("image/png", img)

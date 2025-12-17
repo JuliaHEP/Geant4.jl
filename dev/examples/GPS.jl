@@ -107,7 +107,6 @@ initialize(app)
 
 beamOn(app,100000)
 img = do_plot(app.simdata[1])
-display(img)
 
 ui`/gps/particle geantino`
 ui`/gps/pos/type Plane`
@@ -124,4 +123,3 @@ ui`/gps/ene/intercept 1`
 
 beamOn(app,100000)
 img = do_plot(app.simdata[1])
-display(img)

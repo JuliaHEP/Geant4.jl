@@ -26,8 +26,8 @@ using Geant4.SystemOfUnits: deg
 using Parameters
 using FHist
 using Plots
-#md import DisplayAs: PNG
-#nb import DisplayAs: PNG
+#md import DisplayAs: PNG #hide
+
 
 # ## Define the Detector
 # The GPS detector is a simple box filled with air. The detector is defined by the `GPSDetector` structure.
@@ -146,9 +146,7 @@ initialize(app)
 # We run the simulation with 100000 particles and plot the results.
 beamOn(app,100000)
 img = do_plot(app.simdata[1])
-#nb PNG(img)
-#md PNG(img)
-#jl display(img)
+#md PNG(img) #hide
 
 # Let's change the GPS parameters and run the simulation again.
 ui`/gps/particle geantino`
@@ -166,6 +164,4 @@ ui`/gps/ene/intercept 1`
 
 beamOn(app,100000)
 img = do_plot(app.simdata[1])
-#nb PNG(img)
-#md PNG(img)
-#jl display(img)
+#md PNG(img) #hide

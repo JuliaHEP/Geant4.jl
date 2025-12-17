@@ -1,7 +1,8 @@
 using Geant4
 using Geant4.SystemOfUnits
 using Printf, GeometryBasics
-using CairoMakie  # to force loading G4Vis extension
+# to force loading G4Vis extension we need to load the following module
+using GLMakie
 
 include(joinpath(@__DIR__, "HBC30Detector.jl"))
 hbc30 = HBC30()
