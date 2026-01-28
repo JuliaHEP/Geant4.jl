@@ -25,7 +25,7 @@ module G4Vis
     end
 
     #---Color conversion-----------------------------------------------------------------------------
-    const LVColor = Union{ColorTypes.Color, Tuple{ColorTypes.RGB{Float64}, Float64}}
+    const LVColor = Union{ColorTypes.Color, Tuple{ColorTypes.RGB, Float64}}
     function convert(::Type{Tuple{RGB, Float64}}, c::ConstCxxRef{G4Colour})
         return (RGB(GetRed(c),GetGreen(c), GetBlue(c)),GetAlpha(c))
     end
@@ -33,6 +33,10 @@ module G4Vis
     #---Get vertices and facets from G4VSolid---------------------------------------------------------   
     function mesh_constituents(s::G4VSolid; withnormals::Bool=false)
         ph = GetPolyhedron(s)
+        if ph == C_NULL
+            println("Solid of type $(GetEntityType(s)) and name $(GetName(s)) cannot be converted to a mesh for visualization")
+            return (nothing, nothing, nothing)
+        end
         nv = GetNoVertices(ph)
         nf = GetNoFacets(ph)
         points = map(1:nv) do i
@@ -75,78 +79,128 @@ module G4Vis
 #---Visualization functions---------------------------------------------------------------------
     #---Solid-level drawing---------------------------------------------------------------------
     function Geant4.draw(solid::G4VSolid; wireframe::Bool=false, kwargs...)
+        fig = Figure()
+        s = LScene(fig[1, 1])
         if wireframe
             m = GeometryBasics.mesh(solid)
-            img = Makie.wireframe(m; linewidth=1, kwargs...)
+            Makie.wireframe!(s, m; linewidth=1, kwargs...)
         else
             m = GeometryBasics.mesh(solid; withnormals=true)
-            img = Makie.mesh(m; kwargs...)
+            Makie.mesh!(s, m; kwargs...)
+        end
+    end
+    function Geant4.draw!(s, solid::G4VSolid; wireframe::Bool=false, kwargs...)
+        if wireframe
+            m = GeometryBasics.mesh(solid)
+            Makie.wireframe!(s, m; linewidth=1, kwargs...)
+        else
+            m = GeometryBasics.mesh(solid; withnormals=true)
+            Makie.mesh!(s, m; kwargs...)
         end
     end
 
     #---PhysicalVolume-level drawing--------------------------------------------------------------
-    function Geant4.draw(pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
+    function Geant4.draw(pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999, kwargs...)
         fig = Figure()
         s = LScene(fig[1, 1])
-        draw!(s, GetLogicalVolume(pv)[]; wireframe=wireframe, maxlevel=maxlevel)
+        draw!(s, GetLogicalVolume(pv)[]; wireframe=wireframe, maxlevel=maxlevel, kwargs...)
     end
-    function Geant4.draw!(s, pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
-        draw!(s, GetLogicalVolume(pv)[]; wireframe=wireframe, maxlevel=maxlevel)
+    function Geant4.draw!(s, pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999, kwargs...)
+        draw!(s, GetLogicalVolume(pv)[]; wireframe=wireframe, maxlevel=maxlevel, kwargs...)
     end
 
     #---CxxPtr overloads---------------------------------------------------------------------------
-    function Geant4.draw(pv::CxxPtr{G4VPhysicalVolume}; wireframe::Bool=false, maxlevel::Int64=999)
+    function Geant4.draw(pv::CxxPtr{G4VPhysicalVolume}; wireframe::Bool=false, maxlevel::Int64=999, kwargs...)
         fig = Figure()
         s = LScene(fig[1, 1])
-        draw!(s, GetLogicalVolume(pv[])[]; wireframe=wireframe, maxlevel=maxlevel)
+        draw!(s, GetLogicalVolume(pv[])[]; wireframe=wireframe, maxlevel=maxlevel, kwargs...)
     end
-    function Geant4.draw!(s, pv::CxxPtr{G4VPhysicalVolume}; wireframe::Bool=false, maxlevel::Int64=999)
-        draw!(s, GetLogicalVolume(pv[])[]; wireframe=wireframe, maxlevel=maxlevel)
+    function Geant4.draw!(s, pv::CxxPtr{G4VPhysicalVolume}; wireframe::Bool=false, maxlevel::Int64=999, kwargs...)
+        draw!(s, GetLogicalVolume(pv[])[]; wireframe=wireframe, maxlevel=maxlevel, kwargs...)
     end
 
     #---LogicalVolume-level drawing----------------------------------------------------------------
-    function Geant4.draw(lv::G4LogicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
+    function Geant4.draw(lv::G4LogicalVolume; wireframe::Bool=false, maxlevel::Int64=999, kwargs...)
         fig = Figure()
         s = LScene(fig[1, 1])
-        Geant4.draw!(s, lv; wireframe=wireframe, maxlevel=maxlevel)
-        return fig
+        Geant4.draw!(s, lv; wireframe=wireframe, maxlevel=maxlevel, kwargs...)
+        return s
     end
 
-    function Geant4.draw!(s, lv::G4LogicalVolume; wireframe::Bool=false, maxlevel::Int64=999)
+    function Geant4.draw!(s, lv::G4LogicalVolume; wireframe::Bool=false, maxlevel::Int64=999, kwargs...)
+        m_count = 0
+        p_count = 0
         #---Collect the meshes recursively and Vis attributes recursively--------------------------
         # This assumes that all Placements of a given LogicalVolume are drawn with the same visibility and color
         lv_meshes = Dict{G4LogicalVolume, Tuple{Vector{GeometryBasics.Mesh}, LVColor, Bool}}()
         collect_meshes(lv, lv_meshes, one(Transformation3D{Float64}), 1, maxlevel)
         #---Draw all collected meshes----------------------------------------------------------------
         for (clv, (meshes, color, visible)) in lv_meshes
+            m_count += length(meshes)
+            p_count += sum(length(m.position) for m in meshes)   
             m = merge(meshes)
             if wireframe
-                Makie.wireframe!(s, m; linewidth=1, visible=visible)
+                Makie.wireframe!(s, m; linewidth=1, visible=visible, kwargs...)
             else
-                Makie.mesh!(s, m; color=color, transparency=true, visible=visible)
+                Makie.mesh!(s, m; color=color, visible=visible, kwargs...)
             end
         end
+        println("Drawn $m_count meshes with total $p_count points in $(length(lv_meshes)) logical volumes steps.")
+        return s
     end
 
+
+#---Default color assignment--------------------------------------------------------------------
+
+    colZ = fill(colorant"gray", 110)
+    colZ[3] =  colorant"silver"       # Li
+    colZ[4] =  colorant"slategray"    # Be
+    colZ[5] =  colorant"gray30"       # B
+    colZ[6] =  colorant"gray30"       # C
+    colZ[7] =  colorant"skyblue"      # N
+    colZ[8] =  colorant"white"        # O
+    colZ[9] =  colorant"lightyellow"  # F
+    colZ[10] = colorant"orange"       # Ne
+    colZ[11] = colorant"silver"       # Na
+    colZ[12] = colorant"silver"       # Mg
+    colZ[13] = colorant"silver"       # Al
+    colZ[14] = colorant"yellow"       # Si
+    colZ[16] = colorant"yellowgreen"  # S
+    colZ[20] = colorant"gold"         # Ca
+    colZ[22] = colorant"lightgray"    # Ti
+    colZ[24] = colorant"darkgray"     # Cr
+    colZ[26] = colorant"orangered"    # Fe
+    colZ[29] = colorant"blue"         # Cu
+    colZ[47] = colorant"lightgray"    # Ag
+    colZ[79] = colorant"gold"         # Au
+    colZ[82] = colorant"lightyellow"  # Pb
+
+    function default_color(mat::Union{G4Material, CxxPtr{G4Material}})
+        #z = GetZ(mat)
+        z = GetTotNbOfElectPerVolume(mat)/GetTotNbOfAtomsPerVolume(mat) |> round |> Int
+        d = GetDensity(mat)
+        return (colZ[z], d > 1g/cm3 ? 1. : d/(2g/cm3))
+    end    
 #---Helper functions for recursive drawing------------------------------------------------------
-    const colors = colormap("Grays", 8)
     const UnitOnAxis = [( 1,0,0), (0,1,0), (0,0,1)]
 
     function collect_meshes(lv::G4LogicalVolume, lv_meshes::Dict{G4LogicalVolume, Tuple{Vector{GeometryBasics.Mesh}, LVColor, Bool}}, t::Transformation3D{Float64}, level::Int64, maxlevel::Int64)
         solid = GetSolid(lv)
         g4vis = GetVisAttributes(lv)
         points, faces, normals = mesh_constituents(solid[], withnormals=true)
-        if ! isone(t)
-            map!(c -> c * t, points, points)
-            map!(n -> t.rotation * n, normals, normals)
-        end
-        m = GeometryBasics.Mesh(points, faces, normal=per_face(normals, faces))
-        if haskey(lv_meshes, lv)
-            push!(lv_meshes[lv][1], m)
-        else
-            color = g4vis != C_NULL ? convert(Tuple{RGB, Float64}, GetColour(g4vis)) : (colors[level], GetDensity(GetMaterial(lv))/(12g/cm3))
-            visible = g4vis != C_NULL ? IsVisible(g4vis) : true
-            lv_meshes[lv] = ([m], color, visible)
+        if points !== nothing
+            if ! isone(t)
+                map!(c -> c * t, points, points)
+                map!(n -> t.rotation * n, normals, normals)
+            end
+            m = GeometryBasics.Mesh(points, faces, normal=per_face(normals, faces))
+            if haskey(lv_meshes, lv)
+                push!(lv_meshes[lv][1], m)
+            else
+                color = g4vis != C_NULL ? convert(Tuple{RGB, Float64}, GetColour(g4vis)) : default_color(GetMaterial(lv))
+                visible = g4vis != C_NULL ? IsVisible(g4vis) : color[2] >= 0.1 
+                lv_meshes[lv] = ([m], color, visible)
+            end
         end
         # Go down to the daughters (eventually)
         level >= maxlevel && return
