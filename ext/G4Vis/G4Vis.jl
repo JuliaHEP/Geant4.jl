@@ -88,6 +88,7 @@ module G4Vis
             m = GeometryBasics.mesh(solid; withnormals=true)
             Makie.mesh!(s, m; kwargs...)
         end
+        return fig
     end
     function Geant4.draw!(s, solid::G4VSolid; wireframe::Bool=false, kwargs...)
         if wireframe
@@ -104,6 +105,7 @@ module G4Vis
         fig = Figure()
         s = LScene(fig[1, 1])
         draw!(s, GetLogicalVolume(pv)[]; wireframe=wireframe, maxlevel=maxlevel, kwargs...)
+        return fig
     end
     function Geant4.draw!(s, pv::G4VPhysicalVolume; wireframe::Bool=false, maxlevel::Int64=999, kwargs...)
         draw!(s, GetLogicalVolume(pv)[]; wireframe=wireframe, maxlevel=maxlevel, kwargs...)
@@ -114,6 +116,7 @@ module G4Vis
         fig = Figure()
         s = LScene(fig[1, 1])
         draw!(s, GetLogicalVolume(pv[])[]; wireframe=wireframe, maxlevel=maxlevel, kwargs...)
+        return fig
     end
     function Geant4.draw!(s, pv::CxxPtr{G4VPhysicalVolume}; wireframe::Bool=false, maxlevel::Int64=999, kwargs...)
         draw!(s, GetLogicalVolume(pv[])[]; wireframe=wireframe, maxlevel=maxlevel, kwargs...)
@@ -124,7 +127,7 @@ module G4Vis
         fig = Figure()
         s = LScene(fig[1, 1])
         Geant4.draw!(s, lv; wireframe=wireframe, maxlevel=maxlevel, kwargs...)
-        return s
+        return fig
     end
 
     function Geant4.draw!(s, lv::G4LogicalVolume; wireframe::Bool=false, maxlevel::Int64=999, kwargs...)
