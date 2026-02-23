@@ -4,6 +4,13 @@
 # The example uses the CMS detector model and renders a number of logical volumes to a PNG image.
 # The rendering is done using the GLMakie backend of the Makie.jl graphics library.
 # 
+# Limitations of the current implementation:
+# - The rending is limited to a maximum level of 5 in the geometry hierarchy to avoid excessive mesh generation and rendering times. 
+#   This can be adjusted with the `maxlevel` keyword argument in the `draw` function.
+# - Be aware that often the Geant4 boolean processor fails to generate meshes of complex boolean solids. 
+#   This is noticed by the presence of rendering artifacts when clipping is applied or getting stuck in an infinite mesh generation loop. 
+#   Reduce the `maxlevel`` or apply clipping to mitigate this issue.
+
 #md # !!! note "Note that"
 #md #     You can also download this example as a
 #md #     [Jupyter notebook](GDMLRendering.ipynb) and a plain
@@ -35,6 +42,10 @@ muon    = GetVolume("MUON")[]
 ebar    = GetVolume("EBAR")[]
 
 # ### Create and render scenes
+# - You can adjust the `maxlevel` keyword argument in the `draw!` function to control the level of detail in the rendering.
+# - The `clip` keyword argument can be used to apply clipping planes to the geometry for better visibility of internal structures. 
+#   In this example, we use `clip=:xy` to clip along the X=0 and Y=0 planes. Other possible values are `:x`, `:y`, `:z` for single-plane, `:xz`, `:yz`, `:xyz` clipping for double and triple planes, and `:none` for no clipping.
+# - Lighting options and camera position can be adjusted. See the [Lighting](https://docs.makie.org/stable/reference/scene/lighting) and [Camera3D](https://docs.makie.org/stable/explanations/cameras#3D-Camera)` documentation of Makie.
 for lv in (CMS, tracker, muon, ebar)
   lvname = GetName(lv) |> String
   println("Drawing logical volume: $lvname")
