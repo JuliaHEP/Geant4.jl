@@ -55,8 +55,7 @@ jobs:
       - uses: julia-actions/setup-julia@v2
         with:
           version: '1'
-      - run: |
-          julia --project=docs -e '
+      - run: xvfb-run -s '-screen 0 1024x768x24' julia --project=docs -e '
             using Pkg
             Pkg.develop(PackageSpec(path=pwd()))
             Pkg.instantiate()'
