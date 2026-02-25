@@ -62,6 +62,7 @@ jobs:
             Pkg.instantiate()'
       - run: xvfb-run -s '-screen 0 1024x768x24' julia --project=docs docs/make.jl
         env:
+          GKSwstype: "100"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
 
