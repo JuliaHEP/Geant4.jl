@@ -45,6 +45,7 @@ module Geant4
     draw() = "Not implemented"
     draw!() = "Not implemented"
     G4JLEventDisplay(::Int64) = "Not implemented"
+    get_lv_meshes() = "Not implemented"
 
     #---G4Hist-------------------------------------------------------------------------------------
     export H1D, H2D

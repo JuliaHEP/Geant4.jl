@@ -9,11 +9,13 @@
         show_axis = true,             # Whether to show or not the axis
         camera_rotation = (0,0,0),    # Camera rotation
         camera_zoom = 1.0,            # Camera zoom
+        clip_planes = Plane3f[],      # Clip planes for the display    
         ),
     trajectories = (
         color = :yellow,              # Color of the trajectories
     ),
     detector = (
         show_detector = true,         # Whether to draw the detector or not
+        maxlevel = 5,                 # Maximum level of the geometry hierarchy to be drawn
     ),
 )

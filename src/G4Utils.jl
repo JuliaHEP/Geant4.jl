@@ -3,6 +3,7 @@ export G4ThreeVector, G4RotationMatrix, G4Transform3D
 export G4Random, G4Random!getTheSeed, G4Random!setTheSeed, G4Random!getTheEngine, G4Random!setTheEngine
 export G4RandFlat, G4RandBit, G4RandGamma, G4RandGauss, G4RandExponential, G4RandGeneral
 export CxxPtr, ConstCxxPtr, CxxRef, ConstCxxRef, move!, preserve, @ui_cmd, StdVector
+export GetRotationMatrix
 
 #---Useful Geant4 Typedefs-------------------------------------------------------------------------
 typedef(t, n) = isdefined(Geant4, t) && eval(:(const $n = $t))
@@ -93,3 +94,12 @@ Base.getindex(p::G4Point3D, i::Int) = 0 < i < 4 ? _getindex(p, i) : throw(Bounds
 Base.getindex(p::G4Normal3D, i::Int) = 0 < i < 4 ? _getindex(p, i) : throw(BoundsError(p, i))
 
 AddFacet(s::G4TessellatedSolid, f::G4TriangularFacet) = AddFacet(s, move!(f))
+
+function GetRotationMatrix(x, y, z)
+    rot = G4RotationMatrix()
+    rotateX(rot, x)
+    rotateY(rot, y)
+    rotateZ(rot, z)
+    rectify(rot)  # Rectify matrix from possible roundoff errors
+    return rot
+end

@@ -57,7 +57,7 @@ function initDisplay(evtdisp::G4JLEventDisplay)
     if settings.detector.show_detector
         sc = evtdisp.lscene
         world = GetWorldVolume()
-        draw!(sc, world)
+        draw!(sc, world, maxlevel=settings.detector.maxlevel, clip_planes=settings.display.clip_planes)
     end
 end
 

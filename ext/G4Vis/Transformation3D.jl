@@ -41,6 +41,12 @@ Transformation3D{T}(dx, dy, dz, rot::Rotation{3,T}) where T<:AbstractFloat = Tra
 @inline Base.:*(p::Point3{T}, t::Transformation3D{T}) where T<:AbstractFloat =  invtransform(t,p)
 @inline Base.:*(d::Vector3{T}, t::Transformation3D{T}) where T<:AbstractFloat =  invtransform(t,d)
 
+
+# Apply transform to point: p * t = R^T * p + T (local to world)
+apply_transform(t::Transformation3D{T}, p::Vec3{T}) where T = t.rotation' * p + t.translation
+# Inverse transform: world to local
+apply_inv_transform(t::Transformation3D{T}, p::Vec3{T}) where T = t.rotation * (p - t.translation)
+
 # Compose
 Base.:*(t1::Transformation3D{T}, t2::Transformation3D{T}) where T<:AbstractFloat = 
     Transformation3D{T}(t1.rotation * t2.rotation, (t1.translation' * t2.rotation)' + t2.translation)
