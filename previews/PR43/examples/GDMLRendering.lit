@@ -1,0 +1,73 @@
+# # GDML rendering example
+#
+# In this example we demonstrate how to render detector geometries from a GDML file in Geant4.
+# The example uses the CMS detector model and renders a number of logical volumes to a PNG image.
+# The rendering is done using the GLMakie backend of the Makie.jl graphics library.
+# 
+# Limitations of the current implementation:
+# - The rending is limited to a maximum level of 5 in the geometry hierarchy to avoid excessive mesh generation and rendering times. 
+#   This can be adjusted with the `maxlevel` keyword argument in the `draw` function.
+# - Be aware that often the Geant4 boolean processor fails to generate meshes of complex boolean solids. 
+#   This is noticed by the presence of rendering artifacts when clipping is applied or getting stuck in an infinite mesh generation loop. 
+#   Reduce the `maxlevel` or apply clipping to mitigate this issue.
+
+#md # !!! note "Note that"
+#md #     You can also download this example as a
+#md #     [Jupyter notebook](GDMLRendering.ipynb) and a plain
+#md #     [Julia source file](GDMLRendering.jl).
+
+# ## Loading the necessary Julia modules
+# - `Geant4` and `Geant4.SystemOfUnits` for the Geant4 interface and units
+# - `GLMakie` for the OpenGL-based rendering backend of Makie
+
+using Geant4
+using Geant4.SystemOfUnits
+using GLMakie
+
+
+# ## Set the number of rotation steps for polyhedra to get smoother meshes
+HepPolyhedron!SetNumberOfRotationSteps(64)
+set_theme!(backgroundcolor = :black)
+
+# ### Create the detector geometry from a GDML file
+# The function `G4JLDetectorGDML` reads a GDML file and creates the corresponding Geant4 geometry.
+# The `validate_schema=false` option is used to skip GDML schema validation for faster loading.
+detname = "cms2018"
+detector = G4JLDetectorGDML("$(@__DIR__)/$(detname).gdml"; validate_schema=false);
+
+# ### Get the logical volumes to render
+CMS     = GetVolume("CMSE")[]
+tracker = GetVolume("Tracker")[]
+muon    = GetVolume("MUON")[]
+ebar    = GetVolume("EBAR")[]
+
+# ### Create and render scenes
+# - You can adjust the `maxlevel` keyword argument in the `draw!` function to control the level of detail in the rendering.
+# - The `clip` keyword argument can be used to apply clipping planes to the geometry for better visibility of internal structures. 
+#   In this example, we use `clip=:xy` to clip along the X=0 and Y=0 planes. Other possible values are `:x`, `:y`, `:z` for single-plane, `:xz`, `:yz`, `:xyz` clipping for double and triple planes, and `:none` for no clipping.
+# - Lighting options and camera position can be adjusted. See the [`Lighting`](https://docs.makie.org/stable/reference/scene/lighting) and [`Camera3D`](https://docs.makie.org/stable/explanations/cameras#3D-Camera) documentation of Makie.
+for lv in (CMS, tracker, muon, ebar)
+  lvname = GetName(lv) |> String
+  println("Drawing logical volume: $lvname")
+  fig = Figure(size=(1080, 800))
+  ax = LScene(fig[1, 1]; show_axis=false, scenekw=(;
+      lights=[ PointLight(RGBf(1, 1, 1), Vec3f(1, 1, 0)),
+               DirectionalLight(RGBf(1, 1, 1), Vec3f(1, 1, 1) ),
+               AmbientLight(RGBf(.5, .5, .5)),
+             ]))
+  Camera3D(ax.scene, upvector=Vec3f(0, 1, 0), eyeposition=Vec3f(8m, 8m, 2m), lookat=Vec3f(0, 0, 0))
+  draw!(ax, lv; maxlevel=5, clip=:xy);
+  #display(fig)
+  save("$(detname)_$(lvname).png", fig)
+end
+
+# ## Show the resulting images
+# ### CMS detector rendering (maxlevel=5)
+# ![](cms2018_CMSE.png)
+# ### Tracker rendering (maxlevel=5)
+# ![](cms2018_Tracker.png)
+# ### Muon System rendering (maxlevel=5)
+# ![](cms2018_MUON.png)
+# ### ECAL Barrel rendering (maxlevel=5)
+# ![](cms2018_EBAR.png)
+
