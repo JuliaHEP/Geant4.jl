@@ -451,6 +451,17 @@ function collect_lv_meshes(lv; maxlevel::Int=5, clip=:none, epsilon=1e-2)
      _mesh_counter[] = 0 # Reset mesh counter for this collection  
     collect_meshes_with_cut!(lv, lv_meshes, cutter, cutter_offset,
                                  one(Transformation3D{Float64}), 1, maxlevel)
-    return lv_meshes
+
+    # compact meshes with same color into single mesh collection to reduce draw calls
+    col_meshes = Dict{Tuple{LVColor, Bool}, Vector{GeometryBasics.Mesh}}()
+    for (_ , (meshes, color, visible)) in lv_meshes
+        key = (color, visible)
+        if haskey(col_meshes, key)
+            push!(col_meshes[key], meshes...)
+        else
+            col_meshes[key] = meshes
+        end
+    end
+    return col_meshes
 end
 

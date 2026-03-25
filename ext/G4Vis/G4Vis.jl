@@ -98,22 +98,29 @@ module G4Vis
         p_count = 0
 
         #---Collect the meshes recursively and Vis attributes recursively--------------------------
-
         println("Collecting LV meshes with clip=$clip...")
-        @time lv_meshes = collect_lv_meshes(lv; maxlevel, clip=clip)
+        @time col_meshes = collect_lv_meshes(lv; maxlevel, clip=clip)
+
+
+        #---Count the total number of meshes and points to be drawn--------------------------------
+        for ((color, visible), meshes) in col_meshes
+            m_count += length(meshes)
+            p_count += sum(length(m.position) for m in meshes)
+        end
 
         #---Draw all collected meshes----------------------------------------------------------------
-        for (clv, (meshes, color, visible)) in lv_meshes
-            m_count += length(meshes)
-            p_count += sum(length(m.position) for m in meshes)   
-            m = merge(meshes)
-            if wireframe
-                Makie.wireframe!(s, m; linewidth=1, visible=visible, kwargs...)
-            else
-                Makie.mesh!(s, m; color=color, visible=visible, kwargs...)
+        println("Drawning $m_count meshes with total of $p_count points in $(length(col_meshes)) steps.")
+        @time for ((color, visible), meshes) in col_meshes
+            # chunk meshes by color and visibility to avoid overloading Makie with enormous mesh data
+            for chunk in Iterators.partition(meshes, 256) 
+                m = merge(chunk)
+                if wireframe
+                    Makie.wireframe!(s, m; linewidth=1, visible=visible, kwargs...)
+                else
+                    Makie.mesh!(s, m; color=color, visible=visible, kwargs...)
+                end
             end
         end
-        println("Drawn $m_count meshes with total $p_count points in $(length(lv_meshes)) logical volumes steps.")
         return s
     end
 
