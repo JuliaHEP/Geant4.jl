@@ -1,4 +1,4 @@
-# # GDML rendering example
+# # GDML rendering example (CMS)
 #
 # In this example we demonstrate how to render detector geometries from a GDML file in Geant4.
 # The example uses the CMS detector model and renders a number of logical volumes to a PNG image.
