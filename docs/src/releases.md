@@ -1,5 +1,11 @@
 ## Release Notes
 
+### 0.3.0 - 
+- Breaking changes
+    - Updated to use Geant4 11.4.1 released end 2025, which is binary incompatible with 11.3.x
+- New Features:
+    - Windows binaries should also support multi-threading 
+
 ### 0.2.4 - 16-Dec-2025
 - New Features:
     - Added new G4 classes to the Wrapper: G4VTwistedFaceted, G4Hype, G4TessellatedSolid, G4TriangularFacet, G4Polyhedron, HepPolyhedron

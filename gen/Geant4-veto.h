@@ -31,3 +31,5 @@ void CLHEP::RandPoissonQ::shootArray(CLHEP::HepRandomEngine *, const int, long *
 bool CLHEP::HepRandomEngine::get(const std::vector<unsigned long> &)
 G4int HepPolyhedron::createTwistedTrap(G4double, const G4double[][2], const G4double[][2])
 G4int HepPolyhedron::createPolyhedron(G4int, G4int, const G4double[][3], const G4int[][4])
+const std::vector<std::pair<G4XRayModelType,const G4String>> & G4OpticalParameters::ActiveVolumes()
+void G4OpticalParameters::SetActiveVolume(const G4String &, G4XRayModelType)
