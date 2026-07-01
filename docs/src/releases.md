@@ -4,7 +4,7 @@
 - Breaking changes
     - Updated to use Geant4 11.4.1 released end 2025, which is binary incompatible with 11.3.x
 - New Features:
-    - Windows binaries should also support multi-threading 
+    - Windows binaries should also support multi-threading (tested on root-win11-dev, Windows 11 Pro)
 
 ### 0.2.4 - 16-Dec-2025
 - New Features:
