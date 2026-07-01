@@ -23,9 +23,9 @@ jobs:
           - x64
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Checkout G4Examples
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: JuliaHEP/G4Examples.jl
           path: examples
@@ -51,7 +51,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - uses: julia-actions/setup-julia@v3
         with:
           version: '1'
