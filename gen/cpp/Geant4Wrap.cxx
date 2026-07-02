@@ -10,6 +10,10 @@
 #include "G4Polyhedra.hh"
 #include "G4VIsotopeTable.hh"
 #include "G4IonTable.hh"
+#include "G4EqMagElectricField.hh"
+#include "G4ClassicalRK4.hh"
+#include "G4MagIntegratorDriver.hh"
+#include "G4ChordFinder.hh"
 
 #include <stdexcept>
 
@@ -152,6 +156,36 @@ void G4JLMagField::GetFieldValue( const G4double point[3], G4double* field) cons
   field[0] = vfield.x();
   field[1] = vfield.y();
   field[2] = vfield.z();
+}
+
+void G4JLElecField::GetFieldValue( const G4double point[3], G4double* field) const {
+  auto position = G4ThreeVector(point[0], point[1], point[2]);
+  auto vfield =  G4ThreeVector();
+  getfield(vfield, position, field_d);
+  field[0] = 0.;
+  field[1] = 0.;
+  field[2] = 0.;
+  field[3] = vfield.x();
+  field[4] = vfield.y();
+  field[5] = vfield.z();
+}
+
+//---Setup the equation of motion, stepper, driver and chord finder for a field that changes
+//---the energy of the particles (electric or electromagnetic). Follows the Geant4 field02 example.
+void G4JL_setupElectroMagneticField(G4FieldManager* fieldMgr, G4Field* field, G4double minStep) {
+  auto emfield = dynamic_cast<G4ElectroMagneticField*>(field);
+  if (emfield == nullptr) {
+    G4Exception("G4JL_setupElectroMagneticField", "InvalidField", FatalErrorInArgument,
+                "The provided field is not a G4ElectroMagneticField");
+    return;
+  }
+  auto equation = new G4EqMagElectricField(emfield);
+  auto stepper = new G4ClassicalRK4(equation, 8);   // 8 variables: time and energy change along the track
+  auto driver = new G4MagInt_Driver(minStep, stepper, stepper->GetNumberOfVariables());
+  auto chordfinder = new G4ChordFinder(driver);
+  fieldMgr->SetChordFinder(chordfinder);
+  fieldMgr->SetDetectorField(emfield);
+  fieldMgr->SetFieldChangesEnergy(true);
 }
 
 G4bool G4JLStateDependent::Notify(G4ApplicationState to) {
