@@ -179,26 +179,9 @@ function G4JLElectricField(name::String, data::T;
 end
 
 #---Implementation (user friendly) Uniform Electric Field------------------------------------------
-mutable struct G4JLUniformElectricFieldData <: G4JLFieldData
-    field::G4ThreeVector
+function G4JLUniformElectricField(field::G4ThreeVector)
+    return G4UniformElectricField(field)
 end
-
-"""
-    G4JLUniformElectricField(field::G4ThreeVector)
-Create a Uniform electric field
-# Arguments
-- `field::G4ThreeVector`: electric field vector
-"""
-function G4JLElectricField{G4JLUniformElectricFieldData}(field::G4ThreeVector)
-    data = G4JLUniformElectricFieldData(field)
-    function getfield!(field::G4ThreeVector, pos::G4ThreeVector, data::G4JLUniformElectricFieldData)::Nothing
-        assign(field, data.field)
-        return
-    end
-    G4JLElectricField("UniformE", data; getfield_method=getfield!)
-end
-
-const G4JLUniformElectricField = G4JLElectricField{G4JLUniformElectricFieldData}
 
 #---SentitiveDetectors-----------------------------------------------------------------------------
 struct G4JLSensitiveDetector{UD<:G4JLSDData}

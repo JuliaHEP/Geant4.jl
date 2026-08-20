@@ -1,0 +1,120 @@
+# # Extended/field02 Example
+# Test for investigation of tracking in electric field and field dependent electromagnetic processes.
+
+# The geometry consists of an "Absorber" that is a solid made of a given material.
+# Three parameters define the absorber :
+# - the material of the absorber,
+# - the thickness of an absorber,
+# - the radius of the absorber (the input face is a circle).
+
+# The primary kinematic consists of a single particle which hits the
+# absorber perpendicular to the input face. The type of the particle
+# and its energy are set
+
+#md # !!! note "Note that"
+#md #     You can also download this example as a
+#md #     [Jupyter notebook](field02.ipynb) and a plain
+#md #     [Julia source file](field02.jl).
+#
+#md # #### Table of contents
+#md # ```@contents
+#md # Pages = ["field02.md"]
+#md # Depth = 2:3
+#md # ```
+
+# ## Loading the necessary Julia modules
+# Load the `Geant4`, `Geant4.PhysicalConstants` and `Geant4.SystemOfUnits` modules. In addition we will use the `Parameters` module to handle the parameters of the detector.
+# We will also use the `FHist` and `Plots` modules to handle the histograms and plots.
+using Geant4
+using Geant4.SystemOfUnits
+using Geant4.SystemOfUnits: volt
+using Parameters
+#md import DisplayAs: PNG #hide
+
+# ## Define the Detector
+# The Field02 detector is a simple cylinder filled with a given material. The detector is defined by the `Calorimeter` structure.
+
+@with_kw mutable struct Calorimeter <: G4JLDetector
+    ## main input parameters
+    material::String = "Kr20CO2"
+    AbsorberThickness::Float64= 4cm
+    AbsorberRadius::Float64 = 10cm
+    AbsorberZ::Float64 = 36cm
+    WorldSizeR::Float64 = 20cm
+    WorldSizeZ::Float64 = 80cm
+end
+
+function Field02Construct(det::Calorimeter)::CxxPtr{G4VPhysicalVolume}
+    (; material, AbsorberThickness, AbsorberRadius, AbsorberZ, WorldSizeR, WorldSizeZ) = det
+
+    ##---Materials----------------------------------------------------------------------------------
+    nist = G4NistManager!Instance()
+    m_air = FindOrBuildMaterial(nist, "G4_AIR")
+
+    C  = FindOrBuildElement(nist,6)
+    O  = FindOrBuildElement(nist,8)
+    Xe = FindOrBuildMaterial(nist, "G4_Xe")
+    Kr = FindOrBuildMaterial(nist, "G4_Kr")
+
+    _C0₂ = G4Material("CO2", 1.842 * mg / cm3, 2)
+    AddElement(_C0₂, C, natoms=1)
+    AddElement(_C0₂, O, natoms=2)
+    CO₂ = FindOrBuildMaterial(nist, "CO2")
+
+    Kr20CO2 = G4Material("Kr20CO2", 3.601 * mg / cm3, 2)
+    AddMaterial(Kr20CO2, Kr, 0.89)
+    AddMaterial(Kr20CO2, CO₂, 0.11)
+
+    ##---Absorber----------------------------------------------------------------------------------
+    m_absorber = FindOrBuildMaterial(nist, material)
+
+    ##---Volumes------------------------------------------------------------------------------------
+    worldS  = G4Tubs("world", 0, WorldSizeR, WorldSizeZ/2, 0, 360deg)
+    worldLV = G4LogicalVolume(worldS, m_air, "World")
+    worldPV = G4PVPlacement(nothing, G4ThreeVector(), worldLV, "World", nothing, false, 0, false)
+
+    absorberS  = G4Tubs("absorber", 0, AbsorberRadius, AbsorberThickness/2, 0, 360deg)
+    absorberLV = G4LogicalVolume(absorberS, m_absorber, "absorber")
+    G4PVPlacement(nothing, G4ThreeVector(0, 0, AbsorberZ), absorberLV, "absorber", worldLV, false, 0, false)
+    ##---Visualization attributes-------------------------------------------------------------------
+    boxVisAtt = G4VisAttributes(G4Colour(1.0, 1.0, 1.0, 0.0))
+    absorberVisAtt = G4VisAttributes(G4Colour(1.0, 1.0, 0.0, 0.1))
+    SetVisAttributes(worldLV, boxVisAtt)
+    SetVisAttributes(absorberLV, absorberVisAtt)
+
+    return worldPV
+end
+Geant4.getConstructor(::Calorimeter)::Function = Field02Construct
+
+# ## Instantiate the detector with the parameters
+det = Calorimeter(material="Kr20CO2", 
+                  AbsorberThickness=4cm, 
+                  AbsorberRadius=10cm,
+                  AbsorberZ=0cm,
+                  WorldSizeR=20cm,
+                  WorldSizeZ=80cm)
+
+# ## Create the Primary Particle Generator
+particlegun = G4JLGunGenerator(particle = "e-", 
+                               energy = 50MeV, 
+                               direction = G4ThreeVector(0,0,1), 
+                               position  = G4ThreeVector(0,0,0))
+                               
+# ## Create Magnetic Field
+efield = G4UniformElectricField(G4ThreeVector(0, 1e8volt/cm, 0))
+
+# ## Create the Application
+app = G4JLApplication(; detector = det,                               # detector with parameters
+                        generator = particlegun,                      # primary particle generator
+                        field = efield,                               # uniform magnetic field
+                        nthreads = 0,                                 # # of threads (0 = no MT)
+                        physics_type = FTFP_BERT,                     # what physics list to instantiate
+                      );
+
+
+configure(app)
+initialize(app)
+# ## Run the Application for 1 event with verbose tracking
+ui`/tracking/verbose 1`
+beamOn(app,1)
+

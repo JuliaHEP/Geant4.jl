@@ -1,5 +1,10 @@
 ## Release Notes
 
+
+### 0.3.1 - 20-Aug-2026 
+- New Features:
+    - Added support from Electric Field
+
 ### 0.3.0 - 
 - Breaking changes
     - Updated to use Geant4 11.4.1 released end 2025, which is binary incompatible with 11.3.x
