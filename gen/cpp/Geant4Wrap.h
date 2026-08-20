@@ -18,6 +18,8 @@
 #include "G4TouchableHistory.hh"
 #include "G4UserWorkerInitialization.hh"
 #include "G4MagneticField.hh"
+#include "G4ElectricField.hh"
+#include "G4FieldManager.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4VStateDependent.hh"
 #include "G4TwoVector.hh"
@@ -170,6 +172,17 @@ private:
   getfield_f getfield;
 };
 
+//---G4JLElecField----------------------------------------------------------------------------
+class G4JLElecField : public G4ElectricField {
+public:
+  G4JLElecField(getfield_f f, void* d) : field_d(d), getfield(f) { }
+  ~G4JLElecField() = default;
+  void GetFieldValue( const G4double point[3], G4double* field) const override;
+private:
+  void* field_d;
+  getfield_f getfield;
+};
+
 typedef  void (*stepaction_f) (const G4Step*, void*);
 //---G4JLSteppingAction-------------------------------------------------------------------------------
 class G4JLSteppingAction : public G4UserSteppingAction {
@@ -296,6 +309,7 @@ char* G4JL_getenv(const char* x);
 int   G4JL_setenv(const char* x, const char* v);
 void  G4JL_init(void);
 void  G4JL_println(const char *);
+void  G4JL_setupElectroMagneticField(G4FieldManager* fieldMgr, G4Field* field, G4double minStep);
 
 
 inline void gc_safe_enter() {

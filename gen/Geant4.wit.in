@@ -144,10 +144,13 @@ input               = [ "Geant4Wrap.h",
                         "CLHEP/Random/RandGeneral.h",
                         "CLHEP/Random/RandPoissonQ.h",
                         "G4Poisson.hh",
-                        #---Magnetic Field--------
+                        #---Fields----------------
                         "G4MagneticField.hh",
                         "G4FieldManager.hh",
                         "G4UniformMagField.hh",
+                        "G4ElectroMagneticField.hh",
+                        "G4ElectricField.hh",
+                        "G4UniformElectricField.hh",
                         #---Visualization---------
                         "G4VisAttributes.hh",
                         "G4Colour.hh",

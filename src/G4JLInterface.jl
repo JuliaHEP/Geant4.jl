@@ -1,7 +1,7 @@
 #---Exports from this section----------------------------------------------------------------------
 export G4JLDetector, G4JLSimulationData, G4JLApplication, G4JLDetectorGDML, G4JLSDData, G4JLSensitiveDetector, 
         configure, initialize, reinitialize, beamOn, getSDdata, getSIMdata, getConstructor, getInitializer, 
-        G4JLUniformMagField, G4JLMagneticField, G4JLFieldData, G4JLDisplay
+        G4JLUniformMagField, G4JLMagneticField, G4JLUniformElectricField, G4JLElectricField, G4JLFieldData, G4JLDisplay
 
 #---Geometry usability functions-------------------------------------------------------------------
 G4PVPlacement(r::Union{Nothing, G4RotationMatrix}, d::G4ThreeVector, l::Union{Nothing,G4LogicalVolume}, s::String, 
@@ -153,6 +153,36 @@ end
 
 const G4JLUniformMagField = G4JLMagneticField{G4JLUniformMagFieldData}
 
+#---Custom Electric Field--------------------------------------------------------------------------
+"""
+    Custom Electric Field
+"""
+mutable struct G4JLElectricField{UD<:G4JLFieldData}
+    const name::String
+    const data::UD
+    const getfield::Function    #  signature  (result::G4ThreeVector, position::G4ThreeVector, ::SD)
+    base::Vector{G4JLElecField}
+end
+"""
+    G4JLElectricField(name::String, data::DATA; <keyword arguments>) where DATA<:G4JLFieldData
+
+Create a G4JLElectricField with its name and associated DATA structure
+# Arguments
+- `name::String`: electric field name
+- `data::DATA`: data structure associated to the electric field
+- `getfield_method=nothing`: user provided `getfield` function with signature: `(result::G4ThreeVector, position::G4ThreeVector, ::DATA)`
+"""
+function G4JLElectricField(name::String, data::T;
+                           getfield_method=nothing) where T<:G4JLFieldData
+    isnothing(getfield_method) && error("get field method not defined")
+    G4JLElectricField{T}(name, data, getfield_method, G4JLElecField[])
+end
+
+#---Implementation (user friendly) Uniform Electric Field------------------------------------------
+function G4JLUniformElectricField(field::G4ThreeVector)
+    return G4UniformElectricField(field)
+end
+
 #---SentitiveDetectors-----------------------------------------------------------------------------
 struct G4JLSensitiveDetector{UD<:G4JLSDData}
     base::G4JLSensDet
@@ -207,7 +237,7 @@ end
 #--Empty Detector----------------------------------------------------------------------------------
 struct G4JLEmptyDetector <: G4JLDetector end
 using Geant4.PhysicalConstants: universe_mean_density
-using Geant4.SystemOfUnits: g, mole, kelvin, pascal, parsec, m
+using Geant4.SystemOfUnits: g, mole, kelvin, pascal, parsec, m, mm
 function _construct(::G4JLEmptyDetector)
     vacuum = G4Material("Vacuum", z=1., a=1.01g/mole, density=universe_mean_density, state=kStateGas, 
                         temperature=2.73*kelvin, pressure=3.e-18*pascal)
@@ -223,7 +253,7 @@ mutable struct G4JLApplication{DET<:G4JLDetector,DAT<:G4JLSimulationData} <: G4J
     detector::DET
     simdata::Vector{DAT}  # Each worker thread has its own data                            
     generator::G4JLPrimaryGenerator
-    field::Union{Nothing, G4Field, G4JLMagneticField}
+    field::Union{Nothing, G4Field, G4JLMagneticField, G4JLElectricField}
     evtdisplay::Union{Nothing, G4JLDisplay}
     const nthreads::Int32
     const verbose::Int32
@@ -372,6 +402,8 @@ function configure(app::G4JLApplication)
     #---Prepare Primary Generators-----------------------------------------------------------------
     if app.field isa G4JLMagneticField
         app.field.base = Vector{G4JLMagField}(undef, app.nthreads + 1)
+    elseif app.field isa G4JLElectricField
+        app.field.base = Vector{G4JLElecField}(undef, app.nthreads + 1)
     end
     #---Detector construction----------------------------------------------------------------------
     function sdandf(app::G4JLApplication)::Nothing  # called by the worker thread during init------
@@ -389,9 +421,12 @@ function configure(app::G4JLApplication)
             end
             SetSensitiveDetector(app.detbuilder, lv, CxxPtr(sd.base), multi)
         end
-        #---Add Magnetic field if needed-----------------------------------------------------------
+        #---Add Magnetic or Electric field if needed------------------------------------------------
         fieldMgr = G4TransportationManager!GetTransportationManager() |> GetFieldManager
-        if app.field isa G4Field
+        if app.field isa G4ElectroMagneticField
+            E = Clone(app.field)
+            G4JL_setupElectroMagneticField(fieldMgr, E, 0.010mm)
+        elseif app.field isa G4Field
             B = Clone(app.field)
             SetDetectorField(fieldMgr, B)
             CreateChordFinder(fieldMgr, CxxPtr{G4MagneticField}(B))
@@ -401,6 +436,11 @@ function configure(app::G4JLApplication)
             app.field.base[tid+2] = B
             SetDetectorField(fieldMgr, CxxPtr(B))
             CreateChordFinder(fieldMgr, CxxPtr(B))
+        elseif app.field isa G4JLElectricField
+            sf = make_callback(app.field.data, app.field.getfield, Nothing, (CxxRef{G4ThreeVector}, ConstCxxRef{G4ThreeVector})) |> closure
+            E = G4JLElecField(sf...)
+            app.field.base[tid+2] = E
+            G4JL_setupElectroMagneticField(fieldMgr, CxxPtr(E), 0.010mm)
         end
         nothing
     end

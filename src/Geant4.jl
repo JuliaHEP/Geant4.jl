@@ -16,6 +16,9 @@ module Geant4
         @wrapmodule(()->Geant4_julia_jll.libGeant4Wrap)
     end
 
+    # Forgotten to export these functions in the binary package, so we need to export them here
+    export G4ElectricField, G4ElectroMagneticField, G4UniformElectricField, G4JLElecField, G4JL_setupElectroMagneticField
+
     function __init__()
         @initcxx
         #---Call Wrapper init--------------------------------------------------
