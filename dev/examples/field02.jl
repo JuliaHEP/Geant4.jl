@@ -71,7 +71,7 @@ efield = G4UniformElectricField(G4ThreeVector(0, 1e8volt/cm, 0))
 
 app = G4JLApplication(; detector = det,                               # detector with parameters
                         generator = particlegun,                      # primary particle generator
-                        field = efield,                               # uniform magnetic field
+                        field = efield,                               # uniform electric field
                         nthreads = 0,                                 # # of threads (0 = no MT)
                         physics_type = FTFP_BERT,                     # what physics list to instantiate
                       );
