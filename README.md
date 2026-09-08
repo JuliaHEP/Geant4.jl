@@ -49,7 +49,7 @@ julia> v = GetVersionString(runManager)
 ConstCxxRef{G4String}(Ptr{G4String} @0x00007ffed34df2d8)
 
 julia> String(v)
-" Geant4 version Name: geant4-11-04-patch-02 [MT]   (12-June-2026)"
+"  Geant4 version Name: geant4-11-04-patch-01 [MT]   (13-March-2026)"
 ```
 Note that class methods are called with the object instance as first argument. In C++ the `GetVersionString` method would be called as `runManager->GetVersionString()` while in Julia it is called as `GetVersionString(runManager)`. Thanks to the Julia multi-dispatch we do not need to prefix the methods with the module name `Geant4.GetVersionString(runManager)`, even for very common function names such as `mag`.
 ```julia
