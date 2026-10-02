@@ -101,7 +101,7 @@ function pretrackaction(track::G4Track, app::G4JLApplication)::Nothing
     ϕ = direction |> getPhi
     ϕ < 0 &&  (ϕ += 2π)
     r = vertex |> mag
-    dr = binedges(data.hRad.hist).uniform_edges.step |> Float64
+    dr = binedges(data.hRad.hist).range.step |> Float64
     dv = 4π * r^2 * dr
 
     ## fill histograms
