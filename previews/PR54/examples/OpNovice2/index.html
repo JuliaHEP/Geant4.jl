@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>OpNovice2 Example · Geant4.jl</title><meta name="title" content="OpNovice2 Example · Geant4.jl"/><meta property="og:title" content="OpNovice2 Example · Geant4.jl"/><meta property="twitter:title" content="OpNovice2 Example · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.63.2/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><span class="tocitem">Examples</span><ul><li><input class="collapse-toggle" id="menuitem-3-1" type="checkbox"/><label class="tocitem" for="menuitem-3-1"><span class="docs-label">Basic</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../B1/">Basic/B1 Example</a></li><li><a class="tocitem" href="../B2a/">Basic/B2a Example</a></li><li><a class="tocitem" href="../B2aVis/">Basic/B2a Event Display Example</a></li><li><a class="tocitem" href="../B3a/">Basic/B3a Example</a></li><li><a class="tocitem" href="../B4a/">Basic/B4a Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox" checked/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Extended</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../GPS/">Extended/GPS Example</a></li><li><a class="tocitem" href="../RE03/">Extended/RE03 Example</a></li><li><a class="tocitem" href="../TestEm3/">Extended/TestEm3 Example</a></li><li><a class="tocitem" href="../Solids/">Geant4 Solids</a></li><li><a class="tocitem" href="../GDMLRendering/">GDML rendering example (CMS)</a></li><li><a class="tocitem" href="../GDMLRendering2/">GDML rendering example (ODD)</a></li><li><a class="tocitem" href="../field02/">Extended/field02 Example</a></li><li class="is-active"><a class="tocitem" href>OpNovice2 Example</a><ul class="internal"><li><a class="tocitem" href="#Loading-the-necessary-Julia-modules"><span>Loading the necessary Julia modules</span></a></li><li><a class="tocitem" href="#Define-the-Detector"><span>Define the Detector</span></a></li><li><a class="tocitem" href="#Define-the-Physics-List"><span>Define the Physics List</span></a></li><li><a class="tocitem" href="#Define-the-Primary-Generator"><span>Define the Primary Generator</span></a></li><li><a class="tocitem" href="#Define-the-Simulation-Data"><span>Define the Simulation Data</span></a></li><li><a class="tocitem" href="#Define-the-User-Actions"><span>Define the User Actions</span></a></li><li><a class="tocitem" href="#Create-the-Application"><span>Create the Application</span></a></li><li><a class="tocitem" href="#Configure,-Initialize-and-Run"><span>Configure, Initialize and Run</span></a></li></ul></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox"/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Advanced</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../TPCSim/">Simulation of the Aleph TPC</a></li><li><a class="tocitem" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber</a></li><li><a class="tocitem" href="../WaterPhantom/">Water Phantom with Scoring</a></li><li><a class="tocitem" href="../UserLib/">UserLib.cpp</a></li><li><a class="tocitem" href="../JuliaAction/">Calling G4 actions in Julia</a></li><li><a class="tocitem" href="../Scintillation/">Scintillation Example</a></li></ul></li></ul></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li><a class="is-disabled">Extended</a></li><li class="is-active"><a href>OpNovice2 Example</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>OpNovice2 Example</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/examples/OpNovice2.lit#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="OpNovice2-Example"><a class="docs-heading-anchor" href="#OpNovice2-Example">OpNovice2 Example</a><a id="OpNovice2-Example-1"></a><a class="docs-heading-anchor-permalink" href="#OpNovice2-Example" title="Permalink"></a></h1><p>This example is a translation to Julia of the Geant4 example <a href="https://geant4-userdoc.web.cern.ch/Doxygen/examples_doc/html/ExampleOpNovice2.html">extended/optical/OpNovice2</a>. It investigates optical properties and parameters. Optical photons are shot at the surface between a cube &quot;tank&quot; and the &quot;world&quot; around it. The example records the details of the boundary interactions on that surface, and of the generation (Cerenkov, scintillation, wavelength shifting) and transport of optical photons.</p><p>The C++ example configures the optical properties with UI commands (<code>/opnovice2/boxProperty</code>, <code>/opnovice2/surfaceFinish</code>, ...). In Julia they are keyword arguments of the detector. Four of the macros of the C++ example are reproduced here:</p><ul><li><code>electron.mac</code>: electrons cross a scintillating BGO tank and produce Cerenkov and scintillation photons.</li><li><code>fresnel.mac</code>: photons of fixed polarization and random direction hit a polished surface. The fractions of reflected and refracted photons as a function of the incident angle show the Brewster angle and the critical angle for total internal reflection.</li><li><code>coated.mac</code>: photons hit a surface with a thin coating. The reflectance is compared with the analytic formula for thin-film interference.</li><li><code>boundary.mac</code>: photons hit a surface with each of the optical surface models (unified, glisur, DAVIS and LUT) and finishes (polished, ground, painted, ...), and the outcomes of the boundary process are compared.</li></ul><div class="admonition is-info" id="Note-that-20ed243c06bbdc08"><header class="admonition-header">Note that<a class="admonition-anchor" href="#Note-that-20ed243c06bbdc08" title="Permalink"></a></header><div class="admonition-body"><p>You can also download this example as a <a href="../OpNovice2.ipynb">Jupyter notebook</a> and a plain <a href="../OpNovice2.jl">Julia source file</a>.</p></div></div><h4 id="Table-of-contents"><a class="docs-heading-anchor" href="#Table-of-contents">Table of contents</a><a id="Table-of-contents-1"></a><a class="docs-heading-anchor-permalink" href="#Table-of-contents" title="Permalink"></a></h4><ul><li><a href="#Loading-the-necessary-Julia-modules">Loading the necessary Julia modules</a></li><li><a href="#Define-the-Detector">Define the Detector</a></li><li><a href="#Define-the-Physics-List">Define the Physics List</a></li><li><a href="#Define-the-Primary-Generator">Define the Primary Generator</a></li><li><a href="#Define-the-Simulation-Data">Define the Simulation Data</a></li><li><a href="#Define-the-User-Actions">Define the User Actions</a></li><li class="no-marker"><ul><li><a href="#Run-actions">Run actions</a></li><li><a href="#Tracking-action">Tracking action</a></li><li><a href="#Stepping-action">Stepping action</a></li></ul></li><li><a href="#Create-the-Application">Create the Application</a></li><li><a href="#Configure,-Initialize-and-Run">Configure, Initialize and Run</a></li><li class="no-marker"><ul><li><a href="#Electrons-in-a-scintillator">Electrons in a scintillator</a></li><li><a href="#Fresnel-study:-polarization-in-the-plane-of-incidence-(p-polarized)">Fresnel study: polarization in the plane of incidence (p-polarized)</a></li><li><a href="#Fresnel-study:-polarization-perpendicular-to-the-plane-of-incidence-(s-polarized)">Fresnel study: polarization perpendicular to the plane of incidence (s-polarized)</a></li><li><a href="#Thin-coating-(coated.mac)">Thin coating (<code>coated.mac</code>)</a></li><li><a href="#Surface-models-and-finishes-(boundary.mac)">Surface models and finishes (<code>boundary.mac</code>)</a></li></ul></li></ul><h2 id="Loading-the-necessary-Julia-modules"><a class="docs-heading-anchor" href="#Loading-the-necessary-Julia-modules">Loading the necessary Julia modules</a><a id="Loading-the-necessary-Julia-modules-1"></a><a class="docs-heading-anchor-permalink" href="#Loading-the-necessary-Julia-modules" title="Permalink"></a></h2><p>Load the <code>Geant4</code>, <code>Geant4.SystemOfUnits</code> and <code>Geant4.PhysicalConstants</code> modules, <code>FHist</code> and <code>Plots</code> for the histograms and <code>Printf</code> to format the run summary.</p><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits
+using Geant4.PhysicalConstants
+using FHist, Plots, Printf</code></pre><h2 id="Define-the-Detector"><a class="docs-heading-anchor" href="#Define-the-Detector">Define the Detector</a><a id="Define-the-Detector-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Detector" title="Permalink"></a></h2><p>The detector is a cube of side 2 m (the tank) inside a cube of side 20 m (the world). The materials of both volumes and their optical properties, as well as the type, model and finish of the optical surface between them, are parameters of the <code>OpDetector</code> structure. We include the <a href="../OpDetector/#OpDetector.jl">OpDetector.jl</a> file not to clutter the example.</p><pre><code class="language-julia hljs">include(joinpath(@__DIR__, &quot;OpDetector.jl&quot;))</code></pre><p>We define two detectors, one for each of the studies reproduced from the C++ example.</p><p>The detector for <code>electron.mac</code>: the tank is made of BGO with scintillation properties (three components with different emission spectra and time constants) and the surface is ground. The energies and lengths are given with their units.</p><div class="admonition is-info" id="Difference-with-the-C-example-2eef1a9b27d0697c"><header class="admonition-header">Difference with the C++ example<a class="admonition-anchor" href="#Difference-with-the-C-example-2eef1a9b27d0697c" title="Permalink"></a></header><div class="admonition-body"><p>The C++ example sets the Birks constant of the tank material to 0.126 mm/MeV. The method <code>G4IonisParamMat::SetBirksConstant</code> is not available in Geant4.jl, so here Geant4 uses its default Birks constant for G4_BGO (0.0084 mm/MeV). The scintillation yield is less quenched and about 15% more scintillation photons are produced.</p></div></div><pre><code class="language-julia hljs">electron_detector = OpDetector(
+    tankMaterial = &quot;G4_BGO&quot;,
+    worldMaterial = &quot;G4_AIR&quot;,
+    tankProperties = PropertyMap(
+        &quot;ABSLENGTH&quot; =&gt; ([2eV, 5eV, 8eV], [1mm, 2mm, 3mm]),
+        &quot;RAYLEIGH&quot;  =&gt; ([2eV, 8eV], [1mm, 1mm]),
+        &quot;RINDEX&quot;    =&gt; ([2eV, 8eV], [1.3, 1.4]),
+        &quot;SCINTILLATIONCOMPONENT1&quot; =&gt; ([2eV, 5eV, 8eV], [1.0, 1.1, 1.3]),
+        &quot;SCINTILLATIONCOMPONENT2&quot; =&gt; ([2eV, 3eV, 4eV, 5eV, 6eV, 7eV, 8eV], [0.1, 0.2, 0.4, 0.6, 0.8, 0.9, 1.0]),
+        &quot;SCINTILLATIONCOMPONENT3&quot; =&gt; ([2eV, 5eV, 8eV], [0.2, 0.1, 0.05])),
+    tankConstProperties = ConstPropertyMap(
+        &quot;SCINTILLATIONTIMECONSTANT1&quot; =&gt; 20ns,
+        &quot;SCINTILLATIONTIMECONSTANT2&quot; =&gt; 100ns,
+        &quot;SCINTILLATIONTIMECONSTANT3&quot; =&gt; 200ns,
+        &quot;SCINTILLATIONYIELD&quot;  =&gt; 5000/MeV,
+        &quot;SCINTILLATIONYIELD1&quot; =&gt; 1.0,
+        &quot;SCINTILLATIONYIELD2&quot; =&gt; 1.0,
+        &quot;SCINTILLATIONYIELD3&quot; =&gt; 0.1,
+        &quot;RESOLUTIONSCALE&quot; =&gt; 1.0,
+        &quot;SCINTILLATIONRISETIME1&quot; =&gt; 3ns,
+        &quot;SCINTILLATIONRISETIME2&quot; =&gt; 10ns,
+        &quot;SCINTILLATIONRISETIME3&quot; =&gt; 20ns),
+    worldProperties = PropertyMap(
+        &quot;RINDEX&quot;    =&gt; ([2eV, 8eV], [1.01, 1.01]),
+        &quot;ABSLENGTH&quot; =&gt; ([2eV, 5eV, 8eV], [100mm, 100mm, 100mm])),
+    surfaceFinish = ground,
+    surfaceSigmaAlpha = 0.2,
+    surfaceProperties = PropertyMap(
+        &quot;SPECULARLOBECONSTANT&quot;  =&gt; ([2eV, 8eV], [0.1, 0.1]),
+        &quot;SPECULARSPIKECONSTANT&quot; =&gt; ([2eV, 8eV], [0.1, 0.1]),
+        &quot;BACKSCATTERCONSTANT&quot;   =&gt; ([2eV, 8eV], [0.1, 0.1]),
+        &quot;TRANSMITTANCE&quot;         =&gt; ([2eV, 8eV], [0.1, 0.1]),
+        &quot;REFLECTIVITY&quot;          =&gt; ([2eV, 8eV], [0.8, 0.8]),
+        &quot;EFFICIENCY&quot;            =&gt; ([2eV, 8eV], [0.1, 0.1])))</code></pre><pre><code class="nohighlight hljs">Main.var&quot;##142&quot;.OpDetector
+  worldHalfSize: Float64 10000.0
+  tankHalfSize: Float64 1000.0
+  worldMaterial: String &quot;G4_AIR&quot;
+  tankMaterial: String &quot;G4_BGO&quot;
+  tankProperties: Dict{String, Tuple{Vector{Float64}, Vector{Float64}}}
+  tankConstProperties: Dict{String, Float64}
+  worldProperties: Dict{String, Tuple{Vector{Float64}, Vector{Float64}}}
+  worldConstProperties: Dict{String, Float64}
+  surfaceProperties: Dict{String, Tuple{Vector{Float64}, Vector{Float64}}}
+  surfaceConstProperties: Dict{String, Float64}
+  surfaceType: Geant4.G4SurfaceType Geant4.G4SurfaceType(0x00000001)
+  surfaceModel: Geant4.G4OpticalSurfaceModel Geant4.G4OpticalSurfaceModel(0x00000001)
+  surfaceFinish: Geant4.G4OpticalSurfaceFinish Geant4.G4OpticalSurfaceFinish(0x00000003)
+  surfaceSigmaAlpha: Float64 0.2
+  surfacePolish: Float64 1.0
+</code></pre><p>The detector for <code>fresnel.mac</code>: a polished dielectric-dielectric surface separates water (n = 1.4) from air (n = 1.01).</p><pre><code class="language-julia hljs">fresnel_detector = OpDetector(
+    tankProperties = PropertyMap(&quot;RINDEX&quot;    =&gt; ([2eV, 8eV], [1.4, 1.41]),
+                                 &quot;ABSLENGTH&quot; =&gt; ([2eV, 5eV, 8eV], [100mm, 200mm, 300mm])),
+    worldProperties = PropertyMap(&quot;RINDEX&quot;    =&gt; ([2eV, 8eV], [1.01, 1.01]),
+                                  &quot;ABSLENGTH&quot; =&gt; ([2eV, 5eV, 8eV], [1000m, 2000m, 3000m])),
+    surfaceProperties = PropertyMap(&quot;REFLECTIVITY&quot; =&gt; ([2eV, 8eV], [1.0, 1.0])),
+    surfaceType = dielectric_dielectric,
+    surfaceModel = unified,
+    surfaceFinish = polished)</code></pre><pre><code class="nohighlight hljs">Main.var&quot;##142&quot;.OpDetector
+  worldHalfSize: Float64 10000.0
+  tankHalfSize: Float64 1000.0
+  worldMaterial: String &quot;G4_AIR&quot;
+  tankMaterial: String &quot;G4_WATER&quot;
+  tankProperties: Dict{String, Tuple{Vector{Float64}, Vector{Float64}}}
+  tankConstProperties: Dict{String, Float64}
+  worldProperties: Dict{String, Tuple{Vector{Float64}, Vector{Float64}}}
+  worldConstProperties: Dict{String, Float64}
+  surfaceProperties: Dict{String, Tuple{Vector{Float64}, Vector{Float64}}}
+  surfaceConstProperties: Dict{String, Float64}
+  surfaceType: Geant4.G4SurfaceType Geant4.G4SurfaceType(0x00000001)
+  surfaceModel: Geant4.G4OpticalSurfaceModel Geant4.G4OpticalSurfaceModel(0x00000001)
+  surfaceFinish: Geant4.G4OpticalSurfaceFinish Geant4.G4OpticalSurfaceFinish(0x00000000)
+  surfaceSigmaAlpha: Float64 0.0
+  surfacePolish: Float64 1.0
+</code></pre><h2 id="Define-the-Physics-List"><a class="docs-heading-anchor" href="#Define-the-Physics-List">Define the Physics List</a><a id="Define-the-Physics-List-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Physics-List" title="Permalink"></a></h2><p>As in the C++ example we start from <code>FTFP_BERT</code>, replace the electromagnetic physics with <code>G4EmStandardPhysics_option4</code> and add <code>G4OpticalPhysics</code>.</p><pre><code class="language-julia hljs">struct OpNovice2Physics &lt;: G4VUserPhysicsList
+    function OpNovice2Physics(verbose)
+        pl = FTFP_BERT(verbose)
+        ReplacePhysics(pl, move!(G4EmStandardPhysics_option4(verbose)))
+        RegisterPhysics(pl, move!(G4OpticalPhysics(verbose)))
+        return pl
+    end
+end</code></pre><h2 id="Define-the-Primary-Generator"><a class="docs-heading-anchor" href="#Define-the-Primary-Generator">Define the Primary Generator</a><a id="Define-the-Primary-Generator-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Primary-Generator" title="Permalink"></a></h2><p>A particle gun that, in addition to the usual settings, can shoot in a random direction (in the hemisphere of positive x) and set the linear polarization of optical photons. The polarization angle is measured from the plane of incidence on the +X surface. If <code>polarization</code> is <code>nothing</code> a random angle is chosen for each photon.</p><pre><code class="language-julia hljs">@with_kw mutable struct OpGunData &lt;: G4JLGeneratorData
+    gun::Union{Nothing, CxxPtr{G4ParticleGun}} = nothing
+    particle::String = &quot;e+&quot;
+    energy::Float64 = 500keV
+    position::NTuple{3,Float64} = (0., 0., 0.)
+    direction::NTuple{3,Float64} = (1., 0., 0.)
+    randomDirection::Bool = false
+    polarization::Union{Nothing, Float64} = nothing
+end</code></pre><pre><code class="nohighlight hljs">Main.var&quot;##142&quot;.OpGunData</code></pre><p>The polarization vector is perpendicular to the photon direction <code>k</code>. It is built from the components parallel and perpendicular to the plane of incidence, defined by <code>k</code> and the normal of the +X surface.</p><pre><code class="language-julia hljs">function photonPolarization(k::NTuple{3,Float64}, angle::Float64)
+    (kx, ky, kz) = k
+    modul2 = ky^2 + kz^2                                   ## |normal × k|² with normal = (1,0,0)
+    e_perp = modul2 &gt; 0 ? (0., -kz, ky) ./ sqrt(modul2) : (0., 0., 1.)
+    e_para = (e_perp[2]*kz - e_perp[3]*ky,                 ## e_perp × k
+              e_perp[3]*kx - e_perp[1]*kz,
+              e_perp[1]*ky - e_perp[2]*kx)
+    return cos(angle) .* e_para .+ sin(angle) .* e_perp
+end
+
+function OpGunGenerator(; kwargs...)
+    data = OpGunData(; kwargs...)
+    function init(data::OpGunData, ::Any)
+        data.gun = move!(G4ParticleGun())
+        setgun!(data)
+    end
+    function generate(evt::G4Event, data::OpGunData)::Nothing
+        gun = data.gun
+        if data.randomDirection
+            theta = π/2 * rand()
+            phi = 2π * rand()
+            data.direction = (cos(theta), sin(theta)*sin(phi), sin(theta)*cos(phi))
+            SetParticleMomentumDirection(gun, G4ThreeVector(data.direction...))
+        end
+        if data.particle == &quot;opticalphoton&quot;
+            angle = isnothing(data.polarization) ? 2π * rand() : data.polarization
+            SetParticlePolarization(gun, G4ThreeVector(photonPolarization(data.direction, angle)...))
+        end
+        GeneratePrimaryVertex(gun, CxxPtr(evt))
+    end
+    G4JLPrimaryGenerator(&quot;OpGun&quot;, data; init_method=init, generate_method=generate)
+end</code></pre><pre><code class="nohighlight hljs">OpGunGenerator (generic function with 1 method)</code></pre><p>The function <code>setgun!</code> changes the settings of the generator between runs.</p><pre><code class="language-julia hljs">function setgun!(data::OpGunData; kwargs...)
+    for (k, v) in kwargs
+        setproperty!(data, k, v)
+    end
+    data.direction = data.direction ./ sqrt(sum(data.direction .^ 2))     ## normalize the direction
+    gun = data.gun
+    isnothing(gun) &amp;&amp; return             ## the gun is created later, at initialization
+    SetParticleByName(gun, data.particle)
+    SetParticleEnergy(gun, data.energy)
+    SetParticlePosition(gun, G4ThreeVector(data.position...))
+    SetParticleMomentumDirection(gun, G4ThreeVector(data.direction...))
+    SetParticleTime(gun, 0.)
+    return
+end
+setgun!(gen::G4JLPrimaryGenerator{OpGunData}; kwargs...) = setgun!(gen.data; kwargs...)</code></pre><pre><code class="nohighlight hljs">setgun! (generic function with 2 methods)</code></pre><p>The generator starts with the settings of <code>electron.mac</code>: 1 MeV electrons that enter the tank through its -X surface.</p><pre><code class="language-julia hljs">generator = OpGunGenerator(particle = &quot;e-&quot;, energy = 1MeV, position = (-1m, 0., 0.), direction = (1., 0., 0.))</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLPrimaryGenerator{Main.var&quot;##142&quot;.OpGunData}(&quot;OpGun&quot;, Main.var&quot;##142&quot;.OpGunData
+  gun: Nothing nothing
+  particle: String &quot;e-&quot;
+  energy: Float64 1.0
+  position: Tuple{Float64, Float64, Float64}
+  direction: Tuple{Float64, Float64, Float64}
+  randomDirection: Bool false
+  polarization: Nothing nothing
+, Main.var&quot;##142&quot;.var&quot;#init#8&quot;(), Main.var&quot;##142&quot;.var&quot;#generate#9&quot;(), Geant4.G4JLGeneratorAction[])</code></pre><h2 id="Define-the-Simulation-Data"><a class="docs-heading-anchor" href="#Define-the-Simulation-Data">Define the Simulation Data</a><a id="Define-the-Simulation-Data-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Simulation-Data" title="Permalink"></a></h2><p>The <code>OpNovice2SimData</code> structure accumulates the counters and histograms of a run. It replaces the <code>Run</code> and <code>HistoManager</code> classes of the C++ example. The fields <code>firstTankX</code> and <code>reflectionNumber</code> hold the state of the current track and replace the <code>TrackInformation</code> class: they are reset by the pre-tracking action at the start of each track.</p><p>Most histograms are those of the C++ example (with fixed binning). The two angular histograms <code>:fresnel_refraction</code> and <code>:reflection</code> are normalized at the end of the run to the number of photons hitting the surface at that angle. For a coated surface they are filled with the photons transmitted and reflected by the coating.</p><pre><code class="language-julia hljs">const Hist = typeof(Hist1D(; counttype=Float64, binedges=0.:1.:1.))
+newhist(edges) = Hist1D(; counttype=Float64, binedges=edges)
+const HISTOS = [ ## name                  binning         title                                       x-axis
+                 (:cerenkov,            0.:0.1:10.,     &quot;Cerenkov spectrum&quot;,                        &quot;Energy [eV]&quot;),
+                 (:scint,               0.:0.1:10.,     &quot;Scintillation spectrum&quot;,                   &quot;Energy [eV]&quot;),
+                 (:scint_time,          0.:0.5:200.,    &quot;Scintillation creation time&quot;,              &quot;Time [ns]&quot;),
+                 (:wls_abs,             0.:0.1:10.,     &quot;WLS absorption spectrum&quot;,                  &quot;Energy [eV]&quot;),
+                 (:wls_em,              0.:0.1:10.,     &quot;WLS emission spectrum&quot;,                    &quot;Energy [eV]&quot;),
+                 (:wls_time,            0.:0.1:10.,     &quot;WLS emission time&quot;,                        &quot;Time [ns]&quot;),
+                 (:wls2_abs,            0.:0.1:10.,     &quot;WLS2 absorption spectrum&quot;,                 &quot;Energy [eV]&quot;),
+                 (:wls2_em,             0.:0.1:10.,     &quot;WLS2 emission spectrum&quot;,                   &quot;Energy [eV]&quot;),
+                 (:wls2_time,           0.:0.5:50.,     &quot;WLS2 emission time&quot;,                       &quot;Time [ns]&quot;),
+                 (:bdry_status,         -0.5:1.:43.5,   &quot;Boundary process status&quot;,                  &quot;Status code&quot;),
+                 (:x_backward,          -1.1:0.022:1.1, &quot;X momentum dir of backward-going photons&quot;, &quot;Direction cosine&quot;),
+                 (:y_backward,          -1.1:0.022:1.1, &quot;Y momentum dir of backward-going photons&quot;, &quot;Direction cosine&quot;),
+                 (:z_backward,          -1.1:0.022:1.1, &quot;Z momentum dir of backward-going photons&quot;, &quot;Direction cosine&quot;),
+                 (:x_forward,           -1.1:0.022:1.1, &quot;X momentum dir of forward-going photons&quot;,  &quot;Direction cosine&quot;),
+                 (:y_forward,           -1.1:0.022:1.1, &quot;Y momentum dir of forward-going photons&quot;,  &quot;Direction cosine&quot;),
+                 (:z_forward,           -1.1:0.022:1.1, &quot;Z momentum dir of forward-going photons&quot;,  &quot;Direction cosine&quot;),
+                 (:x_fresnel,           -1.1:0.022:1.1, &quot;X momentum dir of Fresnel-refracted photons&quot;, &quot;Direction cosine&quot;),
+                 (:y_fresnel,           -1.1:0.022:1.1, &quot;Y momentum dir of Fresnel-refracted photons&quot;, &quot;Direction cosine&quot;),
+                 (:z_fresnel,           -1.1:0.022:1.1, &quot;Z momentum dir of Fresnel-refracted photons&quot;, &quot;Direction cosine&quot;),
+                 (:fresnel_refraction,  0.:1.:90.,      &quot;Fresnel-refracted photons&quot;,                &quot;Angle [deg]&quot;),
+                 (:fresnel_reflection,  0.:1.:90.,      &quot;Fresnel-reflected photons&quot;,                &quot;Angle [deg]&quot;),
+                 (:tir,                 0.:1.:90.,      &quot;Total internal reflected photons&quot;,         &quot;Angle [deg]&quot;),
+                 (:reflection,          0.:1.:90.,      &quot;Fresnel-reflected plus TIR photons&quot;,       &quot;Angle [deg]&quot;),
+                 (:absorption,          0.:1.:90.,      &quot;Absorbed photons&quot;,                         &quot;Angle [deg]&quot;),
+                 (:transmission,        0.:1.:90.,      &quot;Transmitted photons&quot;,                      &quot;Angle [deg]&quot;),
+                 (:spike_reflection,    0.:1.:90.,      &quot;Spike reflected photons&quot;,                  &quot;Angle [deg]&quot;) ]</code></pre><pre><code class="nohighlight hljs">26-element Vector{Tuple{Symbol, StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}, Int64}, String, String}}:
+ (:cerenkov, 0.0:0.1:10.0, &quot;Cerenkov spectrum&quot;, &quot;Energy [eV]&quot;)
+ (:scint, 0.0:0.1:10.0, &quot;Scintillation spectrum&quot;, &quot;Energy [eV]&quot;)
+ (:scint_time, 0.0:0.5:200.0, &quot;Scintillation creation time&quot;, &quot;Time [ns]&quot;)
+ (:wls_abs, 0.0:0.1:10.0, &quot;WLS absorption spectrum&quot;, &quot;Energy [eV]&quot;)
+ (:wls_em, 0.0:0.1:10.0, &quot;WLS emission spectrum&quot;, &quot;Energy [eV]&quot;)
+ (:wls_time, 0.0:0.1:10.0, &quot;WLS emission time&quot;, &quot;Time [ns]&quot;)
+ (:wls2_abs, 0.0:0.1:10.0, &quot;WLS2 absorption spectrum&quot;, &quot;Energy [eV]&quot;)
+ (:wls2_em, 0.0:0.1:10.0, &quot;WLS2 emission spectrum&quot;, &quot;Energy [eV]&quot;)
+ (:wls2_time, 0.0:0.5:50.0, &quot;WLS2 emission time&quot;, &quot;Time [ns]&quot;)
+ (:bdry_status, -0.5:1.0:43.5, &quot;Boundary process status&quot;, &quot;Status code&quot;)
+ (:x_backward, -1.1:0.022:1.1, &quot;X momentum dir of backward-going photons&quot;, &quot;Direction cosine&quot;)
+ (:y_backward, -1.1:0.022:1.1, &quot;Y momentum dir of backward-going photons&quot;, &quot;Direction cosine&quot;)
+ (:z_backward, -1.1:0.022:1.1, &quot;Z momentum dir of backward-going photons&quot;, &quot;Direction cosine&quot;)
+ (:x_forward, -1.1:0.022:1.1, &quot;X momentum dir of forward-going photons&quot;, &quot;Direction cosine&quot;)
+ (:y_forward, -1.1:0.022:1.1, &quot;Y momentum dir of forward-going photons&quot;, &quot;Direction cosine&quot;)
+ (:z_forward, -1.1:0.022:1.1, &quot;Z momentum dir of forward-going photons&quot;, &quot;Direction cosine&quot;)
+ (:x_fresnel, -1.1:0.022:1.1, &quot;X momentum dir of Fresnel-refracted photons&quot;, &quot;Direction cosine&quot;)
+ (:y_fresnel, -1.1:0.022:1.1, &quot;Y momentum dir of Fresnel-refracted photons&quot;, &quot;Direction cosine&quot;)
+ (:z_fresnel, -1.1:0.022:1.1, &quot;Z momentum dir of Fresnel-refracted photons&quot;, &quot;Direction cosine&quot;)
+ (:fresnel_refraction, 0.0:1.0:90.0, &quot;Fresnel-refracted photons&quot;, &quot;Angle [deg]&quot;)
+ (:fresnel_reflection, 0.0:1.0:90.0, &quot;Fresnel-reflected photons&quot;, &quot;Angle [deg]&quot;)
+ (:tir, 0.0:1.0:90.0, &quot;Total internal reflected photons&quot;, &quot;Angle [deg]&quot;)
+ (:reflection, 0.0:1.0:90.0, &quot;Fresnel-reflected plus TIR photons&quot;, &quot;Angle [deg]&quot;)
+ (:absorption, 0.0:1.0:90.0, &quot;Absorbed photons&quot;, &quot;Angle [deg]&quot;)
+ (:transmission, 0.0:1.0:90.0, &quot;Transmitted photons&quot;, &quot;Angle [deg]&quot;)
+ (:spike_reflection, 0.0:1.0:90.0, &quot;Spike reflected photons&quot;, &quot;Angle [deg]&quot;)</code></pre><p>The status codes of <code>G4OpBoundaryProcess</code> and their names, taken from the wrapped enumeration</p><pre><code class="language-julia hljs">const STATUS_NAMES = Dict(Int(getfield(Geant4, n)) =&gt; String(n) for n in names(Geant4)
+                          if isdefined(Geant4, n) &amp;&amp; getfield(Geant4, n) isa G4OpBoundaryProcessStatus)
+
+mutable struct OpNovice2SimData &lt;: G4JLSimulationData
+    ##---Settings and cached pointers--------------------------------------------------------------
+    killOnSecondSurface::Bool       ## kill photons when they reach a second surface
+    summary::Bool                   ## print the summary at the end of the run
+    opticalphoton::CxxPtr{G4ParticleDefinition}
+    boundary::CxxPtr{G4OpBoundaryProcess}
+    ##---Per-track state (TrackInformation in C++)-------------------------------------------------
+    firstTankX::Bool
+    reflectionNumber::Int
+    ##---Run data-----------------------------------------------------------------------------------
+    particle::String
+    energy::Float64
+    polarization::Union{Nothing, Float64}
+    cerenkovEnergy::Float64
+    scintEnergy::Float64
+    wlsAbsorptionEnergy::Float64
+    wlsEmissionEnergy::Float64
+    wls2AbsorptionEnergy::Float64
+    wls2EmissionEnergy::Float64
+    cerenkovCount::Int
+    scintCount::Int
+    rayleighCount::Int
+    wlsAbsorptionCount::Int
+    wlsEmissionCount::Int
+    wls2AbsorptionCount::Int
+    wls2EmissionCount::Int
+    opAbsorption::Int
+    opAbsorptionPrior::Int
+    totalSurface::Int
+    boundaryProcs::Dict{Int, Int}
+    histos::Dict{Symbol, Hist}
+    OpNovice2SimData(; killOnSecondSurface=false, summary=true) = new(killOnSecondSurface, summary)
+end</code></pre><h2 id="Define-the-User-Actions"><a class="docs-heading-anchor" href="#Define-the-User-Actions">Define the User Actions</a><a id="Define-the-User-Actions-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-User-Actions" title="Permalink"></a></h2><h3 id="Run-actions"><a class="docs-heading-anchor" href="#Run-actions">Run actions</a><a id="Run-actions-1"></a><a class="docs-heading-anchor-permalink" href="#Run-actions" title="Permalink"></a></h3><p>At the beginning of the run we reset the counters and histograms, and find the optical photon definition and the <code>G4OpBoundaryProcess</code>, which are used for every step.</p><pre><code class="language-julia hljs">function beginrun(run::G4Run, app::G4JLApplication)::Nothing
+    data = getSIMdata(app)
+    gen = app.generator.data
+    data.particle, data.energy, data.polarization = gen.particle, gen.energy, gen.polarization
+    data.opticalphoton = FindParticle(&quot;opticalphoton&quot;)
+    data.boundary = CxxPtr{G4OpBoundaryProcess}(C_NULL)
+    for p in data.opticalphoton |&gt; GetProcessManager |&gt; GetProcessList
+        if p |&gt; GetProcessName |&gt; String == &quot;OpBoundary&quot;
+            data.boundary = CxxPtr{G4OpBoundaryProcess}(p)
+        end
+    end
+    data.cerenkovEnergy = data.scintEnergy = 0.
+    data.wlsAbsorptionEnergy = data.wlsEmissionEnergy = 0.
+    data.wls2AbsorptionEnergy = data.wls2EmissionEnergy = 0.
+    data.cerenkovCount = data.scintCount = data.rayleighCount = 0
+    data.wlsAbsorptionCount = data.wlsEmissionCount = 0
+    data.wls2AbsorptionCount = data.wls2EmissionCount = 0
+    data.opAbsorption = data.opAbsorptionPrior = data.totalSurface = 0
+    data.boundaryProcs = Dict{Int, Int}()
+    data.histos = Dict(name =&gt; newhist(edges) for (name, edges, _, _) in HISTOS)
+    nothing
+end</code></pre><pre><code class="nohighlight hljs">beginrun (generic function with 1 method)</code></pre><p>At the end of the run we normalize the refraction and reflection histograms and print a summary (as <code>Run::EndOfRun</code> does in C++). For a bare dielectric-dielectric surface we also look for the Brewster angle (minimum of the reflectance) and the critical angle (the transmission goes to 0), and compare them with the values expected from the refractive indices at the energy of the primary photons.</p><pre><code class="language-julia hljs">function mean_rms(h)
+    c, x = bincounts(h), bincenters(h)
+    n = sum(c)
+    n &gt; 0 || return (0., 0.)
+    m = sum(c .* x) / n
+    return m, sqrt(max(sum(c .* x.^2) / n - m^2, 0.))
+end
+
+function endrun(run::G4Run, app::G4JLApplication)::Nothing
+    data = getSIMdata(app)
+    det = app.detector
+    nEvt = GetNumberOfEvent(run)
+    nEvt == 0 &amp;&amp; return
+    (; histos, boundaryProcs) = data
+    ##---Normalize the refraction/reflection histograms to the photons at each angle-------------
+    h_refract, h_reflect = histos[:fresnel_refraction], histos[:reflection]
+    tot = bincounts(h_refract) .+ bincounts(h_reflect)
+    for h in (h_refract, h_reflect)
+        counts, w2 = bincounts(h), sumw2(h)
+        for i in eachindex(tot)
+            tot[i] &gt; 0 || continue
+            counts[i] /= tot[i]
+            w2[i] /= tot[i]^2
+        end
+    end
+    data.summary || return
+
+    @printf &quot;\n    Run Summary\n&quot;
+    @printf &quot;---------------------------------\n&quot;
+    @printf &quot;Primary particle was: %s with energy %s.\n&quot; data.particle (data.energy &lt; keV ? &quot;$(data.energy/eV) eV&quot; : &quot;$(data.energy/MeV) MeV&quot;)
+    @printf &quot;Number of events: %d\n&quot; nEvt
+    @printf &quot;Material of world: %s\n&quot; det.worldMaterial
+    @printf &quot;Material of tank:  %s\n\n&quot; det.tankMaterial
+    if data.particle != &quot;opticalphoton&quot;
+        @printf &quot;Average energy of Cerenkov photons created per event: %.2f eV.\n&quot; data.cerenkovEnergy/eV/nEvt
+        @printf &quot;Average number of Cerenkov photons created per event: %.2f\n&quot; data.cerenkovCount/nEvt
+        data.cerenkovCount &gt; 0 &amp;&amp; @printf &quot; Average energy per photon: %.2f eV.\n&quot; data.cerenkovEnergy/eV/data.cerenkovCount
+        @printf &quot;Average energy of scintillation photons created per event: %.2f eV.\n&quot; data.scintEnergy/eV/nEvt
+        @printf &quot;Average number of scintillation photons created per event: %.2f\n&quot; data.scintCount/nEvt
+        data.scintCount &gt; 0 &amp;&amp; @printf &quot; Average energy per photon: %.2f eV.\n&quot; data.scintEnergy/eV/data.scintCount
+    end
+    @printf &quot;Average number of photons absorbed by WLS per event: %.2f\n&quot; data.wlsAbsorptionCount/nEvt
+    data.wlsAbsorptionCount &gt; 0 &amp;&amp; @printf &quot; Average energy per photon: %.2f eV.\n&quot; data.wlsAbsorptionEnergy/eV/data.wlsAbsorptionCount
+    @printf &quot;Average number of photons created by WLS per event: %.2f\n&quot; data.wlsEmissionCount/nEvt
+    data.wlsEmissionCount &gt; 0 &amp;&amp; @printf &quot; Average energy per photon: %.2f eV.\n&quot; data.wlsEmissionEnergy/eV/data.wlsEmissionCount
+    @printf &quot;Average number of photons absorbed by WLS2 per event: %.2f\n&quot; data.wls2AbsorptionCount/nEvt
+    data.wls2AbsorptionCount &gt; 0 &amp;&amp; @printf &quot; Average energy per photon: %.2f eV.\n&quot; data.wls2AbsorptionEnergy/eV/data.wls2AbsorptionCount
+    @printf &quot;Average number of photons created by WLS2 per event: %.2f\n&quot; data.wls2EmissionCount/nEvt
+    data.wls2EmissionCount &gt; 0 &amp;&amp; @printf &quot; Average energy per photon: %.2f eV.\n&quot; data.wls2EmissionEnergy/eV/data.wls2EmissionCount
+    @printf &quot;Average number of OpRayleigh per event:   %.2f\n&quot; data.rayleighCount/nEvt
+    @printf &quot;Average number of OpAbsorption per event: %.2f\n&quot; data.opAbsorption/nEvt
+    @printf &quot;\nSurface events (on +X surface, maximum one per photon) this run:\n&quot;
+    @printf &quot;# of primary particles:      %8d\n&quot; nEvt
+    @printf &quot;OpAbsorption before surface: %8d\n&quot; data.opAbsorptionPrior
+    @printf &quot;Total # of surface events:   %8d\n&quot; data.totalSurface
+    if data.particle == &quot;opticalphoton&quot;
+        @printf &quot;Unaccounted for:             %8d\n&quot; data.totalSurface + data.opAbsorptionPrior - nEvt
+    end
+    @printf &quot;\nSurface events by process:\n&quot;
+    for status in sort(collect(keys(boundaryProcs)))
+        @printf &quot;  %-38s %8d\n&quot; STATUS_NAMES[status] boundaryProcs[status]
+    end
+    total = sum(values(boundaryProcs); init=0)
+    @printf &quot; Sum:                        %8d\n&quot; total
+    @printf &quot; Unaccounted for:            %8d\n&quot; data.totalSurface - total
+    @printf &quot;---------------------------------\n&quot;
+
+    ##---Brewster angle and critical angle------------------------------------------------------
+    if sum(tot) &gt; 0 &amp;&amp; !isnothing(data.polarization) &amp;&amp; det.surfaceType != coated
+        refract, reflect = bincounts(h_refract), bincounts(h_reflect)
+        centers = bincenters(h_refract)
+        halfwidth = binedges(h_refract)[2] - centers[1]
+        n1 = propertyValue(det.tankProperties, &quot;RINDEX&quot;, data.energy)
+        n2 = propertyValue(det.worldProperties, &quot;RINDEX&quot;, data.energy)
+        @printf &quot;Polarization of primary optical photons: %.1f deg.\n&quot; data.polarization/deg
+        if data.polarization == 0.
+            filled = findall(&gt;(0), tot)
+            imins = filled[reflect[filled] .== minimum(reflect[filled])]     ## can be several bins with 0
+            amin = sum(centers[imins]) / length(imins)
+            @printf &quot;Reflectance shows a minimum at: %.1f +/- %.1f deg. Expected Brewster angle: %.2f deg.\n&quot; amin halfwidth*length(imins) atand(n2/n1)
+        end
+        i = findfirst(i -&gt; refract[i] &gt; 0 &amp;&amp; refract[i+1] == 0, 1:length(refract)-1)
+        if !isnothing(i)
+            @printf &quot;Fresnel transmission goes to 0 at: %.1f +/- %.1f deg. Expected: %.2f deg.\n&quot; centers[i] halfwidth asind(n2/n1)
+        end
+    end
+
+    ##---Histogram statistics------------------------------------------------------------------
+    @printf &quot;\n Histogram statistics for the entire run:\n\n&quot;
+    for (name, _, title, xaxis) in HISTOS
+        h = histos[name]
+        nentries(h) == 0 &amp;&amp; continue
+        name in (:fresnel_refraction, :reflection) &amp;&amp; continue   ## normalized
+        m, s = mean_rms(h)
+        @printf &quot; %s: mean = %g; rms = %g (%s)\n&quot; title m s xaxis
+    end
+    nothing
+end</code></pre><pre><code class="nohighlight hljs">endrun (generic function with 1 method)</code></pre><h3 id="Tracking-action"><a class="docs-heading-anchor" href="#Tracking-action">Tracking action</a><a id="Tracking-action-1"></a><a class="docs-heading-anchor-permalink" href="#Tracking-action" title="Permalink"></a></h3><p>The pre-tracking action resets the per-track state.</p><pre><code class="language-julia hljs">function pretrackaction(track::G4Track, app::G4JLApplication)::Nothing
+    data = getSIMdata(app)
+    data.firstTankX = true
+    data.reflectionNumber = 0
+    nothing
+end</code></pre><pre><code class="nohighlight hljs">pretrackaction (generic function with 1 method)</code></pre><h3 id="Stepping-action"><a class="docs-heading-anchor" href="#Stepping-action">Stepping action</a><a id="Stepping-action-1"></a><a class="docs-heading-anchor-permalink" href="#Stepping-action" title="Permalink"></a></h3><p>This is the core of the example. For optical photons it counts the bulk processes (absorption, Rayleigh scattering, wavelength shifting) and, on the first boundary hit, the status of the <code>G4OpBoundaryProcess</code>. For the other particles it counts the Cerenkov and scintillation photons created in the step.</p><p>The secondaries created in the current step are the last <code>GetNumberOfSecondariesInCurrentStep</code> tracks of the secondaries vector of the step.</p><pre><code class="language-julia hljs">function secondariesInCurrentStep(step::G4Step)
+    nsec = GetNumberOfSecondariesInCurrentStep(step)
+    nsec == 0 &amp;&amp; return CxxPtr{G4Track}[]
+    allsecs = GetSecondary(step)[]
+    nall = length(allsecs)
+    return [allsecs[i] for i in nall-nsec+1:nall]
+end
+
+function boundaryStatus!(data::OpNovice2SimData, status::Int, angle::Float64, p1)
+    (; histos) = data
+    data.boundaryProcs[status] = get(data.boundaryProcs, status, 0) + 1
+    push!(histos[:bdry_status], status)
+    if status == Int(Transmission)
+        push!(histos[:transmission], angle)
+    elseif status == Int(FresnelRefraction)
+        push!(histos[:x_fresnel], p1[1])
+        push!(histos[:y_fresnel], p1[2])
+        push!(histos[:z_fresnel], p1[3])
+        push!(histos[:fresnel_refraction], angle)
+    elseif status == Int(FresnelReflection)
+        push!(histos[:fresnel_reflection], angle)
+        push!(histos[:reflection], angle)
+    elseif status == Int(TotalInternalReflection)
+        push!(histos[:tir], angle)
+        push!(histos[:reflection], angle)
+    elseif status == Int(CoatedDielectricRefraction) || status == Int(CoatedDielectricFrustratedTransmission)
+        push!(histos[:fresnel_refraction], angle)
+    elseif status == Int(CoatedDielectricReflection)
+        push!(histos[:reflection], angle)
+    elseif status == Int(SpikeReflection)
+        push!(histos[:spike_reflection], angle)
+    elseif status == Int(Absorption)
+        push!(histos[:absorption], angle)
+    end
+    return
+end
+
+function stepaction(step::G4Step, app::G4JLApplication)::Nothing
+    data = getSIMdata(app)
+    (; histos) = data
+    track = GetTrack(step)
+    startPoint = GetPreStepPoint(step)
+    endPoint = GetPostStepPoint(step)
+
+    if GetDefinition(track) == data.opticalphoton
+        procname = endPoint |&gt; GetProcessDefinedStep |&gt; GetProcessName |&gt; String
+        if procname == &quot;OpAbsorption&quot;
+            data.opAbsorption += 1
+            data.firstTankX &amp;&amp; (data.opAbsorptionPrior += 1)
+        elseif procname == &quot;OpRayleigh&quot;
+            data.rayleighCount += 1
+        elseif procname == &quot;OpWLS&quot; || procname == &quot;OpWLS2&quot;
+            wls1 = procname == &quot;OpWLS&quot;
+            en = GetKineticEnergy(track)
+            if wls1
+                data.wlsAbsorptionCount += 1; data.wlsAbsorptionEnergy += en
+            else
+                data.wls2AbsorptionCount += 1; data.wls2AbsorptionEnergy += en
+            end
+            push!(histos[wls1 ? :wls_abs : :wls2_abs], en/eV)
+            for sec in secondariesInCurrentStep(step)
+                en = GetKineticEnergy(sec)
+                if wls1
+                    data.wlsEmissionCount += 1; data.wlsEmissionEnergy += en
+                else
+                    data.wls2EmissionCount += 1; data.wls2EmissionEnergy += en
+                end
+                push!(histos[wls1 ? :wls_em : :wls2_em], en/eV)
+                push!(histos[wls1 ? :wls_time : :wls2_time], GetGlobalTime(sec)/ns)
+            end
+        end
+
+        ##---optical process has the end point on a boundary
+        if GetStepStatus(endPoint) == fGeomBoundary
+            p0 = GetMomentumDirection(startPoint)
+            p1 = GetMomentumDirection(endPoint)
+            if data.firstTankX
+                dir1 = (x(p1), y(p1), z(p1))
+                ##---do not count Absorbed or Detected photons here
+                if GetTrackStatus(track) != fStopAndKill
+                    if dir1[1] &lt; 0.
+                        push!(histos[:x_backward], dir1[1])
+                        push!(histos[:y_backward], dir1[2])
+                        push!(histos[:z_backward], dir1[3])
+                    else
+                        push!(histos[:x_forward], dir1[1])
+                        push!(histos[:y_forward], dir1[2])
+                        push!(histos[:z_forward], dir1[3])
+                    end
+                end
+                data.firstTankX = false
+                data.totalSurface += 1
+                angle = acos(x(p0))/deg
+                boundaryStatus!(data, Int(GetStatus(data.boundary)), angle, dir1)
+            end
+            ##---Kill the photon when it reaches a second surface (there are 2 steps at the boundary).
+            #   This can be useful to visualize surface scattering.
+            if data.killOnSecondSurface &amp;&amp; data.reflectionNumber &gt;= 2
+                SetTrackStatus(track, fStopAndKill)
+            end
+            data.reflectionNumber += 1
+        end
+    else
+        ##---Count the optical photons created in this step
+        for sec in secondariesInCurrentStep(step)
+            GetDefinition(sec) == data.opticalphoton || continue
+            creator = sec |&gt; GetCreatorProcess |&gt; GetProcessName |&gt; String
+            en = GetKineticEnergy(sec)
+            if creator == &quot;Cerenkov&quot;
+                data.cerenkovEnergy += en
+                data.cerenkovCount += 1
+                push!(histos[:cerenkov], en/eV)
+            elseif creator == &quot;Scintillation&quot;
+                data.scintEnergy += en
+                data.scintCount += 1
+                push!(histos[:scint], en/eV)
+                push!(histos[:scint_time], GetGlobalTime(sec)/ns)
+            end
+        end
+    end
+    nothing
+end</code></pre><pre><code class="nohighlight hljs">stepaction (generic function with 1 method)</code></pre><h2 id="Create-the-Application"><a class="docs-heading-anchor" href="#Create-the-Application">Create the Application</a><a id="Create-the-Application-1"></a><a class="docs-heading-anchor-permalink" href="#Create-the-Application" title="Permalink"></a></h2><pre><code class="language-julia hljs">app = G4JLApplication(detector = electron_detector,             ## detector with parameters
+                      simdata = OpNovice2SimData(),              ## simulation data structure
+                      generator = generator,                     ## primary particle generator
+                      physics_type = OpNovice2Physics,           ## what physics list to instantiate
+                      nthreads = 0,                              ## sequential mode
+                      ##----Actions--------------------------------
+                      stepaction_method = stepaction,            ## step action method
+                      pretrackaction_method = pretrackaction,    ## pre-tracking action (reset track state)
+                      beginrunaction_method = beginrun,          ## begin-run action (reset counters and histograms)
+                      endrunaction_method = endrun               ## end-run action (print summary)
+                      )</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLApplication{Main.var&quot;##142&quot;.OpDetector, Main.var&quot;##142&quot;.OpNovice2SimData}(Geant4.G4RunManagerAllocated(Ptr{Nothing}(0x00000000372b8150)), Main.var&quot;##142&quot;.OpDetector
+  worldHalfSize: Float64 10000.0
+  tankHalfSize: Float64 1000.0
+  worldMaterial: String &quot;G4_AIR&quot;
+  tankMaterial: String &quot;G4_BGO&quot;
+  tankProperties: Dict{String, Tuple{Vector{Float64}, Vector{Float64}}}
+  tankConstProperties: Dict{String, Float64}
+  worldProperties: Dict{String, Tuple{Vector{Float64}, Vector{Float64}}}
+  worldConstProperties: Dict{String, Float64}
+  surfaceProperties: Dict{String, Tuple{Vector{Float64}, Vector{Float64}}}
+  surfaceConstProperties: Dict{String, Float64}
+  surfaceType: Geant4.G4SurfaceType Geant4.G4SurfaceType(0x00000001)
+  surfaceModel: Geant4.G4OpticalSurfaceModel Geant4.G4OpticalSurfaceModel(0x00000001)
+  surfaceFinish: Geant4.G4OpticalSurfaceFinish Geant4.G4OpticalSurfaceFinish(0x00000003)
+  surfaceSigmaAlpha: Float64 0.2
+  surfacePolish: Float64 1.0
+, Main.var&quot;##142&quot;.OpNovice2SimData[Main.var&quot;##142&quot;.OpNovice2SimData(false, true, CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4ParticleDefinition}(Ptr{Geant4.G4ParticleDefinition}(0x0000765ca823efb0)), CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4OpBoundaryProcess}(Ptr{Geant4.G4OpBoundaryProcess}(0x0000765ca9d33510)), false, 130140389428272, #undef, 6.42978688114375e-310, nothing, 6.42978661895695e-310, 6.42978688114375e-310, 6.42978661895695e-310, 6.4297875867588e-310, 6.42978661895695e-310, 6.42978688114217e-310, 130140329996208, 130140349584736, 130140329996208, 130140335302896, 130140329996208, 130140349584736, 130140329996208, 130140335303024, 130140329996208, 130140335302528, #undef, #undef)], Geant4.G4JLPrimaryGenerator{Main.var&quot;##142&quot;.OpGunData}(&quot;OpGun&quot;, Main.var&quot;##142&quot;.OpGunData
+  gun: Nothing nothing
+  particle: String &quot;e-&quot;
+  energy: Float64 1.0
+  position: Tuple{Float64, Float64, Float64}
+  direction: Tuple{Float64, Float64, Float64}
+  randomDirection: Bool false
+  polarization: Nothing nothing
+, Main.var&quot;##142&quot;.var&quot;#init#8&quot;(), Main.var&quot;##142&quot;.var&quot;#generate#9&quot;(), Geant4.G4JLGeneratorAction[]), nothing, nothing, 0, 0, Geant4.G4RunManager, Geant4.G4JLDetectorConstruction, Main.var&quot;##142&quot;.OpNovice2Physics, Geant4.G4JLRunAction, Geant4.G4JLEventAction, Geant4.G4JLTrackingAction, Geant4.G4JLSteppingAction, Main.var&quot;##142&quot;.stepaction, Main.var&quot;##142&quot;.pretrackaction, nothing, Main.var&quot;##142&quot;.beginrun, Main.var&quot;##142&quot;.endrun, nothing, nothing, nothing, nothing, Dict{String, Geant4.G4JLProtoSD}(), Dict{String, Vector{Geant4.G4JLSensitiveDetector}}(), Geant4.G4JLScoringMesh[], nothing, nothing)</code></pre><h2 id="Configure,-Initialize-and-Run"><a class="docs-heading-anchor" href="#Configure,-Initialize-and-Run">Configure, Initialize and Run</a><a id="Configure,-Initialize-and-Run-1"></a><a class="docs-heading-anchor-permalink" href="#Configure,-Initialize-and-Run" title="Permalink"></a></h2><p>The optical processes are configured with the <code>/process/optical/...</code> UI commands, after the physics list has been created (<code>configure</code>) and before the physics tables are built (<code>initialize</code>).</p><pre><code class="language-julia hljs">configure(app)
+ui`/process/optical/cerenkov/setMaxPhotons 3`
+ui`/process/optical/cerenkov/setMaxBetaChange 10`
+ui`/process/optical/scintillation/setByParticleType false`
+ui`/process/optical/scintillation/setTrackInfo false`
+ui`/process/optical/scintillation/setFiniteRiseTime true`
+ui`/process/optical/scintillation/setStackPhotons true`
+initialize(app)</code></pre><pre><code class="nohighlight hljs">Cerenkov max photons: 3
+  Surface type   = 1
+  Surface finish = 3
+  Surface model  = 1
+
+  Surface parameter 
+  ----------------- 
+ sigma_alpha: 0.2
+
+### Birks coefficients used in run time
+   G4_BGO     0.008415 mm/MeV     0.0059999 g/cm^2/MeV  massFactor=  40.0239 effCharge= 1652.42
+</code></pre><h3 id="Electrons-in-a-scintillator"><a class="docs-heading-anchor" href="#Electrons-in-a-scintillator">Electrons in a scintillator</a><a id="Electrons-in-a-scintillator-1"></a><a class="docs-heading-anchor-permalink" href="#Electrons-in-a-scintillator" title="Permalink"></a></h3><pre><code class="language-julia hljs">beamOn(app, 100)</code></pre><pre><code class="nohighlight hljs">
+    Run Summary
+---------------------------------
+Primary particle was: e- with energy 1.0 MeV.
+Number of events: 100
+Material of world: G4_AIR
+Material of tank:  G4_BGO
+
+Average energy of Cerenkov photons created per event: 223.58 eV.
+Average number of Cerenkov photons created per event: 43.33
+ Average energy per photon: 5.16 eV.
+Average energy of scintillation photons created per event: 19317.19 eV.
+Average number of scintillation photons created per event: 3555.12
+ Average energy per photon: 5.43 eV.
+Average number of photons absorbed by WLS per event: 0.00
+Average number of photons created by WLS per event: 0.00
+Average number of photons absorbed by WLS2 per event: 0.00
+Average number of photons created by WLS2 per event: 0.00
+Average number of OpRayleigh per event:   5568.84
+Average number of OpAbsorption per event: 3415.26
+
+Surface events (on +X surface, maximum one per photon) this run:
+# of primary particles:           100
+OpAbsorption before surface:   198338
+Total # of surface events:     161507
+
+Surface events by process:
+  Transmission                              16089
+  FresnelRefraction                         53493
+  LambertianReflection                      54195
+  LobeReflection                             6555
+  SpikeReflection                            7545
+  BackScattering                             7614
+  Absorption                                14361
+  Detection                                  1655
+ Sum:                          161507
+ Unaccounted for:                   0
+---------------------------------
+
+ Histogram statistics for the entire run:
+
+ Cerenkov spectrum: mean = 5.15905; rms = 1.72286 (Energy [eV])
+ Scintillation spectrum: mean = 5.43362; rms = 1.66669 (Energy [eV])
+ Scintillation creation time: mean = 48.3641; rms = 46.9036 (Time [ns])
+ Boundary process status: mean = 4.29025; rms = 2.53015 (Status code)
+ X momentum dir of backward-going photons: mean = -0.6485; rms = 0.24271 (Direction cosine)
+ Y momentum dir of backward-going photons: mean = 0.00325351; rms = 0.510266 (Direction cosine)
+ Z momentum dir of backward-going photons: mean = -0.00186474; rms = 0.510218 (Direction cosine)
+ X momentum dir of forward-going photons: mean = 0.602715; rms = 0.249559 (Direction cosine)
+ Y momentum dir of forward-going photons: mean = 0.00105041; rms = 0.535832 (Direction cosine)
+ Z momentum dir of forward-going photons: mean = 0.000220029; rms = 0.536187 (Direction cosine)
+ X momentum dir of Fresnel-refracted photons: mean = -0.650744; rms = 0.261951 (Direction cosine)
+ Y momentum dir of Fresnel-refracted photons: mean = 0.00346844; rms = 0.504025 (Direction cosine)
+ Z momentum dir of Fresnel-refracted photons: mean = -0.00190027; rms = 0.504032 (Direction cosine)
+</code></pre><p>Plot the spectra of the Cerenkov and scintillation photons, and the creation time of the scintillation photons, which shows the three time constants.</p><pre><code class="language-julia hljs">function plot_photons(data::OpNovice2SimData)
+    (; histos) = data
+    lay = @layout [° °; °]
+    img = plot(layout=lay, size=(1000,800), legend=false)
+    plot!(subplot=1, histos[:cerenkov], title=&quot;Cerenkov spectrum&quot;, xlabel=&quot;Energy [eV]&quot;)
+    plot!(subplot=2, histos[:scint], title=&quot;Scintillation spectrum&quot;, xlabel=&quot;Energy [eV]&quot;)
+    plot!(subplot=3, histos[:scint_time], title=&quot;Scintillation creation time&quot;, xlabel=&quot;Time [ns]&quot;)
+    return img
+end
+img = plot_photons(app.simdata[1])</code></pre><p><img src="../OpNovice2-41.png" alt/></p><h3 id="Fresnel-study:-polarization-in-the-plane-of-incidence-(p-polarized)"><a class="docs-heading-anchor" href="#Fresnel-study:-polarization-in-the-plane-of-incidence-(p-polarized)">Fresnel study: polarization in the plane of incidence (p-polarized)</a><a id="Fresnel-study:-polarization-in-the-plane-of-incidence-(p-polarized)-1"></a><a class="docs-heading-anchor-permalink" href="#Fresnel-study:-polarization-in-the-plane-of-incidence-(p-polarized)" title="Permalink"></a></h3><p>We change the detector with <code>reinitialize</code>. Note that <code>G4Cerenkov</code> builds its tables only once, for the materials that exist at the first initialization. This is why the electron study, which needs Cerenkov photons in BGO, is done first. The Fresnel study only tracks optical photons.</p><pre><code class="language-julia hljs">reinitialize(app, fresnel_detector)</code></pre><pre><code class="nohighlight hljs">  Surface type   = 1
+  Surface finish = 0
+  Surface model  = 1
+
+  Surface parameter 
+  ----------------- 
+ sigma_alpha: 0
+
+</code></pre><p>The 5 eV photons, polarized in the plane of incidence, start 0.1 mm from the +X surface of the tank with random directions towards it. The reflectance has a minimum (zero) at the Brewster angle and the transmission goes to zero at the critical angle of total internal reflection.</p><pre><code class="language-julia hljs">setgun!(generator, particle = &quot;opticalphoton&quot;, energy = 5eV, position = (99.99cm, 0., 0.),
+        randomDirection = true, polarization = 0.)
+beamOn(app, 100000)</code></pre><pre><code class="nohighlight hljs">
+    Run Summary
+---------------------------------
+Primary particle was: opticalphoton with energy 5.0 eV.
+Number of events: 100000
+Material of world: G4_AIR
+Material of tank:  G4_WATER
+
+Average number of photons absorbed by WLS per event: 0.00
+Average number of photons created by WLS per event: 0.00
+Average number of photons absorbed by WLS2 per event: 0.00
+Average number of photons created by WLS2 per event: 0.00
+Average number of OpRayleigh per event:   0.00
+Average number of OpAbsorption per event: 0.51
+
+Surface events (on +X surface, maximum one per photon) this run:
+# of primary particles:        100000
+OpAbsorption before surface:      292
+Total # of surface events:      99708
+Unaccounted for:                    0
+
+Surface events by process:
+  FresnelRefraction                         49305
+  FresnelReflection                          1404
+  TotalInternalReflection                   48999
+ Sum:                           99708
+ Unaccounted for:                   0
+---------------------------------
+Polarization of primary optical photons: 0.0 deg.
+Reflectance shows a minimum at: 35.5 +/- 1.5 deg. Expected Brewster angle: 35.71 deg.
+Fresnel transmission goes to 0 at: 45.5 +/- 0.5 deg. Expected: 45.96 deg.
+
+ Histogram statistics for the entire run:
+
+ Boundary process status: mean = 2.99693; rms = 0.99293 (Status code)
+ X momentum dir of backward-going photons: mean = -0.3803; rms = 0.214297 (Direction cosine)
+ Y momentum dir of backward-going photons: mean = -0.00306869; rms = 0.637458 (Direction cosine)
+ Z momentum dir of backward-going photons: mean = 0.000132036; rms = 0.635021 (Direction cosine)
+ X momentum dir of forward-going photons: mean = 0.769922; rms = 0.225238 (Direction cosine)
+ Y momentum dir of forward-going photons: mean = -0.00158246; rms = 0.422392 (Direction cosine)
+ Z momentum dir of forward-going photons: mean = 0.00285726; rms = 0.422846 (Direction cosine)
+ X momentum dir of Fresnel-refracted photons: mean = 0.769922; rms = 0.225238 (Direction cosine)
+ Y momentum dir of Fresnel-refracted photons: mean = -0.00158246; rms = 0.422392 (Direction cosine)
+ Z momentum dir of Fresnel-refracted photons: mean = 0.00285726; rms = 0.422846 (Direction cosine)
+ Fresnel-reflected photons: mean = 29.8732; rms = 16.7791 (Angle [deg])
+ Total internal reflected photons: mean = 67.8814; rms = 12.6655 (Angle [deg])
+</code></pre><p>Define a function to plot the fraction of refracted and reflected photons as a function of the incident angle. If a function <code>expected(θ)</code> is given, the expected reflectance is drawn on top.</p><pre><code class="language-julia hljs">function plot_fresnel(data::OpNovice2SimData; title=&quot;&quot;, expected=nothing)
+    (; histos, polarization) = data
+    img = plot(title=&quot;$title polarization angle $(round(polarization/deg)) deg&quot;, xlabel=&quot;Incident angle [deg]&quot;,
+               ylabel=&quot;Fraction of photons&quot;, legend=:right, size=(800,500))
+    plot!(img, histos[:fresnel_refraction], label=&quot;Refraction&quot;)
+    plot!(img, histos[:reflection], label=&quot;Reflection (including TIR)&quot;)
+    if !isnothing(expected)
+        angles = 0:0.25:90
+        plot!(img, angles, expected.(angles .* deg), label=&quot;Expected reflectance&quot;, color=:black, linewidth=2)
+    end
+    return img
+end
+img = plot_fresnel(app.simdata[1])</code></pre><p><img src="../OpNovice2-47.png" alt/></p><h3 id="Fresnel-study:-polarization-perpendicular-to-the-plane-of-incidence-(s-polarized)"><a class="docs-heading-anchor" href="#Fresnel-study:-polarization-perpendicular-to-the-plane-of-incidence-(s-polarized)">Fresnel study: polarization perpendicular to the plane of incidence (s-polarized)</a><a id="Fresnel-study:-polarization-perpendicular-to-the-plane-of-incidence-(s-polarized)-1"></a><a class="docs-heading-anchor-permalink" href="#Fresnel-study:-polarization-perpendicular-to-the-plane-of-incidence-(s-polarized)" title="Permalink"></a></h3><pre><code class="language-julia hljs">setgun!(generator, polarization = 90deg)
+beamOn(app, 100000)
+img = plot_fresnel(app.simdata[1])</code></pre><p><img src="../OpNovice2-49.png" alt/></p><h3 id="Thin-coating-(coated.mac)"><a class="docs-heading-anchor" href="#Thin-coating-(coated.mac)">Thin coating (<code>coated.mac</code>)</a><a id="Thin-coating-(coated.mac)-1"></a><a class="docs-heading-anchor-permalink" href="#Thin-coating-(coated.mac)" title="Permalink"></a></h3><p>A coating of 100 nm with refractive index 1.7 covers the surface between water (n = 1.4) and air (n = 1.0). The surface type is <code>coated</code>, and the coating is described by the <code>COATEDRINDEX</code> and <code>COATEDTHICKNESS</code> surface properties.</p><pre><code class="language-julia hljs">coated_detector = OpDetector(
+    tankProperties = PropertyMap(&quot;RINDEX&quot;    =&gt; ([2eV, 8eV], [1.4, 1.4]),
+                                 &quot;ABSLENGTH&quot; =&gt; ([2eV, 5eV, 8eV], [100mm, 200mm, 300mm])),
+    worldProperties = PropertyMap(&quot;RINDEX&quot;    =&gt; ([2eV, 8eV], [1.0, 1.0]),
+                                  &quot;ABSLENGTH&quot; =&gt; ([2eV, 5eV, 8eV], [1000m, 2000m, 3000m])),
+    surfaceType = coated,
+    surfaceModel = unified,
+    surfaceFinish = polished,
+    surfaceProperties = PropertyMap(&quot;REFLECTIVITY&quot; =&gt; ([2eV, 8eV], [1.0, 1.0]),
+                                    &quot;COATEDRINDEX&quot; =&gt; ([2eV, 8eV], [1.7, 1.7])),
+    surfaceConstProperties = ConstPropertyMap(&quot;COATEDTHICKNESS&quot; =&gt; 100nm))
+reinitialize(app, coated_detector)</code></pre><pre><code class="nohighlight hljs">  Surface type   = 7
+  Surface finish = 0
+  Surface model  = 1
+
+  Surface parameter 
+  ----------------- 
+ sigma_alpha: 0
+
+</code></pre><p>The reflectance of a thin film between two media is given by the interference of the waves reflected on both sides of the film. <code>n1</code>, <code>nc</code> and <code>n3</code> are the refractive indices of the first medium, the coating and the second medium, <code>d</code> the thickness of the coating and <code>λ</code> the wavelength in vacuum. Beyond the critical angle the cosines become imaginary and the reflectance is 1.</p><pre><code class="language-julia hljs">function thinFilmReflectance(θ, pol; n1=1.4, nc=1.7, n3=1.0, d=100nm, λ=h_Planck*c_light/5eV)
+    c1 = cos(θ)
+    cc = sqrt(complex(1 - (n1*sin(θ)/nc)^2))          ## cosine of the angle in the coating
+    c3 = sqrt(complex(1 - (n1*sin(θ)/n3)^2))          ## cosine of the angle in the second medium
+    if pol == :s
+        r12 = (n1*c1 - nc*cc) / (n1*c1 + nc*cc)
+        r23 = (nc*cc - n3*c3) / (nc*cc + n3*c3)
+    else  ## :p
+        r12 = (nc*c1 - n1*cc) / (nc*c1 + n1*cc)
+        r23 = (n3*cc - nc*c3) / (n3*cc + nc*c3)
+    end
+    phase = exp(2im * (2π/λ) * nc * d * cc)
+    return abs2((r12 + r23*phase) / (1 + r12*r23*phase))
+end</code></pre><pre><code class="nohighlight hljs">thinFilmReflectance (generic function with 1 method)</code></pre><p>As in <code>coated.mac</code>, the 5 eV photons hit the surface at normal incidence. We compare the fraction of reflected photons with the formula.</p><pre><code class="language-julia hljs">setgun!(generator, particle = &quot;opticalphoton&quot;, energy = 5eV, position = (99.99cm, 0., 0.),
+        direction = (1., 0., 0.), randomDirection = false, polarization = 0.)
+beamOn(app, 100000)
+let procs = app.simdata[1].boundaryProcs
+    reflected = get(procs, Int(CoatedDielectricReflection), 0) / sum(values(procs))
+    @printf &quot;Reflectance at normal incidence: %.4f, expected %.4f\n&quot; reflected thinFilmReflectance(0., :p)
+end</code></pre><pre><code class="nohighlight hljs">
+    Run Summary
+---------------------------------
+Primary particle was: opticalphoton with energy 5.0 eV.
+Number of events: 100000
+Material of world: G4_AIR
+Material of tank:  G4_WATER
+
+Average number of photons absorbed by WLS per event: 0.00
+Average number of photons created by WLS per event: 0.00
+Average number of photons absorbed by WLS2 per event: 0.00
+Average number of photons created by WLS2 per event: 0.00
+Average number of OpRayleigh per event:   0.00
+Average number of OpAbsorption per event: 0.11
+
+Surface events (on +X surface, maximum one per photon) this run:
+# of primary particles:        100000
+OpAbsorption before surface:       56
+Total # of surface events:      99944
+Unaccounted for:                    0
+
+Surface events by process:
+  CoatedDielectricReflection                10609
+  CoatedDielectricRefraction                89335
+ Sum:                           99944
+ Unaccounted for:                   0
+---------------------------------
+
+ Histogram statistics for the entire run:
+
+ Boundary process status: mean = 40.8939; rms = 0.308029 (Status code)
+ X momentum dir of backward-going photons: mean = -1.001; rms = 0 (Direction cosine)
+ Y momentum dir of backward-going photons: mean = 0.011; rms = 0 (Direction cosine)
+ Z momentum dir of backward-going photons: mean = 0.011; rms = 0 (Direction cosine)
+ X momentum dir of forward-going photons: mean = 1.001; rms = 0 (Direction cosine)
+ Y momentum dir of forward-going photons: mean = 0.011; rms = 0 (Direction cosine)
+ Z momentum dir of forward-going photons: mean = 0.011; rms = 0 (Direction cosine)
+Reflectance at normal incidence: 0.1061, expected 0.1074
+</code></pre><p>The C++ macro only uses normal incidence. Here we also shoot photons in random directions to see the reflectance as a function of the incident angle, for both polarizations. Compare it with the reflectance of the bare surface in the Fresnel study.</p><pre><code class="language-julia hljs">setgun!(generator, randomDirection = true, polarization = 0.)
+beamOn(app, 100000)
+img = plot_fresnel(app.simdata[1], title=&quot;Coated surface,&quot;, expected = θ -&gt; thinFilmReflectance(θ, :p))</code></pre><p><img src="../OpNovice2-57.png" alt/></p><pre><code class="language-julia hljs">setgun!(generator, polarization = 90deg)
+beamOn(app, 100000)
+img = plot_fresnel(app.simdata[1], title=&quot;Coated surface,&quot;, expected = θ -&gt; thinFilmReflectance(θ, :s))</code></pre><p><img src="../OpNovice2-58.png" alt/></p><h3 id="Surface-models-and-finishes-(boundary.mac)"><a class="docs-heading-anchor" href="#Surface-models-and-finishes-(boundary.mac)">Surface models and finishes (<code>boundary.mac</code>)</a><a id="Surface-models-and-finishes-(boundary.mac)-1"></a><a class="docs-heading-anchor-permalink" href="#Surface-models-and-finishes-(boundary.mac)" title="Permalink"></a></h3><p>Photons of 3 eV with random polarization start at the center of the tank and hit the +X surface at an angle of 26 degrees. The surface has the properties used by the different models: the probabilities of the reflection types of the unified model (<code>SPECULARLOBECONSTANT</code>, ...), and <code>REFLECTIVITY</code>, <code>TRANSMITTANCE</code>, <code>EFFICIENCY</code>, and <code>RINDEX</code> (for the layer of the back-painted finishes).</p><pre><code class="language-julia hljs">boundary_detector = OpDetector(
+    tankProperties = PropertyMap(&quot;RINDEX&quot;    =&gt; ([2eV, 8eV], [1.3, 1.4]),
+                                 &quot;ABSLENGTH&quot; =&gt; ([2eV, 5eV, 8eV], [1000m, 2000m, 3000m])),
+    worldProperties = PropertyMap(&quot;RINDEX&quot;    =&gt; ([2eV, 8eV], [1.01, 1.01]),
+                                  &quot;ABSLENGTH&quot; =&gt; ([2eV, 5eV, 8eV], [1000m, 2000m, 3000m])),
+    surfaceProperties = PropertyMap(
+        &quot;SPECULARLOBECONSTANT&quot;  =&gt; ([2eV, 8eV], [0.1, 0.1]),
+        &quot;SPECULARSPIKECONSTANT&quot; =&gt; ([2eV, 8eV], [0.1, 0.1]),
+        &quot;BACKSCATTERCONSTANT&quot;   =&gt; ([2eV, 8eV], [0.1, 0.1]),
+        &quot;TRANSMITTANCE&quot;         =&gt; ([2eV, 8eV], [0.1, 0.1]),
+        &quot;REFLECTIVITY&quot;          =&gt; ([2eV, 8eV], [0.8, 0.8]),
+        &quot;EFFICIENCY&quot;            =&gt; ([2eV, 8eV], [0.1, 0.1]),
+        &quot;RINDEX&quot;                =&gt; ([2eV, 8eV], [1.4, 1.5])),
+    surfaceSigmaAlpha = 0.2)</code></pre><pre><code class="nohighlight hljs">Main.var&quot;##142&quot;.OpDetector
+  worldHalfSize: Float64 10000.0
+  tankHalfSize: Float64 1000.0
+  worldMaterial: String &quot;G4_AIR&quot;
+  tankMaterial: String &quot;G4_WATER&quot;
+  tankProperties: Dict{String, Tuple{Vector{Float64}, Vector{Float64}}}
+  tankConstProperties: Dict{String, Float64}
+  worldProperties: Dict{String, Tuple{Vector{Float64}, Vector{Float64}}}
+  worldConstProperties: Dict{String, Float64}
+  surfaceProperties: Dict{String, Tuple{Vector{Float64}, Vector{Float64}}}
+  surfaceConstProperties: Dict{String, Float64}
+  surfaceType: Geant4.G4SurfaceType Geant4.G4SurfaceType(0x00000001)
+  surfaceModel: Geant4.G4OpticalSurfaceModel Geant4.G4OpticalSurfaceModel(0x00000001)
+  surfaceFinish: Geant4.G4OpticalSurfaceFinish Geant4.G4OpticalSurfaceFinish(0x00000003)
+  surfaceSigmaAlpha: Float64 0.2
+  surfacePolish: Float64 1.0
+</code></pre><p>The surface configurations of <code>boundary.mac</code>. Each one changes the model, type and finish of the surface, and in some cases the polish (glisur model) or the roughness (<code>SURFACEROUGHNESS</code>).</p><pre><code class="language-julia hljs">const rough = ConstPropertyMap(&quot;SURFACEROUGHNESS&quot; =&gt; 0.01)
+boundary_cases = [
+    # label                            model     type                  finish                 other parameters
+    (&quot;unified ground&quot;,                  unified, dielectric_dielectric, ground,                (;)),
+    (&quot;unified polished&quot;,                unified, dielectric_dielectric, polished,              (;)),
+    (&quot;unified polished rough&quot;,          unified, dielectric_dielectric, polished,              (surfaceConstProperties=rough,)),
+    (&quot;unified polishedfrontpainted&quot;,    unified, dielectric_dielectric, polishedfrontpainted,  (;)),
+    (&quot;unified groundfrontpainted&quot;,      unified, dielectric_dielectric, groundfrontpainted,    (;)),
+    (&quot;unified polishedbackpainted&quot;,     unified, dielectric_dielectric, polishedbackpainted,   (;)),
+    (&quot;unified groundbackpainted&quot;,       unified, dielectric_dielectric, groundbackpainted,     (;)),
+    (&quot;unified metal polished&quot;,          unified, dielectric_metal,      polished,              (;)),
+    (&quot;unified metal ground&quot;,            unified, dielectric_metal,      ground,                (;)),
+    (&quot;glisur polished&quot;,                 glisur,  dielectric_dielectric, polished,              (;)),
+    (&quot;glisur polished rough&quot;,           glisur,  dielectric_dielectric, polished,              (surfaceConstProperties=rough,)),
+    (&quot;glisur ground&quot;,                   glisur,  dielectric_dielectric, ground,                (surfacePolish=0.2,)),
+    (&quot;glisur polishedfrontpainted&quot;,     glisur,  dielectric_dielectric, polishedfrontpainted,  (;)),
+    (&quot;glisur polishedbackpainted&quot;,      glisur,  dielectric_dielectric, polishedbackpainted,   (;)),
+    (&quot;glisur groundfrontpainted&quot;,       glisur,  dielectric_dielectric, groundfrontpainted,    (;)),
+    (&quot;glisur groundbackpainted&quot;,        glisur,  dielectric_dielectric, groundbackpainted,     (surfacePolish=0.2,)),
+    (&quot;glisur metal polished&quot;,           glisur,  dielectric_metal,      polished,              (;)),
+    (&quot;glisur metal ground&quot;,             glisur,  dielectric_metal,      ground,                (surfacePolish=0.2,)),
+    (&quot;DAVIS RoughTeflon_LUT&quot;,           DAVIS,   dielectric_LUTDAVIS,   RoughTeflon_LUT,       (;)),
+    (&quot;DAVIS Detector_LUT&quot;,              DAVIS,   dielectric_LUTDAVIS,   Detector_LUT,          (;)),
+    (&quot;LUT polishedlumirrorair&quot;,         LUT,     dielectric_LUT,        polishedlumirrorair,   (;)) ]</code></pre><pre><code class="nohighlight hljs">21-element Vector{Tuple{String, Geant4.G4OpticalSurfaceModel, Geant4.G4SurfaceType, Geant4.G4OpticalSurfaceFinish, NamedTuple}}:
+ (&quot;unified ground&quot;, Geant4.G4OpticalSurfaceModel(0x00000001), Geant4.G4SurfaceType(0x00000001), Geant4.G4OpticalSurfaceFinish(0x00000003), NamedTuple())
+ (&quot;unified polished&quot;, Geant4.G4OpticalSurfaceModel(0x00000001), Geant4.G4SurfaceType(0x00000001), Geant4.G4OpticalSurfaceFinish(0x00000000), NamedTuple())
+ (&quot;unified polished rough&quot;, Geant4.G4OpticalSurfaceModel(0x00000001), Geant4.G4SurfaceType(0x00000001), Geant4.G4OpticalSurfaceFinish(0x00000000), (surfaceConstProperties = Dict(&quot;SURFACEROUGHNESS&quot; =&gt; 0.01),))
+ (&quot;unified polishedfrontpainted&quot;, Geant4.G4OpticalSurfaceModel(0x00000001), Geant4.G4SurfaceType(0x00000001), Geant4.G4OpticalSurfaceFinish(0x00000001), NamedTuple())
+ (&quot;unified groundfrontpainted&quot;, Geant4.G4OpticalSurfaceModel(0x00000001), Geant4.G4SurfaceType(0x00000001), Geant4.G4OpticalSurfaceFinish(0x00000004), NamedTuple())
+ (&quot;unified polishedbackpainted&quot;, Geant4.G4OpticalSurfaceModel(0x00000001), Geant4.G4SurfaceType(0x00000001), Geant4.G4OpticalSurfaceFinish(0x00000002), NamedTuple())
+ (&quot;unified groundbackpainted&quot;, Geant4.G4OpticalSurfaceModel(0x00000001), Geant4.G4SurfaceType(0x00000001), Geant4.G4OpticalSurfaceFinish(0x00000005), NamedTuple())
+ (&quot;unified metal polished&quot;, Geant4.G4OpticalSurfaceModel(0x00000001), Geant4.G4SurfaceType(0x00000000), Geant4.G4OpticalSurfaceFinish(0x00000000), NamedTuple())
+ (&quot;unified metal ground&quot;, Geant4.G4OpticalSurfaceModel(0x00000001), Geant4.G4SurfaceType(0x00000000), Geant4.G4OpticalSurfaceFinish(0x00000003), NamedTuple())
+ (&quot;glisur polished&quot;, Geant4.G4OpticalSurfaceModel(0x00000000), Geant4.G4SurfaceType(0x00000001), Geant4.G4OpticalSurfaceFinish(0x00000000), NamedTuple())
+ (&quot;glisur polished rough&quot;, Geant4.G4OpticalSurfaceModel(0x00000000), Geant4.G4SurfaceType(0x00000001), Geant4.G4OpticalSurfaceFinish(0x00000000), (surfaceConstProperties = Dict(&quot;SURFACEROUGHNESS&quot; =&gt; 0.01),))
+ (&quot;glisur ground&quot;, Geant4.G4OpticalSurfaceModel(0x00000000), Geant4.G4SurfaceType(0x00000001), Geant4.G4OpticalSurfaceFinish(0x00000003), (surfacePolish = 0.2,))
+ (&quot;glisur polishedfrontpainted&quot;, Geant4.G4OpticalSurfaceModel(0x00000000), Geant4.G4SurfaceType(0x00000001), Geant4.G4OpticalSurfaceFinish(0x00000001), NamedTuple())
+ (&quot;glisur polishedbackpainted&quot;, Geant4.G4OpticalSurfaceModel(0x00000000), Geant4.G4SurfaceType(0x00000001), Geant4.G4OpticalSurfaceFinish(0x00000002), NamedTuple())
+ (&quot;glisur groundfrontpainted&quot;, Geant4.G4OpticalSurfaceModel(0x00000000), Geant4.G4SurfaceType(0x00000001), Geant4.G4OpticalSurfaceFinish(0x00000004), NamedTuple())
+ (&quot;glisur groundbackpainted&quot;, Geant4.G4OpticalSurfaceModel(0x00000000), Geant4.G4SurfaceType(0x00000001), Geant4.G4OpticalSurfaceFinish(0x00000005), (surfacePolish = 0.2,))
+ (&quot;glisur metal polished&quot;, Geant4.G4OpticalSurfaceModel(0x00000000), Geant4.G4SurfaceType(0x00000000), Geant4.G4OpticalSurfaceFinish(0x00000000), NamedTuple())
+ (&quot;glisur metal ground&quot;, Geant4.G4OpticalSurfaceModel(0x00000000), Geant4.G4SurfaceType(0x00000000), Geant4.G4OpticalSurfaceFinish(0x00000003), (surfacePolish = 0.2,))
+ (&quot;DAVIS RoughTeflon_LUT&quot;, Geant4.G4OpticalSurfaceModel(0x00000003), Geant4.G4SurfaceType(0x00000003), Geant4.G4OpticalSurfaceFinish(0x0000001f), NamedTuple())
+ (&quot;DAVIS Detector_LUT&quot;, Geant4.G4OpticalSurfaceModel(0x00000003), Geant4.G4SurfaceType(0x00000003), Geant4.G4OpticalSurfaceFinish(0x00000026), NamedTuple())
+ (&quot;LUT polishedlumirrorair&quot;, Geant4.G4OpticalSurfaceModel(0x00000002), Geant4.G4SurfaceType(0x00000002), Geant4.G4OpticalSurfaceFinish(0x00000006), NamedTuple())</code></pre><p>For each configuration we reinitialize the detector and run 10000 photons. Photons are killed when they reach a second surface, so that only the first interaction is seen (this is also useful to visualize the scattering on the surface). The run summary is not printed; instead we keep the counts of each boundary status.</p><pre><code class="language-julia hljs">data = app.simdata[1]
+data.killOnSecondSurface = true
+data.summary = false
+setgun!(generator, energy = 3eV, position = (0., 0., 0.), direction = (0.9, 0.44, 0.),
+        randomDirection = false, polarization = nothing)
+results = Pair{String, Dict{Int,Int}}[]
+for (label, model, type, finish, other) in boundary_cases
+    reinitialize(app, OpDetector(boundary_detector; surfaceModel=model, surfaceType=type, surfaceFinish=finish, other...))
+    beamOn(app, 10000)
+    push!(results, label =&gt; copy(data.boundaryProcs))
+end</code></pre><pre><code class="nohighlight hljs">  Surface type   = 1
+  Surface finish = 3
+  Surface model  = 1
+
+  Surface parameter 
+  ----------------- 
+ sigma_alpha: 0.2
+
+  Surface type   = 1
+  Surface finish = 0
+  Surface model  = 1
+
+  Surface parameter 
+  ----------------- 
+ sigma_alpha: 0.2
+
+  Surface type   = 1
+  Surface finish = 0
+  Surface model  = 1
+
+  Surface parameter 
+  ----------------- 
+ sigma_alpha: 0.2
+
+  Surface type   = 1
+  Surface finish = 1
+  Surface model  = 1
+
+  Surface parameter 
+  ----------------- 
+ sigma_alpha: 0.2
+
+  Surface type   = 1
+  Surface finish = 4
+  Surface model  = 1
+
+  Surface parameter 
+  ----------------- 
+ sigma_alpha: 0.2
+
+  Surface type   = 1
+  Surface finish = 2
+  Surface model  = 1
+
+  Surface parameter 
+  ----------------- 
+ sigma_alpha: 0.2
+
+  Surface type   = 1
+  Surface finish = 5
+  Surface model  = 1
+
+  Surface parameter 
+  ----------------- 
+ sigma_alpha: 0.2
+
+  Surface type   = 0
+  Surface finish = 0
+  Surface model  = 1
+
+  Surface parameter 
+  ----------------- 
+ sigma_alpha: 0.2
+
+  Surface type   = 0
+  Surface finish = 3
+  Surface model  = 1
+
+  Surface parameter 
+  ----------------- 
+ sigma_alpha: 0.2
+
+  Surface type   = 1
+  Surface finish = 0
+  Surface model  = 0
+
+  Surface parameter 
+  ----------------- 
+ polish: 1
+
+  Surface type   = 1
+  Surface finish = 0
+  Surface model  = 0
+
+  Surface parameter 
+  ----------------- 
+ polish: 1
+
+  Surface type   = 1
+  Surface finish = 3
+  Surface model  = 0
+
+  Surface parameter 
+  ----------------- 
+ polish: 0.2
+
+  Surface type   = 1
+  Surface finish = 1
+  Surface model  = 0
+
+  Surface parameter 
+  ----------------- 
+ polish: 1
+
+  Surface type   = 1
+  Surface finish = 2
+  Surface model  = 0
+
+  Surface parameter 
+  ----------------- 
+ polish: 1
+
+  Surface type   = 1
+  Surface finish = 4
+  Surface model  = 0
+
+  Surface parameter 
+  ----------------- 
+ polish: 1
+
+  Surface type   = 1
+  Surface finish = 5
+  Surface model  = 0
+
+  Surface parameter 
+  ----------------- 
+ polish: 0.2
+
+  Surface type   = 0
+  Surface finish = 0
+  Surface model  = 0
+
+  Surface parameter 
+  ----------------- 
+ polish: 1
+
+  Surface type   = 0
+  Surface finish = 3
+  Surface model  = 0
+
+  Surface parameter 
+  ----------------- 
+ polish: 0.2
+
+G4OpticalSurface: data file /home/runner/.julia/artifacts/ce912e6d316dde2fa4ffe0e3ba28061c14783ea3/share/Geant4/data/RealSurface2.2/RoughTeflon_LUT.z successfully read in.
+LUT DAVIS - data file: RoughTeflon_LUT.z read in! 
+G4OpticalSurface: data file /home/runner/.julia/artifacts/ce912e6d316dde2fa4ffe0e3ba28061c14783ea3/share/Geant4/data/RealSurface2.2/RoughTeflon_LUTR.z successfully read in.
+LUT DAVIS - reflectivity data file: RoughTeflon_LUTR.z read in! 
+  Surface type   = 3
+  Surface finish = 31
+  Surface model  = 3
+
+  Surface parameter 
+  ----------------- 
+ sigma_alpha: 0.2
+
+G4OpticalSurface: data file /home/runner/.julia/artifacts/ce912e6d316dde2fa4ffe0e3ba28061c14783ea3/share/Geant4/data/RealSurface2.2/Detector_LUT.z successfully read in.
+LUT DAVIS - data file: Detector_LUT.z read in! 
+G4OpticalSurface: data file /home/runner/.julia/artifacts/ce912e6d316dde2fa4ffe0e3ba28061c14783ea3/share/Geant4/data/RealSurface2.2/Detector_LUTR.z successfully read in.
+LUT DAVIS - reflectivity data file: Detector_LUTR.z read in! 
+  Surface type   = 3
+  Surface finish = 38
+  Surface model  = 3
+
+  Surface parameter 
+  ----------------- 
+ sigma_alpha: 0.2
+
+G4OpticalSurface: data file /home/runner/.julia/artifacts/ce912e6d316dde2fa4ffe0e3ba28061c14783ea3/share/Geant4/data/RealSurface2.2/PolishedLumirror.z successfully read in.
+LUT - data file: PolishedLumirror.z read in! 
+  Surface type   = 2
+  Surface finish = 6
+  Surface model  = 2
+
+  Surface parameter 
+  ----------------- 
+ sigma_alpha: 0.2
+
+</code></pre><p>Print the outcomes of the boundary process for each configuration, in percent.</p><pre><code class="language-julia hljs">for (label, procs) in results
+    total = sum(values(procs))
+    line = join([&quot;$(STATUS_NAMES[s]) $(round(100*n/total, digits=1))&quot; for (s, n) in sort(collect(procs), by=last, rev=true)], &quot;, &quot;)
+    @printf &quot;%-30s %s\n&quot; label line
+end</code></pre><pre><code class="nohighlight hljs">unified ground                 FresnelRefraction 75.2, Transmission 10.4, Absorption 8.5, LambertianReflection 3.3, Detection 1.2, SpikeReflection 0.6, LobeReflection 0.5, BackScattering 0.3
+unified polished               FresnelRefraction 78.4, Transmission 10.2, Absorption 8.8, FresnelReflection 1.5, Detection 1.1
+unified polished rough         FresnelRefraction 78.7, Transmission 10.1, Absorption 8.8, LambertianReflection 1.5, Detection 1.0
+unified polishedfrontpainted   SpikeReflection 80.3, Transmission 9.8, Absorption 8.8, Detection 1.2
+unified groundfrontpainted     LambertianReflection 79.7, Transmission 10.2, Absorption 9.0, Detection 1.0
+unified polishedbackpainted    FresnelRefraction 79.6, Transmission 10.3, Absorption 8.9, Detection 1.0, LambertianReflection 0.1, BackScattering 0.0, LobeReflection 0.0, SpikeReflection 0.0
+unified groundbackpainted      FresnelRefraction 76.3, Transmission 11.6, Absorption 10.5, Detection 1.3, LambertianReflection 0.2, SpikeReflection 0.1, LobeReflection 0.0, BackScattering 0.0
+unified metal polished         SpikeReflection 79.9, Transmission 9.6, Absorption 9.2, Detection 1.2
+unified metal ground           LambertianReflection 56.4, Transmission 10.2, Absorption 9.5, SpikeReflection 7.8, LobeReflection 7.7, BackScattering 7.6, Detection 0.9
+glisur polished                FresnelRefraction 77.8, Transmission 10.6, Absorption 8.9, FresnelReflection 1.7, Detection 1.0
+glisur polished rough          FresnelRefraction 78.5, Transmission 9.7, Absorption 8.9, LambertianReflection 1.7, Detection 1.1
+glisur ground                  FresnelRefraction 61.6, TotalInternalReflection 15.0, Transmission 9.5, Absorption 9.4, FresnelReflection 3.4, Detection 1.1
+glisur polishedfrontpainted    SpikeReflection 79.7, Transmission 9.7, Absorption 9.5, Detection 1.1
+glisur polishedbackpainted     FresnelRefraction 79.5, Transmission 9.9, Absorption 9.5, Detection 1.0, FresnelReflection 0.2
+glisur groundfrontpainted      LambertianReflection 80.1, Transmission 10.0, Absorption 9.0, Detection 1.0
+glisur groundbackpainted       FresnelRefraction 77.1, Transmission 11.0, Absorption 10.3, Detection 1.2, FresnelReflection 0.4
+glisur metal polished          SpikeReflection 79.8, Transmission 10.1, Absorption 9.0, Detection 1.1
+glisur metal ground            LobeReflection 80.7, Transmission 9.5, Absorption 8.7, Detection 1.1
+DAVIS RoughTeflon_LUT          LobeReflection 95.8, Absorption 3.8, Detection 0.4
+DAVIS Detector_LUT             Absorption 88.8, Detection 10.2, LobeReflection 1.0
+LUT polishedlumirrorair        PolishedLumirrorAirReflection 80.1, Transmission 9.7, Absorption 9.1, Detection 1.1
+</code></pre><p>And show them as a heatmap, with the percentages written in the cells.</p><pre><code class="language-julia hljs">function plot_boundary(results)
+    statuses = sort(unique(s for (_, procs) in results for s in keys(procs)))
+    fractions = [get(procs, s, 0) / sum(values(procs)) for (_, procs) in results, s in statuses]
+    nrows, ncols = size(fractions)
+    img = heatmap(1:ncols, 1:nrows, fractions, yflip=true, clims=(0, 1), color=:viridis,
+                  xticks=(1:ncols, [STATUS_NAMES[s] for s in statuses]), xrotation=45,
+                  yticks=(1:nrows, first.(results)), size=(1100, 850),
+                  bottom_margin=20Plots.mm, left_margin=5Plots.mm, title=&quot;Percentage of photons by boundary status&quot;)
+    for i in 1:nrows, j in 1:ncols
+        f = fractions[i, j]
+        f &gt;= 0.005 &amp;&amp; annotate!(img, j, i, Plots.text(round(Int, 100f), 7, f &gt; 0.5 ? :black : :white))
+    end
+    return img
+end
+img = plot_boundary(results)</code></pre><p><img src="../OpNovice2-68.png" alt/></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../field02/">« Extended/field02 Example</a><a class="docs-footer-nextpage" href="../TPCSim/">Simulation of the Aleph TPC »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.19.0 on <span class="colophon-date" title="Thursday 29 October 2026 15:51">Thursday 29 October 2026</span>. Using Julia version 1.13.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
