@@ -5,13 +5,19 @@ using GLMakie  # to force loading G4Vis extension
 
 prefix = Geant4.Geant4_jll.artifact_dir
 dlext = Libdl.dlext;
+if Sys.KERNEL == :Linux
+    ldflags = "-Wl,-rpath,$prefix/lib -Wl,--no-as-needed"
+else
+    ldflags = "-Wl,-rpath,$prefix/lib -Wl"
+end
+# Compilation of the custom library
 
 Base.run(`c++ -O2 -shared -fPIC -std=c++17 -I$prefix/include/Geant4
-         -o UserLib.$dlext $(@__DIR__)/UserLib.cpp
+         -o UserLibrary.$dlext $(@__DIR__)/UserLibrary.cpp
          -Wl,-rpath,$prefix/lib -L$prefix/lib
          -lG4geometry -lG4materials -lG4global -lG4clhep`).exitcode == 0 || error("Compilation failed")
 
-const lib = "./UserLib.$(Libdl.dlext)"
+const lib = "./UserLibrary.$(Libdl.dlext)"
 createRoundCube(a,r) = @ccall lib.createRoundCube(a::Float64, r::Float64)::CxxPtr{G4VSolid}
 deleteRoundCube(s::CxxPtr{G4VSolid}) = @ccall lib.deleteRoundCube(s::CxxPtr{G4VSolid})::Cvoid
 infoRoundCube(s::CxxPtr{G4VSolid}) = (@ccall lib.infoRoundCube(s::CxxPtr{G4VSolid})::Cstring) |> unsafe_string
