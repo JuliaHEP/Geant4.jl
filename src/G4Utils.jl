@@ -27,7 +27,8 @@ Base.show(io::IO, p::G4ThreeVector) = print(io, "G4ThreeVector($(x(p)),$(y(p)),$
 """
     move!(o)
 
-Move ownerhip of C++ object to receiver. The object cannot not be used anymore after this call.
+Move ownership of the C++ object to the receiver, so that it is not deleted by the Julia garbage collector.
+The Julia object cannot be used anymore after this call.
 """
 function move!(a)
     r = CxxPtr(a)
