@@ -222,14 +222,15 @@ beamOn(app, 10000)
 ## ui`/tracking/verbose 0`
 # ## Visualize the detector geometry
 # Load the needed modules for visualization
-using CairoMakie ## to force loading G4Vis extension
-#md import DisplayAs: PNG
-#nb import DisplayAs: PNG
+#md using CairoMakie ## to force loading G4Vis extension
+#jl using GLMakie ## to force loading G4Vis extension
+#nb using CairoMakie ## to force loading G4Vis extension
+#md import DisplayAs: PNG #hide
+
 # Display the detector geometry
 world = GetVolume("World")
 img = draw(world[])
-#nb PNG(img)
-#md PNG(img)
-#jl display(img)
+#md PNG(img) #hide
+
 
 
