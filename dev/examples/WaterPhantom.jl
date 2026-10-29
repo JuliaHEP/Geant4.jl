@@ -117,7 +117,7 @@ function do_plots(sc)
                 heatmap(zaxisvalues, xaxisvalues, dose[cbin,:,:], title="Dose (XZ)", color=:thermal, xlabel="Z (cm)", ylabel="X (cm)"),
                 plot(zaxisvalues, dose[cbin,cbin,:], title="Depth Dose (center)", xlabel="Z (cm)", label="dose")
     )
-    display("image/png, fig)
+    display(fig)
 end
 
 SetParticleByName(app.generator, "e-")
@@ -133,5 +133,5 @@ do_plots(sc1)
 SetParticleByName(app.generator, "C12")
 SetParticleEnergy(app.generator, 3GeV)
 
-beamOn(app, 100000)
+beamOn(app, 10000)
 do_plots(sc1)

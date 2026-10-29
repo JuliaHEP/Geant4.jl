@@ -1,6 +1,6 @@
 using Geant4
 using Geant4.SystemOfUnits
-using CairoMakie  # to force loading G4Vis extension
+using GLMakie  # to force loading G4Vis extension
 
 include(joinpath(@__DIR__, "B2aDetector.jl"))
 
