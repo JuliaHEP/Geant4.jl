@@ -11,7 +11,6 @@ using Geant4
 using Geant4.SystemOfUnits
 using Plots
 #md import DisplayAs: PNG
-#nb import DisplayAs: PNG
 
 
 # ## Detector description
@@ -148,8 +147,8 @@ function do_plots(sc)
                 plot(zaxisvalues, dose[cbin,cbin,:], title="Depth Dose (center)", xlabel="Z (cm)", label="dose")
     )
 #md     PNG(fig) #hide
-#nb     display("image/png, fig)
-#jl     display("image/png, fig)
+#nb     display("image/png", fig)
+#jl     display(fig)
 end
 
 # ## Electron 20 Mev
@@ -168,7 +167,7 @@ do_plots(sc1)
 SetParticleByName(app.generator, "C12")
 SetParticleEnergy(app.generator, 3GeV)
 
-beamOn(app, 100000)
+beamOn(app, 10000)
 do_plots(sc1)
 
 

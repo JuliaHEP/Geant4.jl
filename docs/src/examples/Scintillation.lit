@@ -1,0 +1,119 @@
+# # Scintillation Example
+#
+# This example is adapted from the original at
+# [settwi/g4-basic-scintillation](https://github.com/settwi/g4-basic-scintillation)
+# to the Geant4.jl interface. Low-energy gammas are shot onto a CeBr₃ scintillating
+# crystal that is read out by a silicon detector. The example counts the scintillation
+# photons and the hits in the silicon, and records the energy deposited in the crystal.
+
+#md # !!! note "Note that"
+#md #     You can also download this example as a
+#md #     [Jupyter notebook](Scintillation.ipynb) and a plain
+#md #     [Julia source file](Scintillation.jl).
+#
+#md # #### Table of contents
+#md # ```@contents
+#md # Pages = ["Scintillation.md"]
+#md # Depth = 2:3
+#md # ```
+
+# ## Loading the necessary Julia modules
+# - `Geant4`, `Geant4.PhysicalConstants` and `Geant4.SystemOfUnits` for the Geant4 simulation
+# - `FHist`, `Printf` and `Plots` to fill and plot the histograms
+using Geant4
+using Geant4.PhysicalConstants
+using Geant4.SystemOfUnits
+using FHist, Printf, Plots
+
+## using GLMakie, Rotations, LinearAlgebra, IGLWrap_jll  # to force loading G4Vis extension
+
+# ## Define the Detector Geometry
+# The materials and their optical properties are defined in [Parameters.jl](@ref), and the
+# `ScintDetector` geometry in [Detector.jl](@ref). We include these files not to clutter the example.
+include(joinpath(@__DIR__, "Parameters.jl"))
+include(joinpath(@__DIR__, "Detector.jl"))
+
+crysdet = ScintDetector()
+## world = scintConstruct(crystal)
+## draw(world[])
+
+# ## Define the Physics List
+# We start from `FTFP_BERT`, replace the electromagnetic physics with `G4EmStandardPhysics_option4`
+# and add `G4OpticalPhysics`. The scintillation and Cherenkov processes are then activated.
+struct ScintPhysicsList <: G4VUserPhysicsList
+    function ScintPhysicsList(verbose)
+        pl = FTFP_BERT(verbose)
+        ReplacePhysics(pl, move!(G4EmStandardPhysics_option4(verbose)))
+        RegisterPhysics(pl, move!(G4OpticalPhysics(verbose)))
+        ## need to enable scintillation
+        optpar = G4OpticalParameters!Instance()
+        SetProcessActivation(optpar, "Scintillation", true);
+        ## I have found Cherenkov radiation to be error-prone
+        SetProcessActivation(optpar, "Cerenkov", true);
+        return pl
+    end
+end
+
+# ## Define the Particle Gun
+# The primary particles are 30 keV gammas shot along -z towards the crystal.
+particlegun = G4JLGunGenerator(particle = "gamma",
+                               energy = 30keV,
+                               direction = G4ThreeVector(0, 0, -1),
+                               position = G4ThreeVector(0, 0, 2cm))
+
+# ## Define the Simulation Data
+# The data structure `ScintSimData` is filled by the user actions during the simulation.
+# It holds the number of scintillation photons in the current event and three histograms.
+const Hist1D64 = Hist1D{Float64}
+mutable struct ScintSimData <: G4JLSimulationData
+    scintPhotonsPerEvent::Int64
+    scintPhotonsHisto::Hist1D64
+    siHitsHisto::Hist1D64
+    crysEdepHisto::Hist1D64
+    ScintSimData() = new()
+end
+# The `add!` function adds up the histograms of two `ScintSimData` instances.
+function add!(x::ScintSimData, y::ScintSimData)
+    x.scintPhotonsHisto += y.scintPhotonsHisto
+    x.siHitsHisto += y.siHitsHisto
+    x.crysEdepHisto += y.crysEdepHisto
+end
+# The `do_plot` function plots the simulation data.
+function do_plot(data::ScintSimData)
+    (;scintPhotonsHisto, siHitsHisto, crysEdepHisto) = data
+    lay = @layout [° °; °]
+    plot(layout=lay, show=true, size=(1400,1000))
+    plot!(subplot=1, scintPhotonsHisto, title="# scintillating photons/event", xlabel="# photons", show=true)
+    plot!(subplot=2, siHitsHisto, title="# hits in Silicon/event", xlabel="# hits")
+    plot!(subplot=3, crysEdepHisto, title="energy deposited in crystal", xlabel="keV")
+end
+
+# ## Define the User Actions and Sensitive Detectors
+# The sensitive detectors `crystal_SD` and `silicon_SD` and the user actions (`beginrun`, `endrun`,
+# `beginevent`, `endevent` and `stepping`) are defined in [UserActions.jl](@ref).
+include(joinpath(@__DIR__, "UserActions.jl"))
+
+# ## Create the Application
+app = G4JLApplication(; detector = crysdet,                           # detector with parameters
+                        simdata = ScintSimData(),                     # simulation data structure
+                        generator = particlegun,                      # primary particle generator
+                        nthreads = 0,                                 # # of threads (0 = no MT)
+                        physics_type = ScintPhysicsList,              # what physics list to instantiate
+                        stepaction_method = stepping,                 # step action method
+                        begineventaction_method = beginevent,         # begin-event action (initialize per-event data)
+                        endeventaction_method = endevent,             # end-event action (fill histograms per event)
+                        beginrunaction_method = beginrun,             # begin run action
+                        endrunaction_method = endrun,                 # end run action
+                        sdetectors = ["si_log" => silicon_SD,
+                                      "cebr3_log" => crystal_SD]      # mapping of LVs to SDs (+ means multiple LVs with same name)
+                      );
+
+# ## Configure, Initialize and Run
+configure(app)
+initialize(app)
+
+## ui`/tracking/verbose 1`
+beamOn(app,1000)
+
+# ## Plot the results
+do_plot(app.simdata[1])

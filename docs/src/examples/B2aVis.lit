@@ -21,9 +21,10 @@
 # following modules: `GLMakie`
 using Geant4
 using Geant4.SystemOfUnits
-using CairoMakie  # to force loading G4Vis extension
-#md import DisplayAs: PNG
-#nb import DisplayAs: PNG
+#nb using CairoMakie  # to force loading G4Vis extension
+#md using CairoMakie  # to force loading G4Vis extension
+#jl using GLMakie  # to force loading G4Vis extension
+#md import DisplayAs: PNG #hide
 
 # ## Define Detector Parameters structure
 # The `B2aDetector` structure is defined with the default detector parameters. We include the [B2aDetector.jl](@ref) file not to clutter the example.
@@ -54,18 +55,28 @@ initialize(app)
 
 # Display the detector geometry at this point
 beamOn(app,0)  ## Needed to really initialize  
-#nb PNG(evtdisplay.figure)
-#md PNG(evtdisplay.figure)
 #jl display(evtdisplay.figure)
+#nb display(evtdisplay.figure)
+#md # ```julia
+#md # display(evtdisplay.figure)
+#md # ```
+#md PNG(evtdisplay.figure) #hide
 
 # Display the detector geometry with the first event
 beamOn(app,1)
-#nb PNG(evtdisplay.figure)
-#md PNG(evtdisplay.figure)
 #jl display(evtdisplay.figure)
+#nb display(evtdisplay.figure)
+#md # ```julia
+#md # display(evtdisplay.figure)
+#md # ```
+#md PNG(evtdisplay.figure) #hide
 
 # Display the detector geometry with the second event
 beamOn(app,1)
-#nb PNG(evtdisplay.figure)
-#md PNG(evtdisplay.figure)
 #jl display(evtdisplay.figure)
+#nb display(evtdisplay.figure)
+#md # ```julia
+#md # display(evtdisplay.figure)
+#md # ```
+#md PNG(evtdisplay.figure) #hide
+
