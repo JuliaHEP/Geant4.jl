@@ -41,7 +41,7 @@ extend_mds   = process_literate("GPS", "RE03", "TestEm3", "Solids", "GDMLRenderi
 advanced_mds = process_literate("TPCSim", "HBC30", "WaterPhantom", "UserLib", "JuliaAction", "Scintillation")
 
 extra_mds    = create_extras("B2aDetector.jl", "B2aVisSettings.jl", "B3Detector.jl", "GPSDetector.jl", 
-                             "RE03Detector.jl", "TestEm3Detector.jl", "HBC30Detector.jl", "UserLib.cpp", "OpDetector.jl",
+                             "RE03Detector.jl", "TestEm3Detector.jl", "HBC30Detector.jl", "UserLibrary.cpp", "OpDetector.jl",
                              "Parameters.jl", "Detector.jl", "UserActions.jl",
                              "MyCode.jl", "G4example.cpp")  
 examples_mds = []
