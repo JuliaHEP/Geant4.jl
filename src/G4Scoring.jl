@@ -54,12 +54,12 @@ end
 
 Create a scoring mesh to be added to the Geant4 application.
 # Arguments
-- `name::String`: scoring mech name
+- `name::String`: scoring mesh name
 - `mesh::AbstractMesh`: mesh instance. Either a `BoxMesh` or `CylinderMesh`
 - `bins::Tuple`: tuple with number on bins in x, y, z (default 30, 30, 30)
 - `translation::Tuple`: position (x,y,z) with respect the mesh respect to the world volume. Default is  (0,0,0).
 - `rotation::Tuple`: rotation of the mesh with respect the world volume. Default (0,0,0)
-- `quantities::Vector`: vector of quanties to be scored (e.g. `energyDeposit`, `doseDeposit`, `nOfStep`)
+- `quantities::Vector`: vector of quantities to be scored (e.g. `energyDeposit`, `doseDeposit`, `nOfStep`)
 """
 function G4JLScoringMesh(name::String, mesh::M; 
                      bins = (30,30,30),

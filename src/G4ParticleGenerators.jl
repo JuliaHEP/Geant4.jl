@@ -15,8 +15,12 @@ end
 """
     G4JLPrimaryGenerator(name::String, data::DATA; <keyword arguments>) where DATA<:G4JLGeneratorData
 
-Creatre a G4JLPrimaryGenerator with its name and associated DATA structure
+Create a custom primary particle generator with its name and associated DATA structure.
 # Arguments
+- `name::String`: generator name
+- `data::DATA`: data structure with the generator parameters
+- `init_method=nothing`: initialization function with signature `(data::DATA, app::G4JLApplication)`, called once in each thread
+- `generate_method`: generation function with signature `(evt::G4Event, data::DATA)::Nothing`, called for each event. Mandatory.
 """
 function G4JLPrimaryGenerator(name::String, data::T;
                               init_method=nothing,
@@ -50,11 +54,12 @@ function G4JLPrimaryGenerator{G4JLParticleGunData}(;particle="e-", energy=10., d
     G4JLPrimaryGenerator("ParticleGun", data; init_method=init, generate_method=gen)
 end
 """
-G4JLGunGenerator(; particle="e-", energy=10., direction=G4ThreeVector(), position=G4ThreeVector())
-Create a Particle Gun generator with specified particle type, energy, direction, and position.
+    G4JLGunGenerator(; particle="e-", energy=10., direction=G4ThreeVector(), position=G4ThreeVector())
+
+Create a particle gun generator (a `G4ParticleGun`) with the given particle type, energy, direction and position.
 # Arguments
 - `particle::String="e-"`: The name of the particle to be generated (default is electron).
-- `energy::Float64=10.`: The energy of the particle in Me   V (default is 10 MeV).
+- `energy::Float64=10.`: The kinetic energy of the particle (default is 10 MeV).
 - `direction::G4ThreeVector=G4ThreeVector()`: The momentum direction of the particle (default is zero vector).
 - `position::G4ThreeVector=G4ThreeVector()`: The position of the particle (default is zero vector).
 """
@@ -100,6 +105,26 @@ function G4JLPrimaryGenerator{G4JLGPSData}(;kwargs...)
     end
     G4JLPrimaryGenerator("GPS", data; init_method=initGPS, generate_method=gen)
 end
+"""
+    G4JLGeneralParticleSource(; sources, multiplevertex=false, flatsampling=false)
+    G4JLGeneralParticleSource(; particle, energy, direction, position, ...)
+
+Create a generator based on the Geant4 `G4GeneralParticleSource`.
+
+With `sources`, each element of the vector is a `NamedTuple` describing one source: `particle`, `intensity`,
+and the energy (`ene`), position (`pos`) and angular (`ang`) distributions, each given as a `NamedTuple` whose
+fields correspond to the `/gps/ene/...`, `/gps/pos/...` and `/gps/ang/...` UI commands.
+Without `sources`, the keyword arguments describe a single source.
+
+# Example
+```julia
+src = (particle="e+", intensity=1.0,
+       ene=(type="Exp", min=2MeV, max=10MeV, ezero=2.),
+       pos=(type="Plane", shape="Circle", centre=G4ThreeVector(1cm,2cm,0cm), radius=3cm),
+       ang=(type="cos", mintheta=0deg, maxtheta=180deg))
+gps = G4JLGeneralParticleSource(sources = [src])
+```
+"""
 const G4JLGeneralParticleSource = G4JLPrimaryGenerator{G4JLGPSData}
 
 function initGPS(data::G4JLGPSData, ::Any)

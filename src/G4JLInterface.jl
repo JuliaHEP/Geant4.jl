@@ -117,13 +117,14 @@ function getfield(pos::G4ThreeVector, bfield::G4JLMagneticField)
 end 
 
 """
-    G4JLMagneticField(name::String, data::DATA; <keyword arguments>) where DATA<:G4JLGeneratorData
+    G4JLMagneticField(name::String, data::DATA; <keyword arguments>) where DATA<:G4JLFieldData
 
-Create a G4JLMagneticField with its name and associated DATA structure
+Create a custom magnetic field with its name and associated DATA structure.
 # Arguments
 - `name::String`: magnetic field name
 - `data::DATA`: data structure associated to the magnetic field
-- `getfield_method=nothing`: user provided `getfield` function with signature: `(result::G4ThreeVector, position::G4ThreeVector, ::DATA)`
+- `getfield_method`: user provided function with signature `(result::G4ThreeVector, position::G4ThreeVector, ::DATA)::Nothing`.
+   It must set the field value in `result`, for example with `assign(result, G4ThreeVector(...))`. Mandatory.
 """
 function G4JLMagneticField(name::String, data::T;
                            getfield_method=nothing) where T<:G4JLFieldData
@@ -166,11 +167,12 @@ end
 """
     G4JLElectricField(name::String, data::DATA; <keyword arguments>) where DATA<:G4JLFieldData
 
-Create a G4JLElectricField with its name and associated DATA structure
+Create a custom electric field with its name and associated DATA structure.
 # Arguments
 - `name::String`: electric field name
 - `data::DATA`: data structure associated to the electric field
-- `getfield_method=nothing`: user provided `getfield` function with signature: `(result::G4ThreeVector, position::G4ThreeVector, ::DATA)`
+- `getfield_method`: user provided function with signature `(result::G4ThreeVector, position::G4ThreeVector, ::DATA)::Nothing`.
+   It must set the field value in `result`, for example with `assign(result, G4ThreeVector(...))`. Mandatory.
 """
 function G4JLElectricField(name::String, data::T;
                            getfield_method=nothing) where T<:G4JLFieldData
@@ -203,9 +205,10 @@ Initialize a G4JLSensitiveDetector with its name and associated DATA structure.
 # Arguments
 - `name::String`: Sensitive detector name
 - `data::DATA`: Data structure associted to the sensitive detector
-- `processhits_method=nothing`: processHit function with signature: `(data::DATA, step::G4Step, ::G4TouchableHistory)::Bool`
-- `initialize_method=nothing`: intialize function with signature: `(data::DATA, ::G4HCofThisEvent)::Nothing`
-- `endofevent_method=nothing`: endOfEvent function with signature: `(data::DATA, ::G4HCofThisEvent)::Nothing` 
+- `processhits_method`: function called for each step in the sensitive volumes, with signature `(step::G4Step, ::G4TouchableHistory, data::DATA)::Bool`.
+   It returns `true` if a hit was produced. Mandatory.
+- `initialize_method=nothing`: function called at the start of each event, with signature `(::G4HCofThisEvent, data::DATA)::Nothing`
+- `endofevent_method=nothing`: function called at the end of each event, with signature `(::G4HCofThisEvent, data::DATA)::Nothing`
 """
 function G4JLSensitiveDetector(name::String, data::T; 
                                 processhits_method=nothing,
@@ -288,20 +291,20 @@ end
 """
     G4JLApplication(<keyword arguments>)
 
-Initialize a G4JLApplication with its associated tyopes and methods.
+Create a Geant4 application with its detector, physics list, primary generator, user actions, sensitive detectors and scoring meshes.
 # Arguments
 - `detector::G4JLDetector`: detector description object
 - `simdata=G4JLNoData()`: simulation data object
-- `generator=G4JLParticleGun()`: primary particle generator
-- `field=nothing`: magnetic field
+- `generator=G4JLGunGenerator()`: primary particle generator
+- `field=nothing`: magnetic or electric field
 - `evtdisplay=nothing`: event display (visualization)
 - `nthreads=0`: number of Geant4 worker threads ( >0 implies MT)
-- `verbose=0` : default verbority level (physics, ...)
+- `verbose=0`: default verbosity level (physics, ...)
 - `runmanager_type=G4RunManager`: run manager type
 - `builder_type=G4JLDetectorConstruction`: detector builder type (the default should be fine most cases)
 - `physics_type=FTFP_BERT`: physics list type
 - `stepaction_type=G4JLSteppingAction`: stepping action type (the default should be fine most cases)
-- `trackaction_type=G4JLTrackingAction`: rtacking action type (the default should be fine most cases)
+- `trackaction_type=G4JLTrackingAction`: tracking action type (the default should be fine most cases)
 - `runaction_type=G4JLRunAction`: run action type (the default should be fine most cases)
 - `eventaction_type=G4JLEventAction`: event action type (the default should be fine most cases)
 - `stepaction_method=nothing`: stepping action method with signature `(::G4Step, ::G4JLApplication)::Nothing`
@@ -312,8 +315,8 @@ Initialize a G4JLApplication with its associated tyopes and methods.
 - `begineventaction_method=nothing`: begin event action method with signature `(::G4Event, ::G4JLApplication)::Nothing`
 - `endeventaction_method=nothing`: end event action method with signature `(::G4Event, ::G4JLApplication)::Nothing`
 - `stackaction_method=nothing`: stacking classification of new track with signature `(::G4Track, ::G4JLApplication)::G4ClassificationOfNewTrack`
-- `statechange_method=nothing`: state change notifycation method with  signature `(from::G4ApplicationState, to::G4ApplicationState, ::G4JLApplication)::Bool`
-- `sdetectors::Vector{}=[]`: vector of pairs `lv::String => sd::G4JLSensitiveDetector` to associate logical volumes to sensitive detector
+- `statechange_method=nothing`: state change notification method with signature `(from::G4ApplicationState, to::G4ApplicationState, ::G4JLApplication)::Bool`
+- `sdetectors::Vector{}=[]`: vector of pairs `lv::String => sd::G4JLSensitiveDetector` to associate logical volumes to sensitive detectors. A trailing `+` in `lv` attaches the detector to all logical volumes with that name
 - `scorers::Vector{}=[]`: vector of [`G4JLScoringMesh`](@ref)s
 """
 function G4JLApplication(;
@@ -382,7 +385,7 @@ physicslists = Vector{Any}()
 
 """
     configure(app::G4JLApplication)
-Configure the Geant4 application. It sets the declared user actions, event generator, and physcis list.
+Configure the Geant4 application. It sets the declared user actions, event generator, and physics list.
 # Arguments
 - `app::G4JLApplication`: Geant4 application
 """
@@ -580,7 +583,7 @@ function initialize(app::G4JLApplication)
 end
 """
     reinitialize(app::G4JLApplication, det::G4JLDetector)
-Re-initialize the Geant4 application with a new detector defintion.
+Re-initialize the Geant4 application with a new detector definition.
 # Arguments
 - `app::G4JLApplication`: Geant4 application
 - `det::G4JLDetector`: new detector definition
@@ -627,7 +630,7 @@ end
 
 """
     getSDdata(app::G4JLApplication, name::String)
-Get the data associated to the Sentitive Detector with a given name taking into account the current worker thread ID
+Get the data associated to the Sensitive Detector with a given name taking into account the current worker thread ID
 # Arguments
 - `app::G4JLApplication`: Geant4 application
 - `name::String`: sensitive detector name
@@ -657,7 +660,7 @@ Get the world volume of the currently instantiated detector geometry.
 GetWorldVolume() = GetWorldVolume(GetNavigatorForTracking(G4TransportationManager!GetTransportationManager()))[]
 """
     GetVolume(name::String)
-Get the  the G4LogicalVolume with this name.
+Get the G4LogicalVolume with this name.
 # Arguments
 - `name::String`: logical volume name
 """
