@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>OpDetector.jl · Geant4.jl</title><meta name="title" content="OpDetector.jl · Geant4.jl"/><meta property="og:title" content="OpDetector.jl · Geant4.jl"/><meta property="twitter:title" content="OpDetector.jl · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.63.2/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../guide/">User Guide</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../">Running the examples</a></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox"/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Basic</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../B1/">Basic/B1 Example</a></li><li><a class="tocitem" href="../B2a/">Basic/B2a Example</a></li><li><a class="tocitem" href="../B2aVis/">Basic/B2a Event Display Example</a></li><li><a class="tocitem" href="../B3a/">Basic/B3a Example</a></li><li><a class="tocitem" href="../B4a/">Basic/B4a Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox"/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Extended</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../GPS/">Extended/GPS Example</a></li><li><a class="tocitem" href="../RE03/">Extended/RE03 Example</a></li><li><a class="tocitem" href="../TestEm3/">Extended/TestEm3 Example</a></li><li><a class="tocitem" href="../Solids/">Geant4 Solids</a></li><li><a class="tocitem" href="../GDMLRendering/">GDML rendering example (CMS)</a></li><li><a class="tocitem" href="../GDMLRendering2/">GDML rendering example (ODD)</a></li><li><a class="tocitem" href="../field02/">Extended/field02 Example</a></li><li><a class="tocitem" href="../OpNovice2/">OpNovice2 Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-4" type="checkbox"/><label class="tocitem" for="menuitem-3-4"><span class="docs-label">Advanced</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../TPCSim/">Simulation of the Aleph TPC</a></li><li><a class="tocitem" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber</a></li><li><a class="tocitem" href="../WaterPhantom/">Water Phantom with Scoring</a></li><li><a class="tocitem" href="../UserLib/">Calling Custom C++ library</a></li><li><a class="tocitem" href="../JuliaAction/">Calling G4 actions in Julia</a></li><li><a class="tocitem" href="../Scintillation/">Scintillation Example</a></li></ul></li></ul></li><li class="is-active"><a class="tocitem" href>OpDetector.jl</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><a class="tocitem" href="../../development/">Development</a></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>OpDetector.jl</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>OpDetector.jl</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/examples/OpDetector.md#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="OpDetector.jl"><a class="docs-heading-anchor" href="#OpDetector.jl">OpDetector.jl</a><a id="OpDetector.jl-1"></a><a class="docs-heading-anchor-permalink" href="#OpDetector.jl" title="Permalink"></a></h1><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits
+using Parameters
+
+#---Optical properties-----------------------------------------------------------------------------
+# Energy-dependent properties are given as `NAME =&gt; (energies, values)` and constant properties
+# as `NAME =&gt; value`. This replaces the `/opnovice2/boxProperty`, `/opnovice2/boxConstProperty`,
+# `/opnovice2/worldProperty`, ... macro commands of the C++ example.
+const PropertyMap = Dict{String, Tuple{Vector{Float64}, Vector{Float64}}}
+const ConstPropertyMap = Dict{String, Float64}
+
+function buildMPT(props::PropertyMap, cprops::ConstPropertyMap)
+    mpt = G4MaterialPropertiesTable()
+    for (name, (energies, values)) in props
+        AddProperty(mpt, name, StdVector(energies), StdVector(values))
+    end
+    for (name, value) in cprops
+        AddConstProperty(mpt, name, value)
+    end
+    return mpt
+end
+
+# Linear interpolation of an energy-dependent property (e.g. RINDEX at the primary energy)
+function propertyValue(props::PropertyMap, name::String, energy::Float64)
+    energies, values = props[name]
+    energy &lt;= energies[1] &amp;&amp; return values[1]
+    energy &gt;= energies[end] &amp;&amp; return values[end]
+    i = searchsortedlast(energies, energy)
+    f = (energy - energies[i]) / (energies[i+1] - energies[i])
+    return values[i] + f * (values[i+1] - values[i])
+end
+
+#---Detector parameters----------------------------------------------------------------------------
+# A cube &quot;tank&quot; of side 2 m inside a &quot;world&quot; cube of side 20 m. The optical properties of both
+# materials, and of the surface between them, are parameters of the detector.
+@with_kw mutable struct OpDetector &lt;: G4JLDetector
+    worldHalfSize::Float64 = 10m
+    tankHalfSize::Float64 = 1m
+    worldMaterial::String = &quot;G4_AIR&quot;
+    tankMaterial::String = &quot;G4_WATER&quot;
+    tankProperties::PropertyMap = PropertyMap()
+    tankConstProperties::ConstPropertyMap = ConstPropertyMap()
+    worldProperties::PropertyMap = PropertyMap()
+    worldConstProperties::ConstPropertyMap = ConstPropertyMap()
+    surfaceProperties::PropertyMap = PropertyMap()
+    surfaceConstProperties::ConstPropertyMap = ConstPropertyMap()
+    surfaceType::G4SurfaceType = dielectric_dielectric
+    surfaceModel::G4OpticalSurfaceModel = unified
+    surfaceFinish::G4OpticalSurfaceFinish = ground
+    surfaceSigmaAlpha::Float64 = 0.
+    surfacePolish::Float64 = 1.
+end
+
+#---Detector construction--------------------------------------------------------------------------
+function opConstruct(det::OpDetector)::CxxPtr{G4VPhysicalVolume}
+    (; worldHalfSize, tankHalfSize) = det
+    nist = G4NistManager!Instance()
+
+    #---Materials with their optical properties----------------------------------------------------
+    worldMat = FindOrBuildMaterial(nist, det.worldMaterial)
+    tankMat = FindOrBuildMaterial(nist, det.tankMaterial)
+    SetMaterialPropertiesTable(worldMat, move!(buildMPT(det.worldProperties, det.worldConstProperties)))
+    SetMaterialPropertiesTable(tankMat, move!(buildMPT(det.tankProperties, det.tankConstProperties)))
+
+    #---Volumes------------------------------------------------------------------------------------
+    worldBox = G4Box(&quot;World&quot;, worldHalfSize, worldHalfSize, worldHalfSize)
+    worldLV = G4LogicalVolume(worldBox, worldMat, &quot;World&quot;)
+    worldPV = G4PVPlacement(nothing, G4ThreeVector(), worldLV, &quot;World&quot;, nothing, false, 0)
+
+    tankBox = G4Box(&quot;Tank&quot;, tankHalfSize, tankHalfSize, tankHalfSize)
+    tankLV = G4LogicalVolume(tankBox, tankMat, &quot;Tank&quot;)
+    tankPV = G4PVPlacement(nothing, G4ThreeVector(), tankLV, &quot;Tank&quot;, worldLV, false, 0)
+
+    #---Surface between the tank and the world-----------------------------------------------------
+    surface = G4OpticalSurface(&quot;Surface&quot;)
+    SetType(surface, det.surfaceType)
+    SetModel(surface, det.surfaceModel)
+    SetFinish(surface, det.surfaceFinish)
+    SetSigmaAlpha(surface, det.surfaceSigmaAlpha)
+    SetPolish(surface, det.surfacePolish)
+    SetMaterialPropertiesTable(surface, move!(buildMPT(det.surfaceProperties, det.surfaceConstProperties)))
+    G4LogicalBorderSurface(&quot;Surface&quot;, CxxPtr(tankPV), CxxPtr(worldPV), CxxPtr(surface))
+    DumpInfo(surface)
+
+    return worldPV
+end
+
+Geant4.getConstructor(::OpDetector)::Function = opConstruct</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../UserLibrary/">« UserLibrary.cpp</a><a class="docs-footer-nextpage" href="../Parameters/">Parameters.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.19.0 on <span class="colophon-date" title="Thursday 29 October 2026 20:14">Thursday 29 October 2026</span>. Using Julia version 1.13.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
