@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>UserActions.jl · Geant4.jl</title><meta name="title" content="UserActions.jl · Geant4.jl"/><meta property="og:title" content="UserActions.jl · Geant4.jl"/><meta property="twitter:title" content="UserActions.jl · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.63.2/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../guide/">User Guide</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../">Running the examples</a></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox"/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Basic</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../B1/">Basic/B1 Example</a></li><li><a class="tocitem" href="../B2a/">Basic/B2a Example</a></li><li><a class="tocitem" href="../B2aVis/">Basic/B2a Event Display Example</a></li><li><a class="tocitem" href="../B3a/">Basic/B3a Example</a></li><li><a class="tocitem" href="../B4a/">Basic/B4a Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox"/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Extended</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../GPS/">Extended/GPS Example</a></li><li><a class="tocitem" href="../RE03/">Extended/RE03 Example</a></li><li><a class="tocitem" href="../TestEm3/">Extended/TestEm3 Example</a></li><li><a class="tocitem" href="../Solids/">Geant4 Solids</a></li><li><a class="tocitem" href="../GDMLRendering/">GDML rendering example (CMS)</a></li><li><a class="tocitem" href="../GDMLRendering2/">GDML rendering example (ODD)</a></li><li><a class="tocitem" href="../field02/">Extended/field02 Example</a></li><li><a class="tocitem" href="../OpNovice2/">OpNovice2 Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-4" type="checkbox"/><label class="tocitem" for="menuitem-3-4"><span class="docs-label">Advanced</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../TPCSim/">Simulation of the Aleph TPC</a></li><li><a class="tocitem" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber</a></li><li><a class="tocitem" href="../WaterPhantom/">Water Phantom with Scoring</a></li><li><a class="tocitem" href="../UserLib/">Calling Custom C++ library</a></li><li><a class="tocitem" href="../JuliaAction/">Calling G4 actions in Julia</a></li><li><a class="tocitem" href="../Scintillation/">Scintillation Example</a></li><li><a class="tocitem" href="../RICH/">RICH Detector</a></li></ul></li></ul></li><li class="is-active"><a class="tocitem" href>UserActions.jl</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><a class="tocitem" href="../../development/">Development</a></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>UserActions.jl</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>UserActions.jl</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/examples/UserActions.md#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="UserActions.jl"><a class="docs-heading-anchor" href="#UserActions.jl">UserActions.jl</a><a id="UserActions.jl-1"></a><a class="docs-heading-anchor-permalink" href="#UserActions.jl" title="Permalink"></a></h1><pre><code class="language-julia hljs">@enum HitType Si ScintCryst
+struct Hit
+    arrivalTime::Float64
+    depositedEnergy::Float64
+    hittype::HitType
+    position::G4ThreeVector
+    function Hit(time, pos, edep, typ)
+        hit = new(time, edep, typ, G4ThreeVector())
+        assign(hit.position, pos)
+        return hit
+    end
+end
+#--------------------------------------------------------------------------------------------------
+#---Define Crystal Sensitive Detector--------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+#---SD collected data------------------------------------------------------------------------------
+struct CrystalSDData &lt;: G4JLSDData
+    hitcollection::Vector{Hit}
+    CrystalSDData() = new(Hit[])
+end
+
+#---Initialize method------------------------------------------------------------------------------
+function crystal_initialize(::G4HCofThisEvent, data::CrystalSDData)::Nothing
+    empty!(data.hitcollection)
+    return
+end
+#---Process Hit method-----------------------------------------------------------------------------
+let G4OpticalPhoton, first=true
+    global function crystal_processHits(step::G4Step, ::G4TouchableHistory, data::CrystalSDData)::Bool
+        if first
+            G4OpticalPhoton = FindParticle(&quot;opticalphoton&quot;)
+            first = false
+        end
+        part = step |&gt; GetTrack |&gt; GetParticleDefinition
+        part == G4OpticalPhoton &amp;&amp; return false 
+        edep = step |&gt; GetTotalEnergyDeposit
+        edep &lt;  0. &amp;&amp; return false
+        pos = step |&gt; GetPostStepPoint |&gt; GetPosition
+        push!(data.hitcollection, Hit(0., pos, edep, ScintCryst))
+        return true
+    end
+end
+#---Create SD instance-----------------------------------------------------------------------------
+crystal_SD = G4JLSensitiveDetector(&quot;Crystal_SD&quot;, CrystalSDData();               # SD name an associated data are mandatory
+                                    processhits_method=crystal_processHits,     # process hist method (also mandatory)
+                                    initialize_method=crystal_initialize)       # intialize method
+
+#--------------------------------------------------------------------------------------------------
+#---Define Silicon Sensitive Detector----------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+#---SD collected data------------------------------------------------------------------------------
+struct SiSDData &lt;: G4JLSDData
+    hitcollection::Vector{Hit}
+    SiSDData() = new(Hit[])
+end
+
+#---Initialize method------------------------------------------------------------------------------
+function si_initialize(::G4HCofThisEvent, data::SiSDData)::Nothing
+    empty!(data.hitcollection)
+    return
+end
+#---Process Hit method-----------------------------------------------------------------------------
+function si_processHits(step::G4Step, ::G4TouchableHistory, data::SiSDData)::Bool
+    return false
+end
+#---Process Optical method-------------------------------------------------------------------------
+function processOptical(step::G4Step, data::SiSDData)
+    edep = step |&gt; GetTotalEnergyDeposit
+    edep == 0 &amp;&amp; return
+    pos =  step |&gt; GetPostStepPoint |&gt; GetPosition
+    t = step |&gt; GetPostStepPoint |&gt; GetGlobalTime
+    push!(data.hitcollection, Hit(t, pos, edep, Si))
+    return
+end
+#---Create SD instance-----------------------------------------------------------------------------
+silicon_SD = G4JLSensitiveDetector(&quot;Silicon_SD&quot;, SiSDData();               # SD name an associated data are mandatory
+                                    processhits_method=si_processHits,     # process hist method (also mandatory)
+                                    initialize_method=si_initialize)       # intialize method
+
+#------------------------------------------------------------------------------------------------------
+#---Define User actions
+#------------------------------------------------------------------------------------------------------
+#---Begin Run Action-------------------------------------------------------------------------------
+function beginrun(run::G4Run, app::G4JLApplication)::Nothing
+    data = getSIMdata(app)
+    # init histos
+    data.scintPhotonsHisto = Hist1D(;binedges=2.:0.5:50.)
+    data.siHitsHisto = Hist1D(;binedges=20.:20.:2000.)
+    data.crysEdepHisto = Hist1D(;binedges=28.:0.05:32.)
+    nothing
+end
+#---End Run Action---------------------------------------------------------------------------------
+function endrun(run::G4Run, app::G4JLApplication)::Nothing
+    #---end run action is called for each workwer thread and the master one
+    if G4Threading!G4GetThreadId() &lt; 0   
+        data = app.simdata[1]
+        #---This is the master thread, so we need to add all the simuation results-----------------
+        for d in app.simdata[2:end]
+            add!(data, d)
+        end
+        nEvt = GetNumberOfEvent(run)
+        G4JL_println(&quot;Run ended with a total of $nEvt events&quot;) 
+    end
+end
+#---Begin Event Action-----------------------------------------------------------------------------
+function beginevent(evt::G4Event, app::G4JLApplication)::Nothing
+    data = getSIMdata(app)
+    data.scintPhotonsPerEvent = 0
+    nothing
+end
+#---End Event Action-------------------------------------------------------------------------------
+function endevent(evt::G4Event, app::G4JLApplication)
+    data = getSIMdata(app)
+    push!(data.scintPhotonsHisto, data.scintPhotonsPerEvent)
+    # get the data from the SDs
+    cryshits = getSDdata(app, &quot;Crystal_SD&quot;).hitcollection
+    sihits = getSDdata(app, &quot;Silicon_SD&quot;).hitcollection
+    push!(data.siHitsHisto, length(sihits))
+    push!(data.scintPhotonsHisto, length(cryshits))
+    push!(data.crysEdepHisto, isempty(cryshits) ? 0. : sum((h.depositedEnergy for h in cryshits))/keV)
+    nothing
+end
+#---User Stepping action-------------------------------------------------------------------------------
+let G4OpticalPhoton, first=true
+    global function stepping(step::G4Step, app::G4JLApplication)::Nothing
+        if first
+            G4OpticalPhoton = FindParticle(&quot;opticalphoton&quot;)
+            first = false
+        end
+
+        boundary = findOpticalBoundary(step)
+        boundary == C_NULL &amp;&amp; return
+
+        data = getSIMdata(app)
+        #---trackScintillation
+        # secs = step |&gt; GetSecondaryInCurrentStep # not wrapped (missing definition of type const std::vector&lt;const G4Track *&gt; *)
+        nsec = step |&gt; GetNumberOfSecondariesInCurrentStep
+        if nsec &gt; 0
+            allsecs =  step |&gt; GetSecondary
+            lsec = length(allsecs)
+            secs = allsecs[][lsec-nsec+1:lsec]
+            # store the number of optical photons generated to be saved at end of event
+            numOps = count(t -&gt; t |&gt; GetParticleDefinition == G4OpticalPhoton, secs)
+            data.scintPhotonsPerEvent += numOps
+        end
+        #---process optical
+        track = step |&gt; GetTrack
+        if track |&gt; GetParticleDefinition == G4OpticalPhoton
+            prePV = step |&gt; GetPreStepPoint |&gt; GetPhysicalVolume
+            postPV = step |&gt; GetPostStepPoint |&gt; GetPhysicalVolume
+            preName = prePV == C_NULL ? &quot;&quot; : prePV |&gt; GetName |&gt; String
+            postName = postPV == C_NULL ? &quot;&quot; : postPV |&gt; GetName |&gt; String
+
+            yesSilicon = occursin(&quot;si&quot;, preName) || occursin(&quot;si&quot;, postName)
+
+            if step |&gt; GetPostStepPoint |&gt; GetStepStatus == fGeomBoundary
+                stat = boundary |&gt; GetStatus
+                if stat == Detection
+                    sddata = getSDdata(app, &quot;Silicon_SD&quot;)
+                    processOptical(step, sddata)
+                    return
+                elseif stat in (Absorption, TotalInternalReflection, StepTooSmall, Transmission, FresnelRefraction, FresnelReflection)
+                    return
+                elseif stat == NoRINDEX
+                    G4JL_println(&quot;NoRINDEX: \n pre vol = $preName \n post vol = $postName&quot;)
+                else
+                    if yesSilicon
+                        G4JL_println(&quot;omething weird: $stat \n pre volume $preName \n post volume $postName&quot;)
+                        return
+                    end
+                end
+            end
+        end
+    end
+end
+function findOpticalBoundary(step::G4Step)::CxxPtr{G4OpBoundaryProcess}
+    pv  = step |&gt; GetTrack |&gt; GetDefinition |&gt; GetProcessManager |&gt; GetProcessList
+    for p in pv
+        if p |&gt; GetProcessName |&gt; String == &quot;OpBoundary&quot;
+            return CxxPtr{G4OpBoundaryProcess}(p)
+        end
+    end
+    # G4JL_println(&quot;ImpSteppingAction/findOpticalBoundary: issue finding optical boundary\n&quot;)
+    return CxxPtr{G4OpBoundaryProcess}(C_NULL)
+end</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../Detector/">« Detector.jl</a><a class="docs-footer-nextpage" href="../RICHDetector/">RICHDetector.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.19.0 on <span class="colophon-date" title="Friday 30 October 2026 16:58">Friday 30 October 2026</span>. Using Julia version 1.13.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
