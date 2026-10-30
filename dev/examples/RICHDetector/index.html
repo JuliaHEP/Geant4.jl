@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>RICHDetector.jl · Geant4.jl</title><meta name="title" content="RICHDetector.jl · Geant4.jl"/><meta property="og:title" content="RICHDetector.jl · Geant4.jl"/><meta property="twitter:title" content="RICHDetector.jl · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.63.2/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../guide/">User Guide</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../">Running the examples</a></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox"/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Basic</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../B1/">Basic/B1 Example</a></li><li><a class="tocitem" href="../B2a/">Basic/B2a Example</a></li><li><a class="tocitem" href="../B2aVis/">Basic/B2a Event Display Example</a></li><li><a class="tocitem" href="../B3a/">Basic/B3a Example</a></li><li><a class="tocitem" href="../B4a/">Basic/B4a Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox"/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Extended</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../GPS/">Extended/GPS Example</a></li><li><a class="tocitem" href="../RE03/">Extended/RE03 Example</a></li><li><a class="tocitem" href="../TestEm3/">Extended/TestEm3 Example</a></li><li><a class="tocitem" href="../Solids/">Geant4 Solids</a></li><li><a class="tocitem" href="../GDMLRendering/">GDML rendering example (CMS)</a></li><li><a class="tocitem" href="../GDMLRendering2/">GDML rendering example (ODD)</a></li><li><a class="tocitem" href="../field02/">Extended/field02 Example</a></li><li><a class="tocitem" href="../OpNovice2/">OpNovice2 Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-4" type="checkbox"/><label class="tocitem" for="menuitem-3-4"><span class="docs-label">Advanced</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../TPCSim/">Simulation of the Aleph TPC</a></li><li><a class="tocitem" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber</a></li><li><a class="tocitem" href="../WaterPhantom/">Water Phantom with Scoring</a></li><li><a class="tocitem" href="../UserLib/">Calling Custom C++ library</a></li><li><a class="tocitem" href="../JuliaAction/">Calling G4 actions in Julia</a></li><li><a class="tocitem" href="../Scintillation/">Scintillation Example</a></li><li><a class="tocitem" href="../RICH/">RICH Detector</a></li></ul></li></ul></li><li class="is-active"><a class="tocitem" href>RICHDetector.jl</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><a class="tocitem" href="../../development/">Development</a></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>RICHDetector.jl</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>RICHDetector.jl</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/examples/RICHDetector.md#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="RICHDetector.jl"><a class="docs-heading-anchor" href="#RICHDetector.jl">RICHDetector.jl</a><a id="RICHDetector.jl-1"></a><a class="docs-heading-anchor-permalink" href="#RICHDetector.jl" title="Permalink"></a></h1><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits
+using Geant4.PhysicalConstants
+using Parameters
+
+#---Optical properties-----------------------------------------------------------------------------
+# Photon energies between 1.5 eV (827 nm) and 4.5 eV (276 nm)
+const photonEnergies = collect(range(1.5eV, 4.5eV, length=31))
+wavelength(E) = h_Planck * c_light / E
+
+# Refractive index of C4F10 as a function of the photon energy (Sellmeier formula with one pole)
+c4f10RIndex(E) = 1 + 0.25324e-6 / (1/73.7^2 - 1/(wavelength(E)/nm)^2)
+
+# Aerogel scatters the light (Rayleigh) with a scattering length of λ⁴/C, where C is the clarity
+const aerogelClarity = 0.0055μm^4/cm
+aerogelRayleigh(E) = wavelength(E)^4 / aerogelClarity
+
+# Quantum efficiency of the photodetectors (bialkali photocathode)
+const qeEnergies = [1.5eV, 1.8eV, 2.1eV, 2.4eV, 2.7eV, 3.0eV, 3.3eV, 3.6eV, 3.9eV, 4.2eV, 4.5eV]
+const qeValues   = [0.0,   0.01,  0.05,  0.12,  0.20,  0.25,  0.25,  0.23,  0.20,  0.15,  0.10]
+function quantumEfficiency(E)
+    (E &lt;= qeEnergies[1] || E &gt;= qeEnergies[end]) &amp;&amp; return 0.
+    i = searchsortedlast(qeEnergies, E)
+    f = (E - qeEnergies[i]) / (qeEnergies[i+1] - qeEnergies[i])
+    return qeValues[i] + f * (qeValues[i+1] - qeValues[i])
+end
+
+#---Detector parameters----------------------------------------------------------------------------
+# A box filled with C4F10 gas, from z = 1 m to 2.1 m, contains the aerogel tile at the entrance,
+# two spherical mirrors (top and bottom) at z ≈ 2 m and two planes of photodetectors at
+# z = 1 m, outside the acceptance. The centre of curvature of each mirror is displaced vertically
+# so that the light is focused on the photodetector plane of the same half (y &gt; 0 or y &lt; 0).
+@with_kw mutable struct RICHDetector &lt;: G4JLDetector
+    worldHalfSize::Float64 = 2.5m
+    vesselHalfX::Float64 = 1.0m
+    vesselHalfY::Float64 = 1.5m
+    vesselZ::Tuple{Float64,Float64} = (1m, 2.1m)         ## z range of the gas vessel
+    beamPipeRadius::Float64 = 3cm
+    beamPipeThickness::Float64 = 1mm
+    aerogelZ::Float64 = 1m                              ## front face of the aerogel
+    aerogelThickness::Float64 = 5cm
+    aerogelHalfSize::Float64 = 35cm
+    aerogelRIndex::Float64 = 1.03
+    mirrorRadius::Float64 = 2m
+    mirrorThickness::Float64 = 5mm
+    mirrorReflectivity::Float64 = 0.9
+    detectorZ::Float64 = 1.01m                          ## photodetector surface
+    detectorY::Tuple{Float64,Float64} = (45cm, 135cm)   ## |y| range of the photodetector planes
+    detectorHalfX::Float64 = 70cm
+    detectorThickness::Float64 = 1cm
+    mirrorCentreY::Float64 = 75cm                       ## |y| of the centre of curvature of the mirrors
+    checkOverlaps::Bool = false
+end
+
+# Centre of curvature of the top (+1) or bottom (-1) mirror. The focal surface (a sphere of radius
+# R/2 around the centre of curvature) touches the photodetector plane.
+mirrorCentre(det::RICHDetector, side) = (0., side * det.mirrorCentreY, det.detectorZ - det.mirrorRadius/2)
+
+# Visualization attributes (colour and transparency) of a logical volume
+setVis(lv, r, g, b, a=1.; visible=true) = SetVisAttributes(lv, G4VisAttributes(visible, G4Colour(r, g, b, a)))
+
+function buildMPT(props::Pair...)
+    mpt = G4MaterialPropertiesTable()
+    for (name, f) in props
+        AddProperty(mpt, name, StdVector(photonEnergies), StdVector(f.(photonEnergies)))
+    end
+    return mpt
+end
+
+#---Detector construction--------------------------------------------------------------------------
+function richConstruct(det::RICHDetector)::CxxPtr{G4VPhysicalVolume}
+    (; worldHalfSize, vesselHalfX, vesselHalfY, vesselZ, beamPipeRadius, beamPipeThickness,
+       aerogelZ, aerogelThickness, aerogelHalfSize, mirrorRadius, mirrorThickness,
+       detectorZ, detectorY, detectorHalfX, detectorThickness, checkOverlaps) = det
+    nist = G4NistManager!Instance()
+
+    #---Materials with their optical properties----------------------------------------------------
+    air = FindOrBuildMaterial(nist, &quot;G4_AIR&quot;)
+    vacuum = FindOrBuildMaterial(nist, &quot;G4_Galactic&quot;)
+    beryllium = FindOrBuildMaterial(nist, &quot;G4_Be&quot;)
+    glass = FindOrBuildMaterial(nist, &quot;G4_GLASS_PLATE&quot;)
+    if G4Material!GetMaterial(&quot;C4F10&quot;, false) == C_NULL
+        c4f10 = G4Material(&quot;C4F10&quot;, density=10.39mg/cm3, ncomponents=2, state=kStateGas)
+        AddElement(c4f10, FindOrBuildElement(nist, &quot;C&quot;), Int32(4))
+        AddElement(c4f10, FindOrBuildElement(nist, &quot;F&quot;), Int32(10))
+        aerogel = G4Material(&quot;Aerogel&quot;, density=0.15g/cm3, ncomponents=2, state=kStateSolid)
+        AddElement(aerogel, FindOrBuildElement(nist, &quot;Si&quot;), Int32(1))
+        AddElement(aerogel, FindOrBuildElement(nist, &quot;O&quot;), Int32(2))
+    end
+    c4f10 = G4Material!GetMaterial(&quot;C4F10&quot;)
+    aerogel = G4Material!GetMaterial(&quot;Aerogel&quot;)
+    SetMaterialPropertiesTable(c4f10, move!(buildMPT(&quot;RINDEX&quot; =&gt; c4f10RIndex, &quot;ABSLENGTH&quot; =&gt; E -&gt; 100m)))
+    SetMaterialPropertiesTable(aerogel, move!(buildMPT(&quot;RINDEX&quot; =&gt; E -&gt; det.aerogelRIndex,
+                                                       &quot;ABSLENGTH&quot; =&gt; E -&gt; 1m,
+                                                       &quot;RAYLEIGH&quot; =&gt; aerogelRayleigh)))
+
+    #---World and gas vessel-----------------------------------------------------------------------
+    worldLV = G4LogicalVolume(G4Box(&quot;World&quot;, worldHalfSize, worldHalfSize, worldHalfSize), air, &quot;World&quot;)
+    worldPV = G4PVPlacement(nothing, G4ThreeVector(), worldLV, &quot;World&quot;, nothing, false, 0, checkOverlaps)
+    setVis(worldLV, 1, 1, 1, visible=false)
+
+    vesselHalfZ = (vesselZ[2] - vesselZ[1])/2
+    vesselZc = (vesselZ[2] + vesselZ[1])/2
+    vesselLV = G4LogicalVolume(G4Box(&quot;Vessel&quot;, vesselHalfX, vesselHalfY, vesselHalfZ), c4f10, &quot;Vessel&quot;)
+    G4PVPlacement(nothing, G4ThreeVector(0, 0, vesselZc), vesselLV, &quot;Vessel&quot;, worldLV, false, 0, checkOverlaps)
+    setVis(vesselLV, 0.6, 0.9, 1.0, 0.1, visible=false)
+    toVessel(x, y, z) = G4ThreeVector(x, y, z - vesselZc)      ## global → vessel coordinates
+
+    #---Beam pipe----------------------------------------------------------------------------------
+    pipeLV = G4LogicalVolume(G4Tubs(&quot;BeamPipe&quot;, 0, beamPipeRadius + beamPipeThickness, vesselHalfZ, 0, 2π), beryllium, &quot;BeamPipe&quot;)
+    G4PVPlacement(nothing, G4ThreeVector(), pipeLV, &quot;BeamPipe&quot;, vesselLV, false, 0, checkOverlaps)
+    beamLV = G4LogicalVolume(G4Tubs(&quot;BeamVacuum&quot;, 0, beamPipeRadius, vesselHalfZ, 0, 2π), vacuum, &quot;BeamVacuum&quot;)
+    G4PVPlacement(nothing, G4ThreeVector(), beamLV, &quot;BeamVacuum&quot;, pipeLV, false, 0, checkOverlaps)
+    setVis(pipeLV, 0.5, 0.5, 0.5, 0.5)
+    setVis(beamLV, 1, 1, 1, visible=true)
+
+    #---Aerogel: a square tile with a hole for the beam pipe-------------------------------------
+    hole = G4Tubs(&quot;AerogelHole&quot;, 0, beamPipeRadius + beamPipeThickness + 1mm, aerogelThickness, 0, 2π)
+    tile = G4Box(&quot;AerogelTile&quot;, aerogelHalfSize, aerogelHalfSize, aerogelThickness/2)
+    aerogelS = G4SubtractionSolid(&quot;Aerogel&quot;, move!(tile), move!(hole))
+    aerogelLV = G4LogicalVolume(aerogelS, aerogel, &quot;Aerogel&quot;)
+    setVis(aerogelLV, 1.0, 0.9, 0.2, 0.8)
+    G4PVPlacement(nothing, toVessel(0, 0, aerogelZ + aerogelThickness/2), aerogelLV, &quot;Aerogel&quot;, vesselLV, false, 0, checkOverlaps)
+
+    #---Mirrors: spherical shells cut by a box to the top (or bottom) half of the vessel----------
+    mirrorReflector = G4OpticalSurface(&quot;MirrorSurface&quot;)
+    SetType(mirrorReflector, dielectric_metal)
+    SetModel(mirrorReflector, unified)
+    SetFinish(mirrorReflector, polished)
+    SetMaterialPropertiesTable(mirrorReflector, move!(buildMPT(&quot;REFLECTIVITY&quot; =&gt; E -&gt; det.mirrorReflectivity)))
+    yGap = beamPipeRadius + beamPipeThickness + 5mm
+    zmin = vesselZ[1] + vesselHalfZ                        ## the mirrors are in the back half of the vessel
+    for (side, name) in ((1, &quot;MirrorTop&quot;), (-1, &quot;MirrorBottom&quot;))
+        cx, cy, cz = mirrorCentre(det, side)
+        ## cut box in global coordinates and its position relative to the centre of curvature
+        bhx, bhy, bhz = vesselHalfX - 1mm, (vesselHalfY - 1mm - yGap)/2, (vesselZ[2] - 1mm - zmin)/2
+        bx, by, bz = 0., side * (yGap + bhy), zmin + bhz
+        shell = G4Sphere(name * &quot;Shell&quot;, mirrorRadius, mirrorRadius + mirrorThickness, 0, 2π, 0, π/2)
+        cut = G4Box(name * &quot;Cut&quot;, bhx, bhy, bhz)
+        mirrorS = G4IntersectionSolid(name, move!(shell), move!(cut),
+                                      G4Transform3D(G4RotationMatrix(), G4ThreeVector(bx - cx, by - cy, bz - cz)))
+        mirrorLV = G4LogicalVolume(mirrorS, glass, name)
+        setVis(mirrorLV, 0.8, 0.8, 0.8, 0.5)
+        G4PVPlacement(nothing, toVessel(cx, cy, cz), mirrorLV, name, vesselLV, false, 0, checkOverlaps)
+        G4LogicalSkinSurface(name * &quot;Surface&quot;, CxxPtr(mirrorLV), CxxPtr(mirrorReflector))
+    end
+
+    #---Photodetector planes, facing the mirrors---------------------------------------------------
+    dhy = (detectorY[2] - detectorY[1])/2
+    detS = G4Box(&quot;Photodetector&quot;, detectorHalfX, dhy, detectorThickness/2)
+    detLV = G4LogicalVolume(detS, glass, &quot;Photodetector&quot;)
+    setVis(detLV, 0.5, 0.4, 0.4)
+    for (side, name) in ((1, &quot;PhotodetectorTop&quot;), (-1, &quot;PhotodetectorBottom&quot;))
+        G4PVPlacement(nothing, toVessel(0, side * (detectorY[1] + dhy), detectorZ - detectorThickness/2),
+                      detLV, name, vesselLV, false, side &gt; 0 ? 0 : 1, checkOverlaps)
+    end
+
+    return worldPV
+end
+
+Geant4.getConstructor(::RICHDetector)::Function = richConstruct</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../UserActions/">« UserActions.jl</a><a class="docs-footer-nextpage" href="../MyCode/">MyCode.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.19.0 on <span class="colophon-date" title="Friday 30 October 2026 17:29">Friday 30 October 2026</span>. Using Julia version 1.13.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
