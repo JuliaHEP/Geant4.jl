@@ -15,8 +15,29 @@ G4PVPlacement(t::G4Transform3D, l::Union{Nothing,G4LogicalVolume}, s::String,
     G4PVPlacement(t, isnothing(l) ? CxxPtr{G4LogicalVolume}(C_NULL) : CxxPtr(l), s, 
                   isnothing(p) ? CxxPtr{G4LogicalVolume}(C_NULL) : CxxPtr(p), b1, n, b2)
 
-G4PVReplica(s::String, l::G4LogicalVolume, m::G4LogicalVolume, a::EAxis, n::Int64, t::Float64) = 
+G4PVReplica(s::String, l::G4LogicalVolume, m::G4LogicalVolume, a::EAxis, n::Int64, t::Float64) =
     G4PVReplica(s, CxxPtr(l), CxxPtr(m), a, n, t)
+
+"""
+    G4PVParameterised(name::String, lv::G4LogicalVolume, mother::G4LogicalVolume, axis::EAxis, n::Int,
+                      transform::Function; data=nothing, checkOverlaps=false)
+
+Create `n` copies of the logical volume `lv` inside `mother`, positioned by the user function
+`transform(copyNo::Int32, pv::G4VPhysicalVolume, data)::Nothing`, which must set the translation
+(and the rotation) of the copy `copyNo` with `SetTranslation(pv, ...)` (and `SetRotation(pv, ...)`).
+The rotation is kept by pointer, so it must not be garbage collected. The function is called by
+the navigation from all the worker threads, so it must not modify `data`.
+"""
+function G4PVParameterised(name::String, lv::G4LogicalVolume, mother::G4LogicalVolume, axis::EAxis, n::Int,
+                           transform::Function; data=nothing, checkOverlaps::Bool=false)
+    sf = make_callback(data, transform, Nothing, (Int32, CxxPtr{G4VPhysicalVolume})) |> closure
+    param = G4JLParameterisation(sf...)
+    G4PVParameterised(name, CxxPtr(lv), CxxPtr(mother), axis, n, CxxPtr(param), checkOverlaps)
+end
+
+#---Region usability functions---------------------------------------------------------------------
+AddRootLogicalVolume(r::G4Region, lv::G4LogicalVolume) = AddRootLogicalVolume(r, CxxPtr(lv))
+SetProductionCuts(r::G4Region, c::G4ProductionCutsAllocated) = SetProductionCuts(r, move!(c))
 
 function G4JLDetectorConstruction(f::Function)
     sf = make_callback(nothing, f, CxxPtr{G4VPhysicalVolume}, ()) |> closure

@@ -1,5 +1,14 @@
 ## Release Notes
 
+### 0.3.2 - 2-Nov-2026
+- New Features:
+    - Uses Geant4_julia_jll 0.4.2
+    - Added new G4 classes to the Wrapper: G4VPVParameterisation, G4PVParameterised, G4Region, G4RegionStore, G4ProductionCuts, G4ProductionCutsTable, G4EmParameters, G4IonisParamMat
+    - Parameterised volumes: `G4PVParameterised(name, lv, mother, axis, n, transform; data)` positions the copies with a Julia function (new callback class G4JLParameterisation)
+    - Regions with their own production cuts: `AddRootLogicalVolume(region, lv)` and `SetProductionCuts(region, cuts)`
+    - EM physics options (fluorescence, Auger, PIXE, models per region, ...) with `G4EmParameters!Instance()`
+    - Birks constant of a material with `SetBirksConstant(GetIonisation(material), value)`
+
 
 ### 0.3.1 - 20-Aug-2026 
 - New Features:
