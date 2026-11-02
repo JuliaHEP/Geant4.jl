@@ -12,6 +12,7 @@
 #include "G4UserStackingAction.hh"
 #include "G4ParticleGun.hh"
 #include "G4VPhysicalVolume.hh"
+#include "G4VPVParameterisation.hh"
 #include "G4VSensitiveDetector.hh"
 #include "G4SDManager.hh"
 #include "G4HCofThisEvent.hh"
@@ -181,6 +182,18 @@ public:
 private:
   void* field_d;
   getfield_f getfield;
+};
+
+//---G4JLParameterisation---------------------------------------------------------------------
+typedef  void (*transform_f) (G4int, G4VPhysicalVolume*, void*);
+class G4JLParameterisation : public G4VPVParameterisation {
+public:
+  G4JLParameterisation(transform_f f, void* d) : transform_d(d), transform(f) { }
+  ~G4JLParameterisation() = default;
+  void ComputeTransformation(const G4int copyNo, G4VPhysicalVolume* pv) const override {transform(copyNo, pv, transform_d);}
+private:
+  void* transform_d;
+  transform_f transform;
 };
 
 typedef  void (*stepaction_f) (const G4Step*, void*);

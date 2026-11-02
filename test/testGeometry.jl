@@ -55,4 +55,43 @@ include(joinpath(@__DIR__, "B1Detector.jl"))
     @test box isa CxxRef{G4Box}
     @test GetXHalfLength(box) == 100.
 
+    #---Parameterised volumes----------------------------------------------------------------------
+    nist = G4NistManager!Instance()
+    air = FindOrBuildMaterial(nist, "G4_AIR")
+    motherLV = G4LogicalVolume(G4Box("ParamMother", 50cm, 10cm, 10cm), air, "ParamMother")
+    cellLV = G4LogicalVolume(G4Box("ParamCell", 4cm, 4cm, 4cm), air, "ParamCell")
+    xpos = [-40cm, -20cm, 0., 20cm, 40cm]
+    transform(copyNo, pv, xpos) = (SetTranslation(pv, G4ThreeVector(xpos[copyNo+1], 0, 0)); nothing)
+    ppv = G4PVParameterised("ParamCell", cellLV, motherLV, kXAxis, length(xpos), transform; data=xpos)
+    @test ppv isa G4PVParameterised
+    @test IsParameterised(ppv)
+    @test GetMultiplicity(ppv) == 5
+    param = GetParameterisation(ppv)
+    for i in (0, 3)
+        ComputeTransformation(param, i, CxxPtr(ppv))
+        @test x(GetTranslation(ppv)) == xpos[i+1]
+    end
+
+    #---Regions and production cuts----------------------------------------------------------------
+    region = G4Region("TestRegion")
+    AddRootLogicalVolume(region, cellLV)
+    @test GetNumberOfRootVolumes(region) == 1
+    cuts = G4ProductionCuts()
+    SetProductionCut(cuts, 2mm)
+    SetProductionCuts(region, cuts)
+    @test GetProductionCut(GetProductionCuts(region), "gamma") == 2mm
+    @test GetRegion(G4RegionStore!GetInstance(), "TestRegion") == CxxPtr(region)
+
+    #---EM parameters------------------------------------------------------------------------------
+    em = G4EmParameters!Instance()
+    SetFluo(em, true)
+    @test Fluo(em)
+    SetFluo(em, false)
+    @test !Fluo(em)
+
+    #---Birks constant of a scintillator-----------------------------------------------------------
+    polystyrene = FindOrBuildMaterial(nist, "G4_POLYSTYRENE")
+    ionisation = GetIonisation(polystyrene)
+    SetBirksConstant(ionisation, 0.126mm/MeV)
+    @test GetBirksConstant(ionisation) ≈ 0.126mm/MeV
 end
