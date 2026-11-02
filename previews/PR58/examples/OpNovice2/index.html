@@ -489,7 +489,7 @@ end</code></pre><pre><code class="nohighlight hljs">stepaction (generic function
                       pretrackaction_method = pretrackaction,    ## pre-tracking action (reset track state)
                       beginrunaction_method = beginrun,          ## begin-run action (reset counters and histograms)
                       endrunaction_method = endrun               ## end-run action (print summary)
-                      )</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLApplication{Main.var&quot;##142&quot;.OpDetector, Main.var&quot;##142&quot;.OpNovice2SimData}(Geant4.G4RunManagerAllocated(Ptr{Nothing}(0x0000000030b11ca0)), Main.var&quot;##142&quot;.OpDetector
+                      )</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLApplication{Main.var&quot;##142&quot;.OpDetector, Main.var&quot;##142&quot;.OpNovice2SimData}(Geant4.G4RunManagerAllocated(Ptr{Nothing}(0x000000003d1f0510)), Main.var&quot;##142&quot;.OpDetector
   worldHalfSize: Float64 10000.0
   tankHalfSize: Float64 1000.0
   worldMaterial: String &quot;G4_AIR&quot;
@@ -506,7 +506,7 @@ end</code></pre><pre><code class="nohighlight hljs">stepaction (generic function
   surfaceFinish: Geant4.G4OpticalSurfaceFinish Geant4.G4OpticalSurfaceFinish(0x00000003)
   surfaceSigmaAlpha: Float64 0.2
   surfacePolish: Float64 1.0
-, Main.var&quot;##142&quot;.OpNovice2SimData[Main.var&quot;##142&quot;.OpNovice2SimData(false, true, CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4ParticleDefinition}(Ptr{Geant4.G4ParticleDefinition}(0x00007822fbe35510)), CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4OpBoundaryProcess}(Ptr{Geant4.G4OpBoundaryProcess}(0x0000000000000000)), false, 132090971510224, #undef, 0.0, nothing, 6.5261613620874e-310, 5.0e-324, 6.52619241698516e-310, 6.5261611149044e-310, 0.0, 0.0, 132091678613104, 132091678614080, 132091678614064, 0, 132091678613104, 132091678614080, 132091678614064, 0, 132091609534768, 132091664379840, #undef, #undef)], Geant4.G4JLPrimaryGenerator{Main.var&quot;##142&quot;.OpGunData}(&quot;OpGun&quot;, Main.var&quot;##142&quot;.OpGunData
+, Main.var&quot;##142&quot;.OpNovice2SimData[Main.var&quot;##142&quot;.OpNovice2SimData(false, true, CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4ParticleDefinition}(Ptr{Geant4.G4ParticleDefinition}(0x0000723adf83efb0)), CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4OpBoundaryProcess}(Ptr{Geant4.G4OpBoundaryProcess}(0x0000723adfd4e9e0)), false, 125597188942304, #undef, 6.20532562706245e-310, nothing, 6.20532536486537e-310, 6.20532676128144e-310, 6.20532536486537e-310, 6.20532676128144e-310, 6.20532536486537e-310, 6.20532676128144e-310, 125597183635376, 125597211899152, 125597183635376, 125597211899152, 125597183635376, 125597211899152, 125597183635376, 125597211899152, 125597183635376, 125597211899152, #undef, #undef)], Geant4.G4JLPrimaryGenerator{Main.var&quot;##142&quot;.OpGunData}(&quot;OpGun&quot;, Main.var&quot;##142&quot;.OpGunData
   gun: Nothing nothing
   particle: String &quot;e-&quot;
   energy: Float64 1.0
@@ -622,35 +622,35 @@ Average number of OpAbsorption per event: 0.51
 
 Surface events (on +X surface, maximum one per photon) this run:
 # of primary particles:        100000
-OpAbsorption before surface:      259
-Total # of surface events:      99741
+OpAbsorption before surface:      285
+Total # of surface events:      99715
 Unaccounted for:                    0
 
 Surface events by process:
-  FresnelRefraction                         49468
-  FresnelReflection                          1531
-  TotalInternalReflection                   48742
- Sum:                           99741
+  FresnelRefraction                         49498
+  FresnelReflection                          1514
+  TotalInternalReflection                   48703
+ Sum:                           99715
  Unaccounted for:                   0
 ---------------------------------
 Polarization of primary optical photons: 0.0 deg.
-Reflectance shows a minimum at: 35.1 +/- 2.5 deg. Expected Brewster angle: 35.71 deg.
+Reflectance shows a minimum at: 35.5 +/- 0.5 deg. Expected Brewster angle: 35.71 deg.
 Fresnel transmission goes to 0 at: 45.5 +/- 0.5 deg. Expected: 45.96 deg.
 
  Histogram statistics for the entire run:
 
- Boundary process status: mean = 2.99272; rms = 0.992269 (Status code)
- X momentum dir of backward-going photons: mean = -0.380823; rms = 0.215588 (Direction cosine)
- Y momentum dir of backward-going photons: mean = 0.0011275; rms = 0.635274 (Direction cosine)
- Z momentum dir of backward-going photons: mean = -0.00154192; rms = 0.636531 (Direction cosine)
- X momentum dir of forward-going photons: mean = 0.768483; rms = 0.226836 (Direction cosine)
- Y momentum dir of forward-going photons: mean = -0.000110294; rms = 0.422943 (Direction cosine)
- Z momentum dir of forward-going photons: mean = 1.91235e-05; rms = 0.424118 (Direction cosine)
- X momentum dir of Fresnel-refracted photons: mean = 0.768483; rms = 0.226836 (Direction cosine)
- Y momentum dir of Fresnel-refracted photons: mean = -0.000110294; rms = 0.422943 (Direction cosine)
- Z momentum dir of Fresnel-refracted photons: mean = 1.91235e-05; rms = 0.424118 (Direction cosine)
- Fresnel-reflected photons: mean = 30.2838; rms = 16.7648 (Angle [deg])
- Total internal reflected photons: mean = 67.9172; rms = 12.6857 (Angle [deg])
+ Boundary process status: mean = 2.99203; rms = 0.992347 (Status code)
+ X momentum dir of backward-going photons: mean = -0.38133; rms = 0.214914 (Direction cosine)
+ Y momentum dir of backward-going photons: mean = -0.00213639; rms = 0.633564 (Direction cosine)
+ Z momentum dir of backward-going photons: mean = -0.00252849; rms = 0.638192 (Direction cosine)
+ X momentum dir of forward-going photons: mean = 0.769075; rms = 0.224651 (Direction cosine)
+ Y momentum dir of forward-going photons: mean = -0.00105693; rms = 0.425307 (Direction cosine)
+ Z momentum dir of forward-going photons: mean = -0.00096715; rms = 0.421698 (Direction cosine)
+ X momentum dir of Fresnel-refracted photons: mean = 0.769075; rms = 0.224651 (Direction cosine)
+ Y momentum dir of Fresnel-refracted photons: mean = -0.00105693; rms = 0.425307 (Direction cosine)
+ Z momentum dir of Fresnel-refracted photons: mean = -0.00096715; rms = 0.421698 (Direction cosine)
+ Fresnel-reflected photons: mean = 29.8626; rms = 16.9232 (Angle [deg])
+ Total internal reflected photons: mean = 67.8873; rms = 12.648 (Angle [deg])
 </code></pre><p>Define a function to plot the fraction of refracted and reflected photons as a function of the incident angle. If a function <code>expected(θ)</code> is given, the expected reflectance is drawn on top.</p><pre><code class="language-julia hljs">function plot_fresnel(data::OpNovice2SimData; title=&quot;&quot;, expected=nothing)
     (; histos, polarization) = data
     img = plot(title=&quot;$title polarization angle $(round(polarization/deg)) deg&quot;, xlabel=&quot;Incident angle [deg]&quot;,
@@ -720,23 +720,23 @@ Average number of OpAbsorption per event: 0.11
 
 Surface events (on +X surface, maximum one per photon) this run:
 # of primary particles:        100000
-OpAbsorption before surface:       46
-Total # of surface events:      99954
+OpAbsorption before surface:       47
+Total # of surface events:      99953
 Unaccounted for:                    0
 
 Surface events by process:
-  CoatedDielectricReflection                10865
+  CoatedDielectricReflection                10864
   CoatedDielectricRefraction                89089
- Sum:                           99954
+ Sum:                           99953
  Unaccounted for:                   0
 ---------------------------------
 
  Histogram statistics for the entire run:
 
- Boundary process status: mean = 40.8913; rms = 0.311262 (Status code)
+ Boundary process status: mean = 40.8913; rms = 0.311251 (Status code)
  X momentum dir of backward-going photons: mean = -1.001; rms = 0 (Direction cosine)
- Y momentum dir of backward-going photons: mean = 0.011; rms = 0 (Direction cosine)
- Z momentum dir of backward-going photons: mean = 0.011; rms = 0 (Direction cosine)
+ Y momentum dir of backward-going photons: mean = 0.011; rms = 1.16415e-10 (Direction cosine)
+ Z momentum dir of backward-going photons: mean = 0.011; rms = 1.16415e-10 (Direction cosine)
  X momentum dir of forward-going photons: mean = 1.001; rms = 0 (Direction cosine)
  Y momentum dir of forward-going photons: mean = 0.011; rms = 0 (Direction cosine)
  Z momentum dir of forward-going photons: mean = 0.011; rms = 0 (Direction cosine)
@@ -1011,26 +1011,26 @@ LUT - data file: PolishedLumirror.z read in!
     total = sum(values(procs))
     line = join([&quot;$(STATUS_NAMES[s]) $(round(100*n/total, digits=1))&quot; for (s, n) in sort(collect(procs), by=last, rev=true)], &quot;, &quot;)
     @printf &quot;%-30s %s\n&quot; label line
-end</code></pre><pre><code class="nohighlight hljs">unified ground                 FresnelRefraction 75.3, Transmission 9.7, Absorption 9.5, LambertianReflection 3.3, Detection 1.1, SpikeReflection 0.4, BackScattering 0.4, LobeReflection 0.4
-unified polished               FresnelRefraction 77.8, Transmission 10.4, Absorption 9.1, FresnelReflection 1.7, Detection 1.1
-unified polished rough         FresnelRefraction 78.3, Transmission 10.0, Absorption 9.0, LambertianReflection 1.7, Detection 1.0
-unified polishedfrontpainted   SpikeReflection 80.1, Transmission 9.9, Absorption 9.1, Detection 0.9
+end</code></pre><pre><code class="nohighlight hljs">unified ground                 FresnelRefraction 75.2, Transmission 9.6, Absorption 9.5, LambertianReflection 3.5, Detection 1.1, SpikeReflection 0.4, BackScattering 0.4, LobeReflection 0.4
+unified polished               FresnelRefraction 77.7, Transmission 10.5, Absorption 9.0, FresnelReflection 1.7, Detection 1.1
+unified polished rough         FresnelRefraction 78.3, Transmission 9.8, Absorption 9.0, LambertianReflection 1.9, Detection 1.0
+unified polishedfrontpainted   SpikeReflection 80.2, Transmission 9.8, Absorption 9.1, Detection 0.9
 unified groundfrontpainted     LambertianReflection 79.5, Transmission 10.3, Absorption 9.2, Detection 1.0
 unified polishedbackpainted    FresnelRefraction 79.5, Transmission 9.9, Absorption 9.2, Detection 1.2, LambertianReflection 0.1, BackScattering 0.0, SpikeReflection 0.0
-unified groundbackpainted      FresnelRefraction 75.2, Transmission 12.3, Absorption 10.9, Detection 1.2, LambertianReflection 0.3, LobeReflection 0.0, SpikeReflection 0.0
-unified metal polished         SpikeReflection 79.9, Transmission 10.3, Absorption 8.8, Detection 1.1
+unified groundbackpainted      FresnelRefraction 75.4, Transmission 12.2, Absorption 10.8, Detection 1.2, LambertianReflection 0.3, LobeReflection 0.0, BackScattering 0.0, SpikeReflection 0.0
+unified metal polished         SpikeReflection 79.9, Transmission 10.2, Absorption 8.8, Detection 1.1
 unified metal ground           LambertianReflection 56.6, Transmission 9.8, Absorption 8.8, BackScattering 8.2, LobeReflection 8.0, SpikeReflection 7.6, Detection 1.0
-glisur polished                FresnelRefraction 78.6, Transmission 10.0, Absorption 8.7, FresnelReflection 1.7, Detection 1.1
-glisur polished rough          FresnelRefraction 78.7, Transmission 10.0, Absorption 8.7, LambertianReflection 1.6, Detection 0.9
-glisur ground                  FresnelRefraction 61.5, TotalInternalReflection 14.5, Transmission 10.4, Absorption 9.0, FresnelReflection 3.5, Detection 1.0
-glisur polishedfrontpainted    SpikeReflection 80.3, Transmission 9.7, Absorption 9.2, Detection 0.8
-glisur polishedbackpainted     FresnelRefraction 80.3, Transmission 9.9, Absorption 8.9, Detection 0.9, FresnelReflection 0.1
-glisur groundfrontpainted      LambertianReflection 80.0, Transmission 9.7, Absorption 9.0, Detection 1.2
-glisur groundbackpainted       FresnelRefraction 76.5, Transmission 11.7, Absorption 10.2, Detection 1.1, FresnelReflection 0.5
-glisur metal polished          SpikeReflection 80.2, Transmission 9.7, Absorption 9.0, Detection 1.1
-glisur metal ground            LobeReflection 79.8, Transmission 10.1, Absorption 9.2, Detection 0.9
-DAVIS RoughTeflon_LUT          LobeReflection 95.8, Absorption 3.8, Detection 0.5
-DAVIS Detector_LUT             Absorption 89.0, Detection 9.7, LobeReflection 1.3
+glisur polished                FresnelRefraction 78.1, Transmission 10.3, Absorption 8.9, FresnelReflection 1.7, Detection 1.0
+glisur polished rough          FresnelRefraction 78.6, Transmission 9.9, Absorption 8.9, LambertianReflection 1.7, Detection 0.9
+glisur ground                  FresnelRefraction 61.7, TotalInternalReflection 14.3, Transmission 10.7, Absorption 8.9, FresnelReflection 3.4, Detection 1.0
+glisur polishedfrontpainted    SpikeReflection 80.3, Transmission 9.7, Absorption 9.1, Detection 0.9
+glisur polishedbackpainted     FresnelRefraction 80.3, Transmission 9.8, Absorption 8.8, Detection 1.0, FresnelReflection 0.1
+glisur groundfrontpainted      LambertianReflection 80.0, Transmission 9.8, Absorption 9.0, Detection 1.2
+glisur groundbackpainted       FresnelRefraction 76.2, Transmission 11.8, Absorption 10.4, Detection 1.1, FresnelReflection 0.5
+glisur metal polished          SpikeReflection 80.3, Transmission 9.8, Absorption 8.9, Detection 1.0
+glisur metal ground            LobeReflection 79.7, Transmission 10.2, Absorption 9.2, Detection 0.9
+DAVIS RoughTeflon_LUT          LobeReflection 95.7, Absorption 3.8, Detection 0.5
+DAVIS Detector_LUT             Absorption 89.0, Detection 9.8, LobeReflection 1.2
 LUT polishedlumirrorair        PolishedLumirrorAirReflection 80.2, Transmission 9.9, Absorption 8.9, Detection 1.0
 </code></pre><p>And show them as a heatmap, with the percentages written in the cells.</p><pre><code class="language-julia hljs">function plot_boundary(results)
     statuses = sort(unique(s for (_, procs) in results for s in keys(procs)))
@@ -1046,4 +1046,4 @@ LUT polishedlumirrorair        PolishedLumirrorAirReflection 80.2, Transmission 
     end
     return img
 end
-img = plot_boundary(results)</code></pre><p><img src="../OpNovice2-68.png" alt/></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../field02/">« Extended/field02 Example</a><a class="docs-footer-nextpage" href="../TPCSim/">Simulation of the Aleph TPC »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.19.0 on <span class="colophon-date" title="Monday 2 November 2026 19:22">Monday 2 November 2026</span>. Using Julia version 1.13.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+img = plot_boundary(results)</code></pre><p><img src="../OpNovice2-68.png" alt/></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../field02/">« Extended/field02 Example</a><a class="docs-footer-nextpage" href="../TPCSim/">Simulation of the Aleph TPC »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.19.0 on <span class="colophon-date" title="Monday 2 November 2026 21:37">Monday 2 November 2026</span>. Using Julia version 1.13.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
