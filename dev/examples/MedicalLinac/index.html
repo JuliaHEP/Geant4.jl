@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Medical Linac · Geant4.jl</title><meta name="title" content="Medical Linac · Geant4.jl"/><meta property="og:title" content="Medical Linac · Geant4.jl"/><meta property="twitter:title" content="Medical Linac · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.63.2/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../guide/">User Guide</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../">Running the examples</a></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox"/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Basic</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../B1/">Basic/B1 Example</a></li><li><a class="tocitem" href="../B2a/">Basic/B2a Example</a></li><li><a class="tocitem" href="../B2aVis/">Basic/B2a Event Display Example</a></li><li><a class="tocitem" href="../B3a/">Basic/B3a Example</a></li><li><a class="tocitem" href="../B4a/">Basic/B4a Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox"/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Extended</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../GPS/">Extended/GPS Example</a></li><li><a class="tocitem" href="../RE03/">Extended/RE03 Example</a></li><li><a class="tocitem" href="../TestEm3/">Extended/TestEm3 Example</a></li><li><a class="tocitem" href="../Solids/">Geant4 Solids</a></li><li><a class="tocitem" href="../GDMLRendering/">GDML rendering example (CMS)</a></li><li><a class="tocitem" href="../GDMLRendering2/">GDML rendering example (ODD)</a></li><li><a class="tocitem" href="../field02/">Extended/field02 Example</a></li><li><a class="tocitem" href="../OpNovice2/">OpNovice2 Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-4" type="checkbox" checked/><label class="tocitem" for="menuitem-3-4"><span class="docs-label">Advanced</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../TPCSim/">Simulation of the Aleph TPC</a></li><li><a class="tocitem" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber</a></li><li><a class="tocitem" href="../WaterPhantom/">Water Phantom with Scoring</a></li><li><a class="tocitem" href="../UserLib/">Calling Custom C++ library</a></li><li><a class="tocitem" href="../JuliaAction/">Calling G4 actions in Julia</a></li><li><a class="tocitem" href="../Scintillation/">Scintillation Example</a></li><li><a class="tocitem" href="../RICH/">RICH Detector</a></li><li><a class="tocitem" href="../XrayTES/">X-ray TES Detector</a></li><li class="is-active"><a class="tocitem" href>Medical Linac</a><ul class="internal"><li><a class="tocitem" href="#Loading-the-necessary-Julia-modules"><span>Loading the necessary Julia modules</span></a></li><li><a class="tocitem" href="#Define-the-Detector"><span>Define the Detector</span></a></li><li><a class="tocitem" href="#Define-the-Physics-List"><span>Define the Physics List</span></a></li><li><a class="tocitem" href="#Define-the-Primary-Generator"><span>Define the Primary Generator</span></a></li><li><a class="tocitem" href="#Define-the-User-Actions"><span>Define the User Actions</span></a></li><li><a class="tocitem" href="#Define-the-Scoring-Mesh"><span>Define the Scoring Mesh</span></a></li><li><a class="tocitem" href="#Create-the-Application"><span>Create the Application</span></a></li><li><a class="tocitem" href="#Configure,-Initialize-and-Draw-the-Geometry"><span>Configure, Initialize and Draw the Geometry</span></a></li><li><a class="tocitem" href="#Run-the-Simulation"><span>Run the Simulation</span></a></li><li><a class="tocitem" href="#Results"><span>Results</span></a></li></ul></li></ul></li></ul></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><a class="tocitem" href="../../development/">Development</a></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li><a class="is-disabled">Advanced</a></li><li class="is-active"><a href>Medical Linac</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Medical Linac</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/examples/MedicalLinac.lit#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Medical-Linac"><a class="docs-heading-anchor" href="#Medical-Linac">Medical Linac</a><a id="Medical-Linac-1"></a><a class="docs-heading-anchor-permalink" href="#Medical-Linac" title="Permalink"></a></h1><div class="admonition is-info" id="Generated-with-Claude-Code-7b980f41c57533b4"><header class="admonition-header">Generated with Claude Code<a class="admonition-anchor" href="#Generated-with-Claude-Code-7b980f41c57533b4" title="Permalink"></a></header><div class="admonition-body"><p>This example was generated by <a href="https://claude.com/claude-code">Claude Code</a> from the <code>medical_linac</code> C++ example of the Geant4 distribution.</p></div></div><p>This example is a port of the Geant4 advanced example <a href="https://github.com/Geant4/geant4/tree/master/examples/advanced/medical_linac">medical_linac</a> (S. Pozzi, B. Caccia and C. Mancini Terracciano). It simulates the head of a GE Saturn 43 medical linear accelerator, in the 12 MV photon mode with a 10 × 10 cm² field, and computes the dose in a water phantom. The accelerator was the subject of an intercomparison exercise of the EURADOS Working Group 6 (Computational Dosimetry), which published its geometry and measured dose distributions (EURADOS Report 2020-05).</p><p>The example shows:</p><ul><li>a detailed geometry built from polycones and boolean solids, with the jaws rotated around the source</li><li>a <code>G4Region</code> with its own production cuts for each element of the head</li><li>a custom primary generator with the energy and the spatial and angular spread of the electron beam</li><li>simple variance reduction with the stepping and stacking actions, and the directional bremsstrahlung splitting of Geant4 configured with <code>G4EmParameters</code></li><li>the dose scored with a <code>G4JLScoringMesh</code> (as the <code>/score/</code> commands of the C++ example), and the depth dose curve and the lateral profiles computed from it</li></ul><div class="admonition is-info" id="Note-that-20ed243c06bbdc08"><header class="admonition-header">Note that<a class="admonition-anchor" href="#Note-that-20ed243c06bbdc08" title="Permalink"></a></header><div class="admonition-body"><p>You can also download this example as a <a href="../MedicalLinac.ipynb">Jupyter notebook</a> and a plain <a href="../MedicalLinac.jl">Julia source file</a>.</p></div></div><h4 id="Table-of-contents"><a class="docs-heading-anchor" href="#Table-of-contents">Table of contents</a><a id="Table-of-contents-1"></a><a class="docs-heading-anchor-permalink" href="#Table-of-contents" title="Permalink"></a></h4><ul><li><a href="#Loading-the-necessary-Julia-modules">Loading the necessary Julia modules</a></li><li><a href="#Define-the-Detector">Define the Detector</a></li><li><a href="#Define-the-Physics-List">Define the Physics List</a></li><li><a href="#Define-the-Primary-Generator">Define the Primary Generator</a></li><li><a href="#Define-the-User-Actions">Define the User Actions</a></li><li><a href="#Define-the-Scoring-Mesh">Define the Scoring Mesh</a></li><li><a href="#Create-the-Application">Create the Application</a></li><li><a href="#Configure,-Initialize-and-Draw-the-Geometry">Configure, Initialize and Draw the Geometry</a></li><li><a href="#Run-the-Simulation">Run the Simulation</a></li><li><a href="#Results">Results</a></li><li class="no-marker"><ul><li><a href="#Percentage-depth-dose">Percentage depth dose</a></li><li><a href="#Lateral-profiles">Lateral profiles</a></li><li><a href="#Dose-map">Dose map</a></li></ul></li></ul><h2 id="Loading-the-necessary-Julia-modules"><a class="docs-heading-anchor" href="#Loading-the-necessary-Julia-modules">Loading the necessary Julia modules</a><a id="Loading-the-necessary-Julia-modules-1"></a><a class="docs-heading-anchor-permalink" href="#Loading-the-necessary-Julia-modules" title="Permalink"></a></h2><p>Loading Makie also activates the drawing of the geometry.</p><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits
+using Printf
+using CairoMakie
+</code></pre><h2 id="Define-the-Detector"><a class="docs-heading-anchor" href="#Define-the-Detector">Define the Detector</a><a id="Define-the-Detector-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Detector" title="Permalink"></a></h2><p>The detector is defined in the <a href="../MedicalLinacDetector/#MedicalLinacDetector.jl">MedicalLinacDetector.jl</a> file, which we include here not to clutter the example. Along the beam:</p><ul><li>the target: a W block with a hole on the beam side, behind a thin Ti disk</li><li>the primary collimator: three tubes (carbon steel, a W-Ni-Cu alloy and Pb) with a conical hole</li><li>the flattening filter: a steel tube and three cones</li><li>the ionization chamber: six thin Al layers, each followed by a kapton layer</li><li>the Al vacuum window</li><li>the jaws: four stacks of steel, Pb and W-Ni-Cu blocks, rotated around the source so that their inner faces define a square field</li><li>a water phantom of 25.5 cm side, at a source to skin distance (SSD) of 90 cm</li></ul><p>The head is inside a vacuum box whose origin is the source. Each element of the head is in its own <code>G4Region</code> with the production cuts of the C++ example: 1 mm in the target, the flattening filter and the window, 1 cm in the primary collimator, 0.1 mm in the ionization chamber, 2 cm in the jaws and 0.1 mm in the phantom.</p><pre><code class="language-julia hljs">include(joinpath(@__DIR__, &quot;MedicalLinacDetector.jl&quot;))
+linac = MedicalLinacDetector(fieldSide = 10cm)</code></pre><pre><code class="nohighlight hljs">Main.var&quot;##142&quot;.MedicalLinacDetector
+  fieldSide: Float64 100.0
+  sourceToSkinDistance: Float64 900.0
+  phantomSide: Float64 255.0
+  checkOverlaps: Bool false
+  jawPVs: Array{CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4VPhysicalVolume}}((0,))
+  filterPVs: Array{CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4VPhysicalVolume}}((0,))
+  ffRadius: Float64 54.0
+  ffZ: Float64 149.5
+</code></pre><h2 id="Define-the-Physics-List"><a class="docs-heading-anchor" href="#Define-the-Physics-List">Define the Physics List</a><a id="Define-the-Physics-List-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Physics-List" title="Permalink"></a></h2><p>The C++ example uses the option 3 of the standard EM physics with the decay physics. The option 3 is not available in Geant4.jl, so we use the option 4, which is also an option of the C++ example (<code>/physics/addPhysics standard_opt4</code>). We start from QBBC, replace its EM physics and remove the hadronic physics, which have a negligible effect on the dose of a 12 MV beam. The builder types are those of <code>G4BuilderType</code>.</p><pre><code class="language-julia hljs">struct MedicalLinacPhysics &lt;: G4VUserPhysicsList
+    function MedicalLinacPhysics(verbose)
+        pl = QBBC(verbose)
+        ReplacePhysics(pl, move!(G4EmStandardPhysics_option4(verbose)))
+        for type in (3, 5, 6, 7, 8)       ## EmExtra, HadronElastic, HadronInelastic, Stopping, Ions
+            RemovePhysics(pl, type)
+        end
+        return pl
+    end
+end</code></pre><h2 id="Define-the-Primary-Generator"><a class="docs-heading-anchor" href="#Define-the-Primary-Generator">Define the Primary Generator</a><a id="Define-the-Primary-Generator-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Primary-Generator" title="Permalink"></a></h2><p>The electrons start 5 mm before the source (the origin of the accelerator box), inside the hole of the target, and go along +z. As in the C++ example:</p><ul><li>the energy is Gaussian, with a mean of 12 MeV and a standard deviation of 0.127 MeV</li><li>the start point is uniform in radius (not in area) inside a circle of 1 mm</li><li>the direction has a Gaussian sin θ with a standard deviation of 0.003</li></ul><p>Geant4.jl shares the data of the generator between the worker threads, so each thread creates its own particle gun and stores it in a dictionary indexed by the thread ID.</p><pre><code class="language-julia hljs">mutable struct LinacGunData &lt;: G4JLGeneratorData
+    guns::Dict{Int, CxxPtr{G4ParticleGun}}
+    lock::ReentrantLock
+    z::Float64               ## start position along the beam
+    radius::Float64
+    meanEnergy::Float64
+    sigmaEnergy::Float64
+    sigmaAngle::Float64      ## standard deviation of sin θ
+end
+
+function LinacGenerator(; radius=1mm, meanEnergy=12MeV, sigmaEnergy=0.127MeV, sigmaAngle=0.003)
+    data = LinacGunData(Dict(), ReentrantLock(), 0., radius, meanEnergy, sigmaEnergy, sigmaAngle)
+    function init(data::LinacGunData, app)
+        data.z = -app.detector.sourceToSkinDistance - 5mm
+        gun = move!(G4ParticleGun())
+        SetParticleByName(gun, &quot;e-&quot;)
+        lock(data.lock) do
+            data.guns[G4Threading!G4GetThreadId()] = gun
+        end
+    end
+    function generate(evt::G4Event, data::LinacGunData)::Nothing
+        gun = data.guns[G4Threading!G4GetThreadId()]
+        sθ = data.sigmaAngle * randn()
+        cθ, ϕ = sqrt(1 - sθ^2), 2π * rand()
+        ρ, α = data.radius * rand(), 2π * rand()
+        SetParticleEnergy(gun, data.meanEnergy + data.sigmaEnergy * randn())
+        SetParticlePosition(gun, G4ThreeVector(ρ * sin(α), ρ * cos(α), data.z))
+        SetParticleMomentumDirection(gun, G4ThreeVector(sθ * cos(ϕ), sθ * sin(ϕ), cθ))
+        GeneratePrimaryVertex(gun, CxxPtr(evt))
+    end
+    G4JLPrimaryGenerator(&quot;LinacGun&quot;, data; init_method=init, generate_method=generate)
+end</code></pre><pre><code class="nohighlight hljs">LinacGenerator (generic function with 1 method)</code></pre><h2 id="Define-the-User-Actions"><a class="docs-heading-anchor" href="#Define-the-User-Actions">Define the User Actions</a><a id="Define-the-User-Actions-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-User-Actions" title="Permalink"></a></h2><p>There is no simulation data to collect: the dose is scored by the scoring mesh. The stepping and stacking actions only implement the variance reduction of the C++ example:</p><ul><li>the particles (and the new secondaries) that go backwards are killed</li><li>the particles that enter a jaw envelope are killed, so the jaws are perfect absorbers</li><li>the particles that leave the target, the upper and middle parts of the primary collimator or the flattening filter outside the cone defined by the top face of the flattening filter are killed</li></ul><p>The volumes are compared by their pointers, which are stored in the detector structure by the construction function.</p><pre><code class="language-julia hljs">function stepaction(step::G4Step, app::G4JLApplication)::Nothing
+    track = GetTrack(step)
+    dir = GetMomentumDirection(track)
+    dz = z(dir)
+    det = app.detector
+    if dz &lt; 0 || GetPhysicalVolume(GetPostStepPoint(step)) in det.jawPVs
+        SetTrackStatus(track, fStopAndKill)
+    elseif GetPhysicalVolume(GetPreStepPoint(step)) in det.filterPVs
+        tanmax = det.ffRadius / det.ffZ
+        (abs(x(dir) / dz) &gt; tanmax || abs(y(dir) / dz) &gt; tanmax) &amp;&amp; SetTrackStatus(track, fStopAndKill)
+    end
+    return
+end
+
+stackaction(track::G4Track, ::G4JLApplication) = z(GetMomentumDirection(track)) &lt; 0 ? fKill : fUrgent</code></pre><pre><code class="nohighlight hljs">stackaction (generic function with 1 method)</code></pre><h2 id="Define-the-Scoring-Mesh"><a class="docs-heading-anchor" href="#Define-the-Scoring-Mesh">Define the Scoring Mesh</a><a id="Define-the-Scoring-Mesh-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Scoring-Mesh" title="Permalink"></a></h2><p>As in the <code>run.mac</code> macro of the C++ example, the dose is scored in a box mesh of 51 × 51 × 51 voxels of 5 mm, which covers the phantom.</p><pre><code class="language-julia hljs">mesh = G4JLScoringMesh(&quot;boxMesh_1&quot;,
+                       BoxMesh(127.5mm, 127.5mm, 127.5mm),
+                       translation = (0, 0, 130mm),
+                       bins = (51, 51, 51),
+                       quantities = [doseDeposit(&quot;dDep&quot;)])</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLScoringMesh{Geant4.BoxMesh}(&quot;boxMesh_1&quot;, Geant4.BoxMesh(127.5, 127.5, 127.5, :mm), (51, 51, 51), (0.0, 0.0, 130.0), nothing, Geant4.ScoringQuantity[Geant4.ScoringQuantity(&quot;dDep&quot;, :doseDeposit, :Gy, Geant4.AbstractFilter[])])</code></pre><h2 id="Create-the-Application"><a class="docs-heading-anchor" href="#Create-the-Application">Create the Application</a><a id="Create-the-Application-1"></a><a class="docs-heading-anchor-permalink" href="#Create-the-Application" title="Permalink"></a></h2><pre><code class="language-julia hljs">app = G4JLApplication(; detector = linac,                             ## detector with parameters
+                        generator = LinacGenerator(),                 ## primary particle generator
+                        nthreads = 8,                                 ## number of threads (MT)
+                        physics_type = MedicalLinacPhysics,           ## what physics list to instantiate
+                        stepaction_method = stepaction,               ## step action method
+                        stackaction_method = stackaction,             ## stacking action method
+                        scorers = [mesh])                             ## list of scorers</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLApplication{Main.var&quot;##142&quot;.MedicalLinacDetector, Geant4.G4JLNoData}(Geant4.G4MTRunManagerAllocated(Ptr{Nothing}(0x00000000200d2510)), Main.var&quot;##142&quot;.MedicalLinacDetector
+  fieldSide: Float64 100.0
+  sourceToSkinDistance: Float64 900.0
+  phantomSide: Float64 255.0
+  checkOverlaps: Bool false
+  jawPVs: Array{CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4VPhysicalVolume}}((0,))
+  filterPVs: Array{CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4VPhysicalVolume}}((0,))
+  ffRadius: Float64 54.0
+  ffZ: Float64 149.5
+, [Geant4.G4JLNoData(), Geant4.G4JLNoData(), Geant4.G4JLNoData(), Geant4.G4JLNoData(), Geant4.G4JLNoData(), Geant4.G4JLNoData(), Geant4.G4JLNoData(), Geant4.G4JLNoData(), Geant4.G4JLNoData()], Geant4.G4JLPrimaryGenerator{Main.var&quot;##142&quot;.LinacGunData}(&quot;LinacGun&quot;, Main.var&quot;##142&quot;.LinacGunData(Dict{Int64, CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4ParticleGun}}(), ReentrantLock(), 0.0, 1.0, 12.0, 0.127, 0.003), Main.var&quot;##142&quot;.var&quot;#init#11&quot;(), Main.var&quot;##142&quot;.var&quot;#generate#14&quot;(), Geant4.G4JLGeneratorAction[]), nothing, nothing, 8, 0, Geant4.G4MTRunManager, Geant4.G4JLDetectorConstruction, Main.var&quot;##142&quot;.MedicalLinacPhysics, Geant4.G4JLRunAction, Geant4.G4JLEventAction, Geant4.G4JLTrackingAction, Geant4.G4JLSteppingAction, Main.var&quot;##142&quot;.stepaction, nothing, nothing, nothing, nothing, nothing, nothing, Main.var&quot;##142&quot;.stackaction, nothing, Dict{String, Geant4.G4JLProtoSD}(), Dict{String, Vector{Geant4.G4JLSensitiveDetector}}(), Geant4.G4JLScoringMesh[Geant4.G4JLScoringMesh{Geant4.BoxMesh}(&quot;boxMesh_1&quot;, Geant4.BoxMesh(127.5, 127.5, 127.5, :mm), (51, 51, 51), (0.0, 0.0, 130.0), nothing, Geant4.ScoringQuantity[Geant4.ScoringQuantity(&quot;dDep&quot;, :doseDeposit, :Gy, Geant4.AbstractFilter[])])], nothing, nothing)</code></pre><h2 id="Configure,-Initialize-and-Draw-the-Geometry"><a class="docs-heading-anchor" href="#Configure,-Initialize-and-Draw-the-Geometry">Configure, Initialize and Draw the Geometry</a><a id="Configure,-Initialize-and-Draw-the-Geometry-1"></a><a class="docs-heading-anchor-permalink" href="#Configure,-Initialize-and-Draw-the-Geometry" title="Permalink"></a></h2><p>The default production cut (outside the regions) is 1 mm, as in the C++ example.</p><p>Very few electrons produce a photon that reaches the phantom: the photons are emitted in a wide cone and the field covers a small solid angle. The C++ example suggests 5 million electrons, which still gives noisy dose curves in 5 mm voxels. Here we add the directional bremsstrahlung splitting of Geant4, a variance reduction technique designed for linacs: each bremsstrahlung photon is split into 1000 photons with a weight of 1/1000, and only those that go towards a sphere of 15 cm radius around the centre of the phantom surface are kept. The others are kept with a probability of 1/1000 (Russian roulette) and a weight of 1. The dose scorer takes the weights into account, so the results are not biased. With the same CPU time, the statistical errors are about 4 times smaller than without splitting.</p><p>The splitting must be applied in all the regions of the head, and also to the photon interactions (Compton scattering, photoelectric effect, pair production and annihilation). Otherwise, a photon of weight 1 that survived the Russian roulette can scatter towards the phantom, and a single one deposits more energy in a voxel than all the other photons together.</p><pre><code class="language-julia hljs">configure(app)
+ui`/run/setCut 1 mm`
+em = G4EmParameters!Instance()
+for region in (&quot;TargetR&quot;, &quot;primaryCollimatorR&quot;, &quot;VacWindowR&quot;, &quot;ffR&quot;, &quot;IonChamberR&quot;, &quot;JawsR&quot;,
+               &quot;DefaultRegionForTheWorld&quot;), process in (&quot;eBrem&quot;, &quot;compt&quot;, &quot;phot&quot;, &quot;conv&quot;, &quot;annihil&quot;)
+    ActivateSecondaryBiasing(em, process, region, 1000., 100MeV)
+end
+SetDirectionalSplitting(em, true)
+SetDirectionalSplittingTarget(em, G4ThreeVector(0, 0, 0))
+SetDirectionalSplittingRadius(em, 15cm)
+initialize(app)</code></pre><pre><code class="nohighlight hljs">--- G4CoupledTransportation is used 
+ Secondary biasing is activated for e+ and annihil inside G4Regions: 
+           TargetR  BiasingWeight= 0.001
+     Directional splitting activated, with target position: (0,0,0) cm; radius: 15cm.
+ Secondary biasing is activated for gamma and phot inside G4Regions: 
+           TargetR  BiasingWeight= 0.001
+     Directional splitting activated, with target position: (0,0,0) cm; radius: 15cm.
+ Secondary biasing is activated for gamma and compt inside G4Regions: 
+           TargetR  BiasingWeight= 0.001
+     Directional splitting activated, with target position: (0,0,0) cm; radius: 15cm.
+ Secondary biasing is activated for gamma and conv inside G4Regions: 
+           TargetR  BiasingWeight= 0.001
+     Directional splitting activated, with target position: (0,0,0) cm; radius: 15cm.
+.... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4ScoringManager has 1 scoring meshes.
+G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+ Size (x, y, z): (12.75, 12.75, 12.75) [cm]
+ # of segments: (51, 51, 51)
+ displacement: (0, 0, 13) [cm]
+ registered primitve scorers : 
+   0  dDep
+</code></pre><p>The head of the accelerator and the whole setup with the phantom, cut in half at y = 0 and seen from the side, with the beam (z axis) going from left to right. The jaws are open for the 10 × 10 cm² field. The camera looks at the cut face from +y, with the x axis up, from a distance proportional to the length of the drawn region (the <code>distance</code> factor is for a field of view of 45°).</p><pre><code class="language-julia hljs">function sideview!(s, zmin, zmax; distance=0.5, tilt=0.3, fov=15)
+    zc, d = (zmin + zmax)/2, distance * (zmax - zmin) * tand(22.5) / tand(fov/2)
+    cam = cameracontrols(s.scene)
+    cam.fov[] = fov                       ## narrow field of view: little perspective distortion
+    update_cam!(s.scene, cam, Vec3f(tilt * d, d, zc), Vec3f(0, 0, zc), Vec3f(1, 0, 0))
+    cam.settings.center[] = false         ## keep this view when the figure is displayed
+end
+fig = Figure(size=(1200, 900))
+s1 = LScene(fig[1,1], show_axis=false)
+Geant4.draw!(s1, GetVolume(&quot;accWorld&quot;)[], clip=:y)
+sideview!(s1, -20mm, 490mm, distance=0.7)
+s2 = LScene(fig[2,1], show_axis=false)
+Geant4.draw!(s2, GetWorldVolume(), clip=:y)
+sideview!(s2, -920mm, 260mm, distance=0.38)
+rowsize!(fig.layout, 1, Relative(0.62))</code></pre><p><img src="../MedicalLinac-20.png" alt/></p><h2 id="Run-the-Simulation"><a class="docs-heading-anchor" href="#Run-the-Simulation">Run the Simulation</a><a id="Run-the-Simulation-1"></a><a class="docs-heading-anchor-permalink" href="#Run-the-Simulation" title="Permalink"></a></h2><p>100000 electrons take about one minute with 8 threads. Increase <code>nevents</code> for smoother curves.</p><pre><code class="language-julia hljs">nevents = 100_000
+ui`/run/printProgress 20000`
+@time beamOn(app, nevents)</code></pre><pre><code class="nohighlight hljs">### Run 0 starts.
+G4WT4 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT3 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT7 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT4 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT4 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT4 &gt;  Size (x, y, z): (12.75, 12.75, 12.75) [cm]
+G4WT4 &gt;  # of segments: (51, 51, 51)
+G4WT4 &gt;  displacement: (0, 0, 13) [cm]
+G4WT4 &gt;  registered primitve scorers : 
+G4WT4 &gt;    0  dDep
+G4WT6 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT7 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT7 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT7 &gt;  Size (x, y, z): (12.75, 12.75, 12.75) [cm]
+G4WT7 &gt;  # of segments: (51, 51, 51)
+G4WT7 &gt;  displacement: (0, 0, 13) [cm]
+G4WT7 &gt;  registered primitve scorers : 
+G4WT7 &gt;    0  dDep
+G4WT6 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT6 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT6 &gt;  Size (x, y, z): (12.75, 12.75, 12.75) [cm]
+G4WT6 &gt;  # of segments: (51, 51, 51)
+G4WT6 &gt;  displacement: (0, 0, 13) [cm]
+G4WT6 &gt;  registered primitve scorers : 
+G4WT6 &gt;    0  dDep
+G4WT1 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT1 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT1 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT1 &gt;  Size (x, y, z): (12.75, 12.75, 12.75) [cm]
+G4WT1 &gt;  # of segments: (51, 51, 51)
+G4WT1 &gt;  displacement: (0, 0, 13) [cm]
+G4WT1 &gt;  registered primitve scorers : 
+G4WT1 &gt;    0  dDep
+G4WT0 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT5 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT2 &gt; .... G4ScoringMessenger::MeshBinCommand - G4ScoringBox
+G4WT0 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT0 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT0 &gt;  Size (x, y, z): (12.75, 12.75, 12.75) [cm]
+G4WT0 &gt;  # of segments: (51, 51, 51)
+G4WT0 &gt;  displacement: (0, 0, 13) [cm]
+G4WT0 &gt;  registered primitve scorers : 
+G4WT5 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT2 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT3 &gt; G4ScoringManager has 1 scoring meshes.
+G4WT5 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT5 &gt;  Size (x, y, z): (12.75, 12.75, 12.75) [cm]
+G4WT0 &gt;    0  dDep
+G4WT5 &gt;  # of segments: (51, 51, 51)
+G4WT5 &gt;  displacement: (0, 0, 13) [cm]
+G4WT3 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT3 &gt;  Size (x, y, z): (12.75, 12.75, 12.75) [cm]
+G4WT5 &gt;  registered primitve scorers : 
+G4WT5 &gt;    0  dDep
+G4WT3 &gt;  # of segments: (51, 51, 51)
+G4WT3 &gt;  displacement: (0, 0, 13) [cm]
+G4WT3 &gt;  registered primitve scorers : 
+G4WT3 &gt;    0  dDep
+G4WT2 &gt; G4ScoringBox : boxMesh_1 --- Shape: Box mesh
+G4WT2 &gt;  Size (x, y, z): (12.75, 12.75, 12.75) [cm]
+G4WT2 &gt;  # of segments: (51, 51, 51)
+G4WT2 &gt;  displacement: (0, 0, 13) [cm]
+G4WT2 &gt;  registered primitve scorers : 
+G4WT2 &gt;    0  dDep
+G4WT0 &gt; ### Run 0 starts on worker thread 0.
+G4WT1 &gt; ### Run 0 starts on worker thread 1.
+G4WT7 &gt; ### Run 0 starts on worker thread 7.
+G4WT5 &gt; ### Run 0 starts on worker thread 5.
+G4WT0 &gt; --&gt; Event 0 starts with initial seeds (13049039,61775110).
+G4WT3 &gt; ### Run 0 starts on worker thread 3.
+G4WT6 &gt; ### Run 0 starts on worker thread 6.
+G4WT2 &gt; ### Run 0 starts on worker thread 2.
+G4WT4 &gt; ### Run 0 starts on worker thread 4.
+G4WT7 &gt; --&gt; Event 20000 starts with initial seeds (89862531,9432512).
+G4WT4 &gt; --&gt; Event 40000 starts with initial seeds (62524855,6702582).
+G4WT2 &gt; --&gt; Event 60000 starts with initial seeds (55745160,63940167).
+G4WT6 &gt; --&gt; Event 80000 starts with initial seeds (7307034,97028274).
+114.359569 seconds (272.34 M allocations: 4.068 GiB, 0.77% gc time, 0.78% compilation time: &lt;1% of which was recompilation)
+</code></pre><h2 id="Results"><a class="docs-heading-anchor" href="#Results">Results</a><a id="Results-1"></a><a class="docs-heading-anchor-permalink" href="#Results" title="Permalink"></a></h2><p>The dose in each voxel (in Gy), with the coordinates of the centres of the voxels. The depth is measured from the phantom surface (z = 0).</p><pre><code class="language-julia hljs">dose, _, _ = mesh.dDep
+nb = mesh.bins[1]
+centers = range(-127.5mm + 2.5mm, 127.5mm - 2.5mm, length=nb)
+depths = centers .+ 130mm
+c = (nb + 1) ÷ 2                      ## central voxel
+avg(a; dims) = vec(sum(a; dims) / prod(size(a, d) for d in dims))</code></pre><pre><code class="nohighlight hljs">avg (generic function with 1 method)</code></pre><h3 id="Percentage-depth-dose"><a class="docs-heading-anchor" href="#Percentage-depth-dose">Percentage depth dose</a><a id="Percentage-depth-dose-1"></a><a class="docs-heading-anchor-permalink" href="#Percentage-depth-dose" title="Permalink"></a></h3><p>The dose on the beam axis, averaged over the 5 × 5 central voxels (2.5 × 2.5 cm²), as a percentage of its maximum. The maximum of the dose is reached at a depth of a few cm because the secondary electrons need this distance to reach equilibrium (build-up region).</p><pre><code class="language-julia hljs">axis = avg(dose[c-2:c+2, c-2:c+2, :], dims=(1, 2))
+imax = argmax(axis)
+pdd = 100 * axis / axis[imax]
+d10 = pdd[argmin(abs.(depths .- 100mm))]
+@printf &quot;Depth of the maximum dose: %.1f cm\n&quot; depths[imax]/cm
+@printf &quot;PDD at 10 cm depth       : %.1f %%\n&quot; d10
+@printf &quot;Dose at the maximum      : %.3g Gy per electron\n&quot; axis[imax] / nevents
+
+fig = Figure(size=(800, 500))
+ax = Axis(fig[1,1], xlabel=&quot;Depth [cm]&quot;, ylabel=&quot;Dose [% of maximum]&quot;, title=&quot;Percentage depth dose (10 × 10 cm², SSD 90 cm)&quot;)
+scatterlines!(ax, depths/cm, pdd, markersize=6)
+ylims!(ax, 0, 110)</code></pre><p><img src="../MedicalLinac-26.png" alt/></p><h3 id="Lateral-profiles"><a class="docs-heading-anchor" href="#Lateral-profiles">Lateral profiles</a><a id="Lateral-profiles-1"></a><a class="docs-heading-anchor-permalink" href="#Lateral-profiles" title="Permalink"></a></h3><p>The dose along x, averaged over 5 voxels in y and 3 in depth, at the depth of the maximum and at 10 and 20 cm, as a percentage of the dose on the axis at the depth of the maximum. The field is defined at SSD + 10 cm = 100 cm, so its edges are at ±5 cm at 10 cm depth and spread with the depth.</p><pre><code class="language-julia hljs">fig = Figure(size=(800, 500))
+ax = Axis(fig[1,1], xlabel=&quot;x [cm]&quot;, ylabel=&quot;Dose [% of maximum on axis]&quot;, title=&quot;Lateral profiles&quot;)
+norm = axis[imax]
+for d in (depths[imax], 100mm, 200mm)
+    k = argmin(abs.(depths .- d))
+    profile = avg(dose[:, c-2:c+2, k-1:k+1], dims=(2, 3))
+    scatterlines!(ax, centers/cm, 100 * profile / norm, markersize=6, label=@sprintf(&quot;%.1f cm&quot;, depths[k]/cm))
+end
+vlines!(ax, [-5, 5], color=:gray, linestyle=:dash)
+axislegend(ax, position=:rt)</code></pre><p><img src="../MedicalLinac-28.png" alt/></p><h3 id="Dose-map"><a class="docs-heading-anchor" href="#Dose-map">Dose map</a><a id="Dose-map-1"></a><a class="docs-heading-anchor-permalink" href="#Dose-map" title="Permalink"></a></h3><p>The dose in the central plane (y = 0) of the phantom, as a percentage of the maximum on the axis.</p><pre><code class="language-julia hljs">fig = Figure(size=(800, 650))
+ax = Axis(fig[1,1], xlabel=&quot;x [cm]&quot;, ylabel=&quot;Depth [cm]&quot;, title=&quot;Dose in the plane y = 0&quot;, yreversed=true, aspect=DataAspect())
+hm = heatmap!(ax, centers/cm, depths/cm, 100 * dose[:, c, :] / norm, colormap=:jet, colorrange=(0, 110))
+Colorbar(fig[1,2], hm, label=&quot;Dose [%]&quot;)</code></pre><p><img src="../MedicalLinac-30.png" alt/></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../XrayTES/">« X-ray TES Detector</a><a class="docs-footer-nextpage" href="../B2aDetector/">B2aDetector.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.19.0 on <span class="colophon-date" title="Tuesday 3 November 2026 16:36">Tuesday 3 November 2026</span>. Using Julia version 1.13.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
