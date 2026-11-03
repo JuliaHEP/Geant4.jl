@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>MedicalLinacDetector.jl · Geant4.jl</title><meta name="title" content="MedicalLinacDetector.jl · Geant4.jl"/><meta property="og:title" content="MedicalLinacDetector.jl · Geant4.jl"/><meta property="twitter:title" content="MedicalLinacDetector.jl · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.63.2/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../guide/">User Guide</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../">Running the examples</a></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox"/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Basic</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../B1/">Basic/B1 Example</a></li><li><a class="tocitem" href="../B2a/">Basic/B2a Example</a></li><li><a class="tocitem" href="../B2aVis/">Basic/B2a Event Display Example</a></li><li><a class="tocitem" href="../B3a/">Basic/B3a Example</a></li><li><a class="tocitem" href="../B4a/">Basic/B4a Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox"/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Extended</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../GPS/">Extended/GPS Example</a></li><li><a class="tocitem" href="../RE03/">Extended/RE03 Example</a></li><li><a class="tocitem" href="../TestEm3/">Extended/TestEm3 Example</a></li><li><a class="tocitem" href="../Solids/">Geant4 Solids</a></li><li><a class="tocitem" href="../GDMLRendering/">GDML rendering example (CMS)</a></li><li><a class="tocitem" href="../GDMLRendering2/">GDML rendering example (ODD)</a></li><li><a class="tocitem" href="../field02/">Extended/field02 Example</a></li><li><a class="tocitem" href="../OpNovice2/">OpNovice2 Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-4" type="checkbox"/><label class="tocitem" for="menuitem-3-4"><span class="docs-label">Advanced</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../TPCSim/">Simulation of the Aleph TPC</a></li><li><a class="tocitem" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber</a></li><li><a class="tocitem" href="../WaterPhantom/">Water Phantom with Scoring</a></li><li><a class="tocitem" href="../UserLib/">Calling Custom C++ library</a></li><li><a class="tocitem" href="../JuliaAction/">Calling G4 actions in Julia</a></li><li><a class="tocitem" href="../Scintillation/">Scintillation Example</a></li><li><a class="tocitem" href="../RICH/">RICH Detector</a></li><li><a class="tocitem" href="../XrayTES/">X-ray TES Detector</a></li><li><a class="tocitem" href="../MedicalLinac/">Medical Linac</a></li></ul></li></ul></li><li class="is-active"><a class="tocitem" href>MedicalLinacDetector.jl</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><a class="tocitem" href="../../development/">Development</a></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>MedicalLinacDetector.jl</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>MedicalLinacDetector.jl</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/examples/MedicalLinacDetector.md#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="MedicalLinacDetector.jl"><a class="docs-heading-anchor" href="#MedicalLinacDetector.jl">MedicalLinacDetector.jl</a><a id="MedicalLinacDetector.jl-1"></a><a class="docs-heading-anchor-permalink" href="#MedicalLinacDetector.jl" title="Permalink"></a></h1><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits
+using Parameters
+
+#---Detector parameters----------------------------------------------------------------------------
+# The head of a GE Saturn 43 linear accelerator in the 12 MV photon mode and a water phantom. The
+# head (target, primary collimator, flattening filter, ionization chamber, vacuum window and jaws)
+# is inside a vacuum box whose origin is the source. The phantom surface is at z = 0 and the beam
+# goes along +z. Only the field size and the source to skin distance are parameters. The
+# dimensions of the head are fixed in the construction function.
+@with_kw mutable struct MedicalLinacDetector &lt;: G4JLDetector
+    fieldSide::Float64 = 100mm                  ## side of the square field at SSD + 10 cm
+    sourceToSkinDistance::Float64 = 900mm       ## SSD: from the source to the phantom surface
+    phantomSide::Float64 = 255mm                ## side of the cubic water phantom
+    checkOverlaps::Bool = false
+    ##---filled by the construction
+    jawPVs::Vector{CxxPtr{G4VPhysicalVolume}} = CxxPtr{G4VPhysicalVolume}[]     ## the 4 jaw envelopes
+    filterPVs::Vector{CxxPtr{G4VPhysicalVolume}} = CxxPtr{G4VPhysicalVolume}[]  ## target, collimator and flattening filter
+    ffRadius::Float64 = 54mm                    ## radius and position of the top face of the
+    ffZ::Float64 = 149.5mm                      ## flattening filter (they define the useful cone)
+end
+
+# Visualization attributes (colour and transparency) of a logical volume
+setVis(lv, r, g, b, a=1.; visible=true) = SetVisAttributes(lv, G4VisAttributes(visible, G4Colour(r, g, b, a)))
+
+# Region with its production cut for all particles
+function cutRegion(name, cut, lvs...)
+    region = G4Region(name)
+    foreach(lv -&gt; AddRootLogicalVolume(region, lv), lvs)
+    cuts = G4ProductionCuts()
+    SetProductionCut(cuts, cut)
+    SetProductionCuts(region, cuts)
+    return region
+end
+
+function rotation(; x=0, y=0)
+    rot = G4RotationMatrix()
+    x != 0 &amp;&amp; rotateX(rot, x)
+    y != 0 &amp;&amp; rotateY(rot, y)
+    return rot
+end
+
+#---Detector construction--------------------------------------------------------------------------
+function medicalLinacConstruct(det::MedicalLinacDetector)::CxxPtr{G4VPhysicalVolume}
+    (; fieldSide, sourceToSkinDistance, phantomSide, checkOverlaps) = det
+    nist = G4NistManager!Instance()
+    empty!(det.jawPVs)
+    empty!(det.filterPVs)
+
+    #---Materials----------------------------------------------------------------------------------
+    air = FindOrBuildMaterial(nist, &quot;G4_AIR&quot;)
+    vacuum = FindOrBuildMaterial(nist, &quot;G4_Galactic&quot;)
+    water = FindOrBuildMaterial(nist, &quot;G4_WATER&quot;)
+    W = FindOrBuildMaterial(nist, &quot;G4_W&quot;)
+    Ti = FindOrBuildMaterial(nist, &quot;G4_Ti&quot;)
+    Pb = FindOrBuildMaterial(nist, &quot;G4_Pb&quot;)
+    Al = FindOrBuildMaterial(nist, &quot;G4_Al&quot;)
+    if G4Material!GetMaterial(&quot;Denal(WNICU)&quot;, false) == C_NULL
+        for (name, density, fractions) in
+            ((&quot;StainlessSteel&quot;, 7.8g/cm3, (&quot;G4_Fe&quot; =&gt; 0.6898, &quot;G4_Cr&quot; =&gt; 0.18, &quot;G4_Ni&quot; =&gt; 0.10,
+                                           &quot;G4_Mn&quot; =&gt; 0.02, &quot;G4_Si&quot; =&gt; 0.01, &quot;G4_C&quot; =&gt; 0.0002)),
+             (&quot;CARBON_STEEL&quot;, 7.8g/cm3, (&quot;G4_Fe&quot; =&gt; 0.993, &quot;G4_Mn&quot; =&gt; 0.006, &quot;G4_C&quot; =&gt; 0.001)),
+             (&quot;Denal(WNICU)&quot;, 16.8g/cm3, (&quot;G4_W&quot; =&gt; 0.905, &quot;G4_Ni&quot; =&gt; 0.07, &quot;G4_Cu&quot; =&gt; 0.025)),
+             (&quot;Kapton&quot;, 1.42g/cm3, (&quot;G4_C&quot; =&gt; 0.691133, &quot;G4_O&quot; =&gt; 0.209235, &quot;G4_N&quot; =&gt; 0.07327, &quot;G4_H&quot; =&gt; 0.026362)))
+            mat = G4Material(name, density=density, ncomponents=length(fractions))
+            for (el, f) in fractions
+                AddMaterial(mat, FindOrBuildMaterial(nist, el), f)
+            end
+        end
+    end
+    steel = G4Material!GetMaterial(&quot;StainlessSteel&quot;)
+    xc10 = G4Material!GetMaterial(&quot;CARBON_STEEL&quot;)
+    wnicu = G4Material!GetMaterial(&quot;Denal(WNICU)&quot;)
+    kapton = G4Material!GetMaterial(&quot;Kapton&quot;)
+
+    # Logical volume with a colour, and placement inside a mother volume
+    function volume(solid, material, name, color...; visible=true)
+        lv = G4LogicalVolume(solid, material, name)
+        setVis(lv, color..., visible=visible)
+        return lv
+    end
+    place(lv, name, mother, z; x=0., y=0.) = G4PVPlacement(nothing, G4ThreeVector(x, y, z), lv, name, mother, false, 0, checkOverlaps)
+    tube(name, r, hz) = G4Tubs(name, 0, r, hz, 0, 2π)
+    cone(name, r1, r2, hz) = G4Cons(name, 0, r1, 0, r2, hz, 0, 2π)       ## radius r1 at -hz and r2 at +hz
+    noRot = CxxPtr{G4RotationMatrix}(C_NULL)
+
+    #---World and accelerator box------------------------------------------------------------------
+    worldLV = volume(G4Box(&quot;World&quot;, 1.75m, 1.75m, 1.75m), air, &quot;World&quot;, 1, 1, 1, visible=false)
+    worldPV = G4PVPlacement(nothing, G4ThreeVector(), worldLV, &quot;World&quot;, nothing, false, 0, checkOverlaps)
+    accLV = volume(G4Box(&quot;accWorld&quot;, 600mm, 600mm, 600mm), vacuum, &quot;accWorld&quot;, 1, 1, 1, visible=false)
+    place(accLV, &quot;acceleratorBox&quot;, worldLV, -sourceToSkinDistance)
+
+    #---Target: W block with a hole on the beam side, and a Ti disk----------------------------------
+    targetLV = volume(G4SubtractionSolid(&quot;TargetSolid&quot;, move!(G4Box(&quot;targetBox&quot;, 5mm, 5mm, 7.5mm)),
+                                         move!(tube(&quot;targetTube&quot;, 3mm, 5.5mm)), noRot, G4ThreeVector(0, 0, -2mm)),
+                      W, &quot;TargetLV&quot;, 0.5, 0.5, 0.5)
+    targetPV = place(targetLV, &quot;TargetPV&quot;, accLV, -3.5mm)
+    diskLV = volume(tube(&quot;targetDisk&quot;, 4mm, 0.025mm), Ti, &quot;targetDiskLV&quot;, 0.5, 0.5, 0.5)
+    place(diskLV, &quot;diskPV&quot;, accLV, -15mm)
+    cutRegion(&quot;TargetR&quot;, 1mm, targetLV, diskLV)
+
+    #---Primary collimator: three tubes with a conical hole------------------------------------------
+    # Each hole is a short cylinder (of length 2hzTube) followed by a cone that opens downwards. The
+    # C++ example subtracts the hole from the tube. The same solid is a G4Polycone, which is simpler
+    # and can also be drawn cut in half. The arrays are passed to C++ as pointers, so they must be
+    # kept alive during the call.
+    function collimator(name, R, hz, r, hzTube, r2, material, color...)
+        z, rin, rout = [-hz, -hz + 2hzTube, hz], [r, r, r2], [R, R, R]
+        solid = GC.@preserve z rin rout G4Polycone(name, 0, 2π, 3, z, rin, rout)
+        volume(solid, material, name * &quot;LV&quot;, color..., 0.3)
+    end
+    z1 = 5mm + 39.5mm
+    upperLV = collimator(&quot;PriCollUpper&quot;, 70.5mm, 39.5mm, 17mm, 7.93mm, 27mm, xc10, 0, 1, 0)
+    z2 = z1 + 39.5mm + 28.75mm
+    middleLV = collimator(&quot;PriCollMiddle&quot;, 70.5mm, 28.75mm, 26.5mm, 0.675mm, 40.5mm, wnicu, 1, 0, 0)
+    z3 = z2 + 28.75mm + 19.5mm + 20.25mm
+    lowerLV = collimator(&quot;PriCollLower&quot;, 120.5mm, 20.25mm, 44.03mm, 0, 54.88mm, Pb, 0, 0, 1)
+    upperPV = place(upperLV, &quot;PriCollUpperPV&quot;, accLV, z1)
+    middlePV = place(middleLV, &quot;PriCollMiddlePV&quot;, accLV, z2)
+    place(lowerLV, &quot;PriCollLowerPV&quot;, accLV, z3)
+    cutRegion(&quot;primaryCollimatorR&quot;, 1cm, upperLV, middleLV, lowerLV)
+
+    #---Vacuum window------------------------------------------------------------------------------
+    windowLV = volume(tube(&quot;VacWindowTube&quot;, 116.53mm/2, 1mm), Al, &quot;VacWindowTubeLV&quot;, 0, 1, 0)
+    place(windowLV, &quot;VacWindowTubePV&quot;, accLV, 215.75mm + 1mm)
+    cutRegion(&quot;VacWindowR&quot;, 1mm, windowLV)
+
+    #---Flattening filter: a tube and three cones of steel-------------------------------------------
+    hzTube, hz1, hz2, hz3 = 7.5mm/2, 13.7mm/2, (44.3mm - 13.7mm)/2, (46.8mm - 44.3mm)/2
+    pos1 = hz1 - hzTube - 1mm
+    pos2 = pos1 + hz1 + hz2
+    pos3 = pos2 + hz2 + hz3
+    ff = G4UnionSolid(&quot;ffTube1AndCone1&quot;, move!(tube(&quot;ffTube1&quot;, det.ffRadius, hzTube)), move!(cone(&quot;ffCone1&quot;, 38mm, 27mm, hz1)),
+                      noRot, G4ThreeVector(0, 0, pos1))
+    ff = G4UnionSolid(&quot;ffTubeCone1AndCone2&quot;, move!(ff), move!(cone(&quot;ffCone2&quot;, 27mm, 4mm, hz2)), noRot, G4ThreeVector(0, 0, pos2))
+    ff = G4UnionSolid(&quot;ffTubeCone12AndCone3&quot;, move!(ff), move!(cone(&quot;ffCone3&quot;, 4mm, 1e-6mm, hz3)), noRot, G4ThreeVector(0, 0, pos3))
+    ffLV = volume(ff, steel, &quot;ffLV&quot;, 1, 0, 1)
+    ffPV = place(ffLV, &quot;ffPV&quot;, accLV, det.ffZ + hzTube)
+    cutRegion(&quot;ffR&quot;, 1mm, ffLV)
+
+    #---Ionization chamber: six Al layers, each followed by a kapton layer----------------------------
+    hzKapton, hzAl1, hzAl8 = 0.025mm/2, 1.6e-5cm/2, 8e-6cm/2
+    al1LV = volume(tube(&quot;ICTube2A&quot;, 55mm, hzAl1), Al, &quot;IC_Al1_LV&quot;, 1, 0, 0)
+    al8LV = volume(tube(&quot;ICTube1A&quot;, 55mm, hzAl8), Al, &quot;IC_Al8_LV&quot;, 1, 0, 1)
+    kaptonLV = volume(tube(&quot;ICTube1B&quot;, 55mm, hzKapton), kapton, &quot;IC_K_LV&quot;, 0, 0, 1)
+    for (i, (z, alLV, hzAl)) in enumerate(((202.5mm, al8LV, hzAl8), (204.5mm, al1LV, hzAl1), (206.5mm, al8LV, hzAl8),
+                                           (207.5mm, al8LV, hzAl8), (209.5mm, al1LV, hzAl1), (211.5mm, al8LV, hzAl8)))
+        place(alLV, &quot;IC_Al_PV$i&quot;, accLV, z + hzAl)
+        place(kaptonLV, &quot;IC_K_PV$i&quot;, accLV, z + 2hzAl + hzKapton)
+    end
+    cutRegion(&quot;IonChamberR&quot;, 0.1mm, al1LV, al8LV, kaptonLV)
+
+    #---Jaws---------------------------------------------------------------------------------------
+    # Each jaw is a stack of blocks inside an air envelope of 101 × 101 mm. The envelopes are rotated
+    # around the source, so that their inner faces define a field of side `fieldSide` at SSD + 10 cm.
+    # As in the C++ example, the envelopes of the X and Y jaws overlap (only their air parts), so
+    # the overlaps are not checked.
+    θ = atan(fieldSide/2 / (sourceToSkinDistance + 10cm))
+    jawLVs = G4LogicalVolume[]
+    function jaw(name, height, z0, blocks, axis, sign)
+        envLV = volume(G4Box(name * &quot;box&quot;, 50.5mm, 50.5mm, height/2), air, name * &quot;boxLV&quot;, 1, 1, 0, visible=false)
+        z = -height/2
+        for (i, (thickness, gap, material, color)) in enumerate(blocks)
+            z += gap
+            lv = volume(G4Box(name * &quot;Block$i&quot;, 50.5mm, 50.5mm, thickness/2), material, name * &quot;LV$i&quot;, color...)
+            G4PVPlacement(nothing, G4ThreeVector(0, 0, z + thickness/2), lv, name * &quot;PV$i&quot;, envLV, false, 0, false)
+            push!(jawLVs, lv)
+            z += thickness
+        end
+        rot = axis == :x ? rotation(y=sign*θ) : rotation(x=-sign*θ)
+        pos = rot * (axis == :x ? G4ThreeVector(sign*50.5mm, 0, z0 + height/2) : G4ThreeVector(0, sign*50.5mm, z0 + height/2))
+        push!(det.jawPVs, G4PVPlacement(G4Transform3D(rot, pos), envLV, name * &quot;PV&quot;, accLV, false, 0, false))
+    end
+    green, blue, red = (0, 1, 0), (0, 0, 1), (1, 0, 0)
+    xBlocks = ((3mm, 0, xc10, green), (35mm, 0, Pb, blue), (35mm, 0, wnicu, red), (27mm, 0, Pb, blue),
+               (10mm, 97mm, Pb, blue), (5mm, 0, wnicu, red))
+    yBlocks = ((15mm, 0, xc10, red), (31mm, 117.5mm, Pb, blue), (35mm, 0, wnicu, red), (21mm, 0, Pb, blue))
+    jaw(&quot;Jaw1X&quot;, 212mm, 275.5mm, xBlocks, :x, 1)
+    jaw(&quot;Jaw2X&quot;, 212mm, 275.5mm, xBlocks, :x, -1)
+    jaw(&quot;Jaw1Y&quot;, 219.5mm, 248.5mm, yBlocks, :y, 1)
+    jaw(&quot;Jaw2Y&quot;, 219.5mm, 248.5mm, yBlocks, :y, -1)
+    cutRegion(&quot;JawsR&quot;, 2cm, jawLVs...)
+
+    #---Water phantom------------------------------------------------------------------------------
+    # A 2.5 mm water layer in front of the phantom, which starts at z = 2.5 mm.
+    h = phantomSide/2
+    layerLV = volume(G4Box(&quot;Spessore&quot;, h, h, 1.25mm), water, &quot;spessore_log&quot;, 0, 1, 1, 0.1)
+    place(layerLV, &quot;spessore_phys&quot;, worldLV, 1.25mm)
+    phantomLV = volume(G4Box(&quot;Phantom&quot;, h, h, h), water, &quot;Phantom_log&quot;, 0, 1, 1, 0.1)
+    place(phantomLV, &quot;phantom_phys&quot;, worldLV, h + 2.5mm)
+    cutRegion(&quot;fullWaterPhantomR&quot;, 0.1mm, phantomLV)
+
+    append!(det.filterPVs, (targetPV, upperPV, middlePV, ffPV))
+    return worldPV
+end
+
+Geant4.getConstructor(::MedicalLinacDetector)::Function = medicalLinacConstruct</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../XrayTESDetector/">« XrayTESDetector.jl</a><a class="docs-footer-nextpage" href="../MyCode/">MyCode.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.19.0 on <span class="colophon-date" title="Tuesday 3 November 2026 15:58">Tuesday 3 November 2026</span>. Using Julia version 1.13.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
