@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>XrayTESDetector.jl · Geant4.jl</title><meta name="title" content="XrayTESDetector.jl · Geant4.jl"/><meta property="og:title" content="XrayTESDetector.jl · Geant4.jl"/><meta property="twitter:title" content="XrayTESDetector.jl · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.63.2/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../guide/">User Guide</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../">Running the examples</a></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox"/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Basic</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../B1/">Basic/B1 Example</a></li><li><a class="tocitem" href="../B2a/">Basic/B2a Example</a></li><li><a class="tocitem" href="../B2aVis/">Basic/B2a Event Display Example</a></li><li><a class="tocitem" href="../B3a/">Basic/B3a Example</a></li><li><a class="tocitem" href="../B4a/">Basic/B4a Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox"/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Extended</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../GPS/">Extended/GPS Example</a></li><li><a class="tocitem" href="../RE03/">Extended/RE03 Example</a></li><li><a class="tocitem" href="../TestEm3/">Extended/TestEm3 Example</a></li><li><a class="tocitem" href="../Solids/">Geant4 Solids</a></li><li><a class="tocitem" href="../GDMLRendering/">GDML rendering example (CMS)</a></li><li><a class="tocitem" href="../GDMLRendering2/">GDML rendering example (ODD)</a></li><li><a class="tocitem" href="../field02/">Extended/field02 Example</a></li><li><a class="tocitem" href="../OpNovice2/">OpNovice2 Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-4" type="checkbox"/><label class="tocitem" for="menuitem-3-4"><span class="docs-label">Advanced</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../TPCSim/">Simulation of the Aleph TPC</a></li><li><a class="tocitem" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber</a></li><li><a class="tocitem" href="../WaterPhantom/">Water Phantom with Scoring</a></li><li><a class="tocitem" href="../UserLib/">Calling Custom C++ library</a></li><li><a class="tocitem" href="../JuliaAction/">Calling G4 actions in Julia</a></li><li><a class="tocitem" href="../Scintillation/">Scintillation Example</a></li><li><a class="tocitem" href="../RICH/">RICH Detector</a></li><li><a class="tocitem" href="../XrayTES/">X-ray TES Detector</a></li></ul></li></ul></li><li class="is-active"><a class="tocitem" href>XrayTESDetector.jl</a></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><a class="tocitem" href="../../development/">Development</a></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>XrayTESDetector.jl</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>XrayTESDetector.jl</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/examples/XrayTESDetector.md#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="XrayTESDetector.jl"><a class="docs-heading-anchor" href="#XrayTESDetector.jl">XrayTESDetector.jl</a><a id="XrayTESDetector.jl-1"></a><a class="docs-heading-anchor-permalink" href="#XrayTESDetector.jl" title="Permalink"></a></h1><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits
+using Parameters
+
+#---Detector parameters----------------------------------------------------------------------------
+# The TES array of the X-IFU: 317 square Bi absorbers on a Si3N4 membrane and a Si grid, inside a
+# hexagonal envelope. Only the parameters of the array are exposed. The dimensions of the supports,
+# shields and cryostat come from a CAD model and are fixed in the construction function.
+@with_kw mutable struct XrayTESDetector &lt;: G4JLDetector
+    absorberThickness::Float64 = 3μm          ## Bi absorber
+    membraneThickness::Float64 = 0.75μm       ## Si3N4 membrane under the absorbers
+    gridThickness::Float64 = 200μm            ## Si grid supporting the membrane
+    gridBeam::Float64 = 165μm                 ## width of the grid walls
+    waferThickness::Float64 = 0.25mm          ## Si support wafer around the array
+    pixelPitch::Float64 = 0.814mm
+    pixelGap::Float64 = 11μm
+    arrayApothem::Float64 = 8.5mm             ## apothem of the hexagonal envelope of the array
+    pixelApothem::Float64 = 8.4mm             ## pixels must fit inside this hexagon
+    checkOverlaps::Bool = false
+    ##---filled by the construction
+    arrayPV::CxxPtr{G4VPhysicalVolume} = CxxPtr{G4VPhysicalVolume}(C_NULL)
+    absorberPV::CxxPtr{G4VPhysicalVolume} = CxxPtr{G4VPhysicalVolume}(C_NULL)
+    acdLVs::Vector{CxxPtr{G4LogicalVolume}} = CxxPtr{G4LogicalVolume}[]
+end
+
+# Positions of the pixels: the cells of a square lattice that fit inside a hexagon with flat sides
+# at the top and bottom (as the G4Polyhedra envelope), numbered row by row from the bottom.
+function pixelPositions(det::XrayTESDetector)
+    (; pixelPitch, pixelApothem) = det
+    inside(x, y) = abs(y) &lt;= pixelApothem &amp;&amp; abs(x) * √3/2 + abs(y)/2 &lt;= pixelApothem
+    n = ceil(Int, pixelApothem / pixelPitch) + 1
+    positions = Tuple{Float64,Float64}[]
+    for j in -n:n, i in -n:n
+        x, y = i * pixelPitch, j * pixelPitch
+        all(inside(x + dx * pixelPitch/2, y + dy * pixelPitch/2) for dx in (-1, 1), dy in (-1, 1)) &amp;&amp; push!(positions, (x, y))
+    end
+    return positions
+end
+
+# Name of the region of the volumes near the detector
+const innerRegion = &quot;InnerRegion&quot;
+
+# Visualization attributes (colour and transparency) of a logical volume
+setVis(lv, r, g, b, a=1.; visible=true) = SetVisAttributes(lv, G4VisAttributes(visible, G4Colour(r, g, b, a)))
+
+# Hexagonal prism (6 sides) between z = -hz and z = hz, with inner and outer apothems at both ends.
+# The arrays are passed to C++ as pointers, so they must be kept alive during the call.
+function hexagon(name, hz, rin, rout)
+    z, ri, ro = [-hz, hz], collect(Float64, rin), collect(Float64, rout)
+    GC.@preserve z ri ro G4Polyhedra(name, 0, 2π, 6, 2, z, ri, ro)
+end
+
+function rotation(; x=0, y=0, z=0)
+    rot = G4RotationMatrix()
+    x != 0 &amp;&amp; rotateX(rot, x)
+    y != 0 &amp;&amp; rotateY(rot, y)
+    z != 0 &amp;&amp; rotateZ(rot, z)
+    return rot
+end
+
+#---Detector construction--------------------------------------------------------------------------
+function xrayTESConstruct(det::XrayTESDetector)::CxxPtr{G4VPhysicalVolume}
+    (; absorberThickness, membraneThickness, gridThickness, gridBeam, waferThickness,
+       pixelPitch, pixelGap, arrayApothem, checkOverlaps) = det
+    nist = G4NistManager!Instance()
+
+    #---Materials----------------------------------------------------------------------------------
+    vacuum = FindOrBuildMaterial(nist, &quot;G4_Galactic&quot;)
+    Si = FindOrBuildMaterial(nist, &quot;G4_Si&quot;)
+    Cu = FindOrBuildMaterial(nist, &quot;G4_Cu&quot;)
+    Bi = FindOrBuildMaterial(nist, &quot;G4_Bi&quot;)
+    Al = FindOrBuildMaterial(nist, &quot;G4_Al&quot;)
+    Au = FindOrBuildMaterial(nist, &quot;G4_Au&quot;)
+    Ti = FindOrBuildMaterial(nist, &quot;G4_Ti&quot;)
+    if G4Material!GetMaterial(&quot;Cryoperm&quot;, false) == C_NULL
+        ringAl = G4Material(&quot;RingAl&quot;, density=0.736g/cm3, ncomponents=1)     ## Al with the average density of the ring
+        AddMaterial(ringAl, Al, 1.)
+        cryoperm = G4Material(&quot;Cryoperm&quot;, density=8.7g/cm3, ncomponents=4)
+        for (el, f) in ((&quot;G4_Ni&quot;, 0.775), (&quot;G4_Cu&quot;, 0.045), (&quot;G4_Mo&quot;, 0.025), (&quot;G4_Fe&quot;, 0.155))
+            AddMaterial(cryoperm, FindOrBuildMaterial(nist, el), f)
+        end
+        steel = G4Material(&quot;StainlessSteel&quot;, density=8.03g/cm3, ncomponents=8)
+        for (el, f) in ((&quot;G4_N&quot;, 0.01), (&quot;G4_Ni&quot;, 0.1), (&quot;G4_Cr&quot;, 0.185), (&quot;G4_S&quot;, 0.03),
+                        (&quot;G4_P&quot;, 0.045), (&quot;G4_Mn&quot;, 0.02), (&quot;G4_C&quot;, 0.08), (&quot;G4_Fe&quot;, 0.53))
+            AddMaterial(steel, FindOrBuildMaterial(nist, el), f)
+        end
+        si3n4 = G4Material(&quot;Si3N4&quot;, density=3.44g/cm3, ncomponents=2)
+        AddElement(si3n4, FindOrBuildElement(nist, &quot;Si&quot;), Int32(3))
+        AddElement(si3n4, FindOrBuildElement(nist, &quot;N&quot;), Int32(4))
+    end
+    ringAl = G4Material!GetMaterial(&quot;RingAl&quot;)
+    cryoperm = G4Material!GetMaterial(&quot;Cryoperm&quot;)
+    steel = G4Material!GetMaterial(&quot;StainlessSteel&quot;)
+    si3n4 = G4Material!GetMaterial(&quot;Si3N4&quot;)
+
+    #---World--------------------------------------------------------------------------------------
+    worldLV = G4LogicalVolume(G4Box(&quot;World&quot;, 3m, 3m, 3m), vacuum, &quot;World&quot;)
+    worldPV = G4PVPlacement(nothing, G4ThreeVector(), worldLV, &quot;World&quot;, nothing, false, 0, checkOverlaps)
+    setVis(worldLV, 1, 1, 1, visible=false)
+
+    # Logical volume with a colour, and placements in the world
+    function volume(solid, material, name, color...; visible=true)
+        lv = G4LogicalVolume(solid, material, name)
+        setVis(lv, color..., visible=visible)
+        return lv
+    end
+    place(lv, name, x, y, z; copy=0) = G4PVPlacement(nothing, G4ThreeVector(x, y, z), lv, name, worldLV, false, copy, checkOverlaps)
+    place(lv, name, rot::G4RotationMatrix, x, y, z) = G4PVPlacement(G4Transform3D(rot, G4ThreeVector(x, y, z)), lv, name, worldLV, false, 0, checkOverlaps)
+
+    #---TES array----------------------------------------------------------------------------------
+    # Each pixel element (a box of one pitch) contains the Bi absorber, the Si3N4 membrane and a piece
+    # of the Si grid.
+    elementZ = absorberThickness + gridThickness + membraneThickness
+    pixelSize = pixelPitch - pixelGap
+    detectorLV = volume(hexagon(&quot;Detector&quot;, elementZ/2, (0, 0), (arrayApothem, arrayApothem)), vacuum, &quot;Detector&quot;, 1, 1, 1, visible=false)
+    det.arrayPV = G4PVPlacement(nothing, G4ThreeVector(0, 0, -elementZ + 0.0001μm), detectorLV, &quot;Detector&quot;, worldLV, false, 0, checkOverlaps)
+
+    elementLV = volume(G4Box(&quot;Element&quot;, pixelPitch/2, pixelPitch/2, elementZ/2), vacuum, &quot;Element&quot;, 1, 1, 1, visible=false)
+    absorberLV = volume(G4Box(&quot;Bipxl&quot;, pixelSize/2, pixelSize/2, absorberThickness/2), Bi, &quot;Bipxl&quot;, 1.0, 0.8, 0.0)
+    det.absorberPV = G4PVPlacement(nothing, G4ThreeVector(0, 0, elementZ/2 - absorberThickness/2), absorberLV, &quot;Bipxl&quot;, elementLV, false, 0, checkOverlaps)
+    membraneLV = volume(G4Box(&quot;Membrane&quot;, pixelSize/2, pixelSize/2, membraneThickness/2), si3n4, &quot;Membrane&quot;, 0.5, 0.5, 0.9)
+    G4PVPlacement(nothing, G4ThreeVector(0, 0, elementZ/2 - absorberThickness - membraneThickness/2), membraneLV, &quot;Membrane&quot;, elementLV, false, 0, checkOverlaps)
+    gridBox = G4Box(&quot;GridBox&quot;, pixelPitch/2, pixelPitch/2, gridThickness/2)
+    gridHole = G4Box(&quot;GridHole&quot;, (pixelPitch - gridBeam)/2, (pixelPitch - gridBeam)/2, gridThickness/2 + 0.5mm)
+    gridLV = volume(G4SubtractionSolid(&quot;GridPiece&quot;, move!(gridBox), move!(gridHole)), Si, &quot;GridPiece&quot;, 0.6, 0.6, 0.6)
+    G4PVPlacement(nothing, G4ThreeVector(0, 0, elementZ/2 - absorberThickness - membraneThickness - gridThickness/2), gridLV, &quot;GridPiece&quot;, elementLV, false, 0, checkOverlaps)
+
+    # The 317 pixels are a parameterised volume. The Julia function `pixelTransform` gives the
+    # position of each copy, and the copy number is the pixel number.
+    positions = pixelPositions(det)
+    pixelTransform(copyNo, pv, positions) = (SetTranslation(pv, G4ThreeVector(positions[copyNo+1]..., 0)); nothing)
+    G4PVParameterised(&quot;Element&quot;, elementLV, detectorLV, kXAxis, length(positions), pixelTransform;
+                      data=positions, checkOverlaps=checkOverlaps)
+
+    #---Support wafer around the array-------------------------------------------------------------
+    waferZ = -elementZ/2 - absorberThickness - gridThickness/2
+    waferLV = volume(hexagon(&quot;Wafer&quot;, waferThickness/2, (arrayApothem, arrayApothem), (39.4mm, 19.7mm)), Si, &quot;Wafer&quot;, 0.4, 0.4, 0.5)
+    place(waferLV, &quot;Wafer&quot;, 0, 0, waferZ)
+
+    #---Backscattering (BSC) surface: an empty volume just above the absorbers---------------------
+    bscHZ = 0.05mm
+    bscLV = volume(hexagon(&quot;BSC&quot;, bscHZ, (0, 0), (arrayApothem + 2mm, arrayApothem + 2mm)), vacuum, &quot;BSC&quot;, 1, 1, 1, visible=false)
+    place(bscLV, &quot;BSC&quot;, 0, 0, waferZ + waferThickness + bscHZ/2)
+
+    #---Anti-coincidence detector (ACD): 4 Si trapezoids under the array, each with an inner part----
+    acdThickness, acdGap = 200μm, 50μm
+    acdZ = -(0.75mm + absorberThickness/2 + acdThickness/2)
+    height = 8.5mm
+    wide = height * 1.191                     ## sides of the trapezoids (the CAD values)
+    narrow = wide/2
+    # The inner part could have higher production cuts to reduce the number of secondaries
+    innerACD = G4Trap(&quot;InnerACD&quot;, acdThickness - 50μm, height - 50μm, wide - 50μm, (wide - 50μm)/2)
+    outerACD = G4SubtractionSolid(&quot;ACD&quot;, move!(G4Trap(&quot;ACDBox&quot;, acdThickness, height, wide, narrow)), CxxPtr(innerACD))
+    innerLV = volume(innerACD, Si, &quot;InnerACD&quot;, 0.2, 0.7, 0.2)
+    acdLV = volume(outerACD, Si, &quot;ACD&quot;, 0.2, 0.8, 0.2)
+    det.acdLVs = [CxxPtr(innerLV), CxxPtr(acdLV)]
+    ax, ay = (narrow * 1.5 + acdGap)/2, (height + acdGap)/2
+    for (k, (sx, sy, rot)) in enumerate(((1, 1, (;)), (-1, -1, (z=π,)), (1, -1, (x=π,)), (-1, 1, (y=π,))))
+        place(innerLV, &quot;ACDInner$k&quot;, rotation(; rot...), sx * ax, sy * ay, acdZ)
+        place(acdLV, &quot;ACD$k&quot;, rotation(; rot...), sx * ax, sy * ay, acdZ)
+    end
+
+    #---ACD support plate--------------------------------------------------------------------------
+    plateLV = volume(hexagon(&quot;ACDPlate&quot;, 1.75mm, (wide, wide), (43mm, 43mm)), Cu, &quot;ACDPlate&quot;, 0.9, 0.5, 0.2)
+    place(plateLV, &quot;ACDPlate&quot;, 0, 0, -2.25mm)
+
+    #---Cage: columns and walls of Cu supporting the detector (simplified from a CAD model)--------
+    cageZ = -36.5027mm
+    columnLV = volume(G4Tubs(&quot;CageColumn&quot;, 0, 3.99mm, 30mm, 0, 2π), Cu, &quot;CageColumn&quot;, 0.9, 0.5, 0.2)
+    for (k, (x, y)) in enumerate(((45.75, 0), (-45.75, 0), (22.875, 39.621), (22.875, -39.621), (-22.875, -39.621), (-22.875, 39.621)))
+        place(columnLV, &quot;CageColumn$k&quot;, x*mm, y*mm, cageZ)
+    end
+    hollowLV = volume(G4Tubs(&quot;HollowCageColumn&quot;, 1.25mm, 3mm, 30mm, 0, 2π), Cu, &quot;HollowCageColumn&quot;, 0.9, 0.5, 0.2)
+    for (k, (x, y)) in enumerate(((22.875, 0), (-11.4375, -19.8103311), (-11.4375, 19.810331)))
+        place(hollowLV, &quot;HollowCageColumn$k&quot;, x*mm, y*mm, cageZ)
+    end
+    wallLV = volume(G4Box(&quot;CageWall&quot;, 0.5mm, 16.31mm, 32.5mm), Cu, &quot;CageWall&quot;, 0.9, 0.5, 0.2)
+    place(wallLV, &quot;CageWall1&quot;, 22.875mm, 19.3103311mm, cageZ)
+    place(wallLV, &quot;CageWall2&quot;, 22.875mm, -19.3103311mm, cageZ)
+    place(wallLV, &quot;CageWall3&quot;, rotation(z=-60deg), 5.2857373mm, 29.4654967mm, cageZ)
+    place(wallLV, &quot;CageWall4&quot;, rotation(z=-60deg), -28.1607373mm, 10.1551656mm, cageZ)
+    place(wallLV, &quot;CageWall5&quot;, rotation(z=60deg), -28.1607373mm, -10.1551656mm, cageZ)
+    place(wallLV, &quot;CageWall6&quot;, rotation(z=60deg), 5.2857373mm, -29.4654967mm, cageZ)
+    miniLV = volume(G4Box(&quot;MiniCageWall&quot;, 7.9375mm, 0.5mm, 32.5mm), Cu, &quot;MiniCageWall&quot;, 0.9, 0.5, 0.2)
+    place(miniLV, &quot;MiniCageWall1&quot;, 33.8125mm, 0, cageZ)
+    place(miniLV, &quot;MiniCageWall2&quot;, rotation(z=-60deg), -16.90625mm, 29.282484mm, cageZ)
+    place(miniLV, &quot;MiniCageWall3&quot;, rotation(z=-120deg), -16.90625mm, -29.282484mm, cageZ)
+    extLV = volume(G4Box(&quot;ExtCageWall&quot;, 0.925mm, 18.875mm, 32.5mm), Cu, &quot;ExtCageWall&quot;, 0.9, 0.5, 0.2)
+    place(extLV, &quot;ExtCageWall1&quot;, rotation(z=-30deg), -35.0724512mm, 20.2490891mm, cageZ)
+    place(extLV, &quot;ExtCageWall2&quot;, rotation(z=-30deg), 35.0724512mm, -20.2490891mm, cageZ)
+    boardLV = volume(G4Box(&quot;ExtBoard&quot;, 0.25mm, 18.25mm, 32.25mm), Si, &quot;ExtBoard&quot;, 0.2, 0.5, 0.2)
+    place(boardLV, &quot;ExtBoard1&quot;, rotation(z=-30deg), 37.932mm, -21.9mm, -36.253mm)
+    place(boardLV, &quot;ExtBoard2&quot;, rotation(z=-30deg), -37.932mm, 21.9mm, -36.253mm)
+
+    #---First thermal shield (Cryoperm)------------------------------------------------------------
+    for (name, rmin, rmax, hz, z) in ((&quot;FirstShieldBottom&quot;, 0, 80mm, 0.5mm, -101mm),
+                                      (&quot;FirstShieldSide&quot;, 79mm, 80mm, 72.5mm, -28mm),
+                                      (&quot;FirstShieldTop&quot;, 31.85mm, 80mm, 0.5mm, 45mm),
+                                      (&quot;FirstShieldTopCyl&quot;, 31.85mm, 32.85mm, 37mm, 82.5mm))
+        place(volume(G4Tubs(name, rmin, rmax, hz, 0, 2π), cryoperm, name, 0.5, 0.5, 0.7, 0.3), name, 0, 0, z)
+    end
+
+    #---Ring: simplified as a tube with 3 flat cuts, made of Al with the average density----------
+    ring = G4Tubs(&quot;RingTube&quot;, 80mm, 97.1mm, 42.5mm, 0, 2π)
+    cut = G4Box(&quot;RingCut&quot;, 38.781347139mm/2, 116.620103593mm/2, 85.1mm/2)
+    ring1 = G4SubtractionSolid(&quot;Ring1&quot;, move!(ring), CxxPtr(cut), CxxPtr{G4RotationMatrix}(C_NULL), G4ThreeVector(-105.055643631mm, 0, 0))
+    ring2 = G4SubtractionSolid(&quot;Ring2&quot;, move!(ring1), CxxPtr(cut), move!(rotation(z=60deg)), G4ThreeVector(52.527821885mm, -90.980856208mm, 0))
+    ring3 = G4SubtractionSolid(&quot;Ring&quot;, move!(ring2), move!(cut), move!(rotation(z=120deg)), G4ThreeVector(52.527821885mm, 90.980856208mm, 0))
+    place(volume(ring3, ringAl, &quot;Ring&quot;, 0.7, 0.7, 0.7, 0.3), &quot;Ring&quot;, 0, 0, -22mm)
+
+    #---Second thermal shield (Al): extruded hexagonal shape with bottom and top plates------------
+    toPolygon(points) = (v = StdVector{CLHEP!Hep2Vector}(); for (x, y) in points push!(v, CLHEP!Hep2Vector(x*mm, y*mm)) end; v)
+    outline = toPolygon(((58.936, 154.115), (104, 128.098), (104, -128.098), (58.936, -154.115), (-162.936, -26.018), (-162.936, 26.018)))
+    inline = toPolygon(((58.936, 149.762), (100.23, 125.921), (100.23, -125.921), (58.936, -149.762), (-159.166, -23.841), (-159.166, 23.841)))
+    bottom = G4SubtractionSolid(&quot;SecondShieldBottom&quot;, move!(G4ExtrudedSolid(&quot;SSBottom&quot;, outline, 1.325mm)), move!(G4Tubs(&quot;SSHole&quot;, 0, 19mm, 1.5mm, 0, 2π)))
+    place(volume(bottom, Al, &quot;SecondShieldBottom&quot;, 0.6, 0.6, 0.8, 0.3), &quot;SecondShieldBottom&quot;, 0, 0, -110.178mm)
+    side = G4SubtractionSolid(&quot;SecondShieldSide&quot;, move!(G4ExtrudedSolid(&quot;SSOuter&quot;, outline, 107.675mm)), move!(G4ExtrudedSolid(&quot;SSInner&quot;, inline, 108mm)))
+    place(volume(side, Al, &quot;SecondShieldSide&quot;, 0.6, 0.6, 0.8, 0.3), &quot;SecondShieldSide&quot;, 0, 0, -1.178mm)
+    top = G4SubtractionSolid(&quot;SecondShieldTop&quot;, move!(G4ExtrudedSolid(&quot;SSTop&quot;, outline, 5.435mm)), move!(G4Tubs(&quot;SSHole2&quot;, 0, 36.85mm, 5.5mm, 0, 2π)))
+    place(volume(top, Al, &quot;SecondShieldTop&quot;, 0.6, 0.6, 0.8, 0.3), &quot;SecondShieldTop&quot;, 0, 0, 111.932mm)
+    place(volume(G4Tubs(&quot;SecondShieldTopCyl&quot;, 36.85mm, 39mm, 6mm, 0, 2π), Al, &quot;SecondShieldTopCyl&quot;, 0.6, 0.6, 0.8, 0.3), &quot;SecondShieldTopCyl&quot;, 0, 0, 123.367mm)
+
+    #---Third thermal shield (Al): a cylinder closed by two cones and a bottom plate---------------
+    sideH, coneH, t = 280mm, 40mm, 0.4mm
+    place(volume(G4Tubs(&quot;ThirdShieldSide&quot;, 174.6mm, 174.6mm + t, sideH/2, 0, 2π), Al, &quot;ThirdShieldSide&quot;, 0.5, 0.7, 0.9, 0.2), &quot;ThirdShieldSide&quot;, 0, 0, 0)
+    place(volume(G4Cons(&quot;ThirdShieldTopCone&quot;, 174.6mm, 174.6mm + t, 93mm, 93mm + t, coneH/2, 0, 2π), Al, &quot;ThirdShieldTopCone&quot;, 0.5, 0.7, 0.9, 0.2),
+          &quot;ThirdShieldTopCone&quot;, 0, 0, (sideH + coneH)/2)
+    place(volume(G4Cons(&quot;ThirdShieldBottomCone&quot;, 80mm, 80mm + t, 174.6mm, 174.6mm + t, coneH/2, 0, 2π), Al, &quot;ThirdShieldBottomCone&quot;, 0.5, 0.7, 0.9, 0.2),
+          &quot;ThirdShieldBottomCone&quot;, 0, 0, -(sideH + coneH)/2)
+    place(volume(G4Tubs(&quot;ThirdShieldBottom&quot;, 0, 80mm + t, t/2, 0, 2π), Al, &quot;ThirdShieldBottom&quot;, 0.5, 0.7, 0.9, 0.2),
+          &quot;ThirdShieldBottom&quot;, 0, 0, -(sideH + t)/2 - coneH)
+
+    #---External layer of the cryostat (Al)--------------------------------------------------------
+    r, midT, midH, sideT, sideH2, coneH2 = 200mm, 8.8mm, 120mm, 6.5mm, 85mm, 75mm
+    topConeR, botConeR = 97mm, 120mm
+    cryoColor = (0.6, 0.6, 0.6, 0.15)
+    place(volume(G4Tubs(&quot;CryostatMid&quot;, r, r + midT, midH/2, 0, 2π), Al, &quot;CryostatMid&quot;, cryoColor...), &quot;CryostatMid&quot;, 0, 0, 0)
+    place(volume(G4Tubs(&quot;CryostatTop&quot;, r, r + sideT, sideH2/2, 0, 2π), Al, &quot;CryostatTop&quot;, cryoColor...), &quot;CryostatTop&quot;, 0, 0, (midH + sideH2)/2)
+    place(volume(G4Cons(&quot;CryostatTopCone&quot;, r, r + sideT, topConeR, topConeR + sideT, coneH2/2, 0, 2π), Al, &quot;CryostatTopCone&quot;, cryoColor...),
+          &quot;CryostatTopCone&quot;, 0, 0, midH/2 + sideH2 + coneH2/2)
+    place(volume(G4Tubs(&quot;CryostatBottom&quot;, r, r + sideT, sideH2/2, 0, 2π), Al, &quot;CryostatBottom&quot;, cryoColor...), &quot;CryostatBottom&quot;, 0, 0, -(midH + sideH2)/2)
+    place(volume(G4Cons(&quot;CryostatBottomCone&quot;, botConeR, botConeR + sideT, r, r + sideT, coneH2/2, 0, 2π), Al, &quot;CryostatBottomCone&quot;, cryoColor...),
+          &quot;CryostatBottomCone&quot;, 0, 0, -midH/2 - sideH2 - coneH2/2)
+    place(volume(G4Tubs(&quot;CryostatBottomPlate&quot;, 0, botConeR, midT/2, 0, 2π), Al, &quot;CryostatBottomPlate&quot;, cryoColor...),
+          &quot;CryostatBottomPlate&quot;, 0, 0, -midH/2 - sideH2 - coneH2 + midT/2)
+
+    #---Radiation filter: 20 nm of Al on a stainless steel mesh, in an Al carrier------------------
+    filterHZ, meshT, carrierT, filterR, filterZ = 10nm, 80μm, 5mm, 64mm, 180mm
+    filterLV = volume(G4Tubs(&quot;AlFilter&quot;, 0, filterR, filterHZ, 0, 2π), Al, &quot;AlFilter&quot;, 0.8, 0.8, 0.9, 0.5)
+    place(filterLV, &quot;AlFilter&quot;, 0, 0, filterZ)
+    meshZ = filterZ - filterHZ - meshT/2
+    meshLV = volume(G4Tubs(&quot;Mesh&quot;, 0, filterR + 3.3mm, meshT/2, 0, 2π), vacuum, &quot;Mesh&quot;, 1, 1, 1, visible=false)
+    place(meshLV, &quot;Mesh&quot;, 0, 0, meshZ)
+    # Each cell of the mesh is a square frame made of 4 trapezoids
+    hx1, hx3, hy, dz = 4827/2*μm, 4880/2*μm, 80/2*μm, 26.5/2*μm
+    trapLV = volume(G4Trap(&quot;MeshBar&quot;, dz, 0, 0, hy, hx1, hx1, 0, hy, hx3, hx3, 0), steel, &quot;MeshBar&quot;, 0.3, 0.3, 0.3)
+    trapRots = ((x=90deg,), (x=90deg, y=-90deg), (x=270deg,), (x=90deg, y=90deg))
+    trapPos = ((0, 1), (1, 0), (0, -1), (-1, 0))
+    for i in -13:13, j in -13:13
+        cx, cy = 2i * hx3, 2j * hx3
+        hypot(cx, cy) &lt; filterR || continue
+        for (rot, (sx, sy)) in zip(trapRots, trapPos)
+            G4PVPlacement(rotation(; rot...), G4ThreeVector(cx + sx * (hx1 + dz), cy + sy * (hx1 + dz), 0), trapLV, &quot;MeshBar&quot;, meshLV, false, 0, checkOverlaps)
+        end
+    end
+    place(volume(G4Tubs(&quot;FilterCarrier&quot;, filterR, filterR + 3.85mm, carrierT/2, 0, 2π), Al, &quot;FilterCarrier&quot;, 0.6, 0.6, 0.6),
+          &quot;FilterCarrier&quot;, 0, 0, meshZ + meshT/2 + carrierT/2)
+
+    #---Aperture cylinder (Ti, 300 K) with an inner Au coating--------------------------------------
+    acTop = midH/2 + sideH2 + coneH2
+    acH = acTop - filterZ - carrierT
+    acR1, acT = 67.8644mm, 1mm
+    place(volume(G4Cons(&quot;AC&quot;, acR1 - acT, acR1, topConeR - acT, topConeR, acH/2, 0, 2π), Ti, &quot;AC&quot;, 0.7, 0.7, 0.8, 0.3), &quot;AC&quot;, 0, 0, acTop - acH/2)
+    coatingLV = volume(G4Cons(&quot;ACCoating&quot;, acR1 - acT - 5μm, acR1 - acT, topConeR - acT - 5μm, topConeR - acT, acH/2, 0, 2π), Au, &quot;ACCoating&quot;, 1.0, 0.85, 0.0, 0.3)
+    place(coatingLV, &quot;ACCoating&quot;, 0, 0, acTop - acH/2)
+
+    #---The spacecraft: a 1 cm thick Al sphere------------------------------------------------------
+    place(volume(G4Sphere(&quot;Spacecraft&quot;, 26cm, 27cm, 0, 2π, 0, π), Al, &quot;Spacecraft&quot;, 0.8, 0.8, 0.8, 0.1), &quot;Spacecraft&quot;, 0, 0, 0)
+
+    #---Inner region: the volumes seen by the detector-----------------------------------------------
+    # The physics list can use more precise models in this region (single scattering, atomic
+    # deexcitation). The production cuts are the same as in the rest of the geometry.
+    region = G4Region(innerRegion)
+    for lv in (elementLV, detectorLV, absorberLV, membraneLV, gridLV, waferLV, acdLV, filterLV, coatingLV)
+        AddRootLogicalVolume(region, lv)
+    end
+    cuts = G4ProductionCuts()
+    SetProductionCut(cuts, 1mm)
+    SetProductionCuts(region, cuts)
+    SetEnergyRange(G4ProductionCutsTable!GetProductionCutsTable(), 200eV, 1000GeV)
+
+    return worldPV
+end
+
+Geant4.getConstructor(::XrayTESDetector)::Function = xrayTESConstruct</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../RICHDetector/">« RICHDetector.jl</a><a class="docs-footer-nextpage" href="../MyCode/">MyCode.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.19.0 on <span class="colophon-date" title="Tuesday 3 November 2026 09:05">Tuesday 3 November 2026</span>. Using Julia version 1.13.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

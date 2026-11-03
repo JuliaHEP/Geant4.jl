@@ -40,6 +40,7 @@ end
     tankMaterial::String = "G4_WATER"
     tankProperties::PropertyMap = PropertyMap()
     tankConstProperties::ConstPropertyMap = ConstPropertyMap()
+    tankBirksConstant::Union{Nothing,Float64} = nothing   # nothing keeps the Geant4 default
     worldProperties::PropertyMap = PropertyMap()
     worldConstProperties::ConstPropertyMap = ConstPropertyMap()
     surfaceProperties::PropertyMap = PropertyMap()
@@ -61,6 +62,7 @@ function opConstruct(det::OpDetector)::CxxPtr{G4VPhysicalVolume}
     tankMat = FindOrBuildMaterial(nist, det.tankMaterial)
     SetMaterialPropertiesTable(worldMat, move!(buildMPT(det.worldProperties, det.worldConstProperties)))
     SetMaterialPropertiesTable(tankMat, move!(buildMPT(det.tankProperties, det.tankConstProperties)))
+    isnothing(det.tankBirksConstant) || SetBirksConstant(GetIonisation(tankMat), det.tankBirksConstant)
 
     #---Volumes------------------------------------------------------------------------------------
     worldBox = G4Box("World", worldHalfSize, worldHalfSize, worldHalfSize)

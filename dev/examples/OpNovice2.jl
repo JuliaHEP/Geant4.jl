@@ -7,6 +7,7 @@ include(joinpath(@__DIR__, "OpDetector.jl"))
 
 electron_detector = OpDetector(
     tankMaterial = "G4_BGO",
+    tankBirksConstant = 0.126mm/MeV,
     worldMaterial = "G4_AIR",
     tankProperties = PropertyMap(
         "ABSLENGTH" => ([2eV, 5eV, 8eV], [1mm, 2mm, 3mm]),

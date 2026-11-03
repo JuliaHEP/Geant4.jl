@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>X-ray TES Detector · Geant4.jl</title><meta name="title" content="X-ray TES Detector · Geant4.jl"/><meta property="og:title" content="X-ray TES Detector · Geant4.jl"/><meta property="twitter:title" content="X-ray TES Detector · Geant4.jl"/><meta name="description" content="Documentation for Geant4.jl."/><meta property="og:description" content="Documentation for Geant4.jl."/><meta property="twitter:description" content="Documentation for Geant4.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.63.2/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Geant4.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Geant4.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../guide/">User Guide</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../">Running the examples</a></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox"/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Basic</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../B1/">Basic/B1 Example</a></li><li><a class="tocitem" href="../B2a/">Basic/B2a Example</a></li><li><a class="tocitem" href="../B2aVis/">Basic/B2a Event Display Example</a></li><li><a class="tocitem" href="../B3a/">Basic/B3a Example</a></li><li><a class="tocitem" href="../B4a/">Basic/B4a Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox"/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Extended</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../GPS/">Extended/GPS Example</a></li><li><a class="tocitem" href="../RE03/">Extended/RE03 Example</a></li><li><a class="tocitem" href="../TestEm3/">Extended/TestEm3 Example</a></li><li><a class="tocitem" href="../Solids/">Geant4 Solids</a></li><li><a class="tocitem" href="../GDMLRendering/">GDML rendering example (CMS)</a></li><li><a class="tocitem" href="../GDMLRendering2/">GDML rendering example (ODD)</a></li><li><a class="tocitem" href="../field02/">Extended/field02 Example</a></li><li><a class="tocitem" href="../OpNovice2/">OpNovice2 Example</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-4" type="checkbox" checked/><label class="tocitem" for="menuitem-3-4"><span class="docs-label">Advanced</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../TPCSim/">Simulation of the Aleph TPC</a></li><li><a class="tocitem" href="../HBC30/">CERN Liquid Hydrogen Bubble Chamber</a></li><li><a class="tocitem" href="../WaterPhantom/">Water Phantom with Scoring</a></li><li><a class="tocitem" href="../UserLib/">Calling Custom C++ library</a></li><li><a class="tocitem" href="../JuliaAction/">Calling G4 actions in Julia</a></li><li><a class="tocitem" href="../Scintillation/">Scintillation Example</a></li><li><a class="tocitem" href="../RICH/">RICH Detector</a></li><li class="is-active"><a class="tocitem" href>X-ray TES Detector</a><ul class="internal"><li><a class="tocitem" href="#Loading-the-necessary-Julia-modules"><span>Loading the necessary Julia modules</span></a></li><li><a class="tocitem" href="#Define-the-Detector"><span>Define the Detector</span></a></li><li><a class="tocitem" href="#Define-the-Physics-List"><span>Define the Physics List</span></a></li><li><a class="tocitem" href="#Define-the-Primary-Generator"><span>Define the Primary Generator</span></a></li><li><a class="tocitem" href="#Define-the-Simulation-Data"><span>Define the Simulation Data</span></a></li><li><a class="tocitem" href="#Define-the-User-Actions"><span>Define the User Actions</span></a></li><li><a class="tocitem" href="#Create-the-Application"><span>Create the Application</span></a></li><li><a class="tocitem" href="#Configure-and-Initialize"><span>Configure and Initialize</span></a></li><li><a class="tocitem" href="#Draw-the-geometry"><span>Draw the geometry</span></a></li><li><a class="tocitem" href="#Run-the-simulation"><span>Run the simulation</span></a></li><li><a class="tocitem" href="#Primary-spectrum"><span>Primary spectrum</span></a></li><li><a class="tocitem" href="#Energy-deposited-per-pixel"><span>Energy deposited per pixel</span></a></li><li><a class="tocitem" href="#Composition-of-the-background"><span>Composition of the background</span></a></li><li><a class="tocitem" href="#Spectra-on-the-detector"><span>Spectra on the detector</span></a></li><li><a class="tocitem" href="#Background-spectrum-and-anti-coincidence"><span>Background spectrum and anti-coincidence</span></a></li></ul></li></ul></li></ul></li><li><a class="tocitem" href="../../api/">Public API</a></li><li><a class="tocitem" href="../../development/">Development</a></li><li><a class="tocitem" href="../../releases/">Release Notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li><a class="is-disabled">Advanced</a></li><li class="is-active"><a href>X-ray TES Detector</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>X-ray TES Detector</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaHEP/Geant4.jl/blob/master/docs/src/examples/XrayTES.lit#L" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="X-ray-TES-Detector"><a class="docs-heading-anchor" href="#X-ray-TES-Detector">X-ray TES Detector</a><a id="X-ray-TES-Detector-1"></a><a class="docs-heading-anchor-permalink" href="#X-ray-TES-Detector" title="Permalink"></a></h1><div class="admonition is-info" id="Generated-with-Claude-Code-ccc638f65741760b"><header class="admonition-header">Generated with Claude Code<a class="admonition-anchor" href="#Generated-with-Claude-Code-ccc638f65741760b" title="Permalink"></a></header><div class="admonition-body"><p>This example was generated by <a href="https://claude.com/claude-code">Claude Code</a> from the <code>xray_TESdetector</code> C++ example of the Geant4 distribution.</p></div></div><p>This example is a port of the advanced Geant4 example <code>xray_TESdetector</code>, by P. Dondero and R. Stanzani. It simulates the particle background of an X-ray detector in space: a simplified mass model of the X-IFU spectrometer of the ATHENA mission, from an early configuration developed within the ESA AREMBES project.</p><p>The detector is an array of 317 Transition-Edge Sensor (TES) pixels with 3 μm thick bismuth absorbers, arranged in a hexagon. Below the array there is an anti-coincidence detector (ACD), and around it the supports, three thermal shields, the cryostat, an optical filter and an aluminium sphere that represents the spacecraft. Galactic cosmic ray (GCR) protons arrive isotropically, with the spectrum expected at the L2 Lagrangian point. Most of them cross the spacecraft without touching the detector, but they and their secondaries leave a background in the absorbers. Understanding this background is the purpose of the simulation.</p><p>The example shows:</p><ul><li>building a complex geometry from a CAD model with boolean solids (<code>G4SubtractionSolid</code>), polyhedra, cones, extruded solids and many placements (a mesh of about 2000 bars), see <a href="../XrayTESDetector/#XrayTESDetector.jl">XrayTESDetector.jl</a></li><li>a parameterised volume (<code>G4PVParameterised</code>) for the 317 pixels, positioned by a Julia function</li><li>a region (<code>G4Region</code>) with its own production cuts for the volumes near the detector</li><li>a primary generator that samples the GCR proton spectrum and shoots isotropically from a sphere</li><li>a physics list adapted to space radiation, configured with <code>G4EmParameters</code>: fluorescence, Auger electrons and PIXE, and single scattering, in the region near the detector</li><li>collecting the energy deposited in the absorbers in the stepping action, keeping only the steps in the volumes of interest, and analysing it as the ROOT macro of the C++ example does</li></ul><p>Differences with the C++ example:</p><ul><li>The C++ example uses its own EM constructor (<code>G4EmStandardPhysics_SpacePhysics</code>) with QBBC. Here we use QBBC with <code>G4EmStandardPhysics_option4</code>, which has very similar models (Livermore photoelectric, low energy Compton, Goudsmit-Saunderson multiple scattering, low energy ionisation models).</li><li>The pixel positions are computed instead of read from <code>pixelpos.txt</code>. They are the same as in that file.</li><li>The C++ example calls <code>SetAugerCascade(false)</code> after <code>SetAuger(true)</code>, which switches off the Auger electrons in recent Geant4 versions. Here they are switched on.</li><li>Instead of writing a ROOT ntuple, the deposits are kept in Julia structures and analysed at the end of the run.</li></ul><div class="admonition is-info" id="Note-that-20ed243c06bbdc08"><header class="admonition-header">Note that<a class="admonition-anchor" href="#Note-that-20ed243c06bbdc08" title="Permalink"></a></header><div class="admonition-body"><p>You can also download this example as a <a href="../XrayTES.ipynb">Jupyter notebook</a> and a plain <a href="../XrayTES.jl">Julia source file</a>.</p></div></div><h4 id="Table-of-contents"><a class="docs-heading-anchor" href="#Table-of-contents">Table of contents</a><a id="Table-of-contents-1"></a><a class="docs-heading-anchor-permalink" href="#Table-of-contents" title="Permalink"></a></h4><ul><li><a href="#Loading-the-necessary-Julia-modules">Loading the necessary Julia modules</a></li><li><a href="#Define-the-Detector">Define the Detector</a></li><li><a href="#Define-the-Physics-List">Define the Physics List</a></li><li><a href="#Define-the-Primary-Generator">Define the Primary Generator</a></li><li><a href="#Define-the-Simulation-Data">Define the Simulation Data</a></li><li><a href="#Define-the-User-Actions">Define the User Actions</a></li><li><a href="#Create-the-Application">Create the Application</a></li><li><a href="#Configure-and-Initialize">Configure and Initialize</a></li><li><a href="#Draw-the-geometry">Draw the geometry</a></li><li><a href="#Run-the-simulation">Run the simulation</a></li><li><a href="#Primary-spectrum">Primary spectrum</a></li><li><a href="#Energy-deposited-per-pixel">Energy deposited per pixel</a></li><li><a href="#Composition-of-the-background">Composition of the background</a></li><li><a href="#Spectra-on-the-detector">Spectra on the detector</a></li><li><a href="#Background-spectrum-and-anti-coincidence">Background spectrum and anti-coincidence</a></li></ul><h2 id="Loading-the-necessary-Julia-modules"><a class="docs-heading-anchor" href="#Loading-the-necessary-Julia-modules">Loading the necessary Julia modules</a><a id="Loading-the-necessary-Julia-modules-1"></a><a class="docs-heading-anchor-permalink" href="#Loading-the-necessary-Julia-modules" title="Permalink"></a></h2><p>Load the <code>Geant4</code> and <code>Geant4.SystemOfUnits</code> modules, <code>FHist</code> for the histograms, <code>LinearAlgebra</code> and <code>GeometryBasics</code> for the vectors of the generator, and a Makie backend for the plots. Loading Makie also activates the drawing of the geometry.</p><pre><code class="language-julia hljs">using Geant4
+using Geant4.SystemOfUnits
+using FHist, GeometryBasics, Printf
+using LinearAlgebra: dot, cross, normalize          ## Geant4 also exports `dot` and `cross`
+using CairoMakie
+</code></pre><h2 id="Define-the-Detector"><a class="docs-heading-anchor" href="#Define-the-Detector">Define the Detector</a><a id="Define-the-Detector-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Detector" title="Permalink"></a></h2><p>The detector is defined in the <a href="../XrayTESDetector/#XrayTESDetector.jl">XrayTESDetector.jl</a> file, which we include here not to clutter the example. From the inside out:</p><ul><li>the TES array: 317 pixels with a pitch of 0.814 mm, each with a 3 μm Bi absorber, a 0.75 μm Si₃N₄ membrane and a 200 μm Si grid, inside a hexagon of 8.5 mm apothem, surrounded by a Si wafer</li><li>the anti-coincidence detector: 4 Si trapezoids, 200 μm thick, 0.75 mm below the array, on a Cu plate</li><li>a Cu cage of columns and walls, 60 mm high, below the detector</li><li>the first thermal shield (Cryoperm), a ring, the second (extruded Al) and the third (thin Al) thermal shields, and the outer Al vessel of the cryostat</li><li>the filter on top: 20 nm of Al on a stainless steel mesh, in an Al carrier, and a Ti aperture cylinder with an Au coating inside</li><li>a 1 cm thick Al sphere of 26 cm radius that represents the spacecraft</li></ul><pre><code class="language-julia hljs">include(joinpath(@__DIR__, &quot;XrayTESDetector.jl&quot;))
+tes = XrayTESDetector()</code></pre><pre><code class="nohighlight hljs">Main.var&quot;##142&quot;.XrayTESDetector
+  absorberThickness: Float64 0.003
+  membraneThickness: Float64 0.00075
+  gridThickness: Float64 0.2
+  gridBeam: Float64 0.165
+  waferThickness: Float64 0.25
+  pixelPitch: Float64 0.814
+  pixelGap: Float64 0.011
+  arrayApothem: Float64 8.5
+  pixelApothem: Float64 8.4
+  checkOverlaps: Bool false
+  arrayPV: CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4VPhysicalVolume}
+  absorberPV: CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4VPhysicalVolume}
+  acdLVs: Array{CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4LogicalVolume}}((0,))
+</code></pre><h2 id="Define-the-Physics-List"><a class="docs-heading-anchor" href="#Define-the-Physics-List">Define the Physics List</a><a id="Define-the-Physics-List-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Physics-List" title="Permalink"></a></h2><p>QBBC with the option 4 of the standard EM physics, which is the most accurate at low energy, and the radioactive decay of the activated nuclei. The atomic deexcitation (fluorescence, Auger electrons and PIXE) is configured later with <code>G4EmParameters</code>.</p><pre><code class="language-julia hljs">struct XrayTESPhysics &lt;: G4VUserPhysicsList
+    function XrayTESPhysics(verbose)
+        pl = QBBC(verbose)
+        ReplacePhysics(pl, move!(G4EmStandardPhysics_option4(verbose)))
+        RegisterPhysics(pl, move!(G4RadioactiveDecayPhysics(verbose)))
+        return pl
+    end
+end</code></pre><h2 id="Define-the-Primary-Generator"><a class="docs-heading-anchor" href="#Define-the-Primary-Generator">Define the Primary Generator</a><a id="Define-the-Primary-Generator-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Primary-Generator" title="Permalink"></a></h2><p>The GCR protons have kinetic energies between 10 MeV and 100 GeV with the spectrum measured by PAMELA in 2009 (in protons/(cm² s sr GeV), for the kinetic energy T in GeV), with a solar modulation potential ϕ = 0.379 GV:</p><pre><code class="language-julia hljs">gcrFlux(T; ϕ=0.379, m=0.938) = 1.9 * ((T + ϕ) * (T + ϕ + 2m))^-1.39 * T * (T + 2m) /
+                               ((1 + 0.4866 * ((T + ϕ) * (T + ϕ + 2m))^-1.255) * (T + ϕ) * (T + ϕ + 2m))</code></pre><pre><code class="nohighlight hljs">gcrFlux (generic function with 1 method)</code></pre><p>The energy is sampled from it with the rejection method. As in the C++ example, the protons start at a random point of a sphere of radius R = 27 cm centred 8 cm above the detector and go towards another random point of the same sphere. This gives an isotropic and uniform flux inside the sphere, but very few protons hit the detector (about 1 in 1000).</p><p>To get more statistics, the generator can instead aim at a target sphere of radius r around the detector (<code>target = r</code>). The direction is isotropic and the line goes through a random point of the disk of radius r perpendicular to it, centred at the detector. The proton starts where the line enters the sphere of radius R. Inside the target sphere the flux is still isotropic and uniform, so the results near the detector are the same, except for the secondaries of the protons that pass farther away.</p><p>In both cases we know the exposure time that corresponds to N protons: an isotropic intensity I (in protons/(cm² s sr)) gives <span>$4\pi^2 r^2 I$</span> protons per second through a sphere of radius r.</p><p>Geant4.jl shares the data of the generator between the worker threads, so each thread creates its own particle gun and stores it in a dictionary indexed by the thread ID.</p><pre><code class="language-julia hljs">mutable struct GCRGunData &lt;: G4JLGeneratorData
+    guns::Dict{Int, CxxPtr{G4ParticleGun}}
+    lock::ReentrantLock
+    radius::Float64
+    center::Float64          ## z of the centre of the sphere
+    target::Float64          ## radius of the target sphere around the detector (0 for none)
+    emin::Float64
+    emax::Float64
+end
+
+function GCRGenerator(; radius=27cm, center=8cm, target=0., emin=10MeV, emax=100GeV)
+    data = GCRGunData(Dict(), ReentrantLock(), radius, center, target, emin, emax)
+    function init(data::GCRGunData, ::Any)
+        gun = move!(G4ParticleGun())
+        SetParticleByName(gun, &quot;proton&quot;)
+        lock(data.lock) do
+            data.guns[G4Threading!G4GetThreadId()] = gun
+        end
+    end
+    function isotropic()
+        cθ = 1 - 2rand()
+        sθ, ϕ = sqrt(1 - cθ^2), 2π * rand()
+        return Vec3(sθ * cos(ϕ), sθ * sin(ϕ), cθ)
+    end
+    function generate(evt::G4Event, data::GCRGunData)::Nothing
+        gun = data.guns[G4Threading!G4GetThreadId()]
+        fmax = 0.268                                   ## maximum of the flux
+        T = 0.
+        while true
+            T = data.emin + rand() * (data.emax - data.emin)
+            rand() * fmax &lt;= gcrFlux(T/GeV) &amp;&amp; break
+        end
+        C = Vec3(0., 0., data.center)
+        if data.target &gt; 0
+            u = isotropic()
+            e1 = normalize(cross(u, abs(u[3]) &lt; 0.9 ? Vec3(0., 0., 1.) : Vec3(1., 0., 0.)))
+            e2 = cross(u, e1)
+            ρ, ϕ = data.target * sqrt(rand()), 2π * rand()
+            q = ρ * cos(ϕ) * e1 + ρ * sin(ϕ) * e2      ## point of the disk around the detector
+            w = q - C
+            s = dot(u, w) + sqrt(dot(u, w)^2 - dot(w, w) + data.radius^2)
+            a, dir = q - s * u, u
+        else
+            a, b = C + data.radius * isotropic(), C + data.radius * isotropic()
+            dir = b - a
+        end
+        SetParticleEnergy(gun, T)
+        SetParticlePosition(gun, G4ThreeVector(a...))
+        SetParticleMomentumDirection(gun, G4ThreeVector(dir...))
+        GeneratePrimaryVertex(gun, CxxPtr(evt))
+    end
+    G4JLPrimaryGenerator(&quot;GCRGun&quot;, data; init_method=init, generate_method=generate)
+end</code></pre><pre><code class="nohighlight hljs">GCRGenerator (generic function with 1 method)</code></pre><p>Integrated intensity between <code>emin</code> and <code>emax</code> (protons/(cm² s sr)) and exposure time for N protons</p><pre><code class="language-julia hljs">function intensity(data::GCRGunData)
+    T = exp.(range(log(data.emin/GeV), log(data.emax/GeV), length=10000))
+    return sum(diff(T) .* (gcrFlux.(T[1:end-1]) .+ gcrFlux.(T[2:end])) ./ 2) / cm2 / s
+end
+function exposure(data::GCRGunData, n)
+    r = data.target &gt; 0 ? data.target : data.radius
+    return n / (4π^2 * r^2 * intensity(data))
+end
+
+generator = GCRGenerator(target=5cm)</code></pre><pre><code class="nohighlight hljs">Geant4.G4JLPrimaryGenerator{Main.var&quot;##142&quot;.GCRGunData}(&quot;GCRGun&quot;, Main.var&quot;##142&quot;.GCRGunData(Dict{Int64, CxxWrap.CxxWrapCore.CxxPtr{Geant4.G4ParticleGun}}(), ReentrantLock(), 270.0, 80.0, 50.0, 10.0, 100000.0), Main.var&quot;##142&quot;.var&quot;#init#12&quot;(), Main.var&quot;##142&quot;.var&quot;#generate#16&quot;{Main.var&quot;##142&quot;.var&quot;#isotropic#15&quot;}(Main.var&quot;##142&quot;.var&quot;#isotropic#15&quot;()), Geant4.G4JLGeneratorAction[])</code></pre><h2 id="Define-the-Simulation-Data"><a class="docs-heading-anchor" href="#Define-the-Simulation-Data">Define the Simulation Data</a><a id="Define-the-Simulation-Data-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Simulation-Data" title="Permalink"></a></h2><p>Each track that deposits energy in the absorbers is recorded as a <code>Deposit</code>, with the particle, the process that created it, its kinetic energy at creation and when it entered the absorber, and the total energy deposited. We also accumulate the energy and the number of tracks in each pixel, and the energy of all the primary protons.</p><p>A TES pixel measures the total energy deposited during an event, so for the background spectrum we record a <code>PixelHit</code> for each pixel with energy in an event, together with the energy deposited in the anti-coincidence detector in the same event.</p><pre><code class="language-julia hljs">struct PixelHit
+    event::Int
+    pixel::Int
+    edep::Float64
+    acd::Float64             ## energy in the ACD in the same event
+end
+
+mutable struct Deposit
+    event::Int
+    track::Int
+    parent::Int
+    particle::String
+    process::String          ## creator process (&quot;primary&quot; for the primary protons)
+    pixel::Int               ## first pixel hit
+    lastpixel::Int
+    vertexEnergy::Float64    ## kinetic energy at creation
+    entryEnergy::Float64     ## kinetic energy when entering the absorber
+    edep::Float64
+end
+
+mutable struct XrayTESSimData &lt;: G4JLSimulationData
+    ##---Event data---------------------------------------------------------------------------------
+    event::Int
+    tracks::Dict{Int, Deposit}                 ## deposits of the current event by track ID
+    pixels::Dict{Int, Float64}                 ## energy in each pixel in the current event
+    acd::Float64                               ## energy in the ACD in the current event
+    ##---Run data-----------------------------------------------------------------------------------
+    deposits::Vector{Deposit}
+    hits::Vector{PixelHit}
+    primaries::Vector{Float64}                 ## kinetic energy of the primaries
+    pixelEdep::Vector{Float64}
+    pixelTracks::Vector{Int}
+    XrayTESSimData(npixels=317) = new(0, Dict(), Dict(), 0., Deposit[], PixelHit[], Float64[], zeros(npixels), zeros(Int, npixels))
+end</code></pre><p>With several threads the results of each thread are merged at the end of the run</p><pre><code class="language-julia hljs">function Base.merge!(x::XrayTESSimData, y::XrayTESSimData)
+    append!(x.deposits, y.deposits)
+    append!(x.hits, y.hits)
+    append!(x.primaries, y.primaries)
+    x.pixelEdep .+= y.pixelEdep
+    x.pixelTracks .+= y.pixelTracks
+    return x
+end
+function Base.empty!(x::XrayTESSimData)
+    empty!(x.deposits)
+    empty!(x.hits)
+    empty!(x.primaries)
+    fill!(x.pixelEdep, 0)
+    fill!(x.pixelTracks, 0)
+    return x
+end</code></pre><h2 id="Define-the-User-Actions"><a class="docs-heading-anchor" href="#Define-the-User-Actions">Define the User Actions</a><a id="Define-the-User-Actions-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-User-Actions" title="Permalink"></a></h2><ul><li><strong>beginrun</strong> clears the run data (of each thread)</li><li><strong>endrun</strong> merges the data of the worker threads into the data of the master thread</li><li><strong>beginevent</strong> keeps the event number and clears the deposits of the event</li><li><strong>pretrackaction</strong> records the energy of the primary protons</li><li><strong>stepaction</strong> accumulates the energy deposited in the ACD and in the absorbers. Only the steps in the absorbers are recorded, which keeps the output small (the C++ example applies a similar selection to the ntuple). The pixel number is the copy number of the pixel element, one level above the absorber.</li><li><strong>endevent</strong> adds the deposits and the pixel hits of the event to the run data</li></ul><pre><code class="language-julia hljs">function beginrun(::G4Run, app::G4JLApplication)::Nothing
+    empty!(getSIMdata(app))
+    return
+end
+
+function endrun(::G4Run, app::G4JLApplication)::Nothing
+    if G4Threading!G4GetThreadId() &lt; 0 &amp;&amp; app.nthreads &gt; 0
+        foldl(merge!, app.simdata[2:end]; init=app.simdata[1])
+    end
+    return
+end
+
+function beginevent(evt::G4Event, app::G4JLApplication)::Nothing
+    data = getSIMdata(app)
+    data.event = GetEventID(evt)
+    empty!(data.tracks)
+    empty!(data.pixels)
+    data.acd = 0.
+    return
+end
+
+function pretrackaction(track::G4Track, app::G4JLApplication)::Nothing
+    GetParentID(track) == 0 &amp;&amp; push!(getSIMdata(app).primaries, GetKineticEnergy(track))
+    return
+end
+
+function stepaction(step::G4Step, app::G4JLApplication)::Nothing
+    pre = GetPreStepPoint(step)
+    pv = GetPhysicalVolume(pre)
+    if pv != app.detector.absorberPV
+        GetLogicalVolume(pv) in app.detector.acdLVs &amp;&amp; (getSIMdata(app).acd += GetTotalEnergyDeposit(step))
+        return
+    end
+    data = getSIMdata(app)
+    track = GetTrack(step)
+    id = GetTrackID(track)
+    pixel = GetCopyNumber(GetTouchable(pre), 1) + 1
+    dep = get(data.tracks, id, nothing)
+    if isnothing(dep)
+        creator = GetCreatorProcess(track)
+        process = creator == C_NULL ? &quot;primary&quot; : String(GetProcessName(creator))
+        particle = String(GetParticleName(GetParticleDefinition(track)))
+        dep = Deposit(data.event, id, GetParentID(track), particle, process, pixel, 0,
+                      GetVertexKineticEnergy(track), GetKineticEnergy(pre), 0.)
+        data.tracks[id] = dep
+    end
+    if pixel != dep.lastpixel
+        data.pixelTracks[pixel] += 1
+        dep.lastpixel = pixel
+    end
+    edep = GetTotalEnergyDeposit(step)
+    dep.edep += edep
+    data.pixelEdep[pixel] += edep
+    data.pixels[pixel] = get(data.pixels, pixel, 0.) + edep
+    return
+end
+
+function endevent(::G4Event, app::G4JLApplication)::Nothing
+    data = getSIMdata(app)
+    append!(data.deposits, values(data.tracks))
+    for (pixel, edep) in data.pixels
+        edep &gt; 0 &amp;&amp; push!(data.hits, PixelHit(data.event, pixel, edep, data.acd))
+    end
+    return
+end</code></pre><pre><code class="nohighlight hljs">endevent (generic function with 1 method)</code></pre><h2 id="Create-the-Application"><a class="docs-heading-anchor" href="#Create-the-Application">Create the Application</a><a id="Create-the-Application-1"></a><a class="docs-heading-anchor-permalink" href="#Create-the-Application" title="Permalink"></a></h2><pre><code class="language-julia hljs">app = G4JLApplication(; detector = tes,                               ## detector with parameters
+                        simdata = XrayTESSimData(),                   ## simulation data structure
+                        generator = generator,                        ## primary particle generator
+                        nthreads = 8,                                 ## number of threads (MT)
+                        physics_type = XrayTESPhysics,                ## what physics list to instantiate
+                        stepaction_method = stepaction,               ## step action method
+                        pretrackaction_method = pretrackaction,       ## pre-tracking action
+                        begineventaction_method = beginevent,         ## begin-event action
+                        endeventaction_method = endevent,             ## end-event action
+                        beginrunaction_method = beginrun,             ## begin run action
+                        endrunaction_method = endrun                  ## end run action
+                      );</code></pre><pre><code class="nohighlight hljs">
+**************************************************************
+ Geant4 version Name: geant4-11-04-patch-01 [MT]   (13-March-2026)
+  &lt;&lt; in Multi-threaded mode &gt;&gt; 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+</code></pre><h2 id="Configure-and-Initialize"><a class="docs-heading-anchor" href="#Configure-and-Initialize">Configure and Initialize</a><a id="Configure-and-Initialize-1"></a><a class="docs-heading-anchor-permalink" href="#Configure-and-Initialize" title="Permalink"></a></h2><p>The EM parameters are set after the physics list is configured and before the initialization. As in the C++ example, the atomic deexcitation (fluorescence, Auger electrons and PIXE) is active only in the <code>InnerRegion</code> defined with the geometry, where the multiple scattering is also replaced by single scattering (<code>G4EmStandardSS</code>), which is more precise in thin layers. The production cuts are 1 mm everywhere.</p><pre><code class="language-julia hljs">configure(app)
+em = G4EmParameters!Instance()
+SetFluo(em, true)
+SetAuger(em, true)
+SetPixe(em, true)
+SetDeexcitationIgnoreCut(em, false)
+SetDeexActiveRegion(em, innerRegion, true, true, true)
+AddPhysics(em, innerRegion, &quot;G4EmStandardSS&quot;)
+SetMuHadLateralDisplacement(em, false)
+SetBremsstrahlungTh(em, 10e3GeV)                ## 10 TeV
+ui`/run/setCut 1 mm`
+initialize(app)</code></pre><pre><code class="nohighlight hljs">
+### === G4UAtomicDeexcitation::InitialiseForNewRun()
+======================================================================
+The G4PenelopeIonisationModel is being used with the PIXE flag ON.
+Atomic de-excitation will be produced statistically by the PIXE 
+interface by using the shell cross section --&gt; Livermore
+The built-in model procedure for atomic de-excitation is disabled. 
+*Please be sure this is intended*, or disable PIXE by
+/process/em/pixe false
+======================================================================
+</code></pre><h2 id="Draw-the-geometry"><a class="docs-heading-anchor" href="#Draw-the-geometry">Draw the geometry</a><a id="Draw-the-geometry-1"></a><a class="docs-heading-anchor-permalink" href="#Draw-the-geometry" title="Permalink"></a></h2><p>A cut-away view of the whole geometry, and the TES array with its 317 pixels.</p><pre><code class="language-julia hljs">world = GetWorldVolume()
+fig = Figure(size=(1200, 600))
+s1 = LScene(fig[1,1])
+Geant4.draw!(s1, world, clip=:y)
+s2 = LScene(fig[1,2])
+Geant4.draw!(s2, tes.arrayPV)</code></pre><p><img src="../XrayTES-27.png" alt/></p><h2 id="Run-the-simulation"><a class="docs-heading-anchor" href="#Run-the-simulation">Run the simulation</a><a id="Run-the-simulation-1"></a><a class="docs-heading-anchor-permalink" href="#Run-the-simulation" title="Permalink"></a></h2><p>The generator aims at a sphere of 5 cm radius around the detector. Even so, the detector is small (about 2 cm²), so only about 1% of the protons give a deposit in the absorbers. Limiting the atomic deexcitation to the <code>InnerRegion</code> is important for the speed: with deexcitation in all the materials the simulation is more than 10 times slower.</p><pre><code class="language-julia hljs">data = app.simdata[1]
+nevents = 50000
+@time beamOn(app, nevents)
+deposits = filter(d -&gt; d.edep &gt; 0, data.deposits)
+T = exposure(generator.data, nevents)
+@printf &quot;GCR intensity: %.3f protons/(cm² s sr), exposure time: %.2f s\n&quot; intensity(generator.data)*cm2*s T/s
+@printf &quot;Tracks with deposits in the absorbers: %d, in %d events\n&quot; length(deposits) length(unique(d.event for d in deposits))</code></pre><pre><code class="nohighlight hljs"> 43.581642 seconds (29.28 M allocations: 487.359 MiB, 0.60% gc time, 7.88% compilation time: &lt;1% of which was recompilation)
+GCR intensity: 0.407 protons/(cm² s sr), exposure time: 124.40 s
+Tracks with deposits in the absorbers: 713, in 683 events
+</code></pre><h2 id="Primary-spectrum"><a class="docs-heading-anchor" href="#Primary-spectrum">Primary spectrum</a><a id="Primary-spectrum-1"></a><a class="docs-heading-anchor-permalink" href="#Primary-spectrum" title="Permalink"></a></h2><p>The kinetic energy of the generated protons, compared with the GCR spectrum.</p><pre><code class="language-julia hljs">fig = Figure(size=(800, 500))
+ax = Axis(fig[1,1], title=&quot;GCR protons&quot;, xlabel=&quot;Kinetic energy [GeV]&quot;, ylabel=&quot;Protons / GeV&quot;, xscale=log10, yscale=log10)
+edges = 10 .^ range(-2, 2, length=41)
+h = Hist1D(data.primaries/GeV; binedges=edges)
+widths = diff(edges)
+scatter!(ax, bincenters(h), bincounts(h) ./ widths, label=&quot;generated&quot;)
+norm = length(data.primaries) / (sum(gcrFlux.(bincenters(h)) .* widths))
+lines!(ax, bincenters(h), norm * gcrFlux.(bincenters(h)), color=:red, label=&quot;PAMELA 2009&quot;)
+axislegend(ax)</code></pre><p><img src="../XrayTES-31.png" alt/></p><h2 id="Energy-deposited-per-pixel"><a class="docs-heading-anchor" href="#Energy-deposited-per-pixel">Energy deposited per pixel</a><a id="Energy-deposited-per-pixel-1"></a><a class="docs-heading-anchor-permalink" href="#Energy-deposited-per-pixel" title="Permalink"></a></h2><p>The total energy and the number of tracks in each pixel, at the position of the pixel.</p><pre><code class="language-julia hljs">pixels = pixelPositions(tes)
+fig = Figure(size=(1200, 500))
+for (i, (values, title, label)) in enumerate(((data.pixelEdep/keV, &quot;Energy deposit&quot;, &quot;keV&quot;),
+                                               (data.pixelTracks, &quot;Tracks&quot;, &quot;tracks&quot;)))
+    ax = Axis(fig[1, 2i-1], title=title, xlabel=&quot;x [mm]&quot;, ylabel=&quot;y [mm]&quot;, aspect=DataAspect())
+    sc = scatter!(ax, first.(pixels), last.(pixels), color=values, marker=:rect, markersize=18, colormap=:viridis)
+    Colorbar(fig[1, 2i], sc, label=label)
+end</code></pre><p><img src="../XrayTES-33.png" alt/></p><h2 id="Composition-of-the-background"><a class="docs-heading-anchor" href="#Composition-of-the-background">Composition of the background</a><a id="Composition-of-the-background-1"></a><a class="docs-heading-anchor-permalink" href="#Composition-of-the-background" title="Permalink"></a></h2><p>The particles that deposit energy in the absorbers, and the processes that created them.</p><pre><code class="language-julia hljs">category(p) = p in (&quot;proton&quot;, &quot;gamma&quot;, &quot;e-&quot;, &quot;e+&quot;) ? p : &quot;other&quot;
+cats = [&quot;proton&quot;, &quot;gamma&quot;, &quot;e-&quot;, &quot;e+&quot;, &quot;other&quot;]
+counts = [count(d -&gt; category(d.particle) == c, deposits) for c in cats]
+procs = sort(unique(d.process for d in deposits), by = p -&gt; -count(d -&gt; d.process == p, deposits))
+pcounts = [count(d -&gt; d.process == p, deposits) for p in procs]
+fig = Figure(size=(1200, 450))
+ax1 = Axis(fig[1,1], title=&quot;Particles&quot;, xticks=(1:length(cats), cats), ylabel=&quot;Tracks&quot;)
+barplot!(ax1, 1:length(cats), counts)
+ax2 = Axis(fig[1,2], title=&quot;Creator process&quot;, xticks=(1:length(procs), procs), xticklabelrotation=π/4, ylabel=&quot;Tracks&quot;)
+barplot!(ax2, 1:length(procs), pcounts)</code></pre><p><img src="../XrayTES-35.png" alt/></p><h2 id="Spectra-on-the-detector"><a class="docs-heading-anchor" href="#Spectra-on-the-detector">Spectra on the detector</a><a id="Spectra-on-the-detector-1"></a><a class="docs-heading-anchor-permalink" href="#Spectra-on-the-detector" title="Permalink"></a></h2><p>For all the tracks and for the primary protons: the kinetic energy at creation (for the primaries this is the energy of the GCR proton), the kinetic energy when entering the absorber, and the energy deposited. Most primary protons cross the 3 μm absorber as minimum ionizing particles and deposit about 1 keV.</p><pre><code class="language-julia hljs">primary = filter(d -&gt; d.parent == 0, deposits)
+fig = Figure(size=(1200, 450))
+for (i, (field, title)) in enumerate(((:vertexEnergy, &quot;Energy at creation&quot;), (:entryEnergy, &quot;Energy at the absorber&quot;), (:edep, &quot;Energy deposit&quot;)))
+    ax = Axis(fig[1,i], title=title, xlabel=&quot;Energy [keV]&quot;, ylabel=&quot;Tracks&quot;, xscale=log10)
+    edges = 10 .^ range(-1, 8, length=91)
+    energies = [getfield(d, field)/keV for d in deposits]
+    stephist!(ax, Hist1D(clamp.(energies, 0.1, 1e8); binedges=edges), label=&quot;all&quot;)
+    isempty(primary) || stephist!(ax, Hist1D(clamp.([getfield(d, field)/keV for d in primary], 0.1, 1e8); binedges=edges), label=&quot;primary protons&quot;)
+    i == 1 &amp;&amp; axislegend(ax, position=:lt)
+end</code></pre><p><img src="../XrayTES-37.png" alt/></p><h2 id="Background-spectrum-and-anti-coincidence"><a class="docs-heading-anchor" href="#Background-spectrum-and-anti-coincidence">Background spectrum and anti-coincidence</a><a id="Background-spectrum-and-anti-coincidence-1"></a><a class="docs-heading-anchor-permalink" href="#Background-spectrum-and-anti-coincidence" title="Permalink"></a></h2><p>The spectrum of the energy measured by the pixels, normalized to the exposure time and to the area of the array, in counts/(cm² s keV). Most of the background comes from protons that cross the array and the ACD below it, so it is rejected by vetoing the events with more than 20 keV in the ACD. The X-IFU requirement for the residual background was 5×10⁻³ counts/(cm² s keV) between 2 and 10 keV. The rejection here is optimistic because the ACD only sees the particles that reach it from above or below. The statistics after the veto are limited, so increase the number of events to see the residual background.</p><pre><code class="language-julia hljs">area = length(pixels) * (tes.pixelPitch - tes.pixelGap)^2
+edges = 10 .^ range(-1, 3, length=41)
+fig = Figure(size=(800, 500))
+ax = Axis(fig[1,1], title=&quot;Background in the TES array&quot;, xlabel=&quot;Energy [keV]&quot;, ylabel=&quot;counts / (cm² s keV)&quot;,
+          xscale=log10, yscale=log10)
+for (sel, label) in ((h -&gt; true, &quot;all&quot;), (h -&gt; h.acd &lt; 20keV, &quot;ACD veto (20 keV)&quot;))
+    h = Hist1D([hit.edep/keV for hit in data.hits if sel(hit)]; binedges=edges)
+    rate = bincounts(h) ./ diff(edges) ./ (area/cm2) ./ (T/s)
+    band = filter(x -&gt; 2keV &lt;= x.edep &lt;= 10keV &amp;&amp; sel(x), data.hits)
+    @printf &quot;%-18s: %.3g counts/(cm² s keV) in 2-10 keV\n&quot; label length(band) / 8 / (area/cm2) / (T/s)
+    stairs!(ax, edges, [rate; rate[end]], step=:post, label=label)
+end
+hlines!(ax, [5e-3], color=:gray, linestyle=:dash, label=&quot;requirement&quot;)
+ylims!(ax, 1e-4, 10)
+axislegend(ax, position=:rt)</code></pre><p><img src="../XrayTES-39.png" alt/></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../RICH/">« RICH Detector</a><a class="docs-footer-nextpage" href="../B2aDetector/">B2aDetector.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.19.0 on <span class="colophon-date" title="Tuesday 3 November 2026 09:05">Tuesday 3 November 2026</span>. Using Julia version 1.13.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
