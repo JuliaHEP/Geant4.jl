@@ -239,6 +239,27 @@ end
 const UnitOnAxis = [( 1,0,0), (0,1,0), (0,0,1)]
 
 """
+    placement_transform(pv)
+
+Return the current local transformation (rotation and translation) of a physical volume.
+"""
+function placement_transform(pv)
+    g4t = GetTranslation(pv)
+    g4r = GetRotation(pv)
+    local_rot = if g4r == C_NULL
+        one(RotMatrix3{Float64})
+    else
+        RotMatrix3{Float64}(
+            xx(g4r[]), yx(g4r[]), zx(g4r[]),
+            xy(g4r[]), yy(g4r[]), zy(g4r[]),
+            xz(g4r[]), yz(g4r[]), zz(g4r[])
+        )
+    end
+    local_trans = Vector3{Float64}(x(g4t), y(g4t), z(g4t))
+    return Transformation3D{Float64}(local_rot, local_trans)
+end
+
+"""
     collect_meshes_with_cut!(lv, lv_meshes, cutter, cutter_offset, t, level, maxlevel)
 
 Recursively collect meshes from a logical volume hierarchy, applying a quadrant cut
@@ -372,7 +393,22 @@ function collect_meshes_with_cut!(
     for idx in 1:GetNoDaughters(lv)
         daughter = GetDaughter(lv, idx - 1)
 
-        if IsReplicated(daughter)
+        if IsParameterised(daughter)
+            # Parameterised volumes: the parameterisation sets the transformation of each copy
+            volume = GetLogicalVolume(daughter)
+            param = GetParameterisation(daughter)
+            axis = Ref{EAxis}(kYAxis)
+            nReplicas = Ref{Int32}(0)
+            width = Ref{Float64}(0.0)
+            offset_val = Ref{Float64}(0.0)
+            consuming = Ref{UInt8}(0)
+            GetReplicationData(daughter, axis, nReplicas, width, offset_val, consuming)
+            for i in 1:nReplicas[]
+                ComputeTransformation(param, i - 1, daughter)
+                new_t = placement_transform(daughter) * t
+                collect_meshes_with_cut!(volume[], lv_meshes, cutter, cutter_offset, new_t, level + 1, maxlevel)
+            end
+        elseif IsReplicated(daughter)
             volume = GetLogicalVolume(daughter)
             axis = Ref{EAxis}(kYAxis)
             nReplicas = Ref{Int32}(0)
@@ -389,22 +425,7 @@ function collect_meshes_with_cut!(
                 collect_meshes_with_cut!(volume[], lv_meshes, cutter, cutter_offset, new_t, level + 1, maxlevel)
             end
         else
-            g4t = GetTranslation(daughter)
-            g4r = GetRotation(daughter)
-
-            local_rot = if g4r == C_NULL
-                one(RotMatrix3{Float64})
-            else
-                RotMatrix3{Float64}(
-                    xx(g4r[]), yx(g4r[]), zx(g4r[]),
-                    xy(g4r[]), yy(g4r[]), zy(g4r[]),
-                    xz(g4r[]), yz(g4r[]), zz(g4r[])
-                )
-            end
-            local_trans = Vector3{Float64}(x(g4t), y(g4t), z(g4t))
-
-            child_transform = Transformation3D{Float64}(local_rot, local_trans)
-            new_t = child_transform * t
+            new_t = placement_transform(daughter) * t
             volume = GetLogicalVolume(daughter)
             collect_meshes_with_cut!(volume[], lv_meshes, cutter, cutter_offset, new_t, level + 1, maxlevel)
         end
